@@ -51,7 +51,12 @@ module.exports = function(grunt) {
       command: 'jest spec/server',
       stdout: true,
       exitCode: 0,
-    }
+    },
+    initdb: {
+      command: 'node scripts/initdb.js',
+      stdout: true,
+      exitCode: 0,
+    },
   };
 
   grunt.initConfig({
@@ -67,6 +72,7 @@ module.exports = function(grunt) {
   grunt.task.registerTask('test', ['tslint', 'exec:test']);
   grunt.task.registerTask('test:client', ['tslint:client', 'exec:testClient']);
   grunt.task.registerTask('test:server', ['tslint:server', 'exec:testServer']);
+  grunt.task.registerTask('initdb', ['exec:initdb']);
   grunt.task.registerTask('run', ['build:client', 'exec:run']);
   grunt.task.registerTask('prodRun', ['build', 'exec:prodRun']);
   grunt.loadNpmTasks('grunt-tslint');
