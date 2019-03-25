@@ -1,7 +1,7 @@
 ## How to 
 1. Install all packages.
 ```
-npm install
+yarn
 ```
 
 ## Start Server
