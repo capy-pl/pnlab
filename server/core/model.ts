@@ -1,5 +1,5 @@
 import { DocumentCollection } from 'arangojs/lib/cjs/collection';
-import arangoDB from '../core/arango';
+import arangoDB from './db/arango';
 
 export default class Model {
   public collectionName!: string;

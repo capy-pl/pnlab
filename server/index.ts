@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import http from 'http';
 
 import app from './App';
-import arangoDB from './core/arango';
+import arangoDB from './core/db/arango';
 
 // Inject environment variable from .env
 dotenv.config();
