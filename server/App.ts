@@ -7,6 +7,9 @@ import nunjucks from 'nunjucks';
 // relative import
 import errorHandler from './controllers/error';
 
+// import routes
+import AuthRouter from './routes/auth';
+
 dotenv.config();
 
 const app = express();
@@ -57,6 +60,9 @@ app.use('/', express.static('static', {
 app.get('/', (req, res) => {
   res.render('index.html');
 });
+
+// Register Router
+app.use('/auth', AuthRouter);
 
 app.use(errorHandler);
 
