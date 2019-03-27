@@ -28,6 +28,7 @@
 		"jsonwebtoken": "^8.5.1",
 		"mongoose": "^5.4.19",
 		"nunjucks": "^3.1.7",
+		"opn": "^5.5.0",
 		"passport": "^0.4.0",
 		"passport-jwt": "^4.0.0",
 		"passport-local": "^1.0.0",

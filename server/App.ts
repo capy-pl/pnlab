@@ -1,10 +1,13 @@
 import compression from 'compression';
+import dotenv from 'dotenv';
 import express from 'express';
 import helmet from 'helmet';
 import nunjucks from 'nunjucks';
 
 // relative import
 import errorHandler from './controllers/error';
+
+dotenv.config();
 
 const app = express();
 
