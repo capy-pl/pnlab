@@ -56,7 +56,6 @@ export async function LogIn(req: e.Request, res: e.Response, next: e.NextFunctio
       if (error) {
         throw error;
       }
-
       const token = jwt.sign({ sub: user.id }, SECRET_KEY as string);
       res.json({ token });
     } catch (err) {
