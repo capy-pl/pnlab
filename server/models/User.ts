@@ -1,29 +1,17 @@
-import { encryptPassword } from '../core/crypto';
-import Model from '../core/model';
+import mongoose, { PassportLocalSchema  } from 'mongoose';
+import passportLocalMongoose from 'passport-local-mongoose';
 
-export default class User extends Model {
-  public collectionName: string = 'users';
-  public username: string;
-  private hashedPassword!: string;
-  private salt!: string;
-  constructor(username: string) {
-    super();
-    if (!(username)) {
-      throw new Error('Username must be provided.');
-    }
-    this.username = username;
-  }
+const { Schema } = mongoose;
 
-  public async setPassword(password: string): Promise<void> {
-    const { hashedPassword, salt } = await encryptPassword(password);
-    this.hashedPassword = hashedPassword;
-    this.salt = salt;
-    return;
-  }
+const UserSchema = new Schema({
+  email: String,
+});
 
-  public save() {
-    if (!this.hashedPassword) {
-      throw new Error('Password must be set before saved.(only when create new user)');
-    }
-  }
-}
+UserSchema.plugin(passportLocalMongoose, {
+  usernameField: 'email',
+});
+
+const User: mongoose.PassportLocalModel<mongoose.PassportLocalDocument> =
+  mongoose.model('User', UserSchema as PassportLocalSchema );
+
+export default User;
