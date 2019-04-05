@@ -2,6 +2,7 @@ import compression from 'compression';
 import dotenv from 'dotenv';
 import express from 'express';
 import helmet from 'helmet';
+import morgan from 'morgan';
 import nunjucks from 'nunjucks';
 
 // relative import
@@ -16,6 +17,7 @@ const app = express();
 
 app.use(helmet());
 app.use(compression());
+app.use(morgan('combined'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('templates'));
@@ -35,7 +37,7 @@ if (process.env.NODE_ENV === 'development') {
   } = require('../webpack.config.js');
   const compiler = webpack(clientConfig);
   app.use(devMiddleware(compiler, {
-    logLevel: 'info',
+    logLevel: 'error',
     publicPath: clientConfig.output.publicPath,
     stats: {
       colors: true,

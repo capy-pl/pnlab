@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { hot } from 'react-hot-loader/root';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { HashRouter as Router, Route } from 'react-router-dom';
 
 import {
   Home,
@@ -11,7 +11,7 @@ class App extends Component {
   public render(): React.ReactNode {
     return (
       <Router>
-        <div>
+        <div className='page-container'>
           <Route exact path='/' component={Home} />
           <Route path='/account/login' component={SignIn} />
         </div>

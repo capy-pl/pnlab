@@ -1,13 +1,12 @@
-import mongoose, { PassportLocalSchema  } from 'mongoose';
+import mongoose, { PassportLocalSchema, Schema  } from 'mongoose';
 import passportLocalMongoose from 'passport-local-mongoose';
-
-const { Schema } = mongoose;
 
 const UserSchema = new Schema({
   email: String,
 });
 
 UserSchema.plugin(passportLocalMongoose, {
+  org: Schema.Types.ObjectId,
   usernameField: 'email',
 });
 

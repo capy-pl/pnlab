@@ -56,10 +56,16 @@ export async function LogIn(req: e.Request, res: e.Response, next: e.NextFunctio
       if (error) {
         throw error;
       }
-      const token = jwt.sign({ sub: user.id }, SECRET_KEY as string);
+      const token = jwt.sign({ sub: user.id }, SECRET_KEY as string, {
+        expiresIn: process.env.EXPIRED_IN,
+      });
       res.json({ token });
     } catch (err) {
       res.status(400).json({ message: 'Email or password error.' });
     }
   }
+}
+
+export function Validation(req: e.Request, res: e.Response, next: e.NextFunction): void {
+  res.status(204).send();
 }
