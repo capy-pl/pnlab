@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react';
+import { Redirect } from 'react-router';
 import { Button, Form, Grid, Header, Message, Segment } from 'semantic-ui-react';
 
 import { Auth } from '../PnApp';
-import { Redirect } from 'react-router';
 
 interface LoginFormState {
   email: string;
