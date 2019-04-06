@@ -1,5 +1,6 @@
 import React, { PureComponent as Component } from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Route } from 'react-router-dom';
+import { AnimatedSwitch } from 'react-router-transition';
 import { Container } from 'semantic-ui-react';
 import Navbar from '../../components/menu/Navbar';
 
@@ -11,9 +12,13 @@ export default class Home extends Component {
       <div>
         <Navbar />
         <Container>
-          <Switch>
-            <Route path='/home/settings' component={Setting} />
-          </Switch>
+          <AnimatedSwitch
+            atEnter={{ opacity: 0 }}
+            atLeave={{ opacity: 0 }}
+            atActive={{ opacity: 1 }}
+          >
+            <Route path='/settings' component={Setting} />
+          </AnimatedSwitch>
         </Container>
       </div>
     );

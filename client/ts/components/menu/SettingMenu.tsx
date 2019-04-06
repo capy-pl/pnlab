@@ -19,16 +19,23 @@ export default class SettingMenu extends PureComponent<{}, SettingMenuState> {
 
     public render() {
       return (
-      <Menu pointing vertical>
+        <Menu vertical tabular fluid>
         <Menu.Item
-          href='/#/home/settings/profile'
+          href='/#/settings/profile'
           name='Profile'
           active={this.state.activeItem === 'Profile'}
           onClick={this.onClick}
         />
         <Menu.Item
           name='Setting'
+          href='/#/settings'
           active={this.state.activeItem === 'Setting'}
+          onClick={this.onClick}
+        />
+        <Menu.Item
+          name='Import Format'
+          href='/#/settings'
+          active={this.state.activeItem === 'Import Format'}
           onClick={this.onClick}
         />
       </Menu>

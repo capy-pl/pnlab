@@ -1,7 +1,7 @@
 import { storiesOf } from '@storybook/react';
 import React from 'react';
-import 'semantic-ui-css/semantic.min.css';
 import { MemoryRouter } from 'react-router-dom';
+import 'semantic-ui-css/semantic.min.css';
 
 import {
   Navbar,

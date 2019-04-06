@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { hot } from 'react-hot-loader/root';
-import { HashRouter as Router, Redirect, Route } from 'react-router-dom';
-
+import { HashRouter as Router, Route } from 'react-router-dom';
+import AnimatedSwitch from './components/Switch';
 import {
   Home,
   SignIn,
@@ -12,9 +12,10 @@ class App extends Component {
     return (
       <Router>
         <div className='page-container'>
-          <Route path='/account/login' component={SignIn} />
-          <Route path='/home' component={Home} />
-          <Redirect from='/' to='/home' />
+          <AnimatedSwitch>
+            <Route path='/account/login' component={SignIn} />
+            <Route path='/' component={Home} />
+          </AnimatedSwitch>
         </div>
       </Router>
     );

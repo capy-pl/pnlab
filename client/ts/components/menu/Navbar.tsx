@@ -40,13 +40,14 @@ export default class Navbar extends Component<{}, MenuState> {
         <LoginRequiredComponent />
         <Menu inverted secondary>
           <Menu.Item
+            href='/#/'
             name='Home'
             active={activeItem === 'home'}
           />
           <Menu.Menu position='right'>
             <Dropdown item text={this.state.user ? this.state.user.email : ''}>
               <Dropdown.Menu>
-                <Dropdown.Item href='/#/home/settings'>
+                <Dropdown.Item href='/#/settings'>
                   Setting
                 </Dropdown.Item>
                 <Dropdown.Item onClick={this.logout}>
