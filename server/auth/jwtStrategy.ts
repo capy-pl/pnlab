@@ -16,6 +16,8 @@ export default new Strategy(
   (jwtPayload, cb) => {
     const { sub } = jwtPayload;
     return User.findById(sub)
+      .populate('org')
+      .exec()
       .then(user => {
         cb(null, user);
       })

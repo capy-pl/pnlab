@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import connectMongo from '../server/core/db';
-import { User, Organization } from '../server/models';
+import { Organization, User } from '../server/models';
 
 dotenv.config();
 

@@ -13,6 +13,6 @@ const OrgSchema = new Schema<OrgSchema>({
   name: String,
 });
 
-const Organization = mongoose.model('org', OrgSchema);
+const Organization = mongoose.model('Org', OrgSchema);
 
 export default Organization;

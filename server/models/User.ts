@@ -8,7 +8,10 @@ interface UserSchema {
 
 const UserSchema = new Schema<UserSchema>({
   email: String,
-  org: Schema.Types.ObjectId,
+  org: {
+    ref: 'Org',
+    type: Schema.Types.ObjectId,
+  },
 });
 
 UserSchema.plugin(passportLocalMongoose, {

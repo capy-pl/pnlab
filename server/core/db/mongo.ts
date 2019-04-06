@@ -1,6 +1,9 @@
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 
+// Register all module
+import '../../models';
+
 dotenv.config();
 
 const { MONGO_PORT, MONGO_DB_NAME } = process.env;

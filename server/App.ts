@@ -10,6 +10,7 @@ import errorHandler from './controllers/error';
 
 // import routes
 import AuthRouter from './routes/auth';
+import UserRouter from './routes/user';
 
 dotenv.config();
 
@@ -65,6 +66,7 @@ app.get('/', (req, res) => {
 
 // Register Router
 app.use('/auth', AuthRouter);
+app.use('/user', UserRouter);
 
 app.use(errorHandler);
 

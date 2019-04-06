@@ -9,3 +9,10 @@ export {
   Report,
   User,
 };
+
+export default {
+  ImportSchema,
+  Organization,
+  Report,
+  User,
+};

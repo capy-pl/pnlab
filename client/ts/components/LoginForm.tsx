@@ -1,8 +1,10 @@
+import axios from 'axios';
 import React, { PureComponent } from 'react';
 import { Redirect } from 'react-router';
 import { Button, Form, Grid, Header, Message, Segment } from 'semantic-ui-react';
 
 import { Auth } from '../PnApp';
+import { updateCurrentUser } from '../PnApp/helper';
 
 interface LoginFormState {
   email: string;
@@ -40,6 +42,9 @@ class LoginForm extends PureComponent<{}, LoginFormState> {
       const token = await Auth.login(this.state.email, this.state.password);
       localStorage.setItem('Token', token);
       this.setState({ redirect: true });
+      // tslint:disable-next-line:no-string-literal
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      await updateCurrentUser();
     } catch (err) {
       this.setState({
         error: true,
@@ -50,7 +55,7 @@ class LoginForm extends PureComponent<{}, LoginFormState> {
 
   public render() {
     if (this.state.redirect) {
-      return <Redirect to='/' />;
+      return <Redirect to='/home' />;
     } else {
       return (
         <Segment style={{ width: '35%' }} padded raised>

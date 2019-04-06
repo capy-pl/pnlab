@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { hot } from 'react-hot-loader/root';
-import { HashRouter as Router, Route } from 'react-router-dom';
+import { HashRouter as Router, Redirect, Route } from 'react-router-dom';
 
 import {
   Home,
@@ -12,8 +12,9 @@ class App extends Component {
     return (
       <Router>
         <div className='page-container'>
-          <Route exact path='/' component={Home} />
           <Route path='/account/login' component={SignIn} />
+          <Route path='/home' component={Home} />
+          <Redirect from='/' to='/home' />
         </div>
       </Router>
     );
