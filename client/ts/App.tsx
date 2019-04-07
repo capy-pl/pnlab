@@ -5,7 +5,7 @@ import AnimatedSwitch from './components/Switch';
 import {
   Home,
   SignIn,
-} from './pages/Pages';
+} from './pages';
 
 class App extends Component {
   public render(): React.ReactNode {

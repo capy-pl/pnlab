@@ -7,6 +7,5 @@ export interface OrganizationModel {
 export interface UserModel {
   _id: string;
   email: string;
-  password: string;
   org: OrganizationModel;
 }

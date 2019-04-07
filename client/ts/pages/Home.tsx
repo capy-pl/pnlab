@@ -2,7 +2,7 @@ import React, { PureComponent as Component } from 'react';
 import { Route } from 'react-router-dom';
 import { AnimatedSwitch } from 'react-router-transition';
 import { Container } from 'semantic-ui-react';
-import Navbar from '../../components/menu/Navbar';
+import Navbar from '../components/menu/Navbar';
 
 import Setting from './Setting';
 

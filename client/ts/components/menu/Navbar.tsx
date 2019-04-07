@@ -47,7 +47,7 @@ export default class Navbar extends Component<{}, MenuState> {
           <Menu.Menu position='right'>
             <Dropdown item text={this.state.user ? this.state.user.email : ''}>
               <Dropdown.Menu>
-                <Dropdown.Item href='/#/settings'>
+                <Dropdown.Item href='/#/settings/profile'>
                   Setting
                 </Dropdown.Item>
                 <Dropdown.Item onClick={this.logout}>

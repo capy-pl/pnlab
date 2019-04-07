@@ -8,7 +8,7 @@ export default class SettingMenu extends PureComponent<{}, SettingMenuState> {
     constructor(props) {
       super(props);
       this.state = {
-        activeItem: undefined,
+        activeItem: 'Profile',
       };
       this.onClick = this.onClick.bind(this);
     }
