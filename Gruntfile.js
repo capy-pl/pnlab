@@ -53,7 +53,7 @@ module.exports = function(grunt) {
       exitCode: 0,
     },
     initdb: {
-      command: 'ts-node scripts/initdb.js',
+      command: 'ts-node scripts/initdb.ts',
       stdout: true,
       exitCode: 0,
     },

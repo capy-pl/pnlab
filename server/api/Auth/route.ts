@@ -1,11 +1,11 @@
 import { Router } from 'express';
 
-import passport from '../auth';
+import passport from '../../auth';
 import {
   LogIn,
   SignUp,
   Validation,
-} from '../controllers/auth';
+} from './controller';
 
 const router = Router();
 

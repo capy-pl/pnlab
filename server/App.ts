@@ -9,8 +9,7 @@ import nunjucks from 'nunjucks';
 import errorHandler from './controllers/error';
 
 // import routes
-import AuthRouter from './routes/auth';
-import UserRouter from './routes/user';
+import API from './api';
 
 dotenv.config();
 
@@ -18,7 +17,9 @@ const app = express();
 
 app.use(helmet());
 app.use(compression());
-app.use(morgan('combined'));
+if (!(process.env.NODE_ENV === 'test')) {
+  app.use(morgan('combined'));
+}
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('templates'));
@@ -65,8 +66,8 @@ app.get('/', (req, res) => {
 });
 
 // Register Router
-app.use('/auth', AuthRouter);
-app.use('/user', UserRouter);
+app.use('/auth', API.Auth);
+app.use('/user', API.User);
 
 app.use(errorHandler);
 

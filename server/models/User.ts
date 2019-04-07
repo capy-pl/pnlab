@@ -7,7 +7,10 @@ interface UserSchema {
 }
 
 const UserSchema = new Schema<UserSchema>({
-  email: String,
+  email: {
+    type: String,
+    unique: true,
+  },
   org: {
     ref: 'Org',
     type: Schema.Types.ObjectId,

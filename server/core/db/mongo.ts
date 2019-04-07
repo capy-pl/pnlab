@@ -21,3 +21,17 @@ export default async function connectMongo(): Promise<mongoose.Connection | unde
   }
   return undefined;
 }
+
+export async function connectTestMongo(): Promise<mongoose.Connection | undefined> {
+  try {
+    const connection = await mongoose.connect(`mongodb://127.0.0.1:${MONGO_PORT}/${MONGO_DB_NAME}_test`, {
+      useNewUrlParser: true,
+    });
+    console.log('Successfully connect to mongodb.');
+    return connection.connection;
+  } catch (err) {
+    console.error(err);
+    process.exit(1);
+  }
+  return undefined;
+}

@@ -4,39 +4,44 @@ import jwt from 'jsonwebtoken';
 
 dotenv.config();
 
-const { SECRET_KEY }  = process.env;
+const { SECRET_KEY } = process.env;
 
-import User from '../models/User';
+import User from '../../models/User';
 
 /**
  * Signup a user.
- * @api {get} /auth/signup
+ * @api /auth/signup
+ * @method GET
  * @apiName SignUp
  * @apiGroup Auth
  * @apiParam email {String} User's email.
  * @apiParam password {String} User's password.
+ * @response 409 Conflict.
+ * @response 422 Missing params.
+ * @response 201 Created.
  */
-export async function SignUp(req: e.Request, res: e.Response, next: e.NextFunction): Promise<void> {
+export async function SignUp(req: e.Request, res: e.Response, next: e.NextFunction): Promise<void | e.Response> {
   const { email, password } = req.body;
   if (!(email && password)) {
-    res.status(400).send({ message: 'lack of email or password.'});
+    res.status(422).send({ message: 'Lack of email or password.' });
   } else {
+    const duplicate = await User.findOne({ email });
+    if (duplicate) {
+      return res.status(409).send({ message: 'Email already exists.' });
+    }
     const user = new User({ email });
     await user.setPassword(password);
-    try {
-      await user.save();
-      res.status(201).send({
-        message: 'created.',
-      });
-    } catch (err) {
-      res.status(400).end('User already exists.');
-    }
+    await user.save();
+    res.status(201).send({
+      message: 'created.',
+    });
   }
 }
 
 /**
  * Log in the user and send a JWT token if authenticated.
- * @api {get} /auth/login
+ * @api /auth/login
+ * @method POST
  * @apiName LogIn
  * @apiGroup Auth
  * @apiParam email {String} User's email.
@@ -45,7 +50,7 @@ export async function SignUp(req: e.Request, res: e.Response, next: e.NextFuncti
 export async function LogIn(req: e.Request, res: e.Response, next: e.NextFunction): Promise<void> {
   const { email, password } = req.body;
   if (!(email && password)) {
-    res.status(400).json({ message: 'email or password not provided.' });
+    res.status(422).json({ message: 'email or password not provided.' });
   } else {
     try {
       const userInstance = await User.findOne({ email });
@@ -61,11 +66,20 @@ export async function LogIn(req: e.Request, res: e.Response, next: e.NextFunctio
       });
       res.json({ token });
     } catch (err) {
-      res.status(400).json({ message: 'Email or password error.' });
+      res.status(401).json({ message: 'Email or password error.' });
     }
   }
 }
 
+/**
+ * Validate user's jwt token. If the user has jwt token in their browser memory,
+ * need to validate whether the token is valid in order to decide whether use should
+ * log in again. The function check Authorization header.
+ * @api /auth/validate
+ * @method GET
+ * @apiName Validate
+ * @apiGroup Auth
+ */
 export function Validation(req: e.Request, res: e.Response, next: e.NextFunction): void {
   res.status(204).send();
 }

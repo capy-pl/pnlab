@@ -1,9 +1,9 @@
 import { Router } from 'express';
 
-import passport from '../auth';
+import passport from '../../auth';
 import {
   Info,
-} from '../controllers/user';
+} from './controller';
 
 const router = Router();
 
