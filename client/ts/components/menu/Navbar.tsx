@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import { Dropdown, Menu, Segment } from 'semantic-ui-react';
 import { Auth } from '../../PnApp';
-import { getCurrentUser, hasToken, updateCurrentUser } from '../../PnApp/helper';
-import { User } from '../../PnApp/model';
-import LoginRequiredComponent from '../Auth';
+import { User } from '../../PnApp/Model';
 
 interface MenuState {
   activeItem: string;
@@ -20,13 +18,6 @@ export default class Navbar extends Component<{}, MenuState> {
     this.logout = this.logout.bind(this);
   }
 
-  public async componentDidMount() {
-    if (hasToken()) {
-      await updateCurrentUser();
-      this.setState({ user: getCurrentUser() });
-    }
-  }
-
   public logout(): void {
     Auth.logout();
     this.forceUpdate(); // After use log out, need to forceUpdate the component to trigger LoginRequred Component.
@@ -37,7 +28,6 @@ export default class Navbar extends Component<{}, MenuState> {
 
     return (
       <Segment inverted>
-        <LoginRequiredComponent />
         <Menu inverted secondary>
           <Menu.Item
             href='/#/'

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { OrganizationModel, UserModel } from '../../../../declarations/user';
+import { OrganizationModel, UserModel } from '../../../declarations/user';
 
 class User {
   public static async load(): Promise<User> {

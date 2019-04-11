@@ -1,7 +1,7 @@
 import React, { ChangeEvent, PureComponent } from 'react';
 import { Button, Form, Message } from 'semantic-ui-react';
 
-import { User } from '../../PnApp/model';
+import { User } from '../../PnApp/Model';
 
 interface ProfileFormProps {
   user: User;

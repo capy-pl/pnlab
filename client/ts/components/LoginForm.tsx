@@ -4,7 +4,7 @@ import { Redirect } from 'react-router';
 import { Button, Form, Grid, Header, Message, Segment } from 'semantic-ui-react';
 
 import { Auth } from '../PnApp';
-import { updateCurrentUser } from '../PnApp/helper';
+import { updateCurrentUser } from '../PnApp/Helper';
 
 interface LoginFormState {
   email: string;

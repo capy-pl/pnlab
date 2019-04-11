@@ -2,12 +2,17 @@ import React, { Component } from 'react';
 import { hot } from 'react-hot-loader/root';
 import { HashRouter as Router, Route } from 'react-router-dom';
 import AnimatedSwitch from './components/Switch';
+import { getCurrentUser, hasToken, updateCurrentUser } from './PnApp/Helper';
+
 import {
   Home,
   SignIn,
 } from './pages';
 
 class App extends Component {
+  public async componentDidMount() {
+  }
+
   public render(): React.ReactNode {
     return (
       <Router>
