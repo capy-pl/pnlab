@@ -1,13 +1,47 @@
 import React, { PureComponent as Component } from 'react';
-import { Route } from 'react-router-dom';
+import { Route, RouteComponentProps, withRouter } from 'react-router-dom';
 import { AnimatedSwitch } from 'react-router-transition';
-import { Container } from 'semantic-ui-react';
+import { Container, Dimmer, Loader } from 'semantic-ui-react';
 import Navbar from '../components/menu/Navbar';
+
+import { Auth } from '../PnApp';
+import { updateCurrentUser } from '../PnApp/Helper';
 
 import Setting from './Setting';
 
-export default class Home extends Component {
+interface HomeState {
+  loading: boolean;
+}
+
+class Home extends Component<RouteComponentProps, HomeState> {
+  constructor(props) {
+    super(props);
+    this.state = {
+      loading: true,
+    };
+  }
+  public async componentDidMount() {
+    const isValid = await Auth.validate();
+    if (isValid) {
+      await updateCurrentUser();
+      this.setState({ loading: false });
+    } else {
+      this.props.history.push('/account/login');
+    }
+  }
+
   public render() {
+    if (this.state.loading) {
+      return (
+        <div>
+          <Container>
+              <Dimmer active>
+                <Loader size='huge'>Loading...</Loader>
+              </Dimmer>
+          </Container>
+        </div>
+      );
+    }
     return (
       <div>
         <Navbar />
@@ -24,3 +58,6 @@ export default class Home extends Component {
     );
   }
 }
+
+const HomeComponent = withRouter(Home);
+export default HomeComponent;

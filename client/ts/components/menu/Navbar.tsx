@@ -1,26 +1,30 @@
 import React, { Component } from 'react';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { Dropdown, Menu, Segment } from 'semantic-ui-react';
 import { Auth } from '../../PnApp';
 import { User } from '../../PnApp/Model';
 
+import { getCurrentUser } from '../../PnApp/Helper';
+
 interface MenuState {
   activeItem: string;
-  user: User | null;
+  user: User | undefined;
 }
 
-export default class Navbar extends Component<{}, MenuState> {
+class Navbar extends Component<RouteComponentProps, MenuState> {
   constructor(props) {
     super(props);
     this.state = {
       activeItem: 'home',
-      user: null,
+      user: getCurrentUser(),
     };
     this.logout = this.logout.bind(this);
   }
 
   public logout(): void {
     Auth.logout();
-    this.forceUpdate(); // After use log out, need to forceUpdate the component to trigger LoginRequred Component.
+    const { history } = this.props;
+    history.push('/account/login');
   }
 
   public render() {
@@ -51,3 +55,6 @@ export default class Navbar extends Component<{}, MenuState> {
     );
   }
 }
+
+const NavbarComponent = withRouter(Navbar);
+export default NavbarComponent;

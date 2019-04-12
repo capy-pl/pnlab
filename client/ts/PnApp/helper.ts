@@ -1,21 +1,12 @@
-import { createBrowserHistory } from 'history';
 import LocalVar from './global';
 import { User } from './Model';
 
 export async function updateCurrentUser(): Promise<void> {
-  try {
     LocalVar.user = await User.load();
-  } catch (err) {
-      createBrowserHistory().push('/#/account/login');
-  }
 }
 
-export function getCurrentUser(): User {
-  if (LocalVar.user) {
+export function getCurrentUser(): User | undefined {
     return LocalVar.user;
-  } else {
-    
-  }
 }
 
 export function hasToken(): boolean {

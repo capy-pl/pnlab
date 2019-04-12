@@ -1,5 +1,4 @@
 import axios from 'axios';
-
 import { LoginResponse } from '../../declarations/auth';
 
 export default class Auth {
@@ -14,11 +13,20 @@ export default class Auth {
 
   public static logout(): void {
     localStorage.removeItem('Token');
+    // tslint:disable-next-line:no-string-literal
+    delete axios.defaults.headers.common['Authorization'];
   }
 
   public static async validate(): Promise<boolean> {
+    const hasToken = localStorage.getItem('Token') !== null;
+    if (!hasToken) {
+      return false;
+    }
+    const token = localStorage.getItem('Token');
+    // tslint:disable-next-line:no-string-literal
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     const response = await axios.get('/auth/validate');
-    if (response.status !== 200) {
+    if (response.status !== 204) {
       return false;
     }
     return true;
