@@ -2,9 +2,9 @@ import { storiesOf } from '@storybook/react';
 import React from 'react';
 import 'semantic-ui-css/semantic.min.css';
 
-import FilterForm from '../components/FilterForm';
+import FilterForm from '../components/form/FilterForm';
+import LoginForm from '../components/form/LoginForm';
 import ProfileForm from '../components/form/ProfileForm';
-import LoginForm from '../components/LoginForm';
 
 const stories = storiesOf('Forms', module);
 

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { hot } from 'react-hot-loader/root';
 import { HashRouter as Router, Route } from 'react-router-dom';
 import AnimatedSwitch from './components/Switch';
+import 'vis';
 
 import {
   Home,
@@ -22,6 +23,5 @@ class App extends Component {
     );
   }
 }
-
 
 export default hot(App);

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Container } from 'semantic-ui-react';
 
-import LoginForm from '../components/LoginForm';
+import LoginForm from '../components/form/LoginForm';
 
 const style = {
   height: '100%',

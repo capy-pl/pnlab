@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import LoginForm from '../components/LoginForm';
+import LoginForm from '../components/form/LoginForm';
 
 const outerStyle = {
   height: '100%',

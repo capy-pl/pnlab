@@ -10,8 +10,8 @@ const { Strategy, ExtractJwt } = passportJWT;
 
 export default new Strategy(
   {
-  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-  secretOrKey: SECRET_KEY,
+    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+    secretOrKey: SECRET_KEY,
   },
   (jwtPayload, cb) => {
     const { sub } = jwtPayload;

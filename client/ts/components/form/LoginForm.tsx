@@ -3,8 +3,8 @@ import React, { PureComponent } from 'react';
 import { Redirect } from 'react-router';
 import { Button, Form, Grid, Header, Message, Segment } from 'semantic-ui-react';
 
-import { Auth } from '../PnApp';
-import { updateCurrentUser } from '../PnApp/Helper';
+import { Auth } from '../../PnApp';
+import { updateCurrentUser } from '../../PnApp/Helper';
 
 interface LoginFormState {
   email: string;
@@ -13,6 +13,7 @@ interface LoginFormState {
   error: boolean;
   redirect: boolean;
 }
+
 class LoginForm extends PureComponent<{}, LoginFormState> {
   constructor(props) {
     super(props);
