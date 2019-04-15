@@ -40,7 +40,9 @@ export default class GraphView extends Component {
         nodes,
       }, {
         physics: {
-          stabilization: false,
+          stabilization: {
+            iterations: 400,
+          },
         },
       });
     }

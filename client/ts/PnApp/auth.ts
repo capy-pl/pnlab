@@ -25,10 +25,12 @@ export default class Auth {
     const token = localStorage.getItem('Token');
     // tslint:disable-next-line:no-string-literal
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    const response = await axios.get('/auth/validate');
-    if (response.status !== 204) {
+    try {
+      const response = await axios.get('/auth/validate');
+      return true;
+    } catch (err) {
+      console.log(err);
       return false;
     }
-    return true;
   }
 }
