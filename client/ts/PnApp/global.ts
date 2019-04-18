@@ -10,7 +10,7 @@ export interface Node {
   community: number;
   label: string;
   id: number;
-  group ?: number;
+  group?: number;
 }
 
 export interface Edge {

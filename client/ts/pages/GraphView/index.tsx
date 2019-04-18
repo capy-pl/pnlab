@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { DataSet, Network } from 'vis';
 
 import Global, { Edge, Node } from '../../PnApp/global';
+import { getRandomColor } from '../../PnApp/helper';
 
 const { data } = Global;
 
@@ -11,6 +12,7 @@ const style = {
 
 interface GraphNode extends Node {
   label: string;
+  group?: number;
 }
 
 interface GraphEdge extends Edge {
