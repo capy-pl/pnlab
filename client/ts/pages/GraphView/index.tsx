@@ -16,9 +16,13 @@ interface GraphNode extends Node {
 interface GraphEdge extends Edge {
 }
 
+for (const node of data.nodes) {
+  node.group = node.community;
+}
+
 export default class GraphView extends Component {
   public graphRef: React.RefObject<HTMLDivElement>;
-  public network: Network;
+  public network?: Network;
   constructor(props) {
     super(props);
     this.graphRef = React.createRef();
@@ -39,10 +43,17 @@ export default class GraphView extends Component {
         edges,
         nodes,
       }, {
+        edges: {
+          smooth: false,
+        },
+        nodes: {
+          shape: ' ellipse',
+        },
         physics: {
-          stabilization: {
-            iterations: 400,
+          barnesHut: {
+            springLength: 250,
           },
+          stabilization: false,
         },
       });
     }

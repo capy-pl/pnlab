@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import http from 'http';
-import open from 'open';
+import opn from 'opn';
 
 import app from './App';
 import dbConnect from './core/db';

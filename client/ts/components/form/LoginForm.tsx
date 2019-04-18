@@ -56,7 +56,7 @@ class LoginForm extends PureComponent<{}, LoginFormState> {
 
   public render() {
     if (this.state.redirect) {
-      return <Redirect to='/home' />;
+      return <Redirect to='/#/' />;
     } else {
       return (
         <Segment style={{ width: '35%' }} padded raised>
