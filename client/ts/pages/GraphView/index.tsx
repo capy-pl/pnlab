@@ -10,17 +10,6 @@ const style = {
   height: '800px',
 };
 
-interface GraphNode extends Node {
-  label: string;
-  group?: number;
-}
-
-interface GraphEdge extends Edge {
-}
-
-for (const node of data.nodes) {
-  node.group = node.community;
-}
 
 export default class GraphView extends Component {
   public graphRef: React.RefObject<HTMLDivElement>;
@@ -31,10 +20,11 @@ export default class GraphView extends Component {
   }
 
   public componentDidMount() {
-    const nodes = new DataSet<GraphNode>();
-    const edges = new DataSet<GraphEdge>();
+    const nodes = new DataSet<Node>();
+    const edges = new DataSet<Edge>();
     for (const node of data.nodes) {
       node.label = node.name;
+      node.group = node.community.toString();
       nodes.add(node);
     }
     for (const edge of data.edges) {
@@ -48,12 +38,27 @@ export default class GraphView extends Component {
         edges: {
           smooth: false,
         },
+        layout: {
+          improvedLayout: false,
+        },
         nodes: {
-          shape: ' ellipse',
+          scaling: {
+            customScalingFunction: (min?: number, max?: number, total?: number, value?: number): number => {
+              if (value) {
+                return value;
+              }
+              return 0.5;
+            },
+            label: {
+              enabled: true,
+            },
+            max: 70,
+          },
+          shape: 'ellipse',
         },
         physics: {
           barnesHut: {
-            springLength: 250,
+            springLength: 200,
           },
           stabilization: false,
         },
