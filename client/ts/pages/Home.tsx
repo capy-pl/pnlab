@@ -20,6 +20,7 @@ class Home extends Component<RouteComponentProps, HomeState> {
       loading: true,
     };
   }
+
   public async componentDidMount() {
     const isValid = await Auth.validate();
     if (isValid) {
@@ -42,6 +43,7 @@ class Home extends Component<RouteComponentProps, HomeState> {
         </div>
       );
     }
+
     return (
       <div>
         <Navbar />
