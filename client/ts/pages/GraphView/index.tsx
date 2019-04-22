@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
 import { DataSet, Network } from 'vis';
 
-import Global, { Edge, Node } from '../../PnApp/global';
-import { getRandomColor } from '../../PnApp/helper';
-
-const { data } = Global;
+import { Data, Edge, Node } from '../../PnApp/global';
 
 const style = {
   height: '800px',
 };
 
+interface GraphProps {
+  data: Data;
+}
 
-export default class GraphView extends Component {
+export default class GraphView extends Component<GraphProps, {}> {
   public graphRef: React.RefObject<HTMLDivElement>;
   public network?: Network;
   constructor(props) {
@@ -22,12 +22,12 @@ export default class GraphView extends Component {
   public componentDidMount() {
     const nodes = new DataSet<Node>();
     const edges = new DataSet<Edge>();
-    for (const node of data.nodes) {
+    for (const node of this.props.data.nodes) {
       node.label = node.name;
       node.group = node.community.toString();
       nodes.add(node);
     }
-    for (const edge of data.edges) {
+    for (const edge of this.props.data.edges) {
       edges.add(edge);
     }
     if (this.graphRef.current) {
@@ -39,7 +39,7 @@ export default class GraphView extends Component {
           smooth: false,
         },
         layout: {
-          improvedLayout: false,
+          improvedLayout: true,
         },
         nodes: {
           scaling: {
@@ -52,9 +52,10 @@ export default class GraphView extends Component {
             label: {
               enabled: true,
             },
-            max: 70,
+            max: 50,
+            min: 10,
           },
-          shape: 'ellipse',
+          shape: 'dot',
         },
         physics: {
           barnesHut: {

@@ -8,7 +8,6 @@ import { Auth } from '../PnApp';
 import { updateCurrentUser } from '../PnApp/Helper';
 
 import Setting from './Setting';
-import GraphView from './GraphView';
 
 interface HomeState {
   loading: boolean;
@@ -53,7 +52,6 @@ class Home extends Component<RouteComponentProps, HomeState> {
             atActive={{ opacity: 1 }}
           >
             <Route path='/settings' component={Setting} />
-            <Route path='/' component={GraphView} />
           </AnimatedSwitch>
         </Container>
       </div>

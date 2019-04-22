@@ -26,7 +26,7 @@ interface Data {
   edges: Edge[];
 }
 
-const data: Data = require('./default');
+export const data: Data = require('./default');
 
 const LocalVar: LocalVar  = {
   data,
