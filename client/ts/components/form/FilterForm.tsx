@@ -1,8 +1,9 @@
 import React from 'react';
+import '../../../scss/form.scss';
 
 const FilterForm = () => (
-  <div>
-    I am Form.
+  <div id='form'>
+    <input type='button' />
   </div>
 );
 
