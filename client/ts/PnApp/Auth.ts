@@ -1,5 +1,8 @@
 import axios from 'axios';
-import { LoginResponse } from '../../declarations/auth';
+
+interface LoginResponse {
+  token: string;
+}
 
 export default class Auth {
   public static async login(email: string, password: string): Promise<string> {

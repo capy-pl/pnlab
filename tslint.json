@@ -12,7 +12,8 @@
         "no-var-requires": false,   // Allow this because of dynamic requrie module.
         "jsx-boolean-value": false,
         "interface-name": [true, "never-prefix"],
-        "indent": [true, "spaces", 2]
+        "indent": [true, "spaces", 2],
+        "object-literal-sort-keys": false,
     },
     "rulesDirectory": []
 }
