@@ -64,5 +64,8 @@ typings/
 # python vn
 pyenv
 
+# python cache
+__pycache__
+
 # build file
 dist
