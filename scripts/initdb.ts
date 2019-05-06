@@ -21,7 +21,7 @@ dotenv.config();
     }
     const defaultOrg = new Organization({ name: 'nccu', dbName: 'nccu' });
     await defaultOrg.save();
-    const admin = new User({ email: 'admin@gmail.com', org: defaultOrg });
+    const admin = new User({ email: 'admin@gmail.com', name: 'admin', org: defaultOrg });
     await admin.setPassword('admin');
     await admin.save();
     console.log('Default user has been created.');

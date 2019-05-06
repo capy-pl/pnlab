@@ -11,6 +11,9 @@ const UserSchema = new Schema<UserSchema>({
     type: String,
     unique: true,
   },
+  name: {
+    type: String,
+  },
   org: {
     ref: 'Org',
     type: Schema.Types.ObjectId,

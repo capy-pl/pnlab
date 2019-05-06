@@ -69,3 +69,6 @@ __pycache__
 
 # build file
 dist
+
+# mac temp file
+.DS_Store
