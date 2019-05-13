@@ -20,6 +20,10 @@ export default class GraphView extends Component<GraphProps, {}> {
   }
 
   public componentDidMount() {
+    this.initializeGraph();
+  }
+
+  public initializeGraph(): void {
     const nodes = new DataSet<Node>();
     const edges = new DataSet<Edge>();
     for (const node of this.props.data.nodes) {
@@ -35,35 +39,36 @@ export default class GraphView extends Component<GraphProps, {}> {
         edges,
         nodes,
       }, {
-        edges: {
-          smooth: false,
-        },
-        layout: {
-          improvedLayout: true,
-        },
-        nodes: {
-          scaling: {
-            customScalingFunction: (min?: number, max?: number, total?: number, value?: number): number => {
-              if (value) {
-                return value;
-              }
-              return 0.5;
-            },
-            label: {
-              enabled: true,
-            },
-            max: 50,
-            min: 10,
+          edges: {
+            smooth: false,
           },
-          shape: 'dot',
-        },
-        physics: {
-          barnesHut: {
-            springLength: 200,
+          layout: {
+            improvedLayout: true,
           },
-          stabilization: false,
-        },
-      });
+          nodes: {
+            scaling: {
+              customScalingFunction: (min?: number, max?: number, total?: number, value?: number): number => {
+                if (value) {
+                  return value;
+                }
+                return 0.5;
+              },
+              label: {
+                enabled: true,
+              },
+              max: 50,
+              min: 10,
+            },
+            shape: 'dot',
+          },
+          physics: {
+            barnesHut: {
+              springLength: 200,
+              centralGravity: 0.1,
+            },
+            stabilization: false
+          },
+        });
     }
   }
 
