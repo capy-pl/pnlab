@@ -25,7 +25,7 @@ const schema = {
                 }
               }
             }
-          },
+        },
         itemColName: {
           type: 'string',
         },
@@ -67,10 +67,10 @@ const schema = {
     Report: {
       type: 'object',
       properties: {
-        startTime: {
+        created: {
           type: 'date',
         },
-        endTime: {
+        modified: {
           type: 'date',
         },
         conditions: {
@@ -80,10 +80,6 @@ const schema = {
             properties: {
               name: {
                 type: 'string',
-              },
-              type: {
-                type: 'string',
-                enum: ['string', 'number', 'date']
               },
               value: {
                 type: 'string',
@@ -120,7 +116,24 @@ const schema = {
         },
         edges: {
           type: 'object',
-          
+        },
+        filterGroups: {
+          type: 'array',
+          items: {
+            type: 'string'
+          }
+        },
+        filterItems: {
+          type: 'array',
+          items: {
+            type: 'string'
+          }
+        },
+        startTime: {
+          type: 'date'
+        },
+        endTime: {
+          type: 'date'
         }
       }
     },
