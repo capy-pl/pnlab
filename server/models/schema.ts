@@ -78,18 +78,50 @@ const schema = {
           items: {
             type: 'object',
             properties: {
-              label: {
+              name: {
                 type: 'string',
               },
+              type: {
+                type: 'string',
+                enum: ['string', 'number', 'date']
+              },
               value: {
-                type: 'array',
-                items: {
-                  type: 'string'
-                }
+                type: 'string',
               }
             }
           }
         },
+        status: {
+          type: 'string',
+          enum: ['pending', 'success', 'error']
+        },
+        errorMessage: {
+          type: 'string'
+        },
+        nodes: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              name: {
+                type: 'string'
+              },
+              community: {
+                type: 'number'
+              },
+              id: {
+                type: 'string',
+              },
+              degree: {
+                type: 'number',
+              }
+            }
+          }
+        },
+        edges: {
+          type: 'object',
+          
+        }
       }
     },
     User: {
