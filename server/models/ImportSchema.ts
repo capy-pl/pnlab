@@ -5,12 +5,12 @@ interface SchemaField {
   type: 'string' | 'int' | 'date' | 'float';
 }
 
-export interface ImportSchemaType {
-  amountColName: string;
-  transactionCustomFields: SchemaField[];
-  itemColName: string;
-  itemCustomFields: SchemaField[];
-  transactionColName: string;
+export interface ImportSchemaInterface {
+  amountName: string;
+  transactionFields: SchemaField[];
+  itemName: string;
+  itemFields: SchemaField[];
+  transactionName: string;
 }
 
 const FieldSchema = new Schema<SchemaField>({
@@ -21,12 +21,21 @@ const FieldSchema = new Schema<SchemaField>({
   },
 });
 
-const ImportSchemaSche = new Schema<ImportSchemaType>({
-  amountColName: FieldSchema,
-  transactionCustomFields: [FieldSchema],
-  itemColName: FieldSchema,
-  itemCustomFields: [FieldSchema],
-  transactionColName: FieldSchema,
+const ImportSchema = new Schema<ImportSchemaInterface>({
+  amountName: {
+    type: String,
+    required: true,
+  },
+  transactionFields: [FieldSchema],
+  itemName: {
+    type: String,
+    required: true,
+  },
+  itemFields: [FieldSchema],
+  transactionName: {
+    type: String,
+    required: true,
+  },
 });
 
-export default ImportSchemaSche;
+export default ImportSchema;

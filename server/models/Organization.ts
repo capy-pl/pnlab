@@ -1,9 +1,9 @@
 import mongoose, { Schema } from 'mongoose';
-import ImportSchema, { ImportSchemaType } from './ImportSchema';
+import ImportSchema, { ImportSchemaInterface } from './ImportSchema';
 
 interface OrgSchema {
   dbName: string;
-  importSchema: ImportSchemaType;
+  importSchema: ImportSchemaInterface;
   name: string;
 }
 

@@ -68,6 +68,7 @@ app.get('/', (req, res) => {
 // Register Router
 app.use('/auth', API.Auth);
 app.use('/user', API.User);
+app.use('/report', API.Report);
 
 app.use(errorHandler);
 

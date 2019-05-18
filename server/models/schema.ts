@@ -120,15 +120,61 @@ const schema = {
         },
         edges: {
           type: 'object',
-          
+          properties: {
+            from: {
+              type: 'number'
+            },
+            to: {
+              type: 'number'
+            },
+            weight: {
+              type: 'number'
+            }
+          }
+        },
+        communities: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              id: 'number',
+              utility: 'number'
+            }
+          }
+        }
+      }
+    },
+    StoredReport: {
+      type: 'object',
+      properties: {
+        report: {
+          type: 'Report'
+        },
+        name: {
+          type: 'string'
+        },
+        description: {
+          type: 'string'
         }
       }
     },
     User: {
-
+      type: 'object',
+      properties: {
+        email: {
+          type: 'string'
+        },
+        name: {
+          type: 'string'
+        },
+        org: {
+          type: 'Organization'
+        }
+      }
+    },
+    Item: {
     },
     Transactions: {
-
     }
   },
 };

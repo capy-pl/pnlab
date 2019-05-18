@@ -1,12 +1,12 @@
 import mongoose, { PassportLocalSchema, Schema  } from 'mongoose';
 import passportLocalMongoose from 'passport-local-mongoose';
 
-interface UserSchema {
+interface UserSchemaInterface {
   email: string;
   org: Schema.Types.ObjectId;
 }
 
-const UserSchema = new Schema<UserSchema>({
+const UserSchema = new Schema<UserSchemaInterface>({
   email: {
     type: String,
     unique: true,
