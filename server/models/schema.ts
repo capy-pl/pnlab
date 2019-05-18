@@ -8,10 +8,10 @@ const schema = {
         to provide filter options.`,
       type: 'object',
       properties: {
-        amountColName: {
+        amountName: {
           type: 'string',
         },
-        transactionCustomFields: {
+        transactionFields: {
             type: 'array',
             items: {
               type: 'object',
@@ -25,11 +25,11 @@ const schema = {
                 }
               }
             }
-          },
-        itemColName: {
+        },
+        itemName: {
           type: 'string',
         },
-        itemCustomFields: {
+        itemFields: {
           type: 'array',
           items: {
             type: 'object',
@@ -44,7 +44,7 @@ const schema = {
             }
           }
         },
-        transactionColName: {
+        transactionName: {
           type: 'string',
         },
       }
@@ -67,10 +67,10 @@ const schema = {
     Report: {
       type: 'object',
       properties: {
-        startTime: {
+        created: {
           type: 'date',
         },
-        endTime: {
+        modified: {
           type: 'date',
         },
         conditions: {
@@ -80,10 +80,6 @@ const schema = {
             properties: {
               name: {
                 type: 'string',
-              },
-              type: {
-                type: 'string',
-                enum: ['string', 'number', 'date']
               },
               value: {
                 type: 'string',
@@ -141,6 +137,24 @@ const schema = {
               utility: 'number'
             }
           }
+        },
+        filterGroups: {
+          type: 'array',
+          items: {
+            type: 'string'
+          }
+        },
+        filterItems: {
+          type: 'array',
+          items: {
+            type: 'string'
+          }
+        },
+        startTime: {
+          type: 'date'
+        },
+        endTime: {
+          type: 'date'
         }
       }
     },
@@ -155,7 +169,7 @@ const schema = {
         },
         description: {
           type: 'string'
-        }
+        },
       }
     },
     User: {
@@ -171,6 +185,9 @@ const schema = {
           type: 'Organization'
         }
       }
+    },
+    ItemGroup: {
+
     },
     Item: {
     },

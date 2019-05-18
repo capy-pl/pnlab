@@ -1,19 +1,19 @@
 import mongoose, { Schema } from 'mongoose';
 
-interface SchemaField {
+interface FieldSchemaInterface {
   name: string;
   type: 'string' | 'int' | 'date' | 'float';
 }
 
 export interface ImportSchemaInterface {
   amountName: string;
-  transactionFields: SchemaField[];
+  transactionFields: FieldSchemaInterface[];
   itemName: string;
-  itemFields: SchemaField[];
+  itemFields: FieldSchemaInterface[];
   transactionName: string;
 }
 
-const FieldSchema = new Schema<SchemaField>({
+const FieldSchema = new Schema<FieldSchemaInterface>({
   name: String,
   type: {
     enum: ['string', 'date', 'int', 'float'],

@@ -22,6 +22,7 @@ dotenv.config();
     } catch (err) {
       console.log('No default users collection, continue.');
     }
+
     const defaultSchema = {
       transactionFields: [{
         name: '餐別帶',
@@ -40,6 +41,7 @@ dotenv.config();
       itemName: '單品名稱',
       transactionName: '交易id'
     };
+
     const defaultOrg = new Organization({
       name: 'nccu',
       dbName: 'nccu',
