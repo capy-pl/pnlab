@@ -3,11 +3,11 @@ import { Route, RouteComponentProps, withRouter } from 'react-router-dom';
 import { AnimatedSwitch } from 'react-router-transition';
 import { Container, Dimmer, Loader } from 'semantic-ui-react';
 
-import Navbar from '../components/menu/Navbar';
-import { Auth } from '../PnApp';
-import { updateCurrentUser } from '../PnApp/Helper';
+import Navbar from '../../components/menu/Navbar';
+import { Auth } from '../../PnApp';
+import { updateCurrentUser } from '../../PnApp/Helper';
 
-import Setting from './Setting';
+import Setting from '../Setting';
 
 interface HomeState {
   loading: boolean;
@@ -48,11 +48,11 @@ class Home extends Component<RouteComponentProps, HomeState> {
       <div>
         <Navbar />
         <Container>
-          <AnimatedSwitch
-            atEnter={{ opacity: 0 }}
-            atLeave={{ opacity: 0 }}
-            atActive={{ opacity: 1 }}
-          >
+            <AnimatedSwitch
+              atEnter={{ opacity: 0 }}
+              atLeave={{ opacity: 0 }}
+              atActive={{ opacity: 1 }}
+            >
             <Route path='/settings' component={Setting} />
           </AnimatedSwitch>
         </Container>

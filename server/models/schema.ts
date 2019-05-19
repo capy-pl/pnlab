@@ -81,9 +81,12 @@ const schema = {
               name: {
                 type: 'string',
               },
-              value: {
-                type: 'string',
-              }
+              values: {
+                type: 'array',
+                items: {
+                  type: 'string'
+                }
+              },
             }
           }
         },
@@ -187,7 +190,6 @@ const schema = {
       }
     },
     ItemGroup: {
-
     },
     Item: {
     },
