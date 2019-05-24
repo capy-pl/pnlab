@@ -14,7 +14,7 @@ interface GraphProps {
 export default class GraphView extends Component<GraphProps, {}> {
   public graphRef: React.RefObject<HTMLDivElement>;
   public network?: Network;
-  constructor(props) {
+  constructor(props: GraphProps) {
     super(props);
     this.graphRef = React.createRef();
   }
@@ -31,9 +31,11 @@ export default class GraphView extends Component<GraphProps, {}> {
       node.group = node.community.toString();
       nodes.add(node);
     }
+
     for (const edge of this.props.data.edges) {
       edges.add(edge);
     }
+
     if (this.graphRef.current) {
       this.network = new Network(this.graphRef.current, {
         edges,

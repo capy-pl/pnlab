@@ -1,9 +1,10 @@
 import mongoose, { PassportLocalSchema, Schema  } from 'mongoose';
 import passportLocalMongoose from 'passport-local-mongoose';
+import { OrgSchema } from './Organization';
 
-interface UserSchemaInterface {
+export interface UserSchemaInterface {
   email: string;
-  org: Schema.Types.ObjectId;
+  org: OrgSchema;
 }
 
 const UserSchema = new Schema<UserSchemaInterface>({

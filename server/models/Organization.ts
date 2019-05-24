@@ -1,7 +1,7 @@
 import mongoose, { Schema } from 'mongoose';
 import ImportSchema, { ImportSchemaInterface } from './ImportSchema';
 
-interface OrgSchema {
+export interface OrgSchema {
   dbName: string;
   importSchema: ImportSchemaInterface;
   name: string;

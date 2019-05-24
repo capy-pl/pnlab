@@ -1,8 +1,9 @@
 import mongoose, { Schema } from 'mongoose';
 
-interface FieldSchemaInterface {
+export interface FieldSchemaInterface {
   name: string;
   type: 'string' | 'int' | 'date' | 'float';
+  values?: string[];
 }
 
 export interface ImportSchemaInterface {
@@ -19,6 +20,9 @@ const FieldSchema = new Schema<FieldSchemaInterface>({
     enum: ['string', 'date', 'int', 'float'],
     type: String,
   },
+  values: {
+    type: [String]
+  }
 });
 
 const ImportSchema = new Schema<ImportSchemaInterface>({

@@ -4,7 +4,9 @@ import {
   Organization,
   User
 } from '../server/models';
-
+import {
+  ImportSchemaInterface
+} from '../server/models/ImportSchema';
 dotenv.config();
 
 (async () => {
@@ -23,7 +25,7 @@ dotenv.config();
       console.log('No default users collection, continue.');
     }
 
-    const defaultSchema = {
+    const defaultSchema: ImportSchemaInterface = {
       transactionFields: [{
         name: '餐別帶',
         type: 'string'
@@ -39,15 +41,27 @@ dotenv.config();
       }],
       amountName: '交易金額',
       itemName: '單品名稱',
-      transactionName: '交易id'
+      transactionName: '交易id',
+      itemFields: []
     };
+
+    for (const field of defaultSchema.transactionFields) {
+      if (field.type === 'string') {
+        const values = await connection.db.collection('transactions')
+          .distinct(field.name, {});
+        field.values = values;
+      }
+    }
 
     const defaultOrg = new Organization({
       name: 'nccu',
       dbName: 'nccu',
       importSchema: defaultSchema,
     });
+
     await defaultOrg.save();
+
+    
     const admin = new User({
       email: 'admin@gmail.com',
       name: 'admin',
