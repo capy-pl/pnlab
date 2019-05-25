@@ -8,7 +8,7 @@ interface SearchItemQuery {
   query: string;
 }
 
-export interface SearchItemResponse {
+export interface SearchItemResponseBody {
   items: string[];
 }
 
@@ -43,7 +43,7 @@ export async function SearchItem(req: e.Request, res: e.Response, next: e.NextFu
   }
 }
 
-export interface GetConditionsResponse {
+export interface GetConditionsResponseBody {
   conditions: FieldSchemaInterface[];
 }
 

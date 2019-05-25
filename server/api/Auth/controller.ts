@@ -8,7 +8,7 @@ const { SECRET_KEY } = process.env;
 
 import User from '../../models/User';
 
-interface SignUpBody {
+interface SignUpRequestBody {
   email: string;
   password: string;
 }
@@ -26,7 +26,7 @@ interface SignUpBody {
  * @response 201 Created.
  */
 export async function SignUp(req: e.Request, res: e.Response, next: e.NextFunction): Promise<void | e.Response> {
-  const { email, password } = req.body as SignUpBody;
+  const { email, password } = req.body as SignUpRequestBody;
   if (!(email && password)) {
     res.status(422).send({ message: 'Lack of email or password.' });
   } else {
@@ -43,7 +43,7 @@ export async function SignUp(req: e.Request, res: e.Response, next: e.NextFuncti
   }
 }
 
-interface LogInBody {
+interface LogInRequestBody {
   email: string;
   password: string;
 }
@@ -58,7 +58,7 @@ interface LogInBody {
  * @apiParam password {String} User's password.
  */
 export async function LogIn(req: e.Request, res: e.Response, next: e.NextFunction): Promise<void> {
-  const { email, password } = req.body as LogInBody;
+  const { email, password } = req.body as LogInRequestBody;
   if (!(email && password)) {
     res.status(422).json({ message: 'email or password not provided.' });
   } else {

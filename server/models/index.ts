@@ -2,12 +2,14 @@ import ImportSchema from './ImportSchema';
 import Organization from './Organization';
 import Report from './Report';
 import User from './User';
+import ItemGroup from './ItemGroup';
 
 export {
   ImportSchema,
   Organization,
   Report,
   User,
+  ItemGroup,
 };
 
 export default {
@@ -15,4 +17,5 @@ export default {
   Organization,
   Report,
   User,
+  ItemGroup,
 };
