@@ -18,6 +18,7 @@ dotenv.config();
     } catch (err) {
       console.log('No default users collection, continue.');
     }
+
     // drop organization
     try {
       await connection.dropCollection('orgs');
@@ -60,7 +61,6 @@ dotenv.config();
     });
 
     await defaultOrg.save();
-
     
     const admin = new User({
       email: 'admin@gmail.com',

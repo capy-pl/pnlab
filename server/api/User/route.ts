@@ -9,11 +9,13 @@ import {
 
 const router = Router();
 
-router.route('/info')
+router
+  .route('/info')
   .all(loginRequired)
   .get(Info);
 
-router.route('/group')
+router
+  .route('/group')
   .all(loginRequired)
   .get(GetGroups)
   .post(AddGroups);
