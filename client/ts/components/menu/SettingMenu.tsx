@@ -38,6 +38,12 @@ export default class SettingMenu extends PureComponent<{}, SettingMenuState> {
           active={this.state.activeItem === 'Import Format'}
           onClick={this.onClick}
         />
+        <Menu.Item
+          name='Manage Group'
+          href='/#/settings'
+            active={this.state.activeItem === 'Manage Group'}
+          onClick={this.onClick}
+        />
       </Menu>
       );
     }

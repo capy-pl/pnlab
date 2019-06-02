@@ -14,32 +14,94 @@ interface Edge {
 }
 
 interface Condition {
-  name: string;
-  value: string;
+  name: string | 'filterGroups' | 'filterItems';
+  value: string[];
 }
 
-interface ReportSchemaType {
+export interface ReportInterface {
   created: Date;
   conditions: Condition[];
   modified: Date;
-  status: 'string';
-  errorMessage: 'string';
+  status: 'error' | 'pending' | 'success';
+  errorMessage: string;
   nodes: Node[];
   edges: Edge[];
-  filterGroups: string[];
-  filterItems: string[];
   startTime: Date;
   endTime: Date;
 }
 
-const ConditionSchema = new Schema({
+const ConditionSchema = new Schema<Condition>({
+  name: {
+    type: String,
+    required: true,
+  },
+  value: {
+    type: [String],
+    required: true
+  }
 });
 
-const ReportSchema = new Schema<ReportSchemaType>({
-  communities: [],
-  conditions: ConditionSchema,
-  edges: [],
-  nodes: [],
+const NodeSchema = new Schema<Node>({
+  name: {
+    type: String,
+    required: true
+  },
+  community: {
+    type: Number,
+    required: true
+  },
+  id: {
+    type: Number,
+    required: true
+  },
+  degree: {
+    type: Number,
+    required: true
+  }
+});
+
+const EdgeSchema = new Schema<Edge>({
+  from: {
+    type: Number,
+    required: true
+  },
+  to: {
+    type: Number,
+    required: true
+  },
+  weight: {
+    type: Number,
+    required: true
+  }
+});
+
+const ReportSchema = new Schema<ReportInterface>({
+  // communities: [],
+  conditions: [ConditionSchema],
+  edges: [NodeSchema],
+  nodes: [EdgeSchema],
+  status: {
+    type: String,
+    enum: ['error', 'pending', 'success'],
+    required: true
+  },
+  created: {
+    type: Date,
+    required: true
+  },
+  modified: {
+    type: Date,
+    required: true
+  },
+  errorMessage: String,
+  startTime: {
+    type: Date,
+    required: true
+  },
+  endTime: {
+    type: Date,
+    required: true
+  }
 });
 
 const Report = mongoose.model('report', ReportSchema);
