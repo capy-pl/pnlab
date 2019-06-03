@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { loginRequired } from '../../auth';
+import { loginRequired } from '../../core/auth';
 import {
   Info,
   GetGroups,

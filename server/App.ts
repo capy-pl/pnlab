@@ -70,6 +70,14 @@ app.use('/auth', API.Auth);
 app.use('/user', API.User);
 app.use('/report', API.Report);
 
-app.use(errorHandler);
+app.use(function(
+  err: Error,
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) {
+    console.error(err.stack);
+    res.status(500);
+  });
 
 export default app;
