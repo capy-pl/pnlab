@@ -5,9 +5,6 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import nunjucks from 'nunjucks';
 
-// relative import
-import errorHandler from './controllers/error';
-
 // import routes
 import API from './api';
 
