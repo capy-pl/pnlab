@@ -75,3 +75,6 @@ dist
 
 # test file
 *.csv
+
+# python virtualenv files
+env
