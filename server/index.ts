@@ -3,11 +3,13 @@ import http from 'http';
 
 import app from './App';
 import dbConnect from './core/db';
+import { startPythonWorker } from './core/process';
 
 // Inject environment variable from .env
 dotenv.config();
 
 const server = http.createServer(app);
+const pyConsumers = startPythonWorker();
 
 server.listen(process.env.PORT, async () => {
   await dbConnect();
@@ -17,3 +19,7 @@ server.listen(process.env.PORT, async () => {
 server.on('error', (err) => {
   console.error(err);
 });
+
+server.on('close', () => {
+  pyConsumers.kill();
+})
