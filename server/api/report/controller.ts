@@ -3,6 +3,9 @@ import e from 'express';
 import { connection } from 'mongoose';
 import { UserSchemaInterface } from '../../models/User';
 import { FieldSchemaInterface } from '../../models/ImportSchema';
+import {
+  Report
+} from '../../models';
 
 interface SearchItemQuery {
   query: string;
@@ -55,10 +58,51 @@ export interface GetConditionsResponseBody {
  * @apiGroup Report
  */
 export async function GetConditions(req: e.Request, res: e.Response, next: e.NextFunction): Promise<void> {
+  try {
+    const { user } = req;
+    const { org } = user as UserSchemaInterface;
+    const { transactionFields } = org.importSchema;
+    res.send({
+      conditions: transactionFields
+    });
+  } catch(err) {
+    console.error(err);
+    res.status(500).end();
+  }
+}
+
+export interface AddReportRequestBody {
+  conditions: FieldSchemaInterface[];
+}
+
+export async function AddReport(req: e.Request, res: e.Response, next: e.NextFunction): Promise<void> {
   const { user } = req;
   const { org } = user as UserSchemaInterface;
-  const { transactionFields } = org.importSchema;
-  res.send({
-    conditions: transactionFields
-  });
+  try {
+    const { conditions } = req.body as AddReportRequestBody;
+    const mapping: { [key: string] : FieldSchemaInterface  }= {};
+    const report = new Report({
+      conditions: [],
+      created: new Date(),
+      modified: new Date(),
+      status: 'pending'
+    });
+
+    for (const field of org.importSchema.transactionFields) {
+      mapping[field.name] = field;
+    }
+
+    for (const condition of conditions) {
+      if (condition.name in mapping) {
+        if (condition.type == mapping[condition.name].type) {
+          report.conditions.push(condition);
+        }
+      }
+    }
+    await report.save();
+    res.status(201).send({ id: report.id });
+  } catch(err) {
+    console.error(err);
+    res.status(400).send({ message: err.message });
+  }
 }

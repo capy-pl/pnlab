@@ -1,4 +1,5 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { Schema, Document } from 'mongoose';
+import { FieldSchemaInterface } from './ImportSchema';
 
 interface Node {
   name: string;
@@ -13,12 +14,11 @@ interface Edge {
   weight: number;
 }
 
-interface Condition {
+interface Condition extends FieldSchemaInterface{
   name: string | 'filterGroups' | 'filterItems';
-  value: string[];
 }
 
-export interface ReportInterface {
+export interface ReportInterface extends Document {
   created: Date;
   conditions: Condition[];
   modified: Date;
@@ -35,7 +35,11 @@ const ConditionSchema = new Schema<Condition>({
     type: String,
     required: true,
   },
-  value: {
+  type: {
+    type: String,
+    required: true
+  },
+  values: {
     type: [String],
     required: true
   }
@@ -96,14 +100,14 @@ const ReportSchema = new Schema<ReportInterface>({
   errorMessage: String,
   startTime: {
     type: Date,
-    required: true
+    // required: true
   },
   endTime: {
     type: Date,
-    required: true
+    // required: true
   }
 });
 
-const Report = mongoose.model('report', ReportSchema);
+const Report = mongoose.model<ReportInterface>('report', ReportSchema);
 
 export default Report;

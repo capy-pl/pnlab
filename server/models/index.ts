@@ -3,6 +3,7 @@ import Organization from './Organization';
 import Report from './Report';
 import User from './User';
 import ItemGroup from './ItemGroup';
+import Transactinos from './Transactions';
 
 export {
   ImportSchema,
@@ -10,6 +11,7 @@ export {
   Report,
   User,
   ItemGroup,
+  Transactinos,
 };
 
 export default {

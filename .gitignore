@@ -63,6 +63,7 @@ typings/
 
 # python vn
 pyenv
+env
 
 # python cache
 __pycache__
@@ -75,6 +76,3 @@ dist
 
 # test file
 *.csv
-
-# python virtualenv files
-env

@@ -3,7 +3,7 @@ import mongoose, { Schema } from 'mongoose';
 export interface FieldSchemaInterface {
   name: string;
   type: 'string' | 'int' | 'date' | 'float';
-  values?: string[];
+  values: string[] | Date[];
 }
 
 export interface ImportSchemaInterface {
