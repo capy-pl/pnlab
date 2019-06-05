@@ -74,3 +74,5 @@ dist
 # mac temp file
 .DS_Store
 
+# test file
+*.csv

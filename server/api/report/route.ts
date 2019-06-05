@@ -4,7 +4,8 @@ import { loginRequired } from '../../core/auth';
 import {
   SearchItem,
   GetConditions,
-  AddReport
+  AddReport,
+  GetReport
 } from './controller';
 
 const router = Router();
@@ -16,5 +17,10 @@ router
   .route('/')
   .all(loginRequired)
   .post(AddReport);
+
+router
+  .route('/:id')
+  .all(loginRequired)
+  .get(GetReport)
 
 export default router;

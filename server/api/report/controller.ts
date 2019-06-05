@@ -1,4 +1,3 @@
-
 import e from 'express';
 import { connection } from 'mongoose';
 import { UserSchemaInterface } from '../../models/User';
@@ -6,6 +5,7 @@ import { FieldSchemaInterface } from '../../models/ImportSchema';
 import {
   Report
 } from '../../models';
+import { getChannel } from '../../core/mq';
 
 interface SearchItemQuery {
   query: string;
@@ -101,8 +101,23 @@ export async function AddReport(req: e.Request, res: e.Response, next: e.NextFun
     }
     await report.save();
     res.status(201).send({ id: report.id });
+    const channel = getChannel();
+    channel.sendToQueue('pn', Buffer.from(report.id));
   } catch(err) {
     console.error(err);
     res.status(400).send({ message: err.message });
+  }
+}
+
+export async function GetReport(req: e.Request, res: e.Response, next: e.NextFunction): Promise<void> {
+  const id = req.params.id as string;
+  try {
+    const report = await Report.findOne({ _id: id }).exec();
+    if (!report) {
+      throw Error('Not found');
+    }
+    res.json(report);
+  } catch(err) {
+    res.status(404).send({ message: err.message }); 
   }
 }
