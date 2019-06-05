@@ -1,5 +1,9 @@
 {
+<<<<<<< Updated upstream
     "python.pythonPath": "C:\\Users\\PHIL\\AppData\\Local\\Programs\\Python\\Python37\\python.exe",
+=======
+    "python.pythonPath": "env\\Scripts\\python.exe",
+>>>>>>> Stashed changes
     "[javascript]": {
         "editor.tabSize": 2
     },
