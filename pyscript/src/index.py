@@ -26,7 +26,7 @@ def network_analysis(report_id):
             'nodes': data['nodes'],
             'edges': data['edges'],
             'status': 'success',
-            'modified': datetime.now(),
+            'modified': datetime.utcnow(),
             'errMessage': '',
         }
         db['reports'].update_one({ '_id': ObjectId(report_id)}, {
@@ -38,7 +38,7 @@ def network_analysis(report_id):
         error_update = {
             'status': 'error',
             'errMessage': traceback.format_exc(),
-            'modified': datetime.now()
+            'modified': datetime.utcnow()
         }
         db['reports'].update_one({
             '_id': ObjectId(report_id)
