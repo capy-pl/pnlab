@@ -1,8 +1,10 @@
 import json
 import igraph
 from itertools import filterfalse, combinations
-
 import json
+
+from .error import ZeroNodeError
+
 class ProductNerwork:
     def __init__(self, graph):
         self.graph = graph
@@ -32,7 +34,7 @@ class ProductNerwork:
                 items.append({ 'name': self.graph.vs[index]['name'], 'betweeness': value })
         items.sort(key=lambda x: x['betweeness'], reverse=True)
         return items
-    
+
     def normalizer(self, max_degree):
         max_value = max_degree
         min_value = 1
@@ -93,6 +95,8 @@ class NetworkConverter:
             for item in items:
                 if item not in nodes:
                     nodes.add(item)
+        if len(nodes) <= 0:
+            raise ZeroNodeError('The resulted graph does not contain any node. Consider lower the support.')
         return self.to_graph(nodes, result)
     
     def find_edges_in_list(self, itemsets):
