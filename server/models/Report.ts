@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Document, Schema } from 'mongoose';
 import { FieldSchemaInterface } from './ImportSchema';
 
 interface Node {
@@ -14,7 +14,7 @@ interface Edge {
   weight: number;
 }
 
-export interface Condition extends FieldSchemaInterface{
+export interface Condition extends FieldSchemaInterface {
   name: string | 'filterGroups' | 'filterItems';
 }
 
@@ -37,46 +37,46 @@ const ConditionSchema = new Schema<Condition>({
   },
   type: {
     type: String,
-    required: true
+    required: true,
   },
   values: {
     type: [String],
-    required: true
-  }
+    required: true,
+  },
 });
 
 const NodeSchema = new Schema<Node>({
   name: {
     type: String,
-    required: true
+    required: true,
   },
   community: {
     type: Number,
-    required: true
+    required: true,
   },
   id: {
     type: Number,
-    required: true
+    required: true,
   },
   degree: {
     type: Number,
-    required: true
-  }
+    required: true,
+  },
 });
 
 const EdgeSchema = new Schema<Edge>({
   from: {
     type: Number,
-    required: true
+    required: true,
   },
   to: {
     type: Number,
-    required: true
+    required: true,
   },
   weight: {
     type: Number,
-    required: true
-  }
+    required: true,
+  },
 });
 
 const ReportSchema = new Schema<ReportInterface>({
@@ -87,15 +87,15 @@ const ReportSchema = new Schema<ReportInterface>({
   status: {
     type: String,
     enum: ['error', 'pending', 'success'],
-    required: true
+    required: true,
   },
   created: {
     type: Date,
-    required: true
+    required: true,
   },
   modified: {
     type: Date,
-    required: true
+    required: true,
   },
   errorMessage: String,
   startTime: {
@@ -105,7 +105,7 @@ const ReportSchema = new Schema<ReportInterface>({
   endTime: {
     type: Date,
     // required: true
-  }
+  },
 });
 
 const Report = mongoose.model<ReportInterface>('report', ReportSchema);

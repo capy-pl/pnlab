@@ -16,7 +16,7 @@ export default class Auth {
 
   public static logout(): void {
     localStorage.removeItem('Token');
-    delete axios.defaults.headers.common['Authorization'];
+    delete axios.defaults.headers.common.Authorization;
   }
 
   public static async validate(): Promise<boolean> {
@@ -25,7 +25,7 @@ export default class Auth {
       return false;
     }
     const token = localStorage.getItem('Token');
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    axios.defaults.headers.common.Authorization = `Bearer ${token}`;
     try {
       await axios.get('/auth/validate');
       return true;

@@ -2,9 +2,9 @@ import { Router } from 'express';
 
 import { loginRequired } from '../../core/auth';
 import {
-  Info,
+  AddGroups,
   GetGroups,
-  AddGroups
+  Info,
 } from './controller';
 
 const router = Router();

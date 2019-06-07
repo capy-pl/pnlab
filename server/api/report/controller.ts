@@ -1,14 +1,14 @@
 import e from 'express';
 import { connection } from 'mongoose';
-import { UserSchemaInterface } from '../../models/User';
-import { FieldSchemaInterface } from '../../models/ImportSchema';
+import { getChannel } from '../../core/mq';
 import {
   Report,
 } from '../../models';
+import { FieldSchemaInterface } from '../../models/ImportSchema';
 import {
-  Condition, ReportInterface
+  Condition, ReportInterface,
 } from '../../models/Report';
-import { getChannel } from '../../core/mq';
+import { UserSchemaInterface } from '../../models/User';
 
 interface SearchItemQuery {
   query: string;
@@ -22,7 +22,7 @@ export interface SearchItemResponseBody {
  * Search item by name.
  * @api /report/searchItem
  * @method GET
- * @query items {string} 
+ * @query items {string}
  * @apiName SearchItem
  * @apiGroup Report
  */
@@ -31,19 +31,19 @@ export async function SearchItem(req: e.Request, res: e.Response, next: e.NextFu
   try {
     const items = await connection.db.collection('items')
     .find({
-      '單品名稱':
-      { '$regex': query }
+      單品名稱:
+      { $regex: query },
     })
     .project({
-      '_id': 0,
-      '單品名稱': 1
+      _id: 0,
+      單品名稱: 1,
     })
     .limit(10)
     .toArray();
     res.send({
-      items: items.map(item => item['單品名稱'])
+      items: items.map((item) => item.單品名稱),
     });
-  } catch(err) {
+  } catch (err) {
     res.status(400);
     console.error(err);
   }
@@ -66,9 +66,9 @@ export async function GetConditions(req: e.Request, res: e.Response, next: e.Nex
     const { org } = user as UserSchemaInterface;
     const { transactionFields } = org.importSchema;
     res.send({
-      conditions: transactionFields
+      conditions: transactionFields,
     });
-  } catch(err) {
+  } catch (err) {
     console.error(err);
     res.status(500).end();
   }
@@ -83,12 +83,12 @@ export async function AddReport(req: e.Request, res: e.Response, next: e.NextFun
   const { org } = user as UserSchemaInterface;
   try {
     const { conditions } = req.body as AddReportRequestBody;
-    const mapping: { [key: string] : FieldSchemaInterface  }= {};
+    const mapping: { [key: string]: FieldSchemaInterface  } = {};
     const report = new Report({
       conditions: [],
       created: new Date(),
       modified: new Date(),
-      status: 'pending'
+      status: 'pending',
     });
 
     for (const field of org.importSchema.transactionFields) {
@@ -97,7 +97,7 @@ export async function AddReport(req: e.Request, res: e.Response, next: e.NextFun
 
     for (const condition of conditions) {
       if (condition.name in mapping) {
-        if (condition.type == mapping[condition.name].type) {
+        if (condition.type === mapping[condition.name].type) {
           report.conditions.push(condition);
         }
       }
@@ -106,11 +106,12 @@ export async function AddReport(req: e.Request, res: e.Response, next: e.NextFun
     res.status(201).send({ id: report.id });
     const channel = getChannel();
     channel.sendToQueue('pn', Buffer.from(report.id));
-  } catch(err) {
+  } catch (err) {
     console.error(err);
     res.status(400).send({ message: err.message });
   }
 }
+// tslint:disable-next-line: no-empty-interface
 export interface GetReportResponseBody extends ReportInterface {
 }
 
@@ -122,8 +123,8 @@ export async function GetReport(req: e.Request, res: e.Response, next: e.NextFun
       throw Error('Not found');
     }
     res.json(report);
-  } catch(err) {
-    res.status(404).send({ message: err.message }); 
+  } catch (err) {
+    res.status(404).send({ message: err.message });
   }
 }
 
@@ -151,7 +152,7 @@ export async function GetReports(req: e.Request, res: e.Response, next: e.NextFu
     errMessage: 1,
     created: 1,
     modified: 1,
-  }
+  };
   try {
     let reports: ProjectedReport[];
     if (limit) {
@@ -160,7 +161,7 @@ export async function GetReports(req: e.Request, res: e.Response, next: e.NextFu
       reports = await Report.find({}, projection);
     }
     res.send({ reports });
-  } catch(err) {
+  } catch (err) {
     res.status(500).end();
   }
 }

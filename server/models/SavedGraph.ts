@@ -4,7 +4,7 @@ interface SavedGraphInterface {
   title: string;
   description: string;
   report: ReportInterface;
-};
+}
 
 const SavedGraphSchema = new Schema<SavedGraphInterface>({
   title: String,
@@ -12,8 +12,8 @@ const SavedGraphSchema = new Schema<SavedGraphInterface>({
   report: {
     type: Schema.Types.ObjectId,
     required: true,
-    ref: 'report'
-  }
+    ref: 'report',
+  },
 });
 
 const SavedGraph = mongoose.model('savedgraph', SavedGraphSchema);

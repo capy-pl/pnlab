@@ -21,8 +21,8 @@ const FieldSchema = new Schema<FieldSchemaInterface>({
     type: String,
   },
   values: {
-    type: [String]
-  }
+    type: [String],
+  },
 });
 
 const ImportSchema = new Schema<ImportSchemaInterface>({

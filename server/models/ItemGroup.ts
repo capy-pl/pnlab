@@ -9,22 +9,22 @@ export interface ItemGroupInterface {
 
 const ItemGroupSchema = new Schema<ItemGroupInterface>({
   items: {
-    type: [String]
+    type: [String],
   },
   name: {
     type: String,
     required: true,
     unique: true,
-    index: true
+    index: true,
   },
   startTime: {
     type: Date,
-    required: true
+    required: true,
   },
   endTime: {
     type: Date,
-    required: true
-  }
+    required: true,
+  },
 });
 
 const ItemGroup =  mongoose.model('group', ItemGroupSchema);

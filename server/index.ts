@@ -3,8 +3,8 @@ import http from 'http';
 
 import app from './App';
 import dbConnect from './core/db';
-import { startPythonWorker } from './core/process';
 import { amqpConnect } from './core/mq';
+import { startPythonWorker } from './core/process';
 
 // Inject environment variable from .env
 dotenv.config();
@@ -24,4 +24,4 @@ server.on('error', (err) => {
 
 server.on('close', () => {
   pyConsumers.kill();
-})
+});

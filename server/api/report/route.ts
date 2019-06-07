@@ -2,11 +2,11 @@ import { Router } from 'express';
 import { loginRequired } from '../../core/auth';
 
 import {
-  SearchItem,
-  GetConditions,
   AddReport,
+  GetConditions,
   GetReport,
-  GetReports
+  GetReports,
+  SearchItem,
 } from './controller';
 
 const router = Router();
@@ -23,6 +23,6 @@ router
 router
   .route('/:id')
   .all(loginRequired)
-  .get(GetReport)
+  .get(GetReport);
 
 export default router;
