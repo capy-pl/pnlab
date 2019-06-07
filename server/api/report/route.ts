@@ -5,7 +5,8 @@ import {
   SearchItem,
   GetConditions,
   AddReport,
-  GetReport
+  GetReport,
+  GetReports
 } from './controller';
 
 const router = Router();
@@ -16,7 +17,8 @@ router.get('/conditions', loginRequired, GetConditions);
 router
   .route('/')
   .all(loginRequired)
-  .post(AddReport);
+  .post(AddReport)
+  .get(GetReports);
 
 router
   .route('/:id')

@@ -14,7 +14,7 @@ interface Edge {
   weight: number;
 }
 
-interface Condition extends FieldSchemaInterface{
+export interface Condition extends FieldSchemaInterface{
   name: string | 'filterGroups' | 'filterItems';
 }
 

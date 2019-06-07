@@ -1,8 +1,10 @@
 import axios from 'axios';
-
-interface GetConditionResponse {
-  conditions: Condition[];
-}
+import {
+  AddReportRequestBody,
+  GetConditionsResponseBody,
+  GetReportResponseBody,
+  GetReportsResponseBody,
+} from '../../../../server/api/report/controller';
 
 export interface Condition {
   name: string;
@@ -11,8 +13,19 @@ export interface Condition {
 }
 
 export default class Report {
-  public static async getConditions(): Promise<GetConditionResponse> {
-    const conditions = await axios.get<GetConditionResponse>('/report/conditions');
+  public static async getConditions(): Promise<GetConditionsResponseBody> {
+    const conditions = await axios.get<GetConditionsResponseBody>('/report/conditions');
     return conditions.data;
-  } 
+  }
+
+  public static async get(id: string): Promise<GetReportResponseBody> {
+    const report = await axios.get<GetReportResponseBody>(`/report/${id}`);
+    return report.data;
+  }
+
+  public static async getAll(limit?: number): Promise<GetReportsResponseBody> {
+    const url = limit && limit > 0 ? `/report?limit=${limit}` : '/report';
+    const reports = await axios.get<GetReportsResponseBody>(url);
+    return reports.data;
+  }
 }

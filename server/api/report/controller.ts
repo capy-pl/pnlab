@@ -3,8 +3,11 @@ import { connection } from 'mongoose';
 import { UserSchemaInterface } from '../../models/User';
 import { FieldSchemaInterface } from '../../models/ImportSchema';
 import {
-  Report
+  Report,
 } from '../../models';
+import {
+  Condition, ReportInterface
+} from '../../models/Report';
 import { getChannel } from '../../core/mq';
 
 interface SearchItemQuery {
@@ -108,6 +111,8 @@ export async function AddReport(req: e.Request, res: e.Response, next: e.NextFun
     res.status(400).send({ message: err.message });
   }
 }
+export interface GetReportResponseBody extends ReportInterface {
+}
 
 export async function GetReport(req: e.Request, res: e.Response, next: e.NextFunction): Promise<void> {
   const id = req.params.id as string;
@@ -119,5 +124,43 @@ export async function GetReport(req: e.Request, res: e.Response, next: e.NextFun
     res.json(report);
   } catch(err) {
     res.status(404).send({ message: err.message }); 
+  }
+}
+
+export interface GetReportsRequestQuery {
+  limit?: number;
+}
+
+interface ProjectedReport {
+  created: Date;
+  conditions: Condition[];
+  modified: Date;
+  status: 'error' | 'pending' | 'success';
+  errorMessage: string;
+}
+
+export interface GetReportsResponseBody {
+  reports: ProjectedReport[];
+}
+
+export async function GetReports(req: e.Request, res: e.Response, next: e.NextFunction): Promise<void> {
+  const { limit } = req.query as GetReportsRequestQuery;
+  const projection = {
+    conditions: 1,
+    status: 1,
+    errMessage: 1,
+    created: 1,
+    modified: 1,
+  }
+  try {
+    let reports: ProjectedReport[];
+    if (limit) {
+      reports = await Report.find({}, projection).limit(limit);
+    } else {
+      reports = await Report.find({}, projection);
+    }
+    res.send({ reports });
+  } catch(err) {
+    res.status(500).end();
   }
 }
