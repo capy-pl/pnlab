@@ -13,14 +13,7 @@ def main():
         worker_pool.apply_async(worker, [])
 
     worker_pool.close()
-
-    try:
-        while True:
-            continue
-    except KeyboardInterrupt:
-        print(' [*] Exiting')
-        worker_pool.terminate()
-        worker_pool.join() 
+    worker_pool.join()
 
 if __name__ == '__main__':
     main()
