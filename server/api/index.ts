@@ -1,9 +1,9 @@
-import Auth from './Auth';
-import User from './User';
-import Report from './Report';
+import Auth from './auth';
+import Report from './report';
+import User from './user';
 
 export default {
   Auth,
   User,
-  Report
+  Report,
 };

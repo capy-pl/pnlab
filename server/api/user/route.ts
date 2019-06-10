@@ -1,19 +1,21 @@
 import { Router } from 'express';
 
-import { loginRequired } from '../../auth';
+import { loginRequired } from '../../core/auth';
 import {
-  Info,
+  AddGroups,
   GetGroups,
-  AddGroups
+  Info,
 } from './controller';
 
 const router = Router();
 
-router.route('/info')
+router
+  .route('/info')
   .all(loginRequired)
   .get(Info);
 
-router.route('/group')
+router
+  .route('/group')
   .all(loginRequired)
   .get(GetGroups)
   .post(AddGroups);

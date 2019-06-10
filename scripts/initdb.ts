@@ -2,7 +2,8 @@ import dotenv from 'dotenv';
 import connectMongo from '../server/core/db';
 import {
   Organization,
-  User
+  User,
+  Transactinos
 } from '../server/models';
 import {
   ImportSchemaInterface
@@ -18,6 +19,7 @@ dotenv.config();
     } catch (err) {
       console.log('No default users collection, continue.');
     }
+
     // drop organization
     try {
       await connection.dropCollection('orgs');
@@ -51,6 +53,25 @@ dotenv.config();
           .distinct(field.name, {});
         field.values = values;
       }
+      if (field.type === 'date') {
+        const [max] = await connection.db.collection('transactions')
+        .find<Transactinos>({})
+        .sort({[field.name]: -1})
+        .limit(1)
+        .project({
+          [field.name]: 1
+        })
+        .toArray();
+        const [min] = await connection.db.collection('transactions')
+        .find<Transactinos>({})
+        .sort({[field.name]: 1})
+        .limit(1)
+        .project({
+          [field.name]: 1
+        })
+        .toArray();
+        field.values = [new Date(min[field.name]).toISOString(), new Date(max[field.name]).toISOString()];
+      }
     }
 
     const defaultOrg = new Organization({
@@ -60,7 +81,6 @@ dotenv.config();
     });
 
     await defaultOrg.save();
-
     
     const admin = new User({
       email: 'admin@gmail.com',

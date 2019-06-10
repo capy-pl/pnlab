@@ -1,5 +1,5 @@
 import passport from 'passport';
-import User from '../models/User';
+import User from '../../models/User';
 
 import JWTStrategy from './jwtStrategy';
 
@@ -14,5 +14,5 @@ const loginRequired = passport.authenticate('jwt', { session: false });
 export default passport;
 
 export {
-  loginRequired
+  loginRequired,
 };

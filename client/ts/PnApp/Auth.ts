@@ -16,8 +16,7 @@ export default class Auth {
 
   public static logout(): void {
     localStorage.removeItem('Token');
-    // tslint:disable-next-line:no-string-literal
-    delete axios.defaults.headers.common['Authorization'];
+    delete axios.defaults.headers.common.Authorization;
   }
 
   public static async validate(): Promise<boolean> {
@@ -26,10 +25,9 @@ export default class Auth {
       return false;
     }
     const token = localStorage.getItem('Token');
-    // tslint:disable-next-line:no-string-literal
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    axios.defaults.headers.common.Authorization = `Bearer ${token}`;
     try {
-      const response = await axios.get('/auth/validate');
+      await axios.get('/auth/validate');
       return true;
     } catch (err) {
       console.log(err);

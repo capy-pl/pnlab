@@ -1,6 +1,6 @@
 import e from 'express';
-import { ItemGroup } from '../../models';
 import { connection } from 'mongoose';
+import { ItemGroup } from '../../models';
 import { ItemGroupInterface } from '../../models/ItemGroup';
 
 /**
@@ -34,7 +34,7 @@ export async function AddGroups(req: e.Request, res: e.Response, next: e.NextFun
     return res.status(422).end();
   }
   for (const item of items) {
-    const hasFound = await connection.db.collection('items').findOne({'單品名稱': item });
+    const hasFound = await connection.db.collection('items').findOne({單品名稱: item });
     if (!hasFound) {
       return res.status(422).send({ message: `Cannot not found item "${item}".`}).end();
     }
@@ -43,7 +43,7 @@ export async function AddGroups(req: e.Request, res: e.Response, next: e.NextFun
     name,
     items,
     startTime,
-    endTime
+    endTime,
   });
   try {
     await newGroup.save();

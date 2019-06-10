@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "C:\\Users\\PHIL\\AppData\\Local\\Programs\\Python\\Python37\\python.exe",
+    "python.pythonPath": "env/bin/python",
     "[javascript]": {
         "editor.tabSize": 2
     },

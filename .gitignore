@@ -63,6 +63,7 @@ typings/
 
 # python vn
 pyenv
+env
 
 # python cache
 __pycache__
@@ -72,3 +73,6 @@ dist
 
 # mac temp file
 .DS_Store
+
+# test file
+*.csv

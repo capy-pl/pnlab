@@ -1,8 +1,9 @@
 import ImportSchema from './ImportSchema';
+import ItemGroup from './ItemGroup';
 import Organization from './Organization';
 import Report from './Report';
+import Transactinos from './Transactions';
 import User from './User';
-import ItemGroup from './ItemGroup';
 
 export {
   ImportSchema,
@@ -10,6 +11,7 @@ export {
   Report,
   User,
   ItemGroup,
+  Transactinos,
 };
 
 export default {
