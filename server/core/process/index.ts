@@ -14,13 +14,14 @@ export function startPythonWorker(): ChildProcess {
   });
 
   if (ps.stdout) {
-  ps.stdout.on('data', (data) => {
-    console.log(`stdout: ${data}`);
-  });
+    ps.stdout.on('data', (data) => {
+      console.log(`stdout: ${data}`);
+    });
   }
 
   ps.on('err', (err) => {
     console.error(err);
   });
+
   return ps;
 }

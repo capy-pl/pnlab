@@ -13,8 +13,7 @@ const server = http.createServer(app);
 const pyConsumers = startPythonWorker();
 
 server.listen(process.env.PORT, async () => {
-  await amqpConnect();
-  await dbConnect();
+  await Promise.all([amqpConnect(), dbConnect()]);
   console.log(`Server is available on 127.0.0.1:${process.env.PORT}`);
 });
 
