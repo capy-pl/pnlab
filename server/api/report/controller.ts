@@ -111,7 +111,7 @@ export async function AddReport(req: e.Request, res: e.Response, next: e.NextFun
     res.status(400).send({ message: err.message });
   }
 }
-// tslint:disable-next-line: no-empty-interface
+
 export interface GetReportResponseBody extends ReportInterface {
 }
 
