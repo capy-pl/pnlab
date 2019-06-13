@@ -1,7 +1,7 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { Document, Schema } from 'mongoose';
 import ImportSchema, { ImportSchemaInterface } from './ImportSchema';
 
-export interface OrgSchema {
+export interface OrgSchema extends Document {
   dbName: string;
   importSchema: ImportSchemaInterface;
   name: string;
@@ -13,6 +13,6 @@ const OrgSchema = new Schema<OrgSchema>({
   name: String,
 });
 
-const Organization = mongoose.model('Org', OrgSchema);
+const Organization = mongoose.model<OrgSchema>('Org', OrgSchema);
 
 export default Organization;

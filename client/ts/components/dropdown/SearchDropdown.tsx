@@ -1,14 +1,14 @@
 import React from 'react';
 import { Dropdown, DropdownProps } from 'semantic-ui-react';
 
-interface option {
+interface Option {
   key: string;
   value: string;
   text: string;
 }
 
 interface SearchDropDownProps {
-  options: option[];
+  options: Option[];
   placeholder: string;
   onChange: (event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => void;
 }
