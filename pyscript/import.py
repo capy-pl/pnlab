@@ -2,7 +2,7 @@ import pandas as pd
 import numpy
 from pymongo import MongoClient
 
-from lib import TransactionTransformer
+from pyscript.src import TransactionTransformer
 
 client = MongoClient('localhost', 27017)
 db = client['pn']

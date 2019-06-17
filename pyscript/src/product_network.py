@@ -98,12 +98,12 @@ class NetworkConverter:
         if len(nodes) <= 0:
             raise ZeroNodeError('The resulted graph does not contain any node. Consider lower the support.')
         return self.to_graph(nodes, result)
-    
+
     def find_edges_in_list(self, itemsets):
         """Return the combinations of the itemsets.
         """
         return combinations(itemsets, 2)
-    
+
     def to_graph(self, nodes, edges):
         g = igraph.Graph()
         for node in nodes:
