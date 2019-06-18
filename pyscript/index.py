@@ -1,5 +1,5 @@
 import os
-from pyscript.worker import worker
+from .worker import worker
 from multiprocessing.pool import Pool
 
 

@@ -1,6 +1,6 @@
 import pika
 import time
-from pyscript.src import network_analysis
+from .src import network_analysis
 
 def worker():
     connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
