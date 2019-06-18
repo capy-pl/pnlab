@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "pyenv/bin/python3.7",
+    "python.pythonPath": "env/bin/python",
     "[javascript]": {
         "editor.tabSize": 2
     },

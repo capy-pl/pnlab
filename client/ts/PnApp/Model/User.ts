@@ -1,6 +1,15 @@
 import axios from 'axios';
+export interface OrganizationModel {
+  _id: string;
+  dbName: string;
+  name: string;
+}
 
-import { OrganizationModel, UserModel } from '../../../declarations/user';
+export interface UserModel {
+  _id: string;
+  email: string;
+  org: OrganizationModel;
+}
 
 class User {
   public static async load(): Promise<User> {

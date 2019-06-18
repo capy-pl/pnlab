@@ -1,7 +1,13 @@
 import dotenv from 'dotenv';
 import connectMongo from '../server/core/db';
-import { Organization, User } from '../server/models';
-
+import {
+  Organization,
+  User,
+  Transactinos
+} from '../server/models';
+import {
+  ImportSchemaInterface
+} from '../server/models/ImportSchema';
 dotenv.config();
 
 (async () => {
@@ -13,15 +19,74 @@ dotenv.config();
     } catch (err) {
       console.log('No default users collection, continue.');
     }
+
     // drop organization
     try {
       await connection.dropCollection('orgs');
     } catch (err) {
       console.log('No default users collection, continue.');
     }
-    const defaultOrg = new Organization({ name: 'nccu', dbName: 'nccu' });
+
+    const defaultSchema: ImportSchemaInterface = {
+      transactionFields: [{
+        name: '餐別帶',
+        type: 'string'
+      }, {
+        name: '縣市別',
+        type: 'string'
+      }, {
+        name: '主商圈',
+        type: 'string'
+      }, {
+        name: '資料日期與時間',
+        type: 'date'
+      }],
+      amountName: '交易金額',
+      itemName: '單品名稱',
+      transactionName: '交易id',
+      itemFields: []
+    };
+
+    for (const field of defaultSchema.transactionFields) {
+      if (field.type === 'string') {
+        const values = await connection.db.collection('transactions')
+          .distinct(field.name, {});
+        field.values = values;
+      }
+      if (field.type === 'date') {
+        const [max] = await connection.db.collection('transactions')
+        .find<Transactinos>({})
+        .sort({[field.name]: -1})
+        .limit(1)
+        .project({
+          [field.name]: 1
+        })
+        .toArray();
+        const [min] = await connection.db.collection('transactions')
+        .find<Transactinos>({})
+        .sort({[field.name]: 1})
+        .limit(1)
+        .project({
+          [field.name]: 1
+        })
+        .toArray();
+        field.values = [new Date(min[field.name]).toISOString(), new Date(max[field.name]).toISOString()];
+      }
+    }
+
+    const defaultOrg = new Organization({
+      name: 'nccu',
+      dbName: 'nccu',
+      importSchema: defaultSchema,
+    });
+
     await defaultOrg.save();
-    const admin = new User({ email: 'admin@gmail.com', org: defaultOrg });
+    
+    const admin = new User({
+      email: 'admin@gmail.com',
+      name: 'admin',
+      org: defaultOrg
+    });
     await admin.setPassword('admin');
     await admin.save();
     console.log('Default user has been created.');
@@ -29,34 +94,3 @@ dotenv.config();
     console.log('Close mongo connection');
   }
 })();
-
-// const Database = require('arangojs').Database;
-
-// require('dotenv').config();
-
-// const arangoDB = new Database({
-//   url: process.env.ARANGO_DB_PATH,
-// });
-
-// const collections = [];
-
-// arangoDB.listDatabases()
-//   .then(async (list) => {
-//     if (list.indexOf(process.env.ARANGO_DB_NAME) !== -1) {
-//       await arangoDB.dropDatabase(process.env.ARANGO_DB_NAME);
-//     }
-//     return arangoDB.createDatabase(process.env.ARANGO_DB_NAME);
-//   })
-//   .then(() => {
-//     arangoDB.useDatabase(process.env.ARANGO_DB_NAME);
-//     return Promise.all(collections.map((name) => {
-//       const collection = arangoDB.collection(name);
-//       return collection.create();
-//     }));
-//   })
-//   .then(() => {
-//     console.log('Init ArrangoDB successfully.');
-//   })
-//   .catch(err => {
-//     console.error(err);
-//   });

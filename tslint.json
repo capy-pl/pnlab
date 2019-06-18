@@ -7,12 +7,14 @@
     "jsRules": {},
     "rules": {
         "quotemark": [true, "single"],
-        "arrow-parens": ["error", "as-needed"],
+        "arrow-parens": [true, "as-needed"],
         "no-console": false,
-        "no-var-requires": false,   // Allow this because of dynamic requrie module.
+        "no-var-requires": false,
         "jsx-boolean-value": false,
         "interface-name": [true, "never-prefix"],
-        "indent": [true, "spaces", 2]
+        "indent": [true, "spaces", 2],
+        "object-literal-sort-keys": false,
+        "no-empty-interface": false
     },
     "rulesDirectory": []
 }

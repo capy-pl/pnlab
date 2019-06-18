@@ -21,7 +21,7 @@ export interface Edge extends VisEdge {
   weight: number;
 }
 
-interface Data {
+export interface Data {
   nodes: Node[];
   edges: Edge[];
 }

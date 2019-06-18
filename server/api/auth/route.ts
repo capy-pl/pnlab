@@ -1,6 +1,5 @@
 import { Router } from 'express';
-
-import passport from '../../auth';
+import { loginRequired } from '../../core/auth';
 import {
   LogIn,
   SignUp,
@@ -11,6 +10,6 @@ const router = Router();
 
 router.post('/login', LogIn);
 router.post('/signup', SignUp);
-router.get('/validate', passport.authenticate('jwt', { session: false }), Validation);
+router.get('/validate', loginRequired, Validation);
 
 export default router;

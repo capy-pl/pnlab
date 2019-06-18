@@ -3,7 +3,7 @@ module.exports = function(grunt) {
   const tslintConfig = {
     options: {
       configuration: './tslint.json',
-      fix: false
+      fix: true
     },
     client: {
       files: {

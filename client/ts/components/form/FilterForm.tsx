@@ -1,11 +1,3 @@
-import React from 'react';
-<<<<<<< Updated upstream
-import '../../../scss/form.scss';
-
-const FilterForm = () => (
-  <div id='form'>
-    <input type='button' />
-=======
 import { Button, Divider, Dropdown } from 'semantic-ui-react';
 import { Checkbox } from 'semantic-ui-react';
 import { Input } from 'semantic-ui-react';
@@ -71,7 +63,7 @@ const FilterForm = () => (
     <p>選擇日期:</p>
     <Input placeholder='開始日期' />
     <Input placeholder='結束日期' />
-    <br/><br/>
+    <h3 className="ui dividing header">篩選條件</h3>
     <p>選擇時段:</p>
     <Dropdown placeholder='時段' fluid multiple selection options={time} />
     <br/>
@@ -98,7 +90,15 @@ const FilterForm = () => (
     <br/><br/>
     <Button type='submit'>Clear</Button>
     <Button primary type='submit'>Submit</Button>
->>>>>>> Stashed changes
+    <p>選擇欲刪除商品:</p>
+    <Dropdown
+    placeholder='產品刪除'
+    fluid
+    multiple
+    search
+    selection
+    options={product}
+  />
   </div>
 );
 

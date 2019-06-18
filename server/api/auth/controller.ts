@@ -8,6 +8,11 @@ const { SECRET_KEY } = process.env;
 
 import User from '../../models/User';
 
+interface SignUpRequestBody {
+  email: string;
+  password: string;
+}
+
 /**
  * Signup a user.
  * @api /auth/signup
@@ -21,7 +26,7 @@ import User from '../../models/User';
  * @response 201 Created.
  */
 export async function SignUp(req: e.Request, res: e.Response, next: e.NextFunction): Promise<void | e.Response> {
-  const { email, password } = req.body;
+  const { email, password } = req.body as SignUpRequestBody;
   if (!(email && password)) {
     res.status(422).send({ message: 'Lack of email or password.' });
   } else {
@@ -38,6 +43,11 @@ export async function SignUp(req: e.Request, res: e.Response, next: e.NextFuncti
   }
 }
 
+interface LogInRequestBody {
+  email: string;
+  password: string;
+}
+
 /**
  * Log in the user and send a JWT token if authenticated.
  * @api /auth/login
@@ -48,7 +58,7 @@ export async function SignUp(req: e.Request, res: e.Response, next: e.NextFuncti
  * @apiParam password {String} User's password.
  */
 export async function LogIn(req: e.Request, res: e.Response, next: e.NextFunction): Promise<void> {
-  const { email, password } = req.body;
+  const { email, password } = req.body as LogInRequestBody;
   if (!(email && password)) {
     res.status(422).json({ message: 'email or password not provided.' });
   } else {

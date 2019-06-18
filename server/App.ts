@@ -5,9 +5,6 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import nunjucks from 'nunjucks';
 
-// relative import
-import errorHandler from './controllers/error';
-
 // import routes
 import API from './api';
 
@@ -68,7 +65,16 @@ app.get('/', (req, res) => {
 // Register Router
 app.use('/auth', API.Auth);
 app.use('/user', API.User);
+app.use('/report', API.Report);
 
-app.use(errorHandler);
+app.use((
+  err: Error,
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+    console.error(err.stack);
+    res.status(500);
+  });
 
 export default app;

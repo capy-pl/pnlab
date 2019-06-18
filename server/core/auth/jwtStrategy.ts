@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 import passportJWT from 'passport-jwt';
 
-import User from '../models/User';
+import User from '../../models/User';
 
 dotenv.config();
 
@@ -18,10 +18,10 @@ export default new Strategy(
     return User.findById(sub)
       .populate('org')
       .exec()
-      .then(user => {
+      .then((user) => {
         cb(null, user);
       })
-      .catch(err => {
+      .catch((err) => {
         cb(err);
       });
   });

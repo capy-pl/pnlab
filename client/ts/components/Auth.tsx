@@ -1,7 +1,6 @@
 import axios from 'axios';
-import React, { Component } from 'react';
+import React from 'react';
 import { Redirect } from 'react-router-dom';
-import Auth from '../PnApp/Auth';
 
 const LoginRequiredComponent = () => {
   const token = localStorage.getItem('Token');
