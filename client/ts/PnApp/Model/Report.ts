@@ -5,14 +5,14 @@ export interface Condition {
   values: string[] | Date[];
 }
 
-interface Node {
+export interface Node {
   name: string;
   community: number;
   id: number;
   degree: number;
 }
 
-interface Edge {
+export interface Edge {
   from: number;
   to: number;
   weight: number;
