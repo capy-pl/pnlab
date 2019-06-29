@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { DataSet, EdgeOptions, Network, NodeOptions } from 'vis';
 import { Edge, Node } from '../../PnApp/Model/Report';
 
@@ -17,7 +17,7 @@ interface GraphProps {
   edges: Edge[];
 }
 
-export default class GraphView extends Component<GraphProps, {}> {
+export default class GraphView extends PureComponent<GraphProps, {}> {
   public graphRef: React.RefObject<HTMLDivElement>;
   public network?: Network;
   constructor(props: GraphProps) {

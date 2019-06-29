@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { Dropdown, Menu, Segment } from 'semantic-ui-react';
 import { Auth } from '../../PnApp';
@@ -11,7 +11,7 @@ interface MenuState {
   user: User | undefined;
 }
 
-class Navbar extends Component<RouteComponentProps, MenuState> {
+class Navbar extends PureComponent<RouteComponentProps, MenuState> {
   constructor(props) {
     super(props);
     this.state = {

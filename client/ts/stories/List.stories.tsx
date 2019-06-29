@@ -66,7 +66,9 @@ stories
         <Table>
           <Table.Header>
             <Table.HeaderCell width='1' textAlign='center' />
-            <Table.HeaderCell width='7' />
+            <Table.HeaderCell width='2' textAlign='center' />
+            <Table.HeaderCell width='2' textAlign='center' />
+            <Table.HeaderCell width='5' />
             <Table.HeaderCell width='4' />
           </Table.Header>
           <Table.Body>

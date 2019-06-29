@@ -1,4 +1,4 @@
-import React, { PureComponent as Component } from 'react';
+import React, { PureComponent as PureComponent } from 'react';
 import { Route, RouteComponentProps, withRouter } from 'react-router-dom';
 import { AnimatedSwitch } from 'react-router-transition';
 import { Container, Dimmer, Loader } from 'semantic-ui-react';
@@ -14,7 +14,7 @@ interface HomeState {
   loading: boolean;
 }
 
-class Home extends Component<RouteComponentProps, HomeState> {
+class Home extends PureComponent<RouteComponentProps, HomeState> {
   constructor(props) {
     super(props);
     this.state = {

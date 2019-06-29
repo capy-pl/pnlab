@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { Button, Segment, Table } from 'semantic-ui-react';
 import { SearchHistoryItem } from '../../components/list';
 import { Report } from '../../PnApp/Model';
@@ -9,7 +9,7 @@ interface ReportListState {
   reports: ProjectedReport[];
 }
 
-export default class ReportList extends Component<{}, ReportListState> {
+export default class ReportList extends PureComponent<{}, ReportListState> {
   constructor(props: any) {
     super(props);
     this.state = {
