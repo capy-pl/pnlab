@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Menu, MenuItemProps } from 'semantic-ui-react';
+import { urlPrefix } from '../../PnApp/Helper';
 
 interface SettingMenuState {
   activeItem: string | undefined;
@@ -21,27 +22,27 @@ export default class SettingMenu extends PureComponent<{}, SettingMenuState> {
       return (
         <Menu vertical tabular fluid>
         <Menu.Item
-          href='/#/settings/profile'
+          href={urlPrefix('/settings/profile')}
           name='Profile'
           active={this.state.activeItem === 'Profile'}
           onClick={this.onClick}
         />
         <Menu.Item
           name='Setting'
-          href='/#/settings'
+          href={urlPrefix('/settings')}
           active={this.state.activeItem === 'Setting'}
           onClick={this.onClick}
         />
         <Menu.Item
           name='Import Format'
-          href='/#/settings'
+          href={urlPrefix('/settings')}
           active={this.state.activeItem === 'Import Format'}
           onClick={this.onClick}
         />
         <Menu.Item
           name='Manage Group'
-          href='/#/settings'
-            active={this.state.activeItem === 'Manage Group'}
+          href={urlPrefix('/settings')}
+          active={this.state.activeItem === 'Manage Group'}
           onClick={this.onClick}
         />
       </Menu>

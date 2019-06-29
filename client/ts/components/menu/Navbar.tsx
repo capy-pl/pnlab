@@ -4,7 +4,7 @@ import { Dropdown, Menu, Segment } from 'semantic-ui-react';
 import { Auth } from '../../PnApp';
 import { User } from '../../PnApp/Model';
 
-import { getCurrentUser } from '../../PnApp/Helper';
+import { getCurrentUser, urlPrefix } from '../../PnApp/Helper';
 
 interface MenuState {
   activeItem: string;
@@ -34,14 +34,14 @@ class Navbar extends Component<RouteComponentProps, MenuState> {
       <Segment inverted>
         <Menu inverted secondary>
           <Menu.Item
-            href='/#/'
+            href={urlPrefix('/')}
             name='Home'
             active={activeItem === 'home'}
           />
           <Menu.Menu position='right'>
             <Dropdown item text={this.state.user ? this.state.user.email : ''}>
               <Dropdown.Menu>
-                <Dropdown.Item href='/#/settings/profile'>
+                <Dropdown.Item href={urlPrefix('/settings/profile')}>
                   Setting
                 </Dropdown.Item>
                 <Dropdown.Item onClick={this.logout}>

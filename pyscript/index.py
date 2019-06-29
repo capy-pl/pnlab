@@ -1,7 +1,6 @@
 import os
-from .worker import worker
+from pyscript.src import worker
 from multiprocessing.pool import Pool
-
 
 def main():
     # No need for that much processes. It will cost lots memory.

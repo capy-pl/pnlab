@@ -78,6 +78,10 @@ export interface AddReportRequestBody {
   conditions: FieldSchemaInterface[];
 }
 
+export interface AddReportResponseBody {
+  id: string;
+}
+
 export async function AddReport(req: e.Request, res: e.Response, next: e.NextFunction): Promise<void> {
   const { user } = req;
   const { org } = user as UserSchemaInterface;
@@ -132,12 +136,15 @@ export interface GetReportsRequestQuery {
   limit?: number;
 }
 
-interface ProjectedReport {
+export interface ProjectedReport {
+  _id: string;
   created: Date;
   conditions: Condition[];
   modified: Date;
   status: 'error' | 'pending' | 'success';
   errorMessage: string;
+  startTime: Date;
+  endTime: Date;
 }
 
 export interface GetReportsResponseBody {
@@ -152,6 +159,8 @@ export async function GetReports(req: e.Request, res: e.Response, next: e.NextFu
     errMessage: 1,
     created: 1,
     modified: 1,
+    startTime: 1,
+    endTime: 1,
   };
   try {
     let reports: ProjectedReport[];

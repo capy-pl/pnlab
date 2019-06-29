@@ -8,6 +8,7 @@ import { Auth } from '../../PnApp';
 import { updateCurrentUser } from '../../PnApp/Helper';
 
 import Setting from '../Setting';
+import { ReportList } from '../Report';
 
 interface HomeState {
   loading: boolean;
@@ -53,8 +54,9 @@ class Home extends Component<RouteComponentProps, HomeState> {
               atLeave={{ opacity: 0 }}
               atActive={{ opacity: 1 }}
             >
-            <Route path='/settings' component={Setting} />
-          </AnimatedSwitch>
+              <Route path='/settings' component={Setting} />
+            <Route path='/' component={ReportList} />
+            </AnimatedSwitch>
         </Container>
       </div>
     );

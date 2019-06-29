@@ -1,4 +1,5 @@
 import axios from 'axios';
+
 export interface OrganizationModel {
   _id: string;
   dbName: string;
@@ -12,7 +13,7 @@ export interface UserModel {
 }
 
 class User {
-  public static async load(): Promise<User> {
+  public static async get(): Promise<User> {
     const response = await axios.get<UserModel>('/user/info');
     return new User(response.data);
   }
