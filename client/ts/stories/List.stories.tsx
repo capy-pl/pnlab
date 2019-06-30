@@ -63,7 +63,7 @@ stories
         }];
       const items = data.map((report) => <SearchHistoryItem item={report}/>);
       return (
-        <Table>
+        <Table selectable>
           <Table.Header>
             <Table.HeaderCell width='1' textAlign='center' />
             <Table.HeaderCell width='2' textAlign='center' />

@@ -29,7 +29,7 @@ export interface ProjectedReport {
   endTime: Date;
 }
 
-interface ReportModel {
+export interface ReportModel {
   _id: string;
   created: Date;
   conditions: Condition[];

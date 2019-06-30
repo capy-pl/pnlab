@@ -1,5 +1,7 @@
 import React, { PureComponent } from 'react';
+import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { Button, Segment, Table } from 'semantic-ui-react';
+
 import { SearchHistoryItem } from '../../components/list';
 import { Report } from '../../PnApp/Model';
 import { ProjectedReport } from '../../PnApp/Model/Report';
@@ -9,7 +11,7 @@ interface ReportListState {
   reports: ProjectedReport[];
 }
 
-export default class ReportList extends PureComponent<{}, ReportListState> {
+class ReportList extends PureComponent<RouteComponentProps, ReportListState> {
   constructor(props: any) {
     super(props);
     this.state = {
@@ -26,8 +28,22 @@ export default class ReportList extends PureComponent<{}, ReportListState> {
     });
   }
 
+  public onLinkClick(id: string): () => void {
+    return () => {
+      this.props.history.push(`/report/${id}`);
+    }
+  }
+
   public render() {
-    const history = this.state.reports.map((report) => <SearchHistoryItem key={report._id} item={report} />);
+    const history = this.state.reports.map((report) => {
+      return (
+        <SearchHistoryItem
+          key={report._id}
+          item={report}
+          onLinkClick={this.onLinkClick(report._id)}
+        />
+      );
+    });
     return (
       <Segment loading={this.state.loading} size='large'>
         <Button
@@ -56,3 +72,5 @@ export default class ReportList extends PureComponent<{}, ReportListState> {
     );
   }
 }
+
+export default withRouter(ReportList);

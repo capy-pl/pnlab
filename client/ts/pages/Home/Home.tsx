@@ -6,9 +6,8 @@ import { Container, Dimmer, Loader } from 'semantic-ui-react';
 import Navbar from '../../components/menu/Navbar';
 import { Auth } from '../../PnApp';
 import { updateCurrentUser } from '../../PnApp/Helper';
-
+import { Report, ReportList } from '../Report';
 import Setting from '../Setting';
-import { ReportList } from '../Report';
 
 interface HomeState {
   loading: boolean;
@@ -48,16 +47,15 @@ class Home extends PureComponent<RouteComponentProps, HomeState> {
     return (
       <div>
         <Navbar />
-        <Container>
             <AnimatedSwitch
               atEnter={{ opacity: 0 }}
               atLeave={{ opacity: 0 }}
               atActive={{ opacity: 1 }}
             >
+              <Route exact path='/report/:id' component={Report} />
               <Route path='/settings' component={Setting} />
-            <Route path='/' component={ReportList} />
+              <Route exact path='/' component={ReportList} />
             </AnimatedSwitch>
-        </Container>
       </div>
     );
   }

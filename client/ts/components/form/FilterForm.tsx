@@ -18,8 +18,14 @@ interface FilterFormProps {
   conditions: Condition[];
 }
 
-class FilterForm extends PureComponent {
-
-};
+class FilterForm extends PureComponent<FilterFormProps, {}> {
+  public render() {
+    return (
+      <div>
+        Test
+      </div>
+    );
+  }
+}
 
 export default FilterForm;

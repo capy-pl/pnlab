@@ -1,9 +1,10 @@
 import React from 'react';
-import { Icon, Label, SemanticCOLORS, Table } from 'semantic-ui-react';
+import { Button, Icon, Label, SemanticCOLORS, Table } from 'semantic-ui-react';
 import { ProjectedReport } from '../../PnApp/Model/Report';
 
 interface ItemProps {
   item: ProjectedReport;
+  onLinkClick: () => void;
 }
 
 interface StatusIconProps {
@@ -50,7 +51,7 @@ const COLORS = [
   'black',
 ];
 
-const Item = ({ item }: ItemProps) => {
+const Item = ({ item, onLinkClick }: ItemProps) => {
   const tagList = item.conditions
   // flatten all string condition values into single array.
   .reduce<string[]>((previous, currentValue) => {
@@ -78,10 +79,19 @@ const Item = ({ item }: ItemProps) => {
       <Table.Cell textAlign='center'>
         <StatusIcon status={item.status}/>
       </Table.Cell>
-      <Table.Cell>link</Table.Cell>
-      <Table.Cell>link</Table.Cell>
+      <Table.Cell textAlign='center'>{item.startTime.toLocaleString()}</Table.Cell>
+      <Table.Cell textAlign='center'>{item.endTime.toLocaleString()}</Table.Cell>
       <Table.Cell>{tagList}</Table.Cell>
-      <Table.Cell>link</Table.Cell>
+      <Table.Cell>
+        <Button
+          content='View Detail'
+          color='blue'
+          icon='right arrow'
+          labelPosition='right'
+          disabled={item.status === 'success' ? false : true}
+          onClick={onLinkClick}
+        />
+      </Table.Cell>
     </Table.Row>
   );
 };
