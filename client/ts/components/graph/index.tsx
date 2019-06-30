@@ -87,7 +87,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
               springLength: 200,
               centralGravity: 0.1,
             },
-            stabilization: false,
+            stabilization: true,
           },
         });
     }

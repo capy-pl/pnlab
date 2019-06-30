@@ -75,6 +75,7 @@ const Item = ({ item, onLinkClick }: ItemProps) => {
   return (
     <Table.Row
       style={{ clear: 'both' }}
+      error={item.status === 'error'}
     >
       <Table.Cell textAlign='center'>
         <StatusIcon status={item.status}/>
