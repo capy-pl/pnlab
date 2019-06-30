@@ -61,7 +61,7 @@ export default class Report {
     const url = limit && limit > 0 ? `/report?limit=${limit}` : '/report';
     const reports = await axios.get<{ reports: ProjectedReport[]}>(url);
     reports.data.reports.forEach((report) => {
-      // attributes below are type of string when returned from axios. need to 
+      // attributes below are type of string when returned from axios. need to
       // convert their type from string to Date.
       report.created = new Date(report.created);
       report.modified = new Date(report.modified);

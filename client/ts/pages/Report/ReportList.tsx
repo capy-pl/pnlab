@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { withRouter, RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { Button, Segment, Table } from 'semantic-ui-react';
 
 import { SearchHistoryItem } from '../../components/list';
@@ -31,7 +31,7 @@ class ReportList extends PureComponent<RouteComponentProps, ReportListState> {
   public onLinkClick(id: string): () => void {
     return () => {
       this.props.history.push(`/report/${id}`);
-    }
+    };
   }
 
   public render() {
