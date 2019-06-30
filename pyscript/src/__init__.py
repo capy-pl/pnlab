@@ -1,1 +1,1 @@
-from .index import network_analysis
+from .worker import worker

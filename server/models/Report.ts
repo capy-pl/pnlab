@@ -1,14 +1,14 @@
 import mongoose, { Document, Schema } from 'mongoose';
 import { FieldSchemaInterface } from './ImportSchema';
 
-interface Node {
+export interface Node {
   name: string;
   community: number;
   id: number;
   degree: number;
 }
 
-interface Edge {
+export interface Edge {
   from: number;
   to: number;
   weight: number;

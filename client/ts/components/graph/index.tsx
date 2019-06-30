@@ -1,17 +1,23 @@
-import React, { Component } from 'react';
-import { DataSet, Network } from 'vis';
+import React, { PureComponent } from 'react';
+import { DataSet, EdgeOptions, Network, NodeOptions } from 'vis';
+import { Edge, Node } from '../../PnApp/Model/Report';
 
-import { Data, Edge, Node } from '../../PnApp/global';
+interface GraphNode extends Node, NodeOptions {
+}
+
+interface GraphEdge extends Edge, EdgeOptions {
+}
 
 const style = {
   height: '800px',
 };
 
 interface GraphProps {
-  data: Data;
+  nodes: Node[];
+  edges: Edge[];
 }
 
-export default class GraphView extends Component<GraphProps, {}> {
+export default class GraphView extends PureComponent<GraphProps, {}> {
   public graphRef: React.RefObject<HTMLDivElement>;
   public network?: Network;
   constructor(props: GraphProps) {
@@ -23,17 +29,30 @@ export default class GraphView extends Component<GraphProps, {}> {
     this.initializeGraph();
   }
 
+  public componentDidUpdate() {
+    this.initializeGraph();
+  }
+
+  public toNode(node: Node): GraphNode {
+    const copy: GraphNode = Object.assign({}, node);
+    copy.label = node.name;
+    copy.group = node.community.toString();
+    return copy;
+  }
+
+  public toEdge(edge: Edge): GraphEdge {
+    return Object.assign({}, edge) as GraphEdge;
+  }
+
   public initializeGraph(): void {
-    const nodes = new DataSet<Node>();
-    const edges = new DataSet<Edge>();
-    for (const node of this.props.data.nodes) {
-      node.label = node.name;
-      node.group = node.community.toString();
-      nodes.add(node);
+    const nodes = new DataSet<GraphNode>();
+    const edges = new DataSet<GraphEdge>();
+    for (const node of this.props.nodes) {
+      nodes.add(this.toNode(node));
     }
 
-    for (const edge of this.props.data.edges) {
-      edges.add(edge);
+    for (const edge of this.props.edges) {
+      edges.add(this.toEdge(edge));
     }
 
     if (this.graphRef.current) {
@@ -49,7 +68,7 @@ export default class GraphView extends Component<GraphProps, {}> {
           },
           nodes: {
             scaling: {
-              customScalingFunction: (min?: number, max?: number, total?: number, value?: number): number => {
+              customScalingFunction: (min, max, total, value) => {
                 if (value) {
                   return value;
                 }
@@ -68,7 +87,7 @@ export default class GraphView extends Component<GraphProps, {}> {
               springLength: 200,
               centralGravity: 0.1,
             },
-            stabilization: false
+            stabilization: true,
           },
         });
     }

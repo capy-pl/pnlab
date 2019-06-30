@@ -2,7 +2,7 @@ import LocalVar from './global';
 import { User } from './Model';
 
 export async function updateCurrentUser(): Promise<void> {
-    LocalVar.user = await User.load();
+    LocalVar.user = await User.get();
 }
 
 export function getCurrentUser(): User | undefined {
@@ -15,6 +15,10 @@ export function hasToken(): boolean {
 
 export function isLoggedIn(): boolean {
   return !(LocalVar.user === undefined);
+}
+
+export function urlPrefix(url: string): string {
+  return `/#${url}`;
 }
 
 export default {

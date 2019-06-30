@@ -1,25 +1,31 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import { Button } from 'semantic-ui-react';
-
-import '../../../scss/form.scss';
+import { Condition } from '../../PnApp/Model/Report';
 
 const conditions = [
   {
     name: '餐別帶',
     type: 'string',
-    values: ['早餐時間帶', '中餐時間帶 ']
+    values: ['早餐時間帶', '中餐時間帶 '],
   },
   {
     name: '開始時間',
-    type: 'date'
-  }
+    type: 'date',
+  },
 ];
 
-const FilterForm = () => (
-  <div id='form'>
-    <Button primary>Primary</Button>
-    <Button secondary>Secondary</Button>
-  </div>
-);
+interface FilterFormProps {
+  conditions: Condition[];
+}
+
+class FilterForm extends PureComponent<FilterFormProps, {}> {
+  public render() {
+    return (
+      <div>
+        Test
+      </div>
+    );
+  }
+}
 
 export default FilterForm;
