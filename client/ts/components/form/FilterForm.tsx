@@ -1,3 +1,4 @@
+import React, { Component } from 'react';
 import { Button, Divider, Dropdown } from 'semantic-ui-react';
 import { Checkbox } from 'semantic-ui-react';
 import { Input } from 'semantic-ui-react';
@@ -90,15 +91,6 @@ const FilterForm = () => (
     <br/><br/>
     <Button type='submit'>Clear</Button>
     <Button primary type='submit'>Submit</Button>
-    <p>選擇欲刪除商品:</p>
-    <Dropdown
-    placeholder='產品刪除'
-    fluid
-    multiple
-    search
-    selection
-    options={product}
-  />
   </div>
 );
 
