@@ -8,16 +8,17 @@ module.exports = function(grunt) {
     client: {
       files: {
         src: [
-          './client/ts/**/*.ts',
-          './spec/client/**/*.ts'
+          'client/ts/**/*.ts',
+          'client/ts/**/*.tsx',
+          'spec/client/**/*.ts'
         ]
       }
     },
     server: {
       files: {
         src: [
-          './server/**/*.ts',
-          './spec/server/**/*.ts'
+          'server/**/*.ts',
+          'spec/server/**/*.ts'
         ]
       }
     },

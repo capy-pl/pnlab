@@ -11,27 +11,18 @@ import {
   SearchHistoryItem,
 } from '../components/list';
 
+import {
+  ReportStatus,
+} from '../PnApp/Model/Report';
+
 const stories = storiesOf('List', module);
 
 stories
   .add(
     'Search History Item', () => {
-      const data = [{
-        conditions: [{
-          values: [
-            '早餐時間帶',
-          ],
-          name: '餐別帶',
-          type: 'string',
-        }],
-        created: new Date('2019-06-07T14:31:15.416Z'),
-        modified: new Date('2019-06-07T14:31:15.740Z'),
-        status: 'success',
-        errMessage: '',
-        startTime: new Date('2019-06-07T14:31:15.416Z'),
-        endTime: new Date('2019-06-07T14:31:15.416Z'),
-      },
-        {
+      const data = [
+          {
+          _id: '1234',
           conditions: [{
             values: [
               '早餐時間帶',
@@ -41,12 +32,13 @@ stories
           }],
           created: new Date('2019-06-07T14:31:15.416Z'),
           modified: new Date('2019-06-07T14:31:15.740Z'),
-          status: 'error',
+          status: 'success' as ReportStatus,
           errMessage: '',
           startTime: new Date('2019-06-07T14:31:15.416Z'),
           endTime: new Date('2019-06-07T14:31:15.416Z'),
         },
         {
+          _id: '12345',
           conditions: [{
             values: [
               '早餐時間帶',
@@ -56,12 +48,28 @@ stories
           }],
           created: new Date('2019-06-07T14:31:15.416Z'),
           modified: new Date('2019-06-07T14:31:15.740Z'),
-          status: 'pending',
+          status: 'error' as ReportStatus,
+          errMessage: '',
+          startTime: new Date('2019-06-07T14:31:15.416Z'),
+          endTime: new Date('2019-06-07T14:31:15.416Z'),
+        },
+        {
+          _id: '123455',
+          conditions: [{
+            values: [
+              '早餐時間帶',
+            ],
+            name: '餐別帶',
+            type: 'string',
+          }],
+          created: new Date('2019-06-07T14:31:15.416Z'),
+          modified: new Date('2019-06-07T14:31:15.740Z'),
+          status: 'pending' as ReportStatus,
           errMessage: '',
           startTime: new Date('2019-06-07T14:31:15.416Z'),
           endTime: new Date('2019-06-07T14:31:15.416Z'),
         }];
-      const items = data.map((report) => <SearchHistoryItem item={report}/>);
+      const items = data.map((report) => <SearchHistoryItem key={report._id} item={report} onLinkClick={console.log}/>);
       return (
         <Table selectable>
           <Table.Header>

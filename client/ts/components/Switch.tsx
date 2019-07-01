@@ -1,7 +1,7 @@
 import React from 'react';
 import { AnimatedSwitch } from 'react-router-transition';
 
-const Switch= ({ children }) => (
+const Switch = ({ children }) => (
   <AnimatedSwitch
     atEnter={{ opacity: 0 }}
     atLeave={{ opacity: 0 }}

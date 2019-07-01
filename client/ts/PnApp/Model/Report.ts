@@ -19,12 +19,14 @@ export interface Edge {
   weight: number;
 }
 
+export type ReportStatus = 'error' | 'pending' | 'success';
+
 export interface ProjectedReport {
   _id: string;
   created: Date;
   conditions: Condition[];
   modified: Date;
-  status: 'error' | 'pending' | 'success';
+  status: ReportStatus;
   errMessage: string;
   startTime: Date;
   endTime: Date;
@@ -35,7 +37,7 @@ export interface ReportModel {
   created: Date;
   conditions: Condition[];
   modified: Date;
-  status: 'error' | 'pending' | 'success';
+  status: ReportStatus;
   errMessage: string;
   nodes: Node[];
   edges: Edge[];

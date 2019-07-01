@@ -3,7 +3,7 @@ import http from 'http';
 
 import app from './App';
 import dbConnect from './core/db';
-import { amqpConnect } from './core/mq';
+import amqpConnect from './core/mq';
 import { startPythonWorker } from './core/process';
 import startSocketServer from './core/ws';
 

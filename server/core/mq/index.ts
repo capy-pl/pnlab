@@ -2,7 +2,7 @@ import amqplib from 'amqplib';
 
 let channel: amqplib.Channel;
 
-export async function amqpConnect(): Promise<void> {
+export default async function amqpConnect(): Promise<void> {
   console.log('Connect to RabbitMQ...');
   const connection = await amqplib.connect('amqp://localhost');
   channel = await connection.createChannel();

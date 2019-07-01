@@ -45,7 +45,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
       <p>連接節點數: ${copy.degree}</p>
     </div>
     `;
-    if(node.core){
+    if (node.core) {
       copy.borderWidth = 5;
     }
     return copy;
@@ -84,7 +84,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
                   return 0.03;
                 } else {
                   const scale = 1 / (max - min);
-                  return Math.max(0,(value - min) * scale);
+                  return Math.max(0, (value - min) * scale);
                 }
               },
               label: {
