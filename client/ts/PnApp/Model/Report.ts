@@ -1,8 +1,10 @@
 import axios from 'axios';
+
+export type ConditionType = 'string' | 'int' | 'date' | 'float';
 export interface Condition {
   name: string;
-  type: string | 'string' | 'int' | 'date' | 'float';
-  values: string[] | Date[];
+  type: ConditionType;
+  values: string[];
 }
 
 export interface Node {
