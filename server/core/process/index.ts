@@ -4,7 +4,7 @@ export function startPythonWorker(): ChildProcess {
   console.log('Spawn python consumers.');
   const ps = spawn(
   'python',
-  ['./pyscript/index.py'],
+  ['./index.py'],
   {
     env: process.env,
   });

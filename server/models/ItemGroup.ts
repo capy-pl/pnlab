@@ -1,6 +1,6 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { Document, Schema } from 'mongoose';
 
-export interface ItemGroupInterface {
+export interface ItemGroupInterface extends Document {
   items: string[];
   name: string;
   startTime: Date;
@@ -27,6 +27,6 @@ const ItemGroupSchema = new Schema<ItemGroupInterface>({
   },
 });
 
-const ItemGroup =  mongoose.model('group', ItemGroupSchema);
+const ItemGroup = mongoose.model<ItemGroupInterface>('group', ItemGroupSchema);
 
 export default ItemGroup;

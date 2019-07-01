@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { hot } from 'react-hot-loader/root';
 import { HashRouter as Router, Route } from 'react-router-dom';
 import AnimatedSwitch from '../components/Switch';
@@ -6,7 +6,7 @@ import AnimatedSwitch from '../components/Switch';
 import Home from './Home';
 import SignIn from './SignIn';
 
-class App extends Component {
+class App extends PureComponent {
   public render(): React.ReactNode {
     return (
       <Router>

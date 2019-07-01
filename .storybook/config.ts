@@ -5,6 +5,7 @@ function loadStories() {
   require('../client/ts/stories/Forms.stories');
   require('../client/ts/stories/Graph.stories');
   require('../client/ts/stories/Dropdown.stories');
+  require('../client/ts/stories/List.stories');
 }
 
 configure(loadStories, module);

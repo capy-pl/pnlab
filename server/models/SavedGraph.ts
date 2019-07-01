@@ -1,6 +1,6 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { Document, Schema } from 'mongoose';
 import { ReportInterface } from './Report';
-interface SavedGraphInterface {
+interface SavedGraphInterface extends Document {
   title: string;
   description: string;
   report: ReportInterface;
@@ -16,6 +16,6 @@ const SavedGraphSchema = new Schema<SavedGraphInterface>({
   },
 });
 
-const SavedGraph = mongoose.model('savedgraph', SavedGraphSchema);
+const SavedGraph = mongoose.model<SavedGraphInterface>('savedgraph', SavedGraphSchema);
 
 export default SavedGraph;

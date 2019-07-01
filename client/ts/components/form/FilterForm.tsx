@@ -1,22 +1,29 @@
+<<<<<<< HEAD
 import React, { Component } from 'react';
 import { Button, Divider, Dropdown } from 'semantic-ui-react';
 import { Checkbox } from 'semantic-ui-react';
 import { Input } from 'semantic-ui-react';
 import '../../../scss/form.scss';
+=======
+import React, { PureComponent } from 'react';
+import { Button } from 'semantic-ui-react';
+import { Condition } from '../../PnApp/Model/Report';
+>>>>>>> origin/dev
 
 
 const conditions = [
   {
     name: '餐別帶',
     type: 'string',
-    values: ['早餐時間帶', '中餐時間帶 ']
+    values: ['早餐時間帶', '中餐時間帶 '],
   },
   {
     name: '開始時間',
-    type: 'date'
-  }
+    type: 'date',
+  },
 ];
 
+<<<<<<< HEAD
 const time = [
   { key: 'all', text: '全選', value: 'all' },
   { key: 'breakfast', text: '早餐', value: 'breakfast' },
@@ -93,5 +100,20 @@ const FilterForm = () => (
     <Button primary type='submit'>Submit</Button>
   </div>
 );
+=======
+interface FilterFormProps {
+  conditions: Condition[];
+}
+
+class FilterForm extends PureComponent<FilterFormProps, {}> {
+  public render() {
+    return (
+      <div>
+        Test
+      </div>
+    );
+  }
+}
+>>>>>>> origin/dev
 
 export default FilterForm;
