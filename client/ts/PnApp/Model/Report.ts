@@ -10,6 +10,7 @@ export interface Node {
   community: number;
   id: number;
   degree: number;
+  core?: boolean;
 }
 
 export interface Edge {

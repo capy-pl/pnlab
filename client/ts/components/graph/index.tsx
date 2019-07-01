@@ -37,6 +37,17 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
     const copy: GraphNode = Object.assign({}, node);
     copy.label = node.name;
     copy.group = node.community.toString();
+    copy.value = node.degree;
+    copy.title = `
+    <div>
+      <p>${copy.name}</p>
+      <p>community: ${copy.group}</p>
+      <p>連接節點數: ${copy.degree}</p>
+    </div>
+    `;
+    if(node.core){
+      copy.borderWidth = 5;
+    }
     return copy;
   }
 
@@ -69,10 +80,12 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
           nodes: {
             scaling: {
               customScalingFunction: (min, max, total, value) => {
-                if (value) {
-                  return value;
+                if (max === min) {
+                  return 0.03;
+                } else {
+                  const scale = 1 / (max - min);
+                  return Math.max(0,(value - min) * scale);
                 }
-                return 0.5;
               },
               label: {
                 enabled: true,
