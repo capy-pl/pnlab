@@ -48,9 +48,10 @@ export interface ReportModel {
 }
 
 export default class Report {
-  // public static async add(body: Condition[]): Promise<AddReportResponseBody> {
-
-  // }
+  public static async add(conditions: Condition[]): Promise<{ id: string }> {
+    const { data } = await axios.post<{ id: string }>(`/report/`, { conditions });
+    return data;
+  }
 
   public static async getConditions(): Promise<Condition[]> {
     const conditions = await axios.get<{ conditions: Condition[]}>('/report/conditions');

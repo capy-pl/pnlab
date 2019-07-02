@@ -30,7 +30,7 @@ export default class Auth {
       await axios.get('/auth/validate');
       return true;
     } catch (err) {
-      console.log(err);
+      console.error(err);
       return false;
     }
   }

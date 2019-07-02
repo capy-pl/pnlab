@@ -1,13 +1,11 @@
 import React, { PureComponent } from 'react';
 import { Dropdown, DropdownProps, Header, Segment } from 'semantic-ui-react';
-import { Checkbox } from 'semantic-ui-react';
-import { Input } from 'semantic-ui-react';
 
 import { Condition } from '../../PnApp/Model/Report';
 
 interface FilterFormProps {
   conditions: Condition[];
-  onChange: (name: string, type: string) =>
+  onChange: (name: string) =>
   ((event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => void);
 }
 
@@ -49,7 +47,7 @@ const FilterForm = ({ conditions, onChange }: FilterFormProps) => {
   <FilterFormInput
     key={condition.name}
     condition={condition}
-    onChange={onChange(condition.name, condition.type)}
+    onChange={onChange(condition.name)}
   />));
   return (
     <React.Fragment>

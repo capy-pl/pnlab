@@ -67,6 +67,7 @@ env
 
 # python cache
 __pycache__
+*.pyc
 
 # build file
 dist
