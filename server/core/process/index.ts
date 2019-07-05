@@ -1,9 +1,10 @@
 import { ChildProcess, spawn } from 'child_process';
+import { Logger } from '../util';
 
 export function startPythonWorker(): Promise<ChildProcess> {
   let finish = false;
   return new Promise((resolve, reject) => {
-    console.log('Spawn python consumers.');
+    Logger.log('Spawn python consumers.');
     const ps = spawn(
       'python',
       ['./index.py'],
@@ -15,13 +16,13 @@ export function startPythonWorker(): Promise<ChildProcess> {
       if (code === 1) {
         reject(new Error(`Python process exited with code ${code}`));
       } else {
-        console.log(`Python process exited with code ${code}`);
+        Logger.log(`Python process exited with code ${code}`);
       }
     });
 
     if (ps.stdout) {
       ps.stdout.on('data', (chunk) => {
-        console.log(chunk.toString());
+        Logger.log(chunk.toString().replace('\n', ''));
         if (!finish) {
           finish = true;
           resolve(ps);
@@ -30,7 +31,7 @@ export function startPythonWorker(): Promise<ChildProcess> {
     }
 
     ps.on('error', (err) => {
-      console.error(err);
+      Logger.error(err);
     });
 
     return ps;

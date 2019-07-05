@@ -13,6 +13,6 @@ const XLoader = ({ size }: LoaderProps) => (
       </Dimmer>
     </Container>
   </div>
-)
+);
 
 export default XLoader;

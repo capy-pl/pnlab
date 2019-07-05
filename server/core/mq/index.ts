@@ -1,15 +1,15 @@
 import amqplib from 'amqplib';
-
+import { Logger } from '../util';
 let channel: amqplib.Channel;
 
 export default async function amqpConnect(): Promise<void> {
-  console.log('Connect to RabbitMQ...');
+  Logger.log('Connect to RabbitMQ...');
   const connection = await amqplib.connect('amqp://localhost');
   channel = await connection.createChannel();
   channel.assertQueue('pn', {
     durable: true,
   });
-  console.log('Connection Established.');
+  Logger.log('Connection Established.');
 }
 
 export function getChannel(): amqplib.Channel {
