@@ -12,6 +12,7 @@ def main():
         worker_pool.apply_async(worker, [])
 
     worker_pool.close()
+    print(' [*] Waiting for incoming messages.', flush=True)
     worker_pool.join()
 
 if __name__ == '__main__':
