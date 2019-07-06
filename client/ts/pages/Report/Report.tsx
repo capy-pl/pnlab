@@ -3,6 +3,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import { Dimmer, Loader, Segment } from 'semantic-ui-react';
 
 import Graph from '../../components/graph';
+import DropdownMenu from '../../components/menu/DropdownMenu';
 import ReportAPI from '../../PnApp/Model/Report' ;
 
 interface ReportProps extends RouteComponentProps<{ id: string }> {
@@ -39,10 +40,13 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
     } else {
       if (this.state.report) {
         return (
-          <Graph
-            nodes={this.state.report.nodes}
-            edges={this.state.report.edges}
-          />
+          <div>
+            <DropdownMenu />
+            <Graph
+              nodes={this.state.report.nodes}
+              edges={this.state.report.edges}
+            />
+          </div>
         );
       }
     }

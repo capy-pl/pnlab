@@ -5,7 +5,9 @@ import 'semantic-ui-css/semantic.min.css';
 
 import {
   Navbar,
+  SecondaryNavbar,
   SettingMenu,
+  DropdownMenu,
 } from '../components/menu';
 
 const stories = storiesOf('Menu', module);
@@ -24,4 +26,12 @@ stories
     ))
   .add('Setting Menu', () => (
     <SettingMenu />
+  ))
+  .add(
+    'Secondary Navigation Bar', () => (
+      <SecondaryNavbar />
+  ))
+  .add(
+    'Dropdown Menu', () => (
+      <DropdownMenu />
   ));

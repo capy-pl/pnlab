@@ -36,7 +36,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
   public toNode(node: Node): GraphNode {
     const copy: GraphNode = Object.assign({}, node);
     copy.label = node.name;
-    copy.group = node.community.toString();
+    // copy.group = node.community.toString();
     copy.value = node.degree;
     copy.title = `
     <div>
@@ -45,14 +45,21 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
       <p>連接節點數: ${copy.degree}</p>
     </div>
     `;
-    if(node.core){
+    if (node.core) {
       copy.borderWidth = 5;
     }
     return copy;
   }
 
   public toEdge(edge: Edge): GraphEdge {
-    return Object.assign({}, edge) as GraphEdge;
+    const copy: GraphEdge = Object.assign({}, edge);
+    copy.value = edge.weight;
+    copy.title = `
+    <div>
+      <p>weight: ${copy.weight}</p>
+    </div>
+    `;
+    return copy;
   }
 
   public initializeGraph(): void {
@@ -73,9 +80,22 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
       }, {
           edges: {
             smooth: false,
+            scaling: {
+              customScalingFunction: (min, max, total, value) => {
+                if (max === min) {
+                  return 0.03;
+                } else {
+                  const scale = 1 / (max - min);
+                  return Math.max(0,(value - min)*scale);
+                }
+              },
+              max: 30,
+              min: 1,
+            },
           },
           layout: {
-            improvedLayout: true,
+            improvedLayout: false,
+            randomSeed: 5,
           },
           nodes: {
             scaling: {
@@ -90,17 +110,23 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
               label: {
                 enabled: true,
               },
-              max: 50,
-              min: 10,
+              max: 60,
+              min: 30,
             },
             shape: 'dot',
           },
           physics: {
             barnesHut: {
-              springLength: 200,
+              springLength: 250,
               centralGravity: 0.1,
             },
             stabilization: true,
+            interaction: {
+              hover: true,
+              tooltipDelay: 100,
+              // navigationButtons: true,
+              // multiselect: true
+            },
           },
         });
     }
