@@ -22,6 +22,9 @@ const clientConfig = {
     ]
   },
   resolve: {
+    alias: {
+      Component: path.resolve(__dirname, 'client', 'ts', 'components'),
+    },
     extensions: ['.ts', '.js', '.jsx', '.tsx', '.json', '.scss', '.css'],
   },
   output: {

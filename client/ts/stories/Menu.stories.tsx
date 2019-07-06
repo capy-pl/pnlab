@@ -6,7 +6,7 @@ import 'semantic-ui-css/semantic.min.css';
 import {
   Navbar,
   SettingMenu,
-} from '../components/menu';
+} from 'Component/menu';
 
 const stories = storiesOf('Menu', module);
 

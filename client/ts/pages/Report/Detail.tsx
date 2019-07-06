@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 
-import Graph from '../../components/graph';
-import Loader from '../../components/Loader';
+import Graph from 'Component/graph';
+import Loader from 'Component/Loader';
 import ReportAPI from '../../PnApp/Model/Report' ;
 
 interface ReportProps extends RouteComponentProps<{ id: string }> {

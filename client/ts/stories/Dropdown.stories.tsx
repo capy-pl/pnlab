@@ -3,7 +3,7 @@ import React from 'react';
 import 'semantic-ui-css/semantic.min.css';
 import { DropdownProps } from 'semantic-ui-react';
 
-import SearchDropdown from '../components/dropdown/SearchDropdown';
+import SearchDropdown from 'Component/dropdown/SearchDropdown';
 
 const stories = storiesOf('Dropdown', module);
 

@@ -2,8 +2,8 @@ import React, { PureComponent as PureComponent } from 'react';
 import { Route, RouteComponentProps, withRouter } from 'react-router-dom';
 import { Container, Dimmer, Loader } from 'semantic-ui-react';
 
-import Navbar from '../../components/menu/Navbar';
-import Switch from '../../components/Switch';
+import Navbar from 'Component/menu/Navbar';
+import Switch from 'Component/Switch';
 import { Auth } from '../../PnApp';
 import { updateCurrentUser } from '../../PnApp/Helper';
 import ReportRouter, { ReportList } from '../Report';

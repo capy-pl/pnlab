@@ -2,9 +2,9 @@ import React, { PureComponent } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { Button, Container, DropdownProps, Segment } from 'semantic-ui-react';
 
-import FilterForm from '../../components/form/FilterForm';
-import Loader from '../../components/Loader';
-import ModalConfirm from '../../components/modal/Confirm';
+import FilterForm from 'Component/form/FilterForm';
+import Loader from 'Component/Loader';
+import ModalConfirm from 'Component/modal/Confirm';
 import { Report } from '../../PnApp/Model';
 import { Condition, ConditionType } from '../../PnApp/Model/Report';
 

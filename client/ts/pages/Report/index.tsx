@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
 
-import Switch from '../../components/Switch';
+import Switch from 'Component/Switch';
 import ReportAdd from './Add';
 import ReportDetail from './Detail';
 import ReportList from './List';

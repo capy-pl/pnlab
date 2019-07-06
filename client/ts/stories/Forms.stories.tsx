@@ -2,9 +2,9 @@ import { storiesOf } from '@storybook/react';
 import React from 'react';
 import 'semantic-ui-css/semantic.min.css';
 
-import FilterForm from '../components/form/FilterForm';
-import LoginForm from '../components/form/LoginForm';
-import ProfileForm from '../components/form/ProfileForm';
+import FilterForm from 'Component/form/FilterForm';
+import LoginForm from 'Component/form/LoginForm';
+import ProfileForm from 'Component/form/ProfileForm';
 import { ConditionType } from '../PnApp/Model/Report';
 
 const stories = storiesOf('Forms', module);

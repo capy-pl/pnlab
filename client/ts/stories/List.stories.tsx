@@ -5,11 +5,11 @@ import React from 'react';
 import 'semantic-ui-css/semantic.min.css';
 
 import {
+  SearchHistoryItem,
+} from 'Component/list';
+import {
   Table,
 } from 'semantic-ui-react';
-import {
-  SearchHistoryItem,
-} from '../components/list';
 
 import {
   ReportStatus,
