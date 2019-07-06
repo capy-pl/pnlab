@@ -6,6 +6,7 @@ export interface Node {
   community: number;
   id: number;
   degree: number;
+  core?: boolean;
 }
 
 export interface Edge {
@@ -62,6 +63,7 @@ const NodeSchema = new Schema<Node>({
     type: Number,
     required: true,
   },
+  core: Boolean,
 });
 
 const EdgeSchema = new Schema<Edge>({

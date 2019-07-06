@@ -1,30 +1,50 @@
 import json
 import igraph
 from itertools import filterfalse, combinations
-import json
 
 from .error import ZeroNodeError
 
 class ProductNerwork:
     def __init__(self, graph):
         self.graph = graph
-        self.communities = graph.community_fastgreedy('weight').as_clustering()
+        self._communities = graph.community_fastgreedy(
+            'weight').as_clustering()
         for index, vertex in enumerate(self.graph.vs):
-            vertex.update_attributes({ 'community': self.communities.membership[index], 'id': index })
+            vertex.update_attributes(
+                {'community': self._communities.membership[index], 'id': index})
+        self.communities = self.get_communities()
+        for community in self.communities:
+            if 'core' in community:
+                node = self.graph.vs.find(community['core'])
+                node.update_attributes({'core': True})
 
     def get_communities(self, sort=True):
         dics = []
-        for subgraph in self.communities.subgraphs():
+        for subgraph in self._communities.subgraphs():
             nums = len(subgraph.vs)
-            weight_sum = sum([edge['weight'] for edge in subgraph.es]) * (nums) / nums / (nums + 1)
-            comm_name = [ node['name'] for node in subgraph.vs]
+            # Do not compute core for those communities have nodes less than 3.
+            if nums < 3:
+                continue
+            weight_sum = sum([edge['weight']
+                              for edge in subgraph.es]) * (nums) / nums / (nums + 1)
+            items_weight_dict = {}
+            for node in subgraph.vs:
+                edges_ids = subgraph.incident(node['name'], mode='ALL')
+                node_weight = sum([subgraph.es[e]['weight']
+                                   for e in edges_ids])
+                items_weight_dict[node['name']] = node_weight
+            core = None
+            core = max(items_weight_dict, key=lambda x: items_weight_dict[x])
+            items = [node['name'] for node in subgraph.vs]
             dic = {
                 'weight': weight_sum,
-                'items': comm_name
+                'items': items,
             }
+            if core:
+                dic['core'] = core
             dics.append(dic)
         if sort:
-            return sorted(dics, key=lambda x : x['weight'], reverse=True)
+            return sorted(dics, key=lambda x: x['weight'], reverse=True)
         return dics
 
     def get_connectors(self):
