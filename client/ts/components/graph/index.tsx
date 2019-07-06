@@ -104,7 +104,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
                   return 0.03;
                 } else {
                   const scale = 1 / (max - min);
-                  return Math.max(0,(value - min) * scale);
+                  return Math.max(0, (value - min) * scale);
                 }
               },
               label: {

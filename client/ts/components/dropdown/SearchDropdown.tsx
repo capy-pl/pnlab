@@ -23,6 +23,6 @@ const SearchDropdown = ({ placeholder, options, onChange }: SearchDropDownProps)
     onChange={onChange}
     options={options}
   />
-)
+);
 
 export default SearchDropdown;

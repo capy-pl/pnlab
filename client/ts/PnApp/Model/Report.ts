@@ -1,8 +1,10 @@
 import axios from 'axios';
+
+export type ConditionType = 'string' | 'int' | 'date' | 'float';
 export interface Condition {
   name: string;
-  type: string | 'string' | 'int' | 'date' | 'float';
-  values: string[] | Date[];
+  type: ConditionType;
+  values: string[];
 }
 
 export interface Node {
@@ -19,12 +21,14 @@ export interface Edge {
   weight: number;
 }
 
+export type ReportStatus = 'error' | 'pending' | 'success';
+
 export interface ProjectedReport {
   _id: string;
   created: Date;
   conditions: Condition[];
   modified: Date;
-  status: 'error' | 'pending' | 'success';
+  status: ReportStatus;
   errMessage: string;
   startTime: Date;
   endTime: Date;
@@ -35,7 +39,7 @@ export interface ReportModel {
   created: Date;
   conditions: Condition[];
   modified: Date;
-  status: 'error' | 'pending' | 'success';
+  status: ReportStatus;
   errMessage: string;
   nodes: Node[];
   edges: Edge[];
@@ -44,9 +48,10 @@ export interface ReportModel {
 }
 
 export default class Report {
-  // public static async add(body: Condition[]): Promise<AddReportResponseBody> {
-
-  // }
+  public static async add(conditions: Condition[]): Promise<{ id: string }> {
+    const { data } = await axios.post<{ id: string }>(`/report/`, { conditions });
+    return data;
+  }
 
   public static async getConditions(): Promise<Condition[]> {
     const conditions = await axios.get<{ conditions: Condition[]}>('/report/conditions');

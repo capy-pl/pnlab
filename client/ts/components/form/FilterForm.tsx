@@ -1,31 +1,59 @@
 import React, { PureComponent } from 'react';
-import { Button } from 'semantic-ui-react';
-import { Condition } from '../../PnApp/Model/Report';
+import { Dropdown, DropdownProps, Header, Segment } from 'semantic-ui-react';
 
-const conditions = [
-  {
-    name: '餐別帶',
-    type: 'string',
-    values: ['早餐時間帶', '中餐時間帶 '],
-  },
-  {
-    name: '開始時間',
-    type: 'date',
-  },
-];
+import { Condition } from '../../PnApp/Model/Report';
 
 interface FilterFormProps {
   conditions: Condition[];
+  onChange: (name: string) =>
+  ((event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => void);
 }
 
-class FilterForm extends PureComponent<FilterFormProps, {}> {
-  public render() {
-    return (
-      <div>
-        Test
-      </div>
-    );
-  }
+interface FilterFormInputProps {
+  condition: Condition;
+  onChange: (event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => void;
 }
+
+const FilterFormInput = ({ condition, onChange }: FilterFormInputProps) => {
+  if (condition.type === 'string') {
+    const options = condition.values.map((value) => {
+      return {
+        text: value,
+        value,
+      };
+    });
+
+    return (
+      <Segment color='teal'>
+        <Header block>{condition.name}</Header>
+        <Dropdown
+          onChange={onChange}
+          placeholder={`Please select ${condition.name}`}
+          fluid
+          multiple
+          search
+          selection
+          options={options}
+        />
+      </Segment>
+    );
+  } else {
+    return <React.Fragment />;
+  }
+};
+
+const FilterForm = ({ conditions, onChange }: FilterFormProps) => {
+  const inputs = conditions.map((condition) => (
+  <FilterFormInput
+    key={condition.name}
+    condition={condition}
+    onChange={onChange(condition.name)}
+  />));
+  return (
+    <React.Fragment>
+      {inputs}
+    </React.Fragment>
+  );
+};
 
 export default FilterForm;

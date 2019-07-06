@@ -80,8 +80,12 @@ const Item = ({ item, onLinkClick }: ItemProps) => {
       <Table.Cell textAlign='center'>
         <StatusIcon status={item.status}/>
       </Table.Cell>
-      <Table.Cell textAlign='center'>{item.startTime.toLocaleString()}</Table.Cell>
-      <Table.Cell textAlign='center'>{item.endTime.toLocaleString()}</Table.Cell>
+      <Table.Cell textAlign='center'>
+        {item.startTime.toLocaleString() === 'Invalid Date' ? 'All' : item.startTime.toLocaleString()}
+      </Table.Cell>
+      <Table.Cell textAlign='center'>
+        {item.endTime.toLocaleString() === 'Invalid Date' ? 'All' : item.endTime.toLocaleString()}
+      </Table.Cell>
       <Table.Cell>{tagList}</Table.Cell>
       <Table.Cell>
         <Button

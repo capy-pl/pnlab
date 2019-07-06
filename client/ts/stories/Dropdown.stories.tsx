@@ -34,6 +34,6 @@ stories
 
       const placeholder = 'Please select a country';
 
-      return <SearchDropdown placeholder={placeholder} options={countryOptions} onChange={onChange} />
-    }
+      return <SearchDropdown placeholder={placeholder} options={countryOptions} onChange={onChange} />;
+    },
   );

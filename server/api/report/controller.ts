@@ -165,9 +165,9 @@ export async function GetReports(req: e.Request, res: e.Response, next: e.NextFu
   try {
     let reports: ProjectedReport[];
     if (limit) {
-      reports = await Report.find({}, projection).limit(limit);
+      reports = await Report.find({}, projection).limit(limit).sort({ created: -1 });
     } else {
-      reports = await Report.find({}, projection);
+      reports = await Report.find({}, projection).sort({ created: -1 });
     }
     res.send({ reports });
   } catch (err) {

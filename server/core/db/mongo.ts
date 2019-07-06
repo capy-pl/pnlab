@@ -1,6 +1,8 @@
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 
+import { Logger } from '../util';
+
 // Register all module
 import '../../models';
 
@@ -13,10 +15,10 @@ export default async function connectMongo(): Promise<mongoose.Connection | unde
     const connection = await mongoose.connect(`mongodb://127.0.0.1:${MONGO_PORT}/${MONGO_DB_NAME}`, {
       useNewUrlParser: true,
     });
-    console.log('Successfully connect to mongodb.');
+    Logger.log('Successfully connect to mongodb.');
     return connection.connection;
   } catch (err) {
-    console.error(err);
+    Logger.error(err);
     process.exit(1);
   }
   return undefined;
@@ -27,10 +29,10 @@ export async function connectTestMongo(): Promise<mongoose.Connection | undefine
     const connection = await mongoose.connect(`mongodb://127.0.0.1:${MONGO_PORT}/${MONGO_DB_NAME}_test`, {
       useNewUrlParser: true,
     });
-    console.log('Successfully connect to mongodb.');
+    Logger.log('Successfully connect to mongodb.');
     return connection.connection;
   } catch (err) {
-    console.error(err);
+    Logger.error(err);
     process.exit(1);
   }
   return undefined;
