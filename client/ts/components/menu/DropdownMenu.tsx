@@ -15,7 +15,7 @@ const DropdownMenu = (props) => (
     </Dropdown>
     <Dropdown onClick={props.onClickC} text='Communities' pointing className='link item'>
       <Dropdown.Menu>
-        <Dropdown.Item onClick={props.onShowProductRank}>Communities排名</Dropdown.Item>
+        <Dropdown.Item onClick={props.onShowCommunities}>Communities排名</Dropdown.Item>
         <Dropdown.Item onClick={props.onShowCharacter}>Communities角色</Dropdown.Item>
       </Dropdown.Menu>
     </Dropdown>

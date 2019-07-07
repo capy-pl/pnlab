@@ -3,9 +3,10 @@ import { RouteComponentProps } from 'react-router-dom';
 
 import Graph from '../../components/graph';
 import Loader from '../../components/Loader';
-import DropdownMenu from '../../components/menu/DropdownMenu';
-import CharacterMessage from '../../components/message/CharacterMessage';
-import ProductRank from '../../components/message/ProductRank';
+import { DropdownMenu } from '../../components/menu';
+import { CharacterMessage, CommunitiesMessage, ProductRank } from '../../components/message';
+// import CommunitiesMessage from '../../components/message/CommunitiesMessage';
+// import ProductRank from '../../components/message/ProductRank';
 import ReportAPI from '../../PnApp/Model/Report' ;
 interface ReportProps extends RouteComponentProps<{ id: string }> {
 }
@@ -18,6 +19,7 @@ interface ReportState {
   productRankInfo?: {};
   comm?: boolean;
   content: string;
+  communitiesInfo?: {};
   // mode: string;
 }
 
@@ -34,6 +36,7 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
     this.onClickC = this.onClickC.bind(this);
     this.onShowCharacter = this.onShowCharacter.bind(this);
     this.onShowProductRank = this.onShowProductRank.bind(this);
+    this.onShowCommunities = this.onShowCommunities.bind(this);
   }
 
   public async componentDidMount() {
@@ -52,6 +55,10 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
       productRankInfo: [
         {rank: '1', name: '鮪魚飯糰'},
         {rank: '2', name: '茶葉蛋'},
+      ],
+      communitiesInfo: [
+        {rank: '1.', name: 'A'},
+        {rank: '2.', name: 'B'},
       ],
     });
   }
@@ -78,27 +85,34 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
     this.setState({content: 'productRank'});
   }
 
+  public onShowCommunities(event) {
+    event.stopPropagation();
+    this.setState({content: 'communities'});
+  }
+
   public render() {
     let message;
 
     if (this.state.content === 'character') {
       message =  <CharacterMessage coreInfo={this.state.coreInfo} hookInfo={this.state.hookInfo} />;
-    }
-    if (this.state.content === 'productRank') {
+    } else if (this.state.content === 'productRank') {
       message = <ProductRank productRankInfo={this.state.productRankInfo} />;
+    } else if (this.state.content === 'communities') {
+      message = <CommunitiesMessage communitiesInfo={this.state.communitiesInfo}/>;
     }
     if (this.state.loading) {
       return <Loader size='huge' />;
     } else {
       if (this.state.report) {
         return (
-          <div>
+          <React.Fragment>
             <DropdownMenu
               reportId={this.state.report.id}
               onClickP={this.onClickP}
               onClickC={this.onClickC}
               onShowCharacter={this.onShowCharacter}
               onShowProductRank={this.onShowProductRank}
+              onShowCommunities={this.onShowCommunities}
             />
             <div style={{ position: 'relative' }}>
               <div style={{ width: '100%', position: 'absolute' }}>
@@ -112,7 +126,7 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
                 {message}
               </div>
             </div>
-          </div>
+          </React.Fragment>
         );
       }
     }
