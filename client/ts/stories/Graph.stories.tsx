@@ -9,6 +9,10 @@ const stories = storiesOf('Graph', module);
 
 stories
   .add(
-    'Graph', () => (
-      <Graph nodes={data.nodes} edges={data.edges} />
+    'Communities', () => (
+      <Graph nodes={data.nodes} edges={data.edges} comm={true} />
+    ))
+  .add(
+    'ProductNetwork', () => (
+      <Graph nodes={data.nodes} edges={data.edges} comm={false} />
     ));

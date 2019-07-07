@@ -15,6 +15,7 @@ const style = {
 interface GraphProps {
   nodes: Node[];
   edges: Edge[];
+  comm?: boolean;
 }
 
 export default class GraphView extends PureComponent<GraphProps, {}> {
@@ -36,7 +37,9 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
   public toNode(node: Node): GraphNode {
     const copy: GraphNode = Object.assign({}, node);
     copy.label = node.name;
-    // copy.group = node.community.toString();
+    if (this.props.comm) {
+        copy.group = node.community.toString();
+    }
     copy.value = node.degree;
     copy.title = `
     <div>
@@ -45,8 +48,10 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
       <p>連接節點數: ${copy.degree}</p>
     </div>
     `;
-    if (node.core) {
-      copy.borderWidth = 5;
+    if (this.props.comm) {
+      if (node.core) {
+        copy.borderWidth = 5;
+      }
     }
     return copy;
   }
@@ -121,13 +126,13 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
               centralGravity: 0.1,
             },
             stabilization: true,
-            interaction: {
+          },
+          interaction: {
               hover: true,
               tooltipDelay: 100,
               // navigationButtons: true,
               // multiselect: true
             },
-          },
         });
     }
   }

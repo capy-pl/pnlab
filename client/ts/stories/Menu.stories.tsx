@@ -4,10 +4,10 @@ import { MemoryRouter } from 'react-router-dom';
 import 'semantic-ui-css/semantic.min.css';
 
 import {
+  DropdownMenu,
   Navbar,
   SecondaryNavbar,
   SettingMenu,
-  DropdownMenu,
 } from '../components/menu';
 
 const stories = storiesOf('Menu', module);
