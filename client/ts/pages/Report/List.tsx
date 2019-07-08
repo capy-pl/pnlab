@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { Button, Segment, Table } from 'semantic-ui-react';
 
-import { SearchHistoryItem } from '../../components/list';
+import { SearchHistoryItem } from 'Component/list';
 import { Report } from '../../PnApp/Model';
 import { ProjectedReport, ReportStatus } from '../../PnApp/Model/Report';
 

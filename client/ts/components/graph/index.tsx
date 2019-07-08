@@ -143,3 +143,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
     );
   }
 }
+
+export {
+  GraphView,
+};

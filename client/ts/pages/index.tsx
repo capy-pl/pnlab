@@ -1,7 +1,7 @@
+import AnimatedSwitch from 'Component/Switch';
 import React, { PureComponent } from 'react';
 import { hot } from 'react-hot-loader/root';
 import { HashRouter as Router, Route } from 'react-router-dom';
-import AnimatedSwitch from '../components/Switch';
 
 import Home from './Home';
 import SignIn from './SignIn';

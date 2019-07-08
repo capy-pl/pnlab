@@ -8,7 +8,7 @@ import {
   Navbar,
   SecondaryNavbar,
   SettingMenu,
-} from '../components/menu';
+} from 'Component/menu';
 
 const stories = storiesOf('Menu', module);
 
