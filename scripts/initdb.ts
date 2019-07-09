@@ -29,6 +29,12 @@ dotenv.config();
       Logger.log('No default users collection, continue.');
     }
 
+    try {
+      await connection.dropCollection('reports');
+    } catch (err) {
+      Logger.log('No default report, continue.');
+    }
+
     const defaultSchema: ImportSchemaInterface = {
       transactionFields: [{
         name: '餐別帶',

@@ -22,26 +22,22 @@ class ProductNerwork:
         dics = []
         for subgraph in self._communities.subgraphs():
             nums = len(subgraph.vs)
-            # Do not compute core for those communities have nodes less than 3.
-            if nums < 3:
-                continue
             weight_sum = sum([edge['weight']
                               for edge in subgraph.es]) * (nums) / nums / (nums + 1)
-            items_weight_dict = {}
-            for node in subgraph.vs:
-                edges_ids = subgraph.incident(node['name'], mode='ALL')
-                node_weight = sum([subgraph.es[e]['weight']
-                                   for e in edges_ids])
-                items_weight_dict[node['name']] = node_weight
-            core = None
-            core = max(items_weight_dict, key=lambda x: items_weight_dict[x])
             items = [node['name'] for node in subgraph.vs]
             dic = {
                 'weight': weight_sum,
                 'items': items,
             }
-            if core:
-                dic['core'] = core
+            # Only compute core for those communities have node number larger than 3.
+            if nums >= 3:
+                items_weight_dict = {}
+                for node in items:
+                    edges_ids = subgraph.incident(node, mode='ALL')
+                    node_weight = sum([subgraph.es[e]['weight']
+                                       for e in edges_ids])
+                    items_weight_dict[node] = node_weight
+                dic['core'] = max(items_weight_dict, key=lambda x: items_weight_dict[x])
             dics.append(dic)
         if sort:
             return sorted(dics, key=lambda x: x['weight'], reverse=True)
@@ -79,6 +75,7 @@ class ProductNerwork:
         return {
             'nodes': nodes,
             'edges': edges,
+            'communities': self.communities,
         }
 
     def to_json(self):
