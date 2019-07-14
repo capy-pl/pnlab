@@ -9,34 +9,40 @@ yarn
 ```
 grunt initdb
 ``` 
-2. Run in development mode. The command will also build all front-end files. The server will restart(server related files) and rebuild(client files) on files changing.
-Note: `ts-node` is used to start server in this case, which may cause slow startup time.
+2. For front-end, use following command.
 ```
-grunt run
+npm run fdev
 ```
-3. Run in production mode. The command will first build front-end and back-end files, and start server.
-Note: The server won't restart or rebuild front-files when files are edited.
+3. For back-end.
 ```
-grunt prodRun
+npm run dev
 ```
 
 ## Front-End Commands
+1. Start a server. Hot module reload is enabled by default.
+```
+npm run fdev
+```
 1. Build front-end files.
 ```
 grunt build:client
 ```
-2. Watch front-end files.
+3. Watch front-end files.
 ```
 grunt watch:client
 ```
-3. Start storybook
+4. Start storybook
 ```
 // config your stories in client/ts/stories
 npm run storybook
 ```
 
 ## Back-End Commands
-1. Build back-end files(convert ts files to js and bundle as a single file).
+1. Use nodemon to listen backend files change.
+```
+npm run dev
+```
+2. Build back-end files(convert ts files to js and bundle as a single file).
 ```
 grunt build:server
 ```

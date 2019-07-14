@@ -15,6 +15,12 @@ export interface Edge {
   weight: number;
 }
 
+export interface Community {
+  core?: string;
+  items: string[];
+  weight: number;
+}
+
 export interface Condition extends FieldSchemaInterface {
   name: string | 'filterGroups' | 'filterItems';
 }
@@ -81,8 +87,19 @@ const EdgeSchema = new Schema<Edge>({
   },
 });
 
+const CommunitySchema = new Schema<Community>({
+  core: String,
+  items: {
+    type: [String],
+    required: true,
+  },
+  weight: {
+    type: Number,
+    required: true,
+  },
+});
+
 const ReportSchema = new Schema<ReportInterface>({
-  // communities: [],
   conditions: [ConditionSchema],
   edges: [NodeSchema],
   nodes: [EdgeSchema],
@@ -94,6 +111,9 @@ const ReportSchema = new Schema<ReportInterface>({
   created: {
     type: Date,
     required: true,
+  },
+  communities: {
+    type: [CommunitySchema],
   },
   modified: {
     type: Date,

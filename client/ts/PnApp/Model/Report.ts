@@ -21,6 +21,12 @@ export interface Edge {
   weight: number;
 }
 
+export interface Community {
+  core?: string;
+  items: string[];
+  weight: number;
+}
+
 export type ReportStatus = 'error' | 'pending' | 'success';
 
 export interface ProjectedReport {
@@ -37,6 +43,7 @@ export interface ProjectedReport {
 export interface ReportModel {
   _id: string;
   created: Date;
+  communities: Community[];
   conditions: Condition[];
   modified: Date;
   status: ReportStatus;

@@ -23,6 +23,7 @@ def network_analysis(report_id):
         product_network = converter.convert()
         data = product_network.to_document()
         update_expr = {
+            'communities': data['communities'],
             'nodes': data['nodes'],
             'edges': data['edges'],
             'status': 'success',
