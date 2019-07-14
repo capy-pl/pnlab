@@ -6,6 +6,8 @@
 		"lint": "tslint",
 		"test": "jest",
 		"start": "nodemon",
+		"dev": "nodemon",
+		"fdev": "ts-node server/index.ts",
 		"storybook": "start-storybook"
 	},
 	"license": "ISC",
