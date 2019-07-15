@@ -24,7 +24,7 @@ export async function AddCategory(req: e.Request, res: e.Response): Promise<void
   for (const item of items) {
     const hasFound = await connection.db.collection('items').findOne({ 單品名稱: item });
     if (!hasFound) {
-      return res.status(422).send({ message: `Cannot not found item "${item}".` }).end();
+      return res.status(404).send({ message: `Cannot not found item "${item}".` }).end();
     }
   }
   const category = new Category({

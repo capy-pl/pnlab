@@ -3,8 +3,6 @@ import mongoose, { Document, Schema } from 'mongoose';
 export interface CategoryInterface extends Document {
   items: string[];
   name: string;
-  startTime?: Date;
-  endTime?: Date;
 }
 
 const CategorySchema = new Schema<CategoryInterface>({

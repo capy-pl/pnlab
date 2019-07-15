@@ -67,6 +67,7 @@ app.use('/auth', API.Auth);
 app.use('/user', API.User);
 app.use('/report', API.Report);
 app.use('/category', API.Category);
+app.use('/promotion', API.Promotion);
 
 app.use((
   err: Error,
