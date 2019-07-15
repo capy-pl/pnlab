@@ -66,6 +66,7 @@ app.get('/', (req, res) => {
 app.use('/auth', API.Auth);
 app.use('/user', API.User);
 app.use('/report', API.Report);
+app.use('/category', API.Category);
 
 app.use((
   err: Error,
