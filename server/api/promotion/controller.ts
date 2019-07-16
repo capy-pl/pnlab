@@ -11,6 +11,7 @@ interface AddPromotionBody extends PromotionInterface {
 
 export async function AddPromotion(req: e.Request, res: e.Response): Promise<void> {
   const body = req.body as AddPromotionBody;
+  console.log(body);
   if (!(body.name && body.groupOne && body.startTime && body.endTime)) {
     return res.status(400).send({  message: 'Missing field.' }).end();
   }
@@ -45,9 +46,9 @@ export async function AddPromotion(req: e.Request, res: e.Response): Promise<voi
   try {
     const promotion = new Promotion(body);
     await promotion.save();
-    return res.status(201).end();
+    res.status(201).end();
   } catch (error) {
-    return res.status(422).send({ message: error.message }).end();
+    res.status(422).send({ message: error.message });
   }
 }
 
@@ -65,6 +66,59 @@ export async function GetPromotions(req: e.Request, res: e.Response): Promise<vo
     return res.send({ promotions }).end();
   } else {
     const promotions = await Promotion.find({});
-    return res.send({ promotions }).end();
+    res.send({ promotions });
+  }
+}
+
+export async function GetPromotion(req: e.Request, res: e.Response): Promise<void> {
+  const { object } = req;
+  res.send(object);
+}
+
+interface UpdatePromotionBody extends PromotionInterface {
+}
+
+export async function UpdatePromotion(req: e.Request, res: e.Response): Promise<void> {
+  const object = req.object as PromotionInterface;
+  const body = req.body as UpdatePromotionBody;
+  if (!(body.name && body.groupOne && body.startTime && body.endTime)) {
+    return res.status(400).send({ message: 'Missing field.' }).end();
+  }
+
+  try {
+    body.startTime = new Date(body.startTime);
+    body.endTime = new Date(body.endTime);
+  } catch (err) {
+    return res.status(400).send({ message: 'startTime or endTime is not correct or provided.' }).end();
+  }
+  if (object) {
+    for (const key in body) {
+      if (key in object) {
+        object[key] = body[key];
+      }
+    }
+
+    if (object.type === 'direct') {
+      object.groupTwo = [];
+    }
+
+    try {
+      await object.save();
+      res.status(200).end();
+    } catch (err) {
+      res.status(400).send({ message: err.message });
+    }
+  }
+}
+
+export async function DeletePromotion(req: e.Request, res: e.Response): Promise<void> {
+  const { object } = req;
+  try {
+    if (object) {
+      await object.remove();
+      res.status(200).end();
+    }
+  } catch (err) {
+    res.status(400).end();
   }
 }
