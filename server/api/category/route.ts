@@ -2,14 +2,16 @@ import { Router } from 'express';
 
 import { loginRequired } from '../../core/auth';
 import {
-  Info,
+  AddCategory,
+  GetCategories,
 } from './controller';
 
 const router = Router();
 
 router
-  .route('/info')
+  .route('/')
   .all(loginRequired)
-  .get(Info);
+  .get(GetCategories)
+  .post(AddCategory);
 
 export default router;
