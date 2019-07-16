@@ -5,6 +5,8 @@ import { Container, Grid, Segment } from 'semantic-ui-react';
 import { SettingMenu } from 'Component/menu';
 import AnimatedSwitch from 'Component/Switch';
 import Profile from './Profile';
+import DeleteItem from './DeleteItem';
+
 
 export default class Setting extends PureComponent {
   public render() {
@@ -18,6 +20,7 @@ export default class Setting extends PureComponent {
             <Segment>
               <AnimatedSwitch>
                 <Route exact path='/settings/profile' component={Profile} />
+                <Route exact path='/settings/deleteitem' component={DeleteItem} />
               </AnimatedSwitch>
             </Segment>
           </Grid.Column>
