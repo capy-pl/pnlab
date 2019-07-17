@@ -3,7 +3,7 @@ import { RouteComponentProps } from 'react-router-dom';
 
 import Graph from 'Component/graph';
 import Loader from 'Component/Loader';
-import ReportAPI from '../../PnApp/Model/Report' ;
+import ReportAPI from '../../PnApp/model/Report' ;
 
 interface ReportProps extends RouteComponentProps<{ id: string }> {
 }

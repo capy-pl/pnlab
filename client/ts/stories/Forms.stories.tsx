@@ -5,7 +5,7 @@ import 'semantic-ui-css/semantic.min.css';
 import FilterForm from 'Component/form/FilterForm';
 import LoginForm from 'Component/form/LoginForm';
 import ProfileForm from 'Component/form/ProfileForm';
-import { ConditionType } from '../PnApp/Model/Report';
+import { ConditionType } from '../PnApp/model/Report';
 
 const stories = storiesOf('Forms', module);
 

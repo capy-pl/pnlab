@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Dropdown, DropdownProps, Header, Segment } from 'semantic-ui-react';
 
-import { Condition } from '../../PnApp/Model/Report';
+import { Condition } from '../../PnApp/model/Report';
 
 interface FilterFormProps {
   conditions: Condition[];

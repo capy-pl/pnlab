@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { DataSet, EdgeOptions, Network, NodeOptions } from 'vis';
-import { Edge, Node } from '../../PnApp/Model/Report';
+import { Edge, Node } from '../../PnApp/model/Report';
 
 interface GraphNode extends Node, NodeOptions {
 }

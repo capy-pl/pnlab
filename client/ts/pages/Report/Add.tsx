@@ -5,8 +5,8 @@ import { Button, Container, DropdownProps, Segment } from 'semantic-ui-react';
 import FilterForm from 'Component/form/FilterForm';
 import Loader from 'Component/Loader';
 import ModalConfirm from 'Component/modal/Confirm';
-import { Report } from '../../PnApp/Model';
-import { Condition, ConditionType } from '../../PnApp/Model/Report';
+import { Report } from '../../PnApp/model';
+import { Condition, ConditionType } from '../../PnApp/model/Report';
 
 interface AddState {
   loading: boolean;
