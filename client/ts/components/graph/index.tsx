@@ -115,7 +115,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
               label: {
                 enabled: true,
               },
-              max: 160,
+              max: 100,
               min: 30,
             },
             shape: 'dot',

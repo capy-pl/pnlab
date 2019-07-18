@@ -1,16 +1,18 @@
 import React, { PureComponent } from 'react';
-import { Message } from 'semantic-ui-react';
-import CommunitiesCheckbox from './CommunitiesCheckbox';
+import { Checkbox, Message, Table, TableBody } from 'semantic-ui-react';
+import { Community } from '../../PnApp/Model/Report';
+import CommunitiesRankList from './CommunitiesRankList';
 
 // import TabPanel from './TabPanel';
 
 interface CommunitiesMessageProps {
-  communitiesInfo: {};
+  communitiesInfo: Community[];
 }
 
 interface CommunitiesMessageState {
   visible: boolean;
   content: string;
+  communities?: [];
 }
 
 export default class CommunitiesMessage extends PureComponent<CommunitiesMessageProps, CommunitiesMessageState> {
@@ -21,7 +23,7 @@ export default class CommunitiesMessage extends PureComponent<CommunitiesMessage
       content: 'rank',
     };
     this.handleDismiss = this.handleDismiss.bind(this);
-    this.onClick = this.onClick.bind(this);
+    this.handleCommClick = this.handleCommClick.bind(this);
   }
 
   public handleDismiss(): void {
@@ -31,25 +33,20 @@ export default class CommunitiesMessage extends PureComponent<CommunitiesMessage
     }, 2000);
   }
 
-  public onClick(): void {
+  public handleCommClick(community): void {
+    console.log(community.id);
+    console.log(community.items);
     this.setState({content: 'communityDetail'});
   }
 
   public render() {
-    const communitiesRank = this.props.communitiesInfo.map((community) => {
-      return (
-        <div key={community.name}>
-          <CommunitiesCheckbox communityRank={community.rank} communityName={community.name} onClick={this.onClick}/>
-        </div>
-      );
-    });
-
     if (this.state.visible) {
       return (
-        <Message onDismiss={this.handleDismiss}>
-          <h3>Communities排名</h3>
-          {communitiesRank}
-        </Message>
+        <CommunitiesRankList
+          communitiesInfo={this.props.communitiesInfo}
+          onDismiss={this.handleDismiss}
+          onCommClick={this.handleCommClick}
+        />
       );
     }
 

@@ -56,10 +56,10 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
         {rank: '1', name: '鮪魚飯糰'},
         {rank: '2', name: '茶葉蛋'},
       ],
-      communitiesInfo: [
-        {rank: '1.', name: 'A'},
-        {rank: '2.', name: 'B'},
-      ],
+      // communitiesInfo: [
+      //   {rank: '1.', name: 'A'},
+      //   {rank: '2.', name: 'B'},
+      // ],
     });
   }
 
@@ -98,7 +98,7 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
     } else if (this.state.content === 'productRank') {
       message = <ProductRank productRankInfo={this.state.productRankInfo} />;
     } else if (this.state.content === 'communities') {
-      message = <CommunitiesMessage communitiesInfo={this.state.communitiesInfo}/>;
+      message = <CommunitiesMessage communitiesInfo={this.state.report.communities}/>;
     }
     if (this.state.loading) {
       return <Loader size='huge' />;

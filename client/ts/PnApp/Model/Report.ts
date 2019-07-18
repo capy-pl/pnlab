@@ -22,6 +22,7 @@ export interface Edge {
 }
 
 export interface Community {
+  id: number;
   core?: string;
   items: string[];
   weight: number;
@@ -92,6 +93,7 @@ export default class Report {
   public errMessage: string;
   public nodes: Node[];
   public edges: Edge[];
+  public communities: Community[];
   public startTime: Date;
   public endTime: Date;
 
@@ -104,6 +106,7 @@ export default class Report {
     errMessage,
     nodes,
     edges,
+    communities,
     startTime,
     endTime }: ReportModel) {
     this.id = _id;
@@ -114,6 +117,7 @@ export default class Report {
     this.errMessage = errMessage;
     this.nodes = nodes;
     this.edges = edges;
+    this.communities = communities;
     this.startTime = new Date(startTime);
     this.endTime = new Date(endTime);
   }

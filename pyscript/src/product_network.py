@@ -25,7 +25,9 @@ class ProductNerwork:
             weight_sum = sum([edge['weight']
                               for edge in subgraph.es]) * (nums) / nums / (nums + 1)
             items = [node['name'] for node in subgraph.vs]
+            comm_id = self.graph.vs[[node['id'] for node in subgraph.vs][0]]['community']
             dic = {
+                'id': comm_id,
                 'weight': weight_sum,
                 'items': items,
             }
@@ -40,8 +42,11 @@ class ProductNerwork:
                 dic['core'] = max(items_weight_dict, key=lambda x: items_weight_dict[x])
             dics.append(dic)
         if sort:
+            # for rank, key in enumerate(sorted(dics, key=lambda x: x['weight'], reverse=True), 1):
+            #     for dic in dics:
+            #         if dic['weight'] == key:
+            #             dic['rank'] == rank
             return sorted(dics, key=lambda x: x['weight'], reverse=True)
-        return dics
 
     def get_connectors(self):
         items = []
