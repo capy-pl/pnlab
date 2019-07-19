@@ -22,8 +22,7 @@ router
 
 router
   .route('/:id')
-  .all(loginRequired)
-  .all(checkExist(Promotion))
+  .all(loginRequired, checkExist(Promotion))
   .get(GetPromotion)
   .put(UpdatePromotion)
   .delete(DeletePromotion);
