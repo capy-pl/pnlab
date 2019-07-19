@@ -10,9 +10,21 @@ const CommunityDetail = (props) => {
       </Table.Row>
     );
   });
+
+  // const back = (() => {
+  //   if (props.backTo === 'communitiesRankList') {
+  //     return <a onClick={props.onBacktoCommunitiesRank} style={{cursor: 'pointer'}}>&lt;&lt; 返回</a>;
+  //   } else if (props.backTo === 'selectedCommunities') {
+  //     return <a onClick={props.onBacktoSelectedCommunities} style={{cursor: 'pointer'}}>&lt;&lt; 返回</a>;
+  //   }
+  // });
+  const back = (props.backTo === 'communitiesRankList') ?
+    <a onClick={props.onBacktoCommunitiesRank} style={{cursor: 'pointer'}}>&lt;&lt; 返回</a> :
+    <a onClick={props.onBacktoSelectedCommunities} style={{cursor: 'pointer'}}>&lt;&lt; 返回</a>;
+
   return (
     <Message onDismiss={props.onDismiss}>
-      <a onClick={props.onBacktoCommunitiesRank} style={{cursor: 'pointer'}}>&lt;&lt; 返回</a>
+      {back}
       <h3 style={{textAlign: 'center'}}>Community {props.community.id} 產品排名</h3>
       <Table basic='very'>
         <Table.Header>

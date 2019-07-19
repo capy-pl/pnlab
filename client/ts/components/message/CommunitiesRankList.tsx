@@ -1,5 +1,5 @@
 import React from 'react';
-import { Checkbox, Message, Table, TableBody } from 'semantic-ui-react';
+import { Button, Checkbox, Message, Table, TableBody } from 'semantic-ui-react';
 
 const CommunitiesRankList = (props) => {
   const communitiesRank = props.communitiesInfo.slice(0, 20).map((community, index) => (
@@ -8,7 +8,7 @@ const CommunitiesRankList = (props) => {
       <Table.Cell>
         <a onClick={() => props.onCommClick(community)} style={{cursor: 'pointer'}}>{community.id}</a>
       </Table.Cell>
-      <Table.Cell><Checkbox /></Table.Cell>
+      <Table.Cell><Checkbox onChange={() => props.onCommCheck(community)} /></Table.Cell>
     </Table.Row>
   ));
   return (
@@ -18,7 +18,7 @@ const CommunitiesRankList = (props) => {
         <Table.Header>
           <Table.Row textAlign='center'>
             <Table.HeaderCell>名次</Table.HeaderCell>
-            <Table.HeaderCell>商品群</Table.HeaderCell>
+            <Table.HeaderCell>商品群編號</Table.HeaderCell>
             <Table.HeaderCell>選取</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
@@ -26,6 +26,7 @@ const CommunitiesRankList = (props) => {
           {communitiesRank}
         </TableBody>
       </Table>
+      <Button content='送出' onClick={props.onSend} />
     </Message>
   );
 };
