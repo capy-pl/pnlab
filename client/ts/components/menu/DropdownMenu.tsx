@@ -7,13 +7,13 @@ import { urlPrefix } from '../../PnApp/Helper';
 // }
 
 const DropdownMenu = (props) => (
-  <Menu secondary pointing style={{ width: '95%', margin: '0 auto'}}>
-    <Dropdown onClick={props.onClickP} text='Product Network' pointing className='link item'>
+  <Menu compact>
+    <Dropdown onClick={props.onClickP} text='Product Network' className='link item'>
       <Dropdown.Menu>
         <Dropdown.Item onClick={props.onShowProductRank}>產品排名</Dropdown.Item>
       </Dropdown.Menu>
     </Dropdown>
-    <Dropdown onClick={props.onClickC} text='Communities' pointing className='link item'>
+    <Dropdown onClick={props.onClickC} text='Communities' className='link item'>
       <Dropdown.Menu>
         <Dropdown.Item onClick={props.onShowCommunities}>Communities排名</Dropdown.Item>
         <Dropdown.Item onClick={props.onShowCharacter}>Communities角色</Dropdown.Item>
