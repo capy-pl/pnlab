@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { DataSet, EdgeOptions, Network, NodeOptions } from 'vis';
-import { Edge, Node } from '../../PnApp/Model/Report';
+import { Community, Edge, Node } from '../../PnApp/Model/Report';
 
 interface GraphNode extends Node, NodeOptions {
 }
@@ -15,7 +15,8 @@ const style = {
 interface GraphProps {
   nodes: Node[];
   edges: Edge[];
-  comm?: boolean;
+  showCommunity?: boolean;
+  selectedCommunities?: [];
 }
 
 export default class GraphView extends PureComponent<GraphProps, {}> {
@@ -37,8 +38,19 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
   public toNode(node: Node): GraphNode {
     const copy: GraphNode = Object.assign({}, node);
     copy.label = node.name;
-    if (this.props.comm) {
+    if (this.props.showCommunity) {
         copy.group = node.community.toString();
+    }
+    // const selectedCommunities = [1, 21, 14, 15];
+    if (this.props.selectedCommunities.length !== 0) {
+      const communitiesIdList = this.props.selectedCommunities.map((community: Community) => {
+        return (community.id);
+      });
+      if (!communitiesIdList.includes(node.community)) {
+        copy.hidden = true;
+      }
+    } else {
+      copy.hidden = false;
     }
     copy.value = node.degree;
     copy.title = `
@@ -48,7 +60,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
       <p>連接節點數: ${copy.degree}</p>
     </div>
     `;
-    if (this.props.comm) {
+    if (this.props.showCommunity) {
       if (node.core) {
         copy.borderWidth = 5;
       }

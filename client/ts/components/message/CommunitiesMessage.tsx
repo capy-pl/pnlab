@@ -9,6 +9,7 @@ import SelectedCommunities from './SelectedCommunities';
 
 interface CommunitiesMessageProps {
   communitiesInfo: Community[];
+  updateGraph: (communitiesList) => void;
 }
 
 interface CommunitiesMessageState {
@@ -16,7 +17,7 @@ interface CommunitiesMessageState {
   content: string;
   clickedCommunity?: number;
   checkedCommunities?: [];
-  backTo: string;
+  backTo?: string;
 }
 
 export default class CommunitiesMessage extends PureComponent<CommunitiesMessageProps, CommunitiesMessageState> {
@@ -48,7 +49,9 @@ export default class CommunitiesMessage extends PureComponent<CommunitiesMessage
     console.log(community.id);
     console.log(community.items);
     this.setState({content: 'communityDetail'});
-    this.setState({clickedCommunity: community});
+    this.setState({clickedCommunity: community}, () => {
+      this.props.updateGraph([this.state.clickedCommunity]);
+    });
     this.setState({backTo: 'communitiesRankList'});
   }
 
@@ -56,7 +59,9 @@ export default class CommunitiesMessage extends PureComponent<CommunitiesMessage
     console.log(community.id);
     console.log(community.items);
     this.setState({content: 'communityDetail'});
-    this.setState({clickedCommunity: community});
+    this.setState({clickedCommunity: community}, () => {
+      this.props.updateGraph([this.state.clickedCommunity]);
+    });
     this.setState({backTo: 'selectedCommunities'});
   }
 
@@ -75,17 +80,21 @@ export default class CommunitiesMessage extends PureComponent<CommunitiesMessage
 
   public handleSend(): void {
     this.setState({content: 'selectedCommunities'});
+    this.props.updateGraph(this.state.checkedCommunities);
   }
 
   public handleBacktoCommunitiesRank(): void {
     this.setState({content: 'communitiesRank'});
-    this.setState({checkedCommunities: []});
+    this.setState({checkedCommunities: []}, () => {
+      this.props.updateGraph(this.state.checkedCommunities);
+    });
     this.setState({backTo: ''});
   }
 
   public handleBacktoSelectedCommunities(): void {
     this.setState({content: 'selectedCommunities'});
     this.setState({backTo: ''});
+    this.props.updateGraph(this.state.checkedCommunities);
   }
 
   public render() {

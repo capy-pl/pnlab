@@ -17,10 +17,10 @@ interface ReportState {
   coreInfo?: {};
   hookInfo?: {};
   productRankInfo?: {};
-  comm?: boolean;
+  showCommunity?: boolean;
   content: string;
   communitiesInfo?: {};
-  // mode: string;
+  selectedCommunities?: [];
 }
 
 export default class Report extends PureComponent<ReportProps, ReportState> {
@@ -28,15 +28,15 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
     super(props);
     this.state = {
       loading: true,
-      comm: false,
+      showCommunity: false,
       content: '',
-      // mode: 'productNetwork',
     };
     this.onClickP = this.onClickP.bind(this);
     this.onClickC = this.onClickC.bind(this);
     this.onShowCharacter = this.onShowCharacter.bind(this);
     this.onShowProductRank = this.onShowProductRank.bind(this);
     this.onShowCommunities = this.onShowCommunities.bind(this);
+    this.updateGraph = this.updateGraph.bind(this);
   }
 
   public async componentDidMount() {
@@ -56,23 +56,21 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
         {rank: '1', name: '鮪魚飯糰'},
         {rank: '2', name: '茶葉蛋'},
       ],
-      // communitiesInfo: [
-      //   {rank: '1.', name: 'A'},
-      //   {rank: '2.', name: 'B'},
-      // ],
+      selectedCommunities: [],
     });
   }
 
   public onClickP() {
-    this.setState({comm: false});
-    // this.setState({mode: 'productNetwork'});
+    this.setState({showCommunity: false});
     this.setState({content: ''});
+    this.setState({selectedCommunities: []});
   }
 
   public onClickC() {
-    this.setState({comm: true});
-    // this.setState({mode: 'communities'});
+    this.setState({showCommunity: true});
     this.setState({content: ''});
+    this.setState({selectedCommunities: []});
+
   }
 
   public onShowCharacter(event) {
@@ -90,15 +88,20 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
     this.setState({content: 'communities'});
   }
 
+  public updateGraph(communitiesList): void {
+    console.log('got', communitiesList);
+    this.setState({selectedCommunities: communitiesList});
+  }
+
   public render() {
     let message;
 
     if (this.state.content === 'character') {
-      message =  <CharacterMessage coreInfo={this.state.coreInfo} hookInfo={this.state.hookInfo} />;
+      message =  <CharacterMessage communitiesInfo={this.state.report.communities} hookInfo={this.state.hookInfo} />;
     } else if (this.state.content === 'productRank') {
       message = <ProductRank productRankInfo={this.state.productRankInfo} />;
     } else if (this.state.content === 'communities') {
-      message = <CommunitiesMessage communitiesInfo={this.state.report.communities}/>;
+      message = <CommunitiesMessage communitiesInfo={this.state.report.communities} updateGraph={this.updateGraph} />;
     }
     if (this.state.loading) {
       return <Loader size='huge' />;
@@ -119,7 +122,8 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
                 <Graph
                   nodes={this.state.report.nodes}
                   edges={this.state.report.edges}
-                  comm={this.state.comm}
+                  showCommunity={this.state.showCommunity}
+                  selectedCommunities={this.state.selectedCommunities}
                 />
               </div>
               <div style={{ width: '20%', position: 'absolute' }}>

@@ -1,17 +1,16 @@
 import React, { PureComponent } from 'react';
 import { Message, Tab } from 'semantic-ui-react';
+import { Community } from '../../PnApp/Model/Report';
 
 // import TabPanel from './TabPanel';
 
 interface CharacterMessageProps {
-  coreInfo?: {};
+  communitiesInfo?: Community[];
   hookInfo?: {};
 }
 
 interface MessageState {
   visible: boolean;
-  coreInfo?: {};
-  hookInfo?: {};
 }
 
 export default class CharacterMessage extends PureComponent<CharacterMessageProps, MessageState> {
@@ -32,13 +31,15 @@ export default class CharacterMessage extends PureComponent<CharacterMessageProp
 
   public render() {
     const TabPanel = () => {
-      const cores = this.props.coreInfo.map((data) => {
-        return(
-          <tr key={data.community} className='center aligned'>
-            <td>{data.community}</td>
-            <td>{data.core}</td>
-          </tr>
-        );
+      const cores = this.props.communitiesInfo.map((community) => {
+        if (community.core) {
+          return(
+            <tr key={community.id} className='center aligned'>
+              <td>{community.id}</td>
+              <td>{community.core}</td>
+            </tr>
+          );
+        }
       });
       const hooks = this.props.hookInfo.map((data) => {
         return(
@@ -91,7 +92,7 @@ export default class CharacterMessage extends PureComponent<CharacterMessageProp
     };
     if (this.state.visible) {
       return (
-        <Message onDismiss={this.handleDismiss} coreInfo={this.props.coreInfo} hookInfo={this.props.hookInfo}>
+        <Message onDismiss={this.handleDismiss}>
           <TabPanel />
         </Message>
       );
