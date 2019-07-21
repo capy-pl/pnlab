@@ -1,12 +1,15 @@
 def is_in_time_range(start_time, end_time):
     def func(time):
         if time > start_time:
+            print(end_time > time)
             return end_time > time
         return False
     return func
 
 class Promotion:
-    def __init__(self, group_one, group_two, start_time, end_time):
-        self.group_one = group_one
-        self.group_two = group_two
-        self.is_in = is_in_time_range(start_time, end_time)
+    def __init__(self, promotion_dict):
+        self.type = promotion_dict['type']
+        self.group_one = promotion_dict['groupOne']
+        if 'groupTwo' in promotion_dict:
+            self.group_two = promotion_dict['groupTwo']
+        self.is_in = is_in_time_range(promotion_dict["startTime"], promotion_dict["endTime"])

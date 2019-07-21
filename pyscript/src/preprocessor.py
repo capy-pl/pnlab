@@ -27,27 +27,27 @@ class NetworkConverter:
             promotions = [Promotion(promotion) for promotion in promotions]
             for promotion in promotions:
                 if promotion.type == 'combination':
-                    for item in promotion.groupOne:
-                        if item not in self.promotion['combination']:
-                            self.promotion['combination'][item] = {}
-                        for item2 in promotion.groupTwo:
-                            if item2 in self.promotion['combination'][item]:
-                                self.promotion['combination'][item][item2].append(
+                    for item in promotion.group_one:
+                        if item not in self.promotion_filter['combination']:
+                            self.promotion_filter['combination'][item] = {}
+                        for item2 in promotion.group_two:
+                            if item2 in self.promotion_filter['combination'][item]:
+                                self.promotion_filter['combination'][item][item2].append(
                                     promotion)
                             else:
-                                self.promotion['combination'][item][item2] = [
+                                self.promotion_filter['combination'][item][item2] = [
                                     promotion]
                             # Add a reverse entry.
-                            if item2 not in self.promotion['combination']:
-                                self.promotion['combination'][item2] = {}
-                            if item not in self.promotion['combination'][item2]:
-                                self.promotion['combination'][item2][item] = [
+                            if item2 not in self.promotion_filter['combination']:
+                                self.promotion_filter['combination'][item2] = {}
+                            if item not in self.promotion_filter['combination'][item2]:
+                                self.promotion_filter['combination'][item2][item] = [
                                     promotion]
                             else:
-                                self.promotion['combination'][item2][item].append(
+                                self.promotion_filter['combination'][item2][item].append(
                                     promotion)
                 if promotion.type == 'direct':
-                    for item in promotion.groupOne:
+                    for item in promotion.group_one:
                         if item not in self.promotion_filter['direct']:
                             self.promotion_filter['direct'][item] = []
                         self.promotion_filter['direct'][item].append(promotion)
@@ -69,16 +69,16 @@ class NetworkConverter:
     def is_done(self):
         return self._done
 
-    def is_valid_edge(self, edges, time):
-        item1 = edges[0]['單品名稱']
-        item2 = edges[1]['單品名稱']
+    def is_valid_edge(self, edge, time):
+        item1 = edge[0]['單品名稱']
+        item2 = edge[1]['單品名稱']
         # See if the item is in filter list.
         if item1 in self.item_filter or item2 in self.item_filter:
             return False
 
         # See if the item is in promotion(direct).
         if item1 in self.promotion_filter['direct'] and all_pass(self.promotion_filter['direct'][item1], time) \
-                and item2 in self.promotion_filter['direct'] and all_pass(self.promotion_filter['direct'][item2], time):
+                or item2 in self.promotion_filter['direct'] and all_pass(self.promotion_filter['direct'][item2], time):
             return False
 
         # See if the item is in promotion(combination).
