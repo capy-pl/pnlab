@@ -27,11 +27,6 @@ export interface Community {
   weight: number;
 }
 
-export interface Product {
-  name: string;
-  id: number;
-}
-
 export type ReportStatus = 'error' | 'pending' | 'success';
 
 export interface ProjectedReport {

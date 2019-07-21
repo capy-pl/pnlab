@@ -47,7 +47,7 @@ export default class SettingMenu extends PureComponent<{}, SettingMenuState> {
         />
         <Menu.Item
           name='Promotion'
-          href={urlPrefix('/settings')}
+          href={urlPrefix('/settings/promotion')}
           active={this.state.activeItem === 'Promotion'}
           onClick={this.onClick}
         />
