@@ -1,8 +1,8 @@
 import e from 'express';
 import { connection } from 'mongoose';
+import { Logger } from '../../core/util';
 import { Category } from '../../models';
 import { CategoryInterface } from '../../models/Category';
-import { Logger } from '../../core/util';
 
 export interface GetCategoriesResponseBody {
   items: CategoryInterface[];

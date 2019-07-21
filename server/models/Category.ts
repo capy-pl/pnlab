@@ -17,6 +17,6 @@ const CategorySchema = new Schema<CategoryInterface>({
   },
 });
 
-const Category = mongoose.model<CategoryInterface>('group', CategorySchema);
+const Category = mongoose.model<CategoryInterface>('category', CategorySchema);
 
 export default Category;

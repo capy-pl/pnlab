@@ -11,7 +11,6 @@ interface AddPromotionBody extends PromotionInterface {
 
 export async function AddPromotion(req: e.Request, res: e.Response): Promise<void> {
   const body = req.body as AddPromotionBody;
-  console.log(body);
   if (!(body.name && body.groupOne && body.startTime && body.endTime)) {
     return res.status(400).send({  message: 'Missing field.' }).end();
   }
