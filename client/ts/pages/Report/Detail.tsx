@@ -126,7 +126,7 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
                   selectedCommunities={this.state.selectedCommunities}
                 />
               </div>
-              <div style={{ width: '20%', position: 'absolute' }}>
+              <div style={{ width: '20%', position: 'absolute', overflow: 'auto', maxHeight: 550 }}>
                 {message}
               </div>
             </div>
