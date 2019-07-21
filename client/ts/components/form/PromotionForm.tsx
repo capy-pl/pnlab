@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dropdown, DropdownProps, Form, Segment, InputProps } from 'semantic-ui-react';
+import { Dropdown, DropdownProps, Form, Segment } from 'semantic-ui-react';
 
 interface PromotionFormProps {
   products: string[];
@@ -15,10 +15,10 @@ interface PromotionFormProps {
 
 const PromotionForm = ({ products, dropChangeA, dropChangeB, typeChange, nameChange,
   startMonthChange, startYearChange, endMonthChange, endYearChange }: PromotionFormProps) => {
-  const inputs = products.map((item) => {
+  const inputs = products.map((value) => {
     return {
-      text: item,
-      item,
+      text: value,
+      value,
     };
   });
   const typeInput = [{text: 'conbination', value: 'conbination'}, {text: 'direct', value: 'direct'}];
@@ -68,6 +68,7 @@ const PromotionForm = ({ products, dropChangeA, dropChangeB, typeChange, nameCha
             selection
             options={inputs}
           />
+          <br/>
           <Dropdown
             onChange={dropChangeB}
             placeholder={`Please select products B`}
