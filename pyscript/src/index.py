@@ -3,7 +3,7 @@ from bson.objectid import ObjectId
 import traceback
 from datetime import datetime
 
-from .product_network import NetworkConverter, ProductNerwork
+from .preprocessor import NetworkConverter
 from .utils import to_query, to_datetime
 from .error import ZeroTransactionError
 
@@ -16,11 +16,12 @@ def network_analysis(report_id):
         return
     try:
         query = to_query(report['conditions'])
-        purchase_list = list(db['transactions'].find(query, projection=['items']))
+        purchase_list = list(db['transactions'].find(query, projection=['items', '資料日期與時間']))
         if len(purchase_list) <= 0:
             raise ZeroTransactionError('No transactions match the conditions.')
         converter = NetworkConverter(purchase_list)
-        product_network = converter.convert()
+        converter.done()
+        product_network = converter.transform()
         data = product_network.to_document()
         update_expr = {
             'communities': data['communities'],

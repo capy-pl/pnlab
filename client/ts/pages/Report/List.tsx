@@ -3,8 +3,8 @@ import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { Button, Segment, Table } from 'semantic-ui-react';
 
 import { SearchHistoryItem } from 'Component/list';
-import { Report } from '../../PnApp/Model';
-import { ProjectedReport, ReportStatus } from '../../PnApp/Model/Report';
+import { Report } from '../../PnApp/model';
+import { ProjectedReport, ReportStatus } from '../../PnApp/model/Report';
 
 interface ReportListState {
   loading: boolean;

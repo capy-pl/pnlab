@@ -1,5 +1,5 @@
 import e from 'express';
-import { Document, Model, MongooseDocument } from 'mongoose';
+import { Document, Model } from 'mongoose';
 
 /**
  * Remember to use :id in router params. The middleware will also attach the corresponding
