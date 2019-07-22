@@ -1,13 +1,15 @@
 import e from 'express';
 import { connection } from 'mongoose';
 import { getChannel } from '../../core/mq';
+import { Logger } from '../../core/util';
 import {
   Promotion,
   Report,
 } from '../../models';
 import { FieldSchemaInterface } from '../../models/ImportSchema';
 import {
-  Condition, ReportInterface,
+  Condition,
+  ReportInterface,
 } from '../../models/Report';
 import { UserSchemaInterface } from '../../models/User';
 
@@ -46,7 +48,7 @@ export async function SearchItem(req: e.Request, res: e.Response, next: e.NextFu
     });
   } catch (err) {
     res.status(400);
-    console.error(err);
+    Logger.error(err);
   }
 }
 
@@ -77,7 +79,7 @@ export async function GetConditions(req: e.Request, res: e.Response): Promise<vo
       conditions: transactionFields,
     });
   } catch (err) {
-    console.error(err);
+    Logger.error(err);
     res.status(500).end();
   }
 }
@@ -106,7 +108,11 @@ export async function AddReport(req: e.Request, res: e.Response, next: e.NextFun
     for (const field of org.importSchema.transactionFields) {
       mapping[field.name] = field;
     }
-
+    // tslint:disable-next-line: no-string-literal
+    mapping['促銷'] = {
+      name: '促銷',
+      type: 'promotion',
+    };
     for (const condition of conditions) {
       if (condition.name in mapping) {
         if (condition.type === mapping[condition.name].type) {
@@ -119,7 +125,7 @@ export async function AddReport(req: e.Request, res: e.Response, next: e.NextFun
     const channel = getChannel();
     channel.sendToQueue('pn', Buffer.from(report.id));
   } catch (err) {
-    console.error(err);
+    Logger.error(err);
     res.status(400).send({ message: err.message });
   }
 }

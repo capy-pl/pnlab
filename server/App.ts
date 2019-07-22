@@ -7,6 +7,7 @@ import nunjucks from 'nunjucks';
 
 // import routes
 import API from './api';
+import { Logger } from './core/util';
 
 dotenv.config();
 
@@ -75,7 +76,7 @@ app.use((
   res: express.Response,
   next: express.NextFunction,
 ) => {
-    console.error(err.stack);
+    Logger.error(err);
     res.status(500);
   });
 
