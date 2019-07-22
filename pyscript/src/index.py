@@ -28,6 +28,7 @@ def network_analysis(report_id):
             'nodes': data['nodes'],
             'edges': data['edges'],
             'status': 'success',
+            'rank': data['rank'],
             'modified': datetime.utcnow(),
             'errMessage': '',
         }

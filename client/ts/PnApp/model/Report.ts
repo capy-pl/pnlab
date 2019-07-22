@@ -50,6 +50,7 @@ export interface ReportModel {
   errMessage: string;
   nodes: Node[];
   edges: Edge[];
+  rank: string[];
   startTime: Date;
   endTime: Date;
 }
@@ -94,6 +95,7 @@ export default class Report {
   public edges: Edge[];
   public startTime: Date;
   public endTime: Date;
+  public rank: string[];
 
   constructor({
     _id,
@@ -101,6 +103,7 @@ export default class Report {
     conditions,
     modified,
     status,
+    rank,
     errMessage,
     nodes,
     edges,
@@ -116,5 +119,6 @@ export default class Report {
     this.edges = edges;
     this.startTime = new Date(startTime);
     this.endTime = new Date(endTime);
+    this.rank = rank;
   }
 }

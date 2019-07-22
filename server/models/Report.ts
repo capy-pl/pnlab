@@ -29,6 +29,7 @@ export interface ReportInterface extends Document {
   created: Date;
   conditions: Condition[];
   modified: Date;
+  rank: string[];
   status: 'error' | 'pending' | 'success';
   errorMessage: string;
   nodes: Node[];
@@ -128,6 +129,7 @@ const ReportSchema = new Schema<ReportInterface>({
     type: Date,
     // required: true
   },
+  rank: [String],
 });
 
 const Report = mongoose.model<ReportInterface>('report', ReportSchema);
