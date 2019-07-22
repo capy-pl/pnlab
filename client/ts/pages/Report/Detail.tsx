@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { Button } from 'semantic-ui-react';
+import { Button, DropdownProps } from 'semantic-ui-react';
 
 import Graph from '../../components/graph';
 import Loader from '../../components/Loader';
@@ -8,6 +8,7 @@ import { DropdownMenu } from '../../components/menu';
 import { CharacterMessage, CommunitiesMessage, ProductRank } from '../../components/message';
 
 import ModalConfirm from 'Component/modal/Confirm';
+import { SearchDropdown } from '../../components/dropdown';
 
 import ReportAPI from '../../PnApp/Model/Report' ;
 import { Node } from '../../PnApp/Model/Report';
@@ -44,6 +45,7 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
     this.updateProductGraph = this.updateProductGraph.bind(this);
     this.onAdd = this.onAdd.bind(this);
     this.onCancel = this.onCancel.bind(this);
+    this.onItemSearch = this.onItemSearch.bind(this.onItemSearch);
   }
 
   public async componentDidMount() {
@@ -64,12 +66,14 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
     this.setState({showCommunity: false});
     this.setState({content: ''});
     this.setState({selectedCommunities: []});
+    this.setState({selectedProduct: []});
   }
 
   public onClickC() {
     this.setState({showCommunity: true});
     this.setState({content: ''});
     this.setState({selectedCommunities: []});
+    this.setState({selectedProduct: []});
 
   }
 
@@ -112,6 +116,10 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
     });
   }
 
+  public onItemSearch(event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) {
+    console.log(data.value);
+  }
+
   public render() {
     let message;
     if (this.state.report) {
@@ -127,6 +135,9 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
       return <Loader size='huge' />;
     } else {
       if (this.state.report) {
+        const dropdownOptions = this.state.report.nodes.map((node) => {
+          return ({key: node.name, value: node.name, text: node.name});
+        });
         return (
           <React.Fragment>
             <DropdownMenu
@@ -150,7 +161,7 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
               <div style={{ width: '20%', position: 'absolute', overflow: 'auto', maxHeight: 550 }}>
                 {message}
               </div>
-              <div style={{ position: 'absolute' }}>
+              <div style={{ position: 'fixed', bottom: 0, right: 0 }}>
                 <ModalConfirm
                   header='Confirm'
                   content='Are you sure?'
@@ -161,9 +172,16 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
                   <Button
                     color='blue'
                     onClick={this.onAdd}
-                  >Confirm
+                  >儲存圖片
                   </Button>
                 </ModalConfirm>
+              </div>
+              <div style={{ position: 'fixed', top: 80, right: 20 }}>
+                <SearchDropdown
+                  options={dropdownOptions}
+                  placeholder='請輸入商品名稱'
+                  onChange={this.onItemSearch}
+                />
               </div>
             </div>
           </React.Fragment>

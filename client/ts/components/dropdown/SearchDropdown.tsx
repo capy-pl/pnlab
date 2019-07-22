@@ -15,11 +15,11 @@ interface SearchDropDownProps {
 
 const SearchDropdown = ({ placeholder, options, onChange }: SearchDropDownProps) => (
   <Dropdown
+    clearable
     placeholder={placeholder}
-    fluid
+    multiple
     search
     selection
-    icon=''
     onChange={onChange}
     options={options}
   />

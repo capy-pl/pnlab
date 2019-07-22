@@ -56,15 +56,25 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
 
     if (this.props.selectedProduct.length !== 0) {
       if (this.props.selectedProduct[0].name === node.name) {
-        copy.hidden = false;
-      } else {
-        copy.hidden = true;
+        // copy.hidden = false;
+        copy.color = {
+          background: 'orange',
+          hover: {
+            background: 'yellow',
+          },
+          highlight: {
+            background: 'yellow',
+          },
+        };
       }
-      this.props.selectedProduct[0].neighbors.forEach((neighbor) => {
-        if (neighbor === node.id) {
-          copy.hidden = false;
-        }
-      });
+      // } else {
+      //   copy.hidden = true;
+      // }
+      // this.props.selectedProduct[0].neighbors.forEach((neighbor) => {
+      //   if (neighbor === node.id) {
+      //     copy.hidden = false;
+      //   }
+      // });
     }
     copy.value = node.degree;
     copy.title = `
