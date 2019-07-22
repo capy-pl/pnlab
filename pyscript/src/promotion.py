@@ -1,7 +1,6 @@
 def is_in_time_range(start_time, end_time):
     def func(time):
         if time > start_time:
-            print(end_time > time)
             return end_time > time
         return False
     return func
