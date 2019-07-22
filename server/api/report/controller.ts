@@ -46,9 +46,9 @@ export async function SearchItem(req: e.Request, res: e.Response, next: e.NextFu
     res.send({
       items: items.map((item) => item.單品名稱),
     });
-  } catch (err) {
-    res.status(400);
-    Logger.error(err);
+  } catch (error) {
+    res.status(400).end();
+    Logger.error(error);
   }
 }
 
@@ -78,8 +78,8 @@ export async function GetConditions(req: e.Request, res: e.Response): Promise<vo
     res.send({
       conditions: transactionFields,
     });
-  } catch (err) {
-    Logger.error(err);
+  } catch (error) {
+    Logger.error(error);
     res.status(500).end();
   }
 }
@@ -124,9 +124,9 @@ export async function AddReport(req: e.Request, res: e.Response, next: e.NextFun
     res.status(201).send({ id: report.id });
     const channel = getChannel();
     channel.sendToQueue('pn', Buffer.from(report.id));
-  } catch (err) {
-    Logger.error(err);
-    res.status(400).send({ message: err.message });
+  } catch (error) {
+    Logger.error(error);
+    res.status(400).send({ message: error.message });
   }
 }
 
@@ -141,8 +141,9 @@ export async function GetReport(req: e.Request, res: e.Response, next: e.NextFun
       throw Error('Not found');
     }
     res.json(report);
-  } catch (err) {
-    res.status(404).send({ message: err.message });
+  } catch (error) {
+    Logger.error(error);
+    res.status(404).send({ message: error.message });
   }
 }
 
@@ -184,7 +185,8 @@ export async function GetReports(req: e.Request, res: e.Response, next: e.NextFu
       reports = await Report.find({}, projection).sort({ created: -1 });
     }
     res.send({ reports });
-  } catch (err) {
+  } catch (error) {
+    Logger.error(error);
     res.status(500).end();
   }
 }

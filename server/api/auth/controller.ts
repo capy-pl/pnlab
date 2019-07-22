@@ -7,6 +7,7 @@ dotenv.config();
 const { SECRET_KEY } = process.env;
 
 import User from '../../models/User';
+import { Logger } from '../../core/util';
 
 interface SignUpRequestBody {
   email: string;
@@ -75,7 +76,8 @@ export async function LogIn(req: e.Request, res: e.Response, next: e.NextFunctio
         expiresIn: process.env.EXPIRED_IN,
       });
       res.json({ token });
-    } catch (err) {
+    } catch (error) {
+      Logger.error(error);
       res.status(401).json({ message: 'Email or password error.' });
     }
   }
