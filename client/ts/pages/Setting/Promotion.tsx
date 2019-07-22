@@ -1,4 +1,3 @@
-import { connection } from 'mongoose';
 import React, { PureComponent } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { Button, DropdownProps, Header, Icon, Modal, Segment, Table} from 'semantic-ui-react';
@@ -6,7 +5,7 @@ import { Button, DropdownProps, Header, Icon, Modal, Segment, Table} from 'seman
 import PromotionForm from 'Component/form/PromotionForm';
 import PromotionList from 'Component/list/PromotionList';
 import Loader from 'Component/Loader';
-import { Group, Promotion } from '../../PnApp/Model';
+import { Promotion } from '../../PnApp/Model';
 import { PromotionType } from '../../PnApp/Model/Promotion';
 
 interface PromotionItemState {
@@ -56,10 +55,8 @@ export default class PromotionItem extends PureComponent<RouteComponentProps, Pr
   }
 
   public async componentDidMount() {
-    const productSet = await Group.getProducts();
     const promotions = await Promotion.getAll();
     this.setState({
-      products: productSet,
       loading: false,
       promotions,
     });
@@ -71,7 +68,6 @@ export default class PromotionItem extends PureComponent<RouteComponentProps, Pr
       loading: true,
     });
     const promotion = {
-      _id: this.state.name,
       name: this.state.name,
       type: this.state.type,
       groupOne: this.state.productA,
@@ -81,7 +77,7 @@ export default class PromotionItem extends PureComponent<RouteComponentProps, Pr
     };
     Promotion.add(promotion)
       .then(() => {
-        this.props.history.push('/');
+        this.props.history.push('/settings/promotion');
       });
   }
 
@@ -151,9 +147,6 @@ export default class PromotionItem extends PureComponent<RouteComponentProps, Pr
       );
     });
 
-    if (this.state.loading) {
-      return <Loader size='huge' />;
-    }
     return (
       <Segment>
         <Table selectable color='blue'>

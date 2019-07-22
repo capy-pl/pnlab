@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Icon, Label, SemanticCOLORS, Table } from 'semantic-ui-react';
+import { Label, SemanticCOLORS, Table } from 'semantic-ui-react';
 import Promotion from '../../PnApp/Model/Promotion';
 
 interface PromotionItemProps {
@@ -27,7 +27,6 @@ const PromotionList = ({ item }: PromotionItemProps) => {
     return (
       <Label
         key={tag}
-        color={COLORS[index % COLORS.length] as SemanticCOLORS}
         basic
       >
         {tag}
@@ -40,7 +39,6 @@ const PromotionList = ({ item }: PromotionItemProps) => {
     return (
       <Label
         key={tag}
-        color={COLORS[index % COLORS.length] as SemanticCOLORS}
         basic
       >
         {tag}
@@ -56,10 +54,10 @@ const PromotionList = ({ item }: PromotionItemProps) => {
         {item.name}
       </Table.Cell>
       <Table.Cell textAlign='center'>
-        {item.startTime}
+        {item.startTime.toLocaleString() === 'Invalid Date' ? 'All' : item.startTime.toLocaleString()}
       </Table.Cell>
       <Table.Cell textAlign='center'>
-        {item.endTime}
+        {item.startTime.toLocaleString() === 'Invalid Date' ? 'All' : item.endTime.toLocaleString()}
       </Table.Cell>
       <Table.Cell>{productAList}</Table.Cell>
       <Table.Cell>{productBList}</Table.Cell>

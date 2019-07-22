@@ -62,10 +62,10 @@ export async function GetPromotions(req: e.Request, res: e.Response): Promise<vo
     const promotions = await Promotion.find({
       type: query.type,
     });
-    return res.send({ promotions }).end();
+    return res.send(promotions).end();
   } else {
     const promotions = await Promotion.find({});
-    res.send({ promotions });
+    res.send(promotions);
   }
 }
 
