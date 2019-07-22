@@ -17,6 +17,7 @@ interface GraphProps {
   edges: Edge[];
   showCommunity?: boolean;
   selectedCommunities?: [];
+  selectedProduct?: Node[];
 }
 
 export default class GraphView extends PureComponent<GraphProps, {}> {
@@ -51,6 +52,19 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
       }
     } else {
       copy.hidden = false;
+    }
+
+    if (this.props.selectedProduct.length !== 0) {
+      if (this.props.selectedProduct[0].name === node.name) {
+        copy.hidden = false;
+      } else {
+        copy.hidden = true;
+      }
+      this.props.selectedProduct[0].neighbors.forEach((neighbor) => {
+        if (neighbor === node.id) {
+          copy.hidden = false;
+        }
+      });
     }
     copy.value = node.degree;
     copy.title = `

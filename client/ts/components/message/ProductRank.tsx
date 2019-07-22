@@ -2,11 +2,13 @@ import React, { PureComponent } from 'react';
 import { Message } from 'semantic-ui-react';
 
 interface ProductRankProps {
-  productRankInfo?: {};
+  productRankInfo?: [];
+  updateProductGraph: (productName) => void;
 }
 
 interface MessageState {
   visible: boolean;
+  clickedProduct?: string;
 }
 
 export default class ProductRank extends PureComponent<ProductRankProps, MessageState> {
@@ -16,6 +18,7 @@ export default class ProductRank extends PureComponent<ProductRankProps, Message
       visible: true,
     };
     this.handleDismiss = this.handleDismiss.bind(this);
+    this.handleProductClick = this.handleProductClick.bind(this);
   }
 
   public handleDismiss(): void {
@@ -25,12 +28,17 @@ export default class ProductRank extends PureComponent<ProductRankProps, Message
     }, 2000);
   }
 
+  public handleProductClick(productName): void {
+    this.setState({clickedProduct: productName});
+    this.props.updateProductGraph(productName);
+  }
+
   public render() {
-    const productRank = this.props.productRankInfo.map((product) => {
+    const productRank = this.props.productRankInfo.map((product, index) => {
       return(
-        <tr key={product.name} className='center aligned'>
-          <td>{product.rank}</td>
-          <td>{product.name}</td>
+        <tr key={product} className='center aligned'>
+          <td>{index + 1}</td>
+          <td><a onClick={() => this.handleProductClick(product)} style={{cursor: 'pointer'}}>{product}</a></td>
         </tr>
       );
     });

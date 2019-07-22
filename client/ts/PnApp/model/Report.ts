@@ -13,6 +13,7 @@ export interface Node {
   id: number;
   degree: number;
   core?: boolean;
+  neighbors: number[];
 }
 
 export interface Edge {

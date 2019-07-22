@@ -71,6 +71,11 @@ const NodeSchema = new Schema<Node>({
     required: true,
   },
   core: Boolean,
+  // neighbors
+  neighbors: {
+    type: [Number],
+    required: true,
+  },
 });
 
 const EdgeSchema = new Schema<Edge>({

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 import Store from './global';
-import { User } from './model';
+import { User } from './Model';
 
 export async function updateCurrentUser(): Promise<void> {
     Store.user = await User.get();
