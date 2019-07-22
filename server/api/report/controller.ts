@@ -7,7 +7,8 @@ import {
 } from '../../models';
 import { FieldSchemaInterface } from '../../models/ImportSchema';
 import {
-  Condition, ReportInterface,
+  Condition,
+  ReportInterface,
 } from '../../models/Report';
 import { UserSchemaInterface } from '../../models/User';
 

@@ -24,28 +24,34 @@ class ProductNerwork:
         return products
 
     def get_communities(self, sort=True):
-        dics = []
+        communities = []
         for subgraph in self._communities.subgraphs():
-            nums = len(subgraph.vs)
+            number = len(subgraph.vs)
             weight_sum = sum([edge['weight']
-                              for edge in subgraph.es]) * (nums) / nums / (nums + 1)
-            items = [node['name'] for node in subgraph.vs]
-            dic = {
+                              for edge in subgraph.es]) * (number) / number / (number + 1)
+            nodes_ids = [node['name'] for node in subgraph.vs]
+            community = {
                 'weight': weight_sum,
-                'items': items,
             }
             # Only compute core for those communities have node number larger than 3.
-            if nums >= 3:
-                items_weight_dict = {}
-                for node in items:
-                    edges_ids = subgraph.incident(node, mode='ALL')
-                    node_weight = sum([subgraph.es[e]['weight']
-                                       for e in edges_ids])
-                    items_weight_dict[node] = node_weight
-                dic['core'] = max(items_weight_dict, key=lambda x: items_weight_dict[x])
-            dics.append(dic)
+            nodes = []
+            for node in nodes_ids:
+                node_dict = {
+                    'name': node
+                }
+                edges_ids = subgraph.incident(node, mode='ALL')
+                total_weight = sum([subgraph.es[e]['weight']
+                                   for e in edges_ids])
+                node_dict['weight'] = total_weight
+                nodes.append(node_dict)
+            community['items'] = list(map(lambda x: x['name'],
+                                     sorted(nodes, key=lambda x: x['weight'], reverse = True)
+                                    ))
+            if number > 3:
+                community['core'] = community['items'][0]
+            communities.append(community)
         if sort:
-            return sorted(dics, key=lambda x: x['weight'], reverse=True)
+            return sorted(communities, key=lambda x: x['weight'], reverse=True)
         return dics
 
     def get_connectors(self):
