@@ -1,9 +1,10 @@
 import React from 'react';
-import { Label, SemanticCOLORS, Table } from 'semantic-ui-react';
+import { Button, Label, SemanticCOLORS, Table } from 'semantic-ui-react';
 import Promotion from '../../PnApp/Model/Promotion';
 
 interface PromotionItemProps {
   item: Promotion;
+  onButtonClick: () => void;
 }
 
 const COLORS = [
@@ -21,7 +22,7 @@ const COLORS = [
   'black',
 ];
 
-const PromotionList = ({ item }: PromotionItemProps) => {
+const PromotionList = ({ item, onButtonClick }: PromotionItemProps) => {
   const productAList = item.groupOne
   .map((tag, index) => {
     return (
@@ -61,6 +62,9 @@ const PromotionList = ({ item }: PromotionItemProps) => {
       </Table.Cell>
       <Table.Cell>{productAList}</Table.Cell>
       <Table.Cell>{productBList}</Table.Cell>
+      <Table.Cell>
+        <Button onClick={onButtonClick}>Delete</Button>
+      </Table.Cell>
     </Table.Row>
   );
 };

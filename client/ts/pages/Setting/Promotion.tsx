@@ -58,6 +58,7 @@ export default class PromotionItem extends PureComponent<RouteComponentProps, Pr
     this.endYearChange = this.endYearChange.bind(this);
     this.onSearchChangeA = this.onSearchChangeA.bind(this);
     this.onSearchChangeB = this.onSearchChangeB.bind(this);
+    this.onButtonClick = this.onButtonClick.bind(this);
   }
 
   public async componentDidMount() {
@@ -83,7 +84,7 @@ export default class PromotionItem extends PureComponent<RouteComponentProps, Pr
     };
     Promotion.add(promotion)
       .then(() => {
-        this.props.history.push('/');
+        window.location.reload();
       });
   }
 
@@ -160,6 +161,13 @@ export default class PromotionItem extends PureComponent<RouteComponentProps, Pr
     });
   }
 
+  public onButtonClick(item: Promotion): () => void {
+    return () => {
+      item.delete();
+      window.location.reload();
+    };
+  }
+
   public render() {
 
     const promotionHistory = this.state.promotions.map((promotion) => {
@@ -167,6 +175,7 @@ export default class PromotionItem extends PureComponent<RouteComponentProps, Pr
         <PromotionList
           key={promotion.id}
           item={promotion}
+          onButtonClick={this.onButtonClick(promotion)}
         />
       );
     });
@@ -181,6 +190,7 @@ export default class PromotionItem extends PureComponent<RouteComponentProps, Pr
               <Table.HeaderCell width='1' textAlign='center'>End Time</Table.HeaderCell>
               <Table.HeaderCell width='2' textAlign='center'>ItemA Set</Table.HeaderCell>
               <Table.HeaderCell width='2' textAlign='center'>ItemB Set</Table.HeaderCell>
+              <Table.HeaderCell width='1' textAlign='center'>Delete</Table.HeaderCell>
             </Table.Row>
           </Table.Header>
           <Table.Body>
