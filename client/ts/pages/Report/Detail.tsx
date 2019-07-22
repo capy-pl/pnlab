@@ -7,7 +7,7 @@ import Loader from '../../components/Loader';
 import { DropdownMenu } from '../../components/menu';
 import { CharacterMessage, CommunitiesMessage, ProductRank } from '../../components/message';
 
-import ModalConfirm from 'Component/modal/Confirm';
+import { ModalSave } from 'Component/modal';
 import { SearchDropdown } from '../../components/dropdown';
 
 import ReportAPI from '../../PnApp/Model/Report' ;
@@ -25,6 +25,7 @@ interface ReportState {
   selectedCommunities?: [];
   selectedProduct?: Node[];
   modalOpen: boolean;
+  searchItems?: any;
 }
 
 export default class Report extends PureComponent<ReportProps, ReportState> {
@@ -43,9 +44,9 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
     this.onShowCommunities = this.onShowCommunities.bind(this);
     this.updateGraph = this.updateGraph.bind(this);
     this.updateProductGraph = this.updateProductGraph.bind(this);
-    this.onAdd = this.onAdd.bind(this);
+    this.onSaveGraph = this.onSaveGraph.bind(this);
     this.onCancel = this.onCancel.bind(this);
-    this.onItemSearch = this.onItemSearch.bind(this.onItemSearch);
+    this.onItemSearch = this.onItemSearch.bind(this);
   }
 
   public async componentDidMount() {
@@ -104,9 +105,9 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
     this.setState({selectedProduct: selected});
   }
 
-  public onAdd() {
+  public onSaveGraph() {
     this.setState({
-        modalOpen: true,
+      modalOpen: true,
     });
   }
 
@@ -118,6 +119,7 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
 
   public onItemSearch(event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) {
     console.log(data.value);
+    this.setState({searchItems: data.value});
   }
 
   public render() {
@@ -162,19 +164,19 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
                 {message}
               </div>
               <div style={{ position: 'fixed', bottom: 0, right: 0 }}>
-                <ModalConfirm
-                  header='Confirm'
-                  content='Are you sure?'
+                <ModalSave
+                  header='編輯圖片'
+                  // content='Are you sure?'
                   open={this.state.modalOpen}
                   onCancel={this.onCancel}
                   // onConfirm={this.onConfirm}
                 >
                   <Button
                     color='blue'
-                    onClick={this.onAdd}
+                    onClick={this.onSaveGraph}
                   >儲存圖片
                   </Button>
-                </ModalConfirm>
+                </ModalSave>
               </div>
               <div style={{ position: 'fixed', top: 80, right: 20 }}>
                 <SearchDropdown
