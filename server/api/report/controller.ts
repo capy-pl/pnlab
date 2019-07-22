@@ -2,6 +2,7 @@ import e from 'express';
 import { connection } from 'mongoose';
 import { getChannel } from '../../core/mq';
 import {
+  Promotion,
   Report,
 } from '../../models';
 import { FieldSchemaInterface } from '../../models/ImportSchema';
@@ -60,11 +61,18 @@ export interface GetConditionsResponseBody {
  * @apiName GetConditions
  * @apiGroup Report
  */
-export async function GetConditions(req: e.Request, res: e.Response, next: e.NextFunction): Promise<void> {
+export async function GetConditions(req: e.Request, res: e.Response): Promise<void> {
   try {
     const { user } = req;
     const { org } = user as UserSchemaInterface;
     const { transactionFields } = org.importSchema;
+    const promotions = await Promotion.find({}, { name: 1 });
+    const promotionField: FieldSchemaInterface  = {
+      name: '促銷',
+      type: 'promotion',
+      values: promotions.map((promotion) => promotion.name),
+    };
+    transactionFields.push(promotionField);
     res.send({
       conditions: transactionFields,
     });

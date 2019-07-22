@@ -14,6 +14,15 @@ class ProductNerwork:
                 node = self.graph.vs.find(community['core'])
                 node.update_attributes({'core': True})
 
+    def get_product_rank(self, num):
+        items_weight_dict = {}
+        for node in self.graph.vs:
+            edges_id = self.graph.incident(node['name'], mode='ALL')
+            node_weight = sum([self.graph.es[e]["weight"] for e in edges_id])
+            items_weight_dict[node['name']] = node_weight 
+        products = [item for item in sorted(items_weight_dict, key=items_weight_dict.get, reverse=True)[:num]]
+        return products
+
     def get_communities(self, sort=True):
         dics = []
         for subgraph in self._communities.subgraphs():
@@ -46,7 +55,7 @@ class ProductNerwork:
 
     def get_connectors(self):
         items = []
-        for index, value in enumerate(self.graph.betweenness(weights='weight')):
+        for index, value in enumerate(self.graph.betweenness(weights=['weight'])):
             if value > 0:
                 items.append({ 'name': self.graph.vs[index]['name'], 'betweeness': value })
         items.sort(key=lambda x: x['betweeness'], reverse=True)
@@ -77,6 +86,7 @@ class ProductNerwork:
             'nodes': nodes,
             'edges': edges,
             'communities': self.communities,
+            'rank': self.get_product_rank(20)
         }
 
     def to_json(self):

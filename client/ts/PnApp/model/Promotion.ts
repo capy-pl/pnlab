@@ -7,7 +7,7 @@ export interface PromotionModel {
   type: PromotionType;
   groupOne: string[];
   groupTwo: string[];
-  _id: string;
+  _id?: string;
   startTime: string;
   endTime: string;
 }
@@ -37,7 +37,7 @@ export default class Promotion {
 
   constructor(props: PromotionModel) {
     const { name, type, _id, groupOne, groupTwo, startTime, endTime } = props;
-    this.id = _id;
+    this.id = _id as string;
     this.name = name;
     this.type = type;
     this.groupOne = groupOne;

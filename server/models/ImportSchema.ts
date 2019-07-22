@@ -1,8 +1,11 @@
-import mongoose, { Schema } from 'mongoose';
+import { Schema } from 'mongoose';
+
+export type FieldSchemaType = 'string' | 'int' | 'date' | 'float' | 'promotion';
 
 export interface FieldSchemaInterface {
   name: string;
-  type: 'string' | 'int' | 'date' | 'float';
+  // type promotion cannot be saved and is only for return conditions.
+  type: FieldSchemaType;
   values?: string[] | Date[];
 }
 
