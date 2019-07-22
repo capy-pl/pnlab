@@ -1,6 +1,7 @@
 import e from 'express';
 import { connection } from 'mongoose';
 import { getChannel } from '../../core/mq';
+import { Logger } from '../../core/util';
 import {
   Promotion,
   Report,
@@ -47,7 +48,7 @@ export async function SearchItem(req: e.Request, res: e.Response, next: e.NextFu
     });
   } catch (err) {
     res.status(400);
-    console.error(err);
+    Logger.error(err);
   }
 }
 
@@ -78,7 +79,7 @@ export async function GetConditions(req: e.Request, res: e.Response): Promise<vo
       conditions: transactionFields,
     });
   } catch (err) {
-    console.error(err);
+    Logger.error(err);
     res.status(500).end();
   }
 }
@@ -124,7 +125,7 @@ export async function AddReport(req: e.Request, res: e.Response, next: e.NextFun
     const channel = getChannel();
     channel.sendToQueue('pn', Buffer.from(report.id));
   } catch (err) {
-    console.error(err);
+    Logger.error(err);
     res.status(400).send({ message: err.message });
   }
 }
