@@ -15,6 +15,7 @@ const PromotionSchema = new Schema<PromotionInterface>({
   name: {
     type: String,
     required: true,
+    unique: true,
   },
   type: {
     type: String,
@@ -36,4 +37,4 @@ const PromotionSchema = new Schema<PromotionInterface>({
   },
 });
 
-export default mongoose.model('promotion', PromotionSchema);
+export default mongoose.model<PromotionInterface>('promotion', PromotionSchema);

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export type ConditionType = 'string' | 'int' | 'date' | 'float';
+export type ConditionType = 'string' | 'int' | 'date' | 'float' | 'promotion';
 export interface Condition {
   name: string;
   type: ConditionType;
