@@ -18,7 +18,7 @@ class ProductNerwork:
         items_weight_dict = {}
         for node in self.graph.vs:
             edges_id = self.graph.incident(node['name'], mode='ALL')
-            node_weight = sum([self.graph.es[e]["weight"] for e in edges_id])
+            node_weight = sum([self.graph.es[e]['weight'] for e in edges_id])
             items_weight_dict[node['name']] = node_weight 
         products = [item for item in sorted(items_weight_dict, key=items_weight_dict.get, reverse=True)[:num]]
         return products

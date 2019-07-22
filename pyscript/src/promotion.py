@@ -11,4 +11,4 @@ class Promotion:
         self.group_one = promotion_dict['groupOne']
         if 'groupTwo' in promotion_dict:
             self.group_two = promotion_dict['groupTwo']
-        self.is_in = is_in_time_range(promotion_dict["startTime"], promotion_dict["endTime"])
+        self.is_in = is_in_time_range(promotion_dict['startTime'], promotion_dict['endTime'])
