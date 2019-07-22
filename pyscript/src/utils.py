@@ -7,6 +7,7 @@ def to_query(conditions):
     default_query = {'items.1':
         { '$exists': True }
     }
+    promotions = []
     for condition in conditions:
         if condition['type'] == 'string':
             if len(condition['values']) > 0:
@@ -26,4 +27,7 @@ def to_query(conditions):
                     }
                 else:
                     raise ValueError('Date condition should contain a max and a min value.')
-    return default_query
+        if condition['type'] == 'promotion':
+            for promotion in condition['values']:
+                promotions.append(promotion)
+    return default_query, promotions

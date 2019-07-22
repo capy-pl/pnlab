@@ -106,7 +106,11 @@ export async function AddReport(req: e.Request, res: e.Response, next: e.NextFun
     for (const field of org.importSchema.transactionFields) {
       mapping[field.name] = field;
     }
-
+    // tslint:disable-next-line: no-string-literal
+    mapping['促銷'] = {
+      name: '促銷',
+      type: 'promotion',
+    };
     for (const condition of conditions) {
       if (condition.name in mapping) {
         if (condition.type === mapping[condition.name].type) {
