@@ -13,7 +13,7 @@ import {
 
 import {
   ReportStatus,
-} from '../PnApp/Model/Report';
+} from '../PnApp/model/Report';
 
 const stories = storiesOf('List', module);
 

@@ -1,5 +1,5 @@
+import Category from './Category';
 import ImportSchema from './ImportSchema';
-import ItemGroup from './ItemGroup';
 import Organization from './Organization';
 import Report from './Report';
 import Transactinos from './Transactions';
@@ -10,7 +10,7 @@ export {
   Organization,
   Report,
   User,
-  ItemGroup,
+  Category,
   Transactinos,
 };
 
@@ -19,5 +19,5 @@ export default {
   Organization,
   Report,
   User,
-  ItemGroup,
+  Category,
 };

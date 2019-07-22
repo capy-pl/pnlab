@@ -1,12 +1,14 @@
-import LocalVar from './global';
-import { User } from './Model';
+import axios from 'axios';
+
+import Store from './global';
+import { User } from './model';
 
 export async function updateCurrentUser(): Promise<void> {
-    LocalVar.user = await User.get();
+    Store.user = await User.get();
 }
 
 export function getCurrentUser(): User | undefined {
-    return LocalVar.user;
+    return Store.user;
 }
 
 export function hasToken(): boolean {
@@ -14,11 +16,16 @@ export function hasToken(): boolean {
 }
 
 export function isLoggedIn(): boolean {
-  return !(LocalVar.user === undefined);
+  return !(Store.user === undefined);
 }
 
 export function urlPrefix(url: string): string {
   return `/#${url}`;
+}
+
+export async function searchItem(name: string): Promise<{ items: string[]}> {
+  const response = await axios.get<{ items: string[]}>(`/report/searchItem?query=${name}`);
+  return response.data;
 }
 
 export default {

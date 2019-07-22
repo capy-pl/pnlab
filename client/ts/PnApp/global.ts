@@ -1,4 +1,4 @@
-import { User } from './Model';
+import { User } from './model';
 
 interface Store {
   user?: User;

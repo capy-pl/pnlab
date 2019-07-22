@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { Dropdown, Menu, Segment } from 'semantic-ui-react';
 import { Auth } from '../../PnApp';
-import { User } from '../../PnApp/Model';
+import { User } from '../../PnApp/model';
 
 import { getCurrentUser, urlPrefix } from '../../PnApp/Helper';
 

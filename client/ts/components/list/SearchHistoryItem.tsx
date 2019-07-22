@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Icon, Label, SemanticCOLORS, Table } from 'semantic-ui-react';
-import { ProjectedReport } from '../../PnApp/Model/Report';
+import { ProjectedReport } from '../../PnApp/model/Report';
 
 interface ItemProps {
   item: ProjectedReport;
