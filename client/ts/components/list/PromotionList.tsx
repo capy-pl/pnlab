@@ -54,10 +54,10 @@ const PromotionList = ({ item }: PromotionItemProps) => {
         {item.name}
       </Table.Cell>
       <Table.Cell textAlign='center'>
-        {item.startTime.toLocaleString() === 'Invalid Date' ? 'All' : item.startTime.toLocaleString()}
+        {item.startTime.toLocaleDateString() === 'Invalid Date' ? 'All' : item.startTime.toLocaleDateString()}
       </Table.Cell>
       <Table.Cell textAlign='center'>
-        {item.startTime.toLocaleString() === 'Invalid Date' ? 'All' : item.endTime.toLocaleString()}
+        {item.endTime.toLocaleDateString() === 'Invalid Date' ? 'All' : item.endTime.toLocaleDateString()}
       </Table.Cell>
       <Table.Cell>{productAList}</Table.Cell>
       <Table.Cell>{productBList}</Table.Cell>

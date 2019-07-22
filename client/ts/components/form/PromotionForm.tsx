@@ -1,8 +1,9 @@
 import React from 'react';
-import { Dropdown, DropdownProps, Form, Segment } from 'semantic-ui-react';
+import { Dropdown, DropdownOnSearchChangeData, DropdownProps, Form, Segment } from 'semantic-ui-react';
 
 interface PromotionFormProps {
-  products: string[];
+  productsA: string[];
+  productsB: string[];
   dropChangeA?: (event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => void;
   dropChangeB?: (event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => void;
   typeChange?: (event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => void;
@@ -11,31 +12,39 @@ interface PromotionFormProps {
   endMonthChange?: (event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => void;
   startYearChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   endYearChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onSearchChangeA?: (event: React.SyntheticEvent<HTMLElement>, data: DropdownOnSearchChangeData) => void;
+  onSearchChangeB?: (event: React.SyntheticEvent<HTMLElement>, data: DropdownOnSearchChangeData) => void;
 }
 
-const PromotionForm = ({ products, dropChangeA, dropChangeB, typeChange, nameChange,
-  startMonthChange, startYearChange, endMonthChange, endYearChange }: PromotionFormProps) => {
-  const inputs = products.map((value) => {
+const PromotionForm = ({ productsA, productsB, dropChangeA, dropChangeB, typeChange, nameChange, startMonthChange,
+  startYearChange, endMonthChange, endYearChange, onSearchChangeA, onSearchChangeB }: PromotionFormProps) => {
+  const inputsA = productsA.map((value) => {
     return {
       text: value,
       value,
     };
   });
-  const typeInput = [{text: 'conbination', value: 'conbination'}, {text: 'direct', value: 'direct'}];
+  const inputsB = productsB.map((value) => {
+    return {
+      text: value,
+      value,
+    };
+  });
+  const typeInput = [{text: 'combination', value: 'combination'}, {text: 'direct', value: 'direct'}];
   const monthInput = [
-    {text: 'January', value: 'January'},
-    {text: 'February', value: 'Febraury'},
-    {text: 'March', value: 'March'},
-    {text: 'April', value: 'April'},
-    {text: 'May', value: 'May'},
-    {text: 'June', value: 'Jume'},
-    {text: 'July', value: 'July'},
-    {text: 'August', value: 'August'},
-    {text: 'September', value: 'September'},
-    {text: 'October', value: 'October'},
-    {text: 'November', value: 'November'},
-    {text: 'December', value: 'December'},
-  ]
+    {text: 'January', value: '01'},
+    {text: 'February', value: '02'},
+    {text: 'March', value: '03'},
+    {text: 'April', value: '04'},
+    {text: 'May', value: '05'},
+    {text: 'June', value: '06'},
+    {text: 'July', value: '07'},
+    {text: 'August', value: '08'},
+    {text: 'September', value: '09'},
+    {text: 'October', value: '10'},
+    {text: 'November', value: '11'},
+    {text: 'December', value: '12'},
+  ];
 
   return (
     <Segment color='teal'>
@@ -66,7 +75,8 @@ const PromotionForm = ({ products, dropChangeA, dropChangeB, typeChange, nameCha
             multiple
             search
             selection
-            options={inputs}
+            options={inputsA}
+            onSearchChange={onSearchChangeA}
           />
           <br/>
           <Dropdown
@@ -76,7 +86,8 @@ const PromotionForm = ({ products, dropChangeA, dropChangeB, typeChange, nameCha
             multiple
             search
             selection
-            options={inputs}
+            options={inputsB}
+            onSearchChange={onSearchChangeB}
           />
         </Form.Field>
         <Form.Field>

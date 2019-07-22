@@ -1,10 +1,12 @@
 import React, { PureComponent } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { Button, DropdownProps, Header, Icon, Modal, Segment, Table} from 'semantic-ui-react';
+import { Button, DropdownOnSearchChangeData, DropdownProps,
+  Header, Icon, Modal, Segment, Table} from 'semantic-ui-react';
 
 import PromotionForm from 'Component/form/PromotionForm';
 import PromotionList from 'Component/list/PromotionList';
 import Loader from 'Component/Loader';
+import { searchItem } from '../../PnApp/Helper';
 import { Promotion } from '../../PnApp/Model';
 import { PromotionType } from '../../PnApp/Model/Promotion';
 
@@ -12,7 +14,8 @@ interface PromotionItemState {
   loading: boolean;
   itemList: string[];
   name: string;
-  products: string[];
+  productsA: string[];
+  productsB: string[];
   productA: string[];
   productB: string[];
   type: PromotionType;
@@ -32,7 +35,8 @@ export default class PromotionItem extends PureComponent<RouteComponentProps, Pr
       loading: false,
       itemList: [],
       open: false,
-      products: [],
+      productsA: [],
+      productsB: [],
       productA: [],
       productB: [],
       type: 'combination',
@@ -52,6 +56,8 @@ export default class PromotionItem extends PureComponent<RouteComponentProps, Pr
     this.startYearChange = this.startYearChange.bind(this);
     this.endMonthChange = this.endMonthChange.bind(this);
     this.endYearChange = this.endYearChange.bind(this);
+    this.onSearchChangeA = this.onSearchChangeA.bind(this);
+    this.onSearchChangeB = this.onSearchChangeB.bind(this);
   }
 
   public async componentDidMount() {
@@ -72,12 +78,12 @@ export default class PromotionItem extends PureComponent<RouteComponentProps, Pr
       type: this.state.type,
       groupOne: this.state.productA,
       groupTwo: this.state.productB,
-      startTime: this.state.startYear + this.state.startMonth,
-      endTime: this.state.endYear + this.state.endMonth,
+      startTime: this.state.startYear + '-' + this.state.startMonth + '-01',
+      endTime: this.state.endYear + '-' + this.state.endMonth + '-01',
     };
     Promotion.add(promotion)
       .then(() => {
-        this.props.history.push('/settings/promotion');
+        this.props.history.push('/');
       });
   }
 
@@ -136,6 +142,24 @@ export default class PromotionItem extends PureComponent<RouteComponentProps, Pr
       });
   }
 
+  public async onSearchChangeA(event: React.SyntheticEvent<HTMLElement>, data: DropdownOnSearchChangeData) {
+    const value = data.searchQuery as string;
+    const values = await searchItem(value);
+    this.setState({
+      loading: false,
+      productsA: this.state.productA.concat(values.items),
+    });
+  }
+
+  public async onSearchChangeB(event: React.SyntheticEvent<HTMLElement>, data: DropdownOnSearchChangeData) {
+    const value = data.searchQuery as string;
+    const values = await searchItem(value);
+    this.setState({
+      loading: false,
+      productsB: this.state.productB.concat(values.items),
+    });
+  }
+
   public render() {
 
     const promotionHistory = this.state.promotions.map((promotion) => {
@@ -153,8 +177,8 @@ export default class PromotionItem extends PureComponent<RouteComponentProps, Pr
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell width='1' textAlign='center'>Promotion Name</Table.HeaderCell>
-              <Table.HeaderCell width='2' textAlign='center'>Start Time</Table.HeaderCell>
-              <Table.HeaderCell width='2' textAlign='center'>End Time</Table.HeaderCell>
+              <Table.HeaderCell width='1' textAlign='center'>Start Time</Table.HeaderCell>
+              <Table.HeaderCell width='1' textAlign='center'>End Time</Table.HeaderCell>
               <Table.HeaderCell width='2' textAlign='center'>ItemA Set</Table.HeaderCell>
               <Table.HeaderCell width='2' textAlign='center'>ItemB Set</Table.HeaderCell>
             </Table.Row>
@@ -164,8 +188,8 @@ export default class PromotionItem extends PureComponent<RouteComponentProps, Pr
           </Table.Body>
         </Table>
 
-        <Modal trigger={<Button>Add</Button>} closeIcon>
-          <Header content='欲刪除商品' />
+        <Modal trigger={<Button>Add</Button>} closeIcon onClose={this.onConfirm}>
+          <Header content='欲刪除活動' />
           <Modal.Content>
             <PromotionForm
               dropChangeA={this.onChangeA}
@@ -176,7 +200,10 @@ export default class PromotionItem extends PureComponent<RouteComponentProps, Pr
               startYearChange={this.startYearChange}
               endMonthChange={this.endMonthChange}
               endYearChange={this.endYearChange}
-              products={this.state.products}
+              productsA={this.state.productsA}
+              productsB={this.state.productsB}
+              onSearchChangeA={this.onSearchChangeA}
+              onSearchChangeB={this.onSearchChangeB}
             />
           </Modal.Content>
           <Modal.Actions>
