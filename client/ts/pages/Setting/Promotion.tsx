@@ -62,6 +62,10 @@ export default class PromotionItem extends PureComponent<RouteComponentProps, Pr
   }
 
   public async componentDidMount() {
+    await this.load();
+  }
+
+  public async load() {
     const promotions = await Promotion.getAll();
     this.setState({
       loading: false,
@@ -69,7 +73,7 @@ export default class PromotionItem extends PureComponent<RouteComponentProps, Pr
     });
   }
 
-  public onConfirm() {
+  public async onConfirm(): Promise<void> {
     this.setState({
       open: false,
       loading: true,
@@ -82,10 +86,8 @@ export default class PromotionItem extends PureComponent<RouteComponentProps, Pr
       startTime: this.state.startYear + '-' + this.state.startMonth + '-01',
       endTime: this.state.endYear + '-' + this.state.endMonth + '-01',
     };
-    Promotion.add(promotion)
-      .then(() => {
-        window.location.reload();
-      });
+    await Promotion.add(promotion);
+    await this.load();
   }
 
   public onChangeA(event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) {
@@ -161,15 +163,14 @@ export default class PromotionItem extends PureComponent<RouteComponentProps, Pr
     });
   }
 
-  public onButtonClick(item: Promotion): () => void {
-    return () => {
-      item.delete();
-      window.location.reload();
+  public onButtonClick(item: Promotion): () => Promise<void> {
+    return async () => {
+      await item.delete();
+      await this.load();
     };
   }
 
   public render() {
-
     const promotionHistory = this.state.promotions.map((promotion) => {
       return (
         <PromotionList
