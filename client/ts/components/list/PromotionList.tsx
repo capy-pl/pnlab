@@ -60,6 +60,9 @@ const PromotionList = ({ item, onButtonClick }: PromotionItemProps) => {
       <Table.Cell textAlign='center'>
         {item.endTime.toLocaleDateString() === 'Invalid Date' ? 'All' : item.endTime.toLocaleDateString()}
       </Table.Cell>
+      <Table.Cell>
+        {item.type}
+      </Table.Cell>
       <Table.Cell>{productAList}</Table.Cell>
       <Table.Cell>{productBList}</Table.Cell>
       <Table.Cell>
