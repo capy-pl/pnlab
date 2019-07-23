@@ -189,6 +189,7 @@ export default class PromotionItem extends PureComponent<RouteComponentProps, Pr
               <Table.HeaderCell width='1' textAlign='center'>Promotion Name</Table.HeaderCell>
               <Table.HeaderCell width='1' textAlign='center'>Start Time</Table.HeaderCell>
               <Table.HeaderCell width='1' textAlign='center'>End Time</Table.HeaderCell>
+              <Table.HeaderCell width='1' textAlign='center'>Type</Table.HeaderCell>
               <Table.HeaderCell width='2' textAlign='center'>ItemA Set</Table.HeaderCell>
               <Table.HeaderCell width='2' textAlign='center'>ItemB Set</Table.HeaderCell>
               <Table.HeaderCell width='1' textAlign='center'>Delete</Table.HeaderCell>
