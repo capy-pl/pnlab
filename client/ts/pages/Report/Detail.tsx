@@ -158,6 +158,7 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
                   showCommunity={this.state.showCommunity}
                   selectedCommunities={this.state.selectedCommunities}
                   selectedProduct={this.state.selectedProduct}
+                  searchItems={this.state.searchItems}
                 />
               </div>
               <div style={{ width: '20%', position: 'absolute', overflow: 'auto', maxHeight: 550 }}>

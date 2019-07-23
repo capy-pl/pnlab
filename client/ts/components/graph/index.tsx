@@ -18,6 +18,7 @@ interface GraphProps {
   showCommunity?: boolean;
   selectedCommunities?: [];
   selectedProduct?: Node[];
+  searchItems?: any;
 }
 
 export default class GraphView extends PureComponent<GraphProps, {}> {
@@ -34,6 +35,9 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
 
   public componentDidUpdate() {
     this.initializeGraph();
+
+    // // 自己寫一個update的function在這裡
+    // this.update();
   }
 
   public toNode(node: Node): GraphNode {
@@ -67,14 +71,18 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
           },
         };
       }
-      // } else {
-      //   copy.hidden = true;
-      // }
-      // this.props.selectedProduct[0].neighbors.forEach((neighbor) => {
-      //   if (neighbor === node.id) {
-      //     copy.hidden = false;
-      //   }
-      // });
+    }
+
+    if (this.props.searchItems !== undefined) {
+      this.props.searchItems.forEach((item) => {
+        if (item === node.name) {
+          return (
+            copy.color = {
+              background: 'yellow',
+            }
+          );
+        }
+      });
     }
     copy.value = node.degree;
     copy.title = `
