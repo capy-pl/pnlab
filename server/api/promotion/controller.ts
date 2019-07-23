@@ -1,7 +1,7 @@
 import e from 'express';
 import { connection } from 'mongoose';
 
-import { Logger } from 'server/core/util';
+import { Logger } from '../../core/util';
 import Promotion, {
   PromotionInterface,
   PromotionType,

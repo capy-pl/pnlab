@@ -6,8 +6,8 @@ dotenv.config();
 
 const { SECRET_KEY } = process.env;
 
-import User from '../../models/User';
 import { Logger } from '../../core/util';
+import User from '../../models/User';
 
 interface SignUpRequestBody {
   email: string;
