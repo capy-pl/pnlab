@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-type PromotionType = 'combination' | 'direct';
+export type PromotionType = 'combination' | 'direct';
 
 export interface PromotionModel {
   name: string;
