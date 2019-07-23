@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import { DataSet, EdgeOptions, Network, NodeOptions } from 'vis';
 import { Community, Edge, Node } from '../../PnApp/Model/Report';
-
 interface GraphNode extends Node, NodeOptions {
 }
 
@@ -27,6 +26,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
   constructor(props: GraphProps) {
     super(props);
     this.graphRef = React.createRef();
+    this.updateNodes = this.updateNodes.bind(this);
   }
 
   public componentDidMount() {
@@ -34,58 +34,19 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
   }
 
   public componentDidUpdate() {
-    this.initializeGraph();
+    // this.initializeGraph();
+
+    // // 自己寫一個update的function在這裡
+    this.updateNodes();
   }
 
   public toNode(node: Node): GraphNode {
     const copy: GraphNode = Object.assign({}, node);
     copy.label = node.name;
-    if (this.props.showCommunity) {
-        copy.group = node.community.toString();
-    }
-    // const selectedCommunities = [1, 21, 14, 15];
-    if (this.props.selectedCommunities.length !== 0) {
-      const communitiesIdList = this.props.selectedCommunities.map((community: Community) => {
-        return (community.id);
-      });
-      if (!communitiesIdList.includes(node.community)) {
-        copy.hidden = true;
-      }
-    } else {
-      copy.hidden = false;
-    }
-
-    if (this.props.selectedProduct.length !== 0) {
-      if (this.props.selectedProduct[0].name === node.name) {
-        // copy.hidden = false;
-        copy.color = {
-          background: 'orange',
-          hover: {
-            background: 'yellow',
-          },
-          highlight: {
-            background: 'yellow',
-          },
-        };
-      }
-    }
-
-    if (this.props.searchItems !== undefined) {
-      this.props.searchItems.forEach((item) => {
-        if (item === node.name) {
-          return (
-            copy.color = {
-              background: 'yellow',
-            }
-          );
-        }
-      });
-    }
     copy.value = node.degree;
     copy.title = `
     <div>
       <p>${copy.name}</p>
-      <p>community: ${copy.group}</p>
       <p>連接節點數: ${copy.degree}</p>
     </div>
     `;
@@ -106,6 +67,110 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
     </div>
     `;
     return copy;
+  }
+
+  public updateNodes() {
+    console.log(this.network);
+    // console.log(this.network.body.data.nodes.get(1));
+    const nodes = this.network.body.data.nodes;
+    // const edges = this.network.body.data.edges;
+    if (this.props.showCommunity) {
+      const communities = nodes.map((node) => {
+        return ({
+          id: node.id,
+          group: node.community,
+          title: `
+            <div>
+              <p>${node.name}</p>
+              <p>community: ${node.community}</p>
+              <p>連接節點數: ${node.degree}</p>
+            </div>
+          `,
+        });
+      });
+      nodes.update(communities);
+      if (this.props.selectedCommunities.length !== 0) {
+        const communitiesIdList = this.props.selectedCommunities.map((community: Community) => {
+          return (community.id);
+        });
+        const selectCommunities = [];
+        nodes.forEach((node) => {
+          if (!communitiesIdList.includes(node.community)) {
+            selectCommunities.push({id: node.id, hidden: true});
+          } else {
+            selectCommunities.push({id: node.id, hidden: false});
+          }
+        });
+        nodes.update(selectCommunities);
+      } else {
+        const coloredAll = nodes.map((node) => {
+          return {id: node.id, hidden: false};
+        });
+        nodes.update(coloredAll);
+      }
+    } else {
+      const productNetwork = nodes.map((node) => {
+        return (
+          {
+            id: node.id,
+            title: `
+              <div>
+                <p>${node.name}</p>
+                <p>連接節點數: ${node.degree}</p>
+              </div>
+            `,
+            group: undefined,
+            color: '#69bcd5',
+          }
+        );
+      });
+      nodes.update(productNetwork);
+      const selectProduct = [];
+      if (this.props.selectedProduct.length !== 0) {
+        nodes.forEach((node) => {
+          if (this.props.selectedProduct[0].name === node.name) {
+            selectProduct.push (
+              {
+                id: node.id,
+                color: {
+                  background: 'orange',
+                  hover: {
+                    background: 'yellow',
+                  },
+                  highlight: {
+                    background: 'yellow',
+                  },
+                },
+              },
+            );
+          }
+        });
+        nodes.update(selectProduct);
+        console.log(selectProduct);
+        console.log(this.network.body.data.nodes);
+      }
+      if (this.props.searchItems !== undefined) {
+        const searchItems = [];
+        nodes.forEach((node) => {
+          this.props.searchItems.forEach((item) => {
+            if (node.name === item) {
+              searchItems.push (
+                {
+                  id: node.id,
+                  color: {
+                    background: 'yellow',
+                    hover: {
+                      background: 'orange',
+                    },
+                  },
+                },
+              );
+            }
+          });
+        });
+        nodes.update(searchItems);
+      }
+    }
   }
 
   public initializeGraph(): void {

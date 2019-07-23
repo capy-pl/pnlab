@@ -101,7 +101,7 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
   public updateProductGraph(productName) {
     console.log('got', productName);
     const selected = [...this.state.report.nodes].filter((node) => node.name === productName);
-    console.log(selected[0].name, selected[0].neighbors);
+    console.log(selected, selected[0].neighbors);
     this.setState({selectedProduct: selected});
   }
 
