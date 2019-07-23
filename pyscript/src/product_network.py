@@ -3,32 +3,30 @@ import json
 class ProductNerwork:
     def __init__(self, graph):
         self.graph = graph
-        self._communities = graph.community_fastgreedy(
-            'weight').as_clustering()
-        for index, vertex in enumerate(self.graph.vs):
-            vertex.update_attributes(
-                {'community': self._communities.membership[index], 'id': index})
         self.communities = self.get_communities()
-        for community in self.communities:
-            if 'core' in community:
-                node = self.graph.vs.find(community['core'])
-                node.update_attributes({'core': True})
+        self.product_rank = self.get_product_rank(20)
 
     def get_product_rank(self, num):
+        # The function must comes after get_communities, which compute the weight for all vs.
         items_weight_dict = {}
         for node in self.graph.vs:
-            edges_id = self.graph.incident(node['name'], mode='ALL')
-            node_weight = sum([self.graph.es[e]['weight'] for e in edges_id])
-            items_weight_dict[node['name']] = node_weight 
+            items_weight_dict[node['name']] = node['weight'] 
         products = [item for item in sorted(items_weight_dict, key=items_weight_dict.get, reverse=True)[:num]]
         return products
 
     def get_communities(self, sort=True):
+        # Use native method to get community
+        _communities = self.graph.community_fastgreedy(
+            'weight').as_clustering()
+
+        # Update graph vertex attributes.
+        for index, vertex in enumerate(self.graph.vs):
+            vertex.update_attributes(
+                {'community': _communities.membership[index], 'id': index})
+
         communities = []
-        for subgraph in self._communities.subgraphs():
-            number = len(subgraph.vs)
-            weight_sum = sum([edge['weight']
-                              for edge in subgraph.es]) * (number) / number / (number + 1)
+        for subgraph in _communities.subgraphs():
+            weight_sum = sum([edge['weight'] for edge in subgraph.es])
             nodes_ids = [node['name'] for node in subgraph.vs]
             community = {
                 'weight': weight_sum,
@@ -42,24 +40,34 @@ class ProductNerwork:
                 edges_ids = subgraph.incident(node, mode='ALL')
                 total_weight = sum([subgraph.es[e]['weight']
                                    for e in edges_ids])
+
+                # Update the vertex's weight in the parent graph.
+                self.graph.vs.find(node)['weight'] = total_weight
                 node_dict['weight'] = total_weight
                 nodes.append(node_dict)
+
+            # Sort nodes according to its weight.
             community['items'] = list(map(lambda x: x['name'],
                                      sorted(nodes, key=lambda x: x['weight'], reverse = True)
                                     ))
-            if number > 3:
+            if len(subgraph.vs) > 3:
                 community['core'] = community['items'][0]
             communities.append(community)
+
+        # Add core attribute to graph vertex.
+        for community in communities:
+            if 'core' in community:
+                node = self.graph.vs.find(community['core'])
+                node.update_attributes({'core': True})
+
         if sort:
             return sorted(communities, key=lambda x: x['weight'], reverse=True)
-        return dics
+        return communities
 
-    def get_connectors(self):
-        items = []
-        for index, value in enumerate(self.graph.betweenness(weights=['weight'])):
-            if value > 0:
-                items.append({ 'name': self.graph.vs[index]['name'], 'betweeness': value })
-        items.sort(key=lambda x: x['betweeness'], reverse=True)
+    def get_hooks(self):
+        betweeness = self.graph.betweenness(weights='weight')
+        ls = [(self.graph.vs[index], value) for index, value in enumerate(betweeness)]
+        sorted_ls = list(filter(lambda x: not x[0]['core'] and x[1] > 0, sorted(a, key=lambda x: x[1], reverse=True)))[:10]
         return items
 
     def normalizer(self, max_degree):
@@ -87,7 +95,7 @@ class ProductNerwork:
             'nodes': nodes,
             'edges': edges,
             'communities': self.communities,
-            'rank': self.get_product_rank(20)
+            'rank': self.product_rank
         }
 
     def to_json(self):
