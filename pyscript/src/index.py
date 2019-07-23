@@ -15,11 +15,13 @@ def network_analysis(report_id):
     if not report:
         return
     try:
-        query = to_query(report['conditions'])
+        query, promotions = to_query(report['conditions'])
         purchase_list = list(db['transactions'].find(query, projection=['items', '資料日期與時間']))
+        promotions = list(db['promotions'].find({ 'name': { '$in': promotions }}))
         if len(purchase_list) <= 0:
             raise ZeroTransactionError('No transactions match the conditions.')
         converter = NetworkConverter(purchase_list)
+        converter.add_promotion_filters(promotions)
         converter.done()
         product_network = converter.transform()
         data = product_network.to_document()
@@ -28,6 +30,7 @@ def network_analysis(report_id):
             'nodes': data['nodes'],
             'edges': data['edges'],
             'status': 'success',
+            'rank': data['rank'],
             'modified': datetime.utcnow(),
             'errMessage': '',
         }

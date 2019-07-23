@@ -15,7 +15,7 @@ interface FilterFormInputProps {
 }
 
 const FilterFormInput = ({ condition, onChange }: FilterFormInputProps) => {
-  if (condition.type === 'string') {
+  if (condition.type === 'string' || condition.type === 'promotion') {
     const options = condition.values.map((value) => {
       return {
         text: value,

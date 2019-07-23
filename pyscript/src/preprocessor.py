@@ -13,7 +13,8 @@ def all_pass(promotion_list, arg):
 
 
 class NetworkConverter:
-    def __init__(self, transactions):
+    def __init__(self, transactions, method='adjust-price'):
+        self.method = method
         self.transactions = transactions
         self._done = False
         self.promotion_filter = {
@@ -92,7 +93,14 @@ class NetworkConverter:
             transaction['items'], 2) if self.is_valid_edge(edge, transaction['資料日期與時間'])]
         return edges
 
-    def transform(self, method='degree-price', support=0.001):
+    def weight(self, edge, transaction, nums):
+        if self.method == 'adjust-degree':
+            return 1 / nums
+        if self.method == 'adjust-price':
+            return sum([item['amount'] for item in edge]) / (len(transaction['items']) - 1)
+        return 1
+
+    def transform(self, support=0.001):
         if not self.is_done():
             raise Exception()
         support = int(len(self.transactions) * support)
@@ -103,7 +111,7 @@ class NetworkConverter:
             number = len(edges)
             for edge in edges:
                 simple_edge = tuple(item['單品名稱'] for item in edge)
-                weight = sum([item['amount'] for item in edge])
+                weight = self.weight(edge, transaction, number)
                 if simple_edge in edge_dict or (simple_edge[1], simple_edge[0]) in edge_dict:
                     edge_in_list = simple_edge if simple_edge in edge_dict else (
                         simple_edge[1], simple_edge[0])
