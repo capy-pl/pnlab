@@ -44,47 +44,6 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
   public toNode(node: Node): GraphNode {
     const copy: GraphNode = Object.assign({}, node);
     copy.label = node.name;
-    if (this.props.showCommunity) {
-        copy.group = node.community.toString();
-    }
-    // const selectedCommunities = [1, 21, 14, 15];
-    if (this.props.selectedCommunities.length !== 0) {
-      const communitiesIdList = this.props.selectedCommunities.map((community: Community) => {
-        return (community.id);
-      });
-      if (!communitiesIdList.includes(node.community)) {
-        copy.hidden = true;
-      }
-    } else {
-      copy.hidden = false;
-    }
-
-    if (this.props.selectedProduct.length !== 0) {
-      if (this.props.selectedProduct[0].name === node.name) {
-        // copy.hidden = false;
-        copy.color = {
-          background: 'orange',
-          hover: {
-            background: 'yellow',
-          },
-          highlight: {
-            background: 'yellow',
-          },
-        };
-      }
-    }
-
-    if (this.props.searchItems !== undefined) {
-      this.props.searchItems.forEach((item) => {
-        if (item === node.name) {
-          return (
-            copy.color = {
-              background: 'yellow',
-            }
-          );
-        }
-      });
-    }
     copy.value = node.degree;
     copy.title = `
     <div>
@@ -115,6 +74,50 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
   public updateNodes() {
     const nodes = this.network.body.data.nodes;
     const edges = this.network.body.data.edges;
+    for (const node of nodes) {
+      if (this.props.showCommunity) {
+        node.group = node.community.toString();
+      }
+      // const selectedCommunities = [1, 21, 14, 15];
+      if (this.props.selectedCommunities.length !== 0) {
+        const communitiesIdList = this.props.selectedCommunities.map((community: Community) => {
+          return (community.id);
+        });
+        if (!communitiesIdList.includes(node.community)) {
+          node.hidden = true;
+        }
+      } else {
+        node.hidden = false;
+      }
+
+      if (this.props.selectedProduct.length !== 0) {
+        if (this.props.selectedProduct[0].name === node.name) {
+          // copy.hidden = false;
+          node.color = {
+            background: 'orange',
+            hover: {
+              background: 'yellow',
+            },
+            highlight: {
+              background: 'yellow',
+            },
+          };
+        }
+      }
+
+      if (this.props.searchItems !== undefined) {
+        this.props.searchItems.forEach((item) => {
+          if (node.name === item) {
+            return (
+              node.color = {
+                background: 'yellow',
+              }
+            );
+          }
+        });
+      }
+      nodes.update(node);
+    }
   }
 
   public initializeGraph(): void {
