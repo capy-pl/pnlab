@@ -27,6 +27,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
   constructor(props: GraphProps) {
     super(props);
     this.graphRef = React.createRef();
+    this.updateNodes = this.updateNodes.bind(this);
   }
 
   public componentDidMount() {
@@ -34,10 +35,10 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
   }
 
   public componentDidUpdate() {
-    this.initializeGraph();
+    // this.initializeGraph();
 
     // // 自己寫一個update的function在這裡
-    // this.update();
+    this.updateNodes();
   }
 
   public toNode(node: Node): GraphNode {
@@ -111,6 +112,11 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
     return copy;
   }
 
+  public updateNodes() {
+    const nodes = this.network.body.data.nodes;
+    const edges = this.network.body.data.edges;
+  }
+
   public initializeGraph(): void {
     const nodes = new DataSet<GraphNode>();
     const edges = new DataSet<GraphEdge>();
@@ -176,7 +182,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
               tooltipDelay: 100,
               // navigationButtons: true,
               // multiselect: true
-            },
+          },
         });
     }
   }
