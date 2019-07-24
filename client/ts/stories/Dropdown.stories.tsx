@@ -3,8 +3,8 @@ import React from 'react';
 import 'semantic-ui-css/semantic.min.css';
 import { DropdownProps } from 'semantic-ui-react';
 
+import { SearchItemDropdown } from 'Component/dropdown';
 import SearchDropdown from 'Component/dropdown/SearchDropdown';
-import { SearchDropdown2 } from 'Component/dropdown';
 
 const stories = storiesOf('Dropdown', module);
 
@@ -39,7 +39,7 @@ stories
     },
   )
   .add(
-    'Drop down 2', () => {
+    'Drop down Item', () => {
       const countryOptions = [
         { key: 'af', value: 'af', text: 'Afghanistan' },
         { key: 'ax', value: 'ax', text: 'Aland Islands' },
@@ -60,6 +60,10 @@ stories
 
       const placeholder = 'Please select a country';
 
-      return <SearchDropdown2 placeholder={placeholder} options={countryOptions} />;
+      function onChange(event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) {
+        console.log(data.value);
+      }
+
+      return <SearchItemDropdown placeholder={placeholder} options={countryOptions} onChange={onChange} />;
     },
   );

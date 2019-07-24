@@ -3,7 +3,6 @@ import { DataSet, EdgeOptions, Network, NodeOptions } from 'vis';
 import { Community, Edge, Node } from '../../PnApp/Model/Report';
 interface GraphNode extends Node, NodeOptions {
 }
-
 interface GraphEdge extends Edge, EdgeOptions {
 }
 
@@ -34,9 +33,6 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
   }
 
   public componentDidUpdate() {
-    // this.initializeGraph();
-
-    // // 自己寫一個update的function在這裡
     this.updateNodes();
   }
 
@@ -50,11 +46,6 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
       <p>連接節點數: ${copy.degree}</p>
     </div>
     `;
-    if (this.props.showCommunity) {
-      if (node.core) {
-        copy.borderWidth = 5;
-      }
-    }
     return copy;
   }
 
@@ -71,11 +62,13 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
 
   public updateNodes() {
     console.log(this.network);
-    // console.log(this.network.body.data.nodes.get(1));
     const nodes = this.network.body.data.nodes;
-    // const edges = this.network.body.data.edges;
     if (this.props.showCommunity) {
       const communities = nodes.map((node) => {
+        let borderWidth = 1;
+        if (node.core) {
+          borderWidth = 5;
+        }
         return ({
           id: node.id,
           group: node.community,
@@ -86,6 +79,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
               <p>連接節點數: ${node.degree}</p>
             </div>
           `,
+          borderWidth,
         });
       });
       nodes.update(communities);
@@ -103,10 +97,10 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
         });
         nodes.update(selectCommunities);
       } else {
-        const coloredAll = nodes.map((node) => {
+        const showAll = nodes.map((node) => {
           return {id: node.id, hidden: false};
         });
-        nodes.update(coloredAll);
+        nodes.update(showAll);
       }
     } else {
       const productNetwork = nodes.map((node) => {
@@ -120,13 +114,16 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
               </div>
             `,
             group: undefined,
+            hidden: false,
             color: '#69bcd5',
+            borderWidth: 1,
           }
         );
       });
       nodes.update(productNetwork);
       const selectProduct = [];
       if (this.props.selectedProduct.length !== 0) {
+        // ----------- highlight node --------------
         nodes.forEach((node) => {
           if (this.props.selectedProduct[0].name === node.name) {
             selectProduct.push (
@@ -145,9 +142,24 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
             );
           }
         });
+        // --------- show connected products -------------
+        // let connectedNodes;
+        // const connectedNodesList = [];
+        // nodes.forEach((node) => {
+        //   if (this.props.selectedProduct[0].name === node.name) {
+        //     connectedNodesList.push(node.id);
+        //     connectedNodes = this.network.getConnectedNodes(node.id);
+        //   }
+        // });
+        // for (const c of connectedNodes) {
+        //   connectedNodesList.push(c);
+        // }
+        // nodes.forEach((node) => {
+        //   if (!connectedNodesList.includes(node.id)) {
+        //     selectProduct.push({id: node.id, hidden: true});
+        //   }
+        // });
         nodes.update(selectProduct);
-        console.log(selectProduct);
-        console.log(this.network.body.data.nodes);
       }
       if (this.props.searchItems !== undefined) {
         const searchItems = [];

@@ -6,9 +6,8 @@ class ProductNerwork:
         self._communities = graph.community_fastgreedy(
             'weight').as_clustering()
         for index, vertex in enumerate(self.graph.vs):
-            # add neighbors
             vertex.update_attributes(
-                {'community': self._communities.membership[index], 'id': index, 'neighbors': self.graph.neighbors(vertex.index)})
+                {'community': self._communities.membership[index], 'id': index})
         self.communities = self.get_communities()
         for community in self.communities:
             if 'core' in community:
@@ -86,13 +85,7 @@ class ProductNerwork:
             node_attr = {}
             node_attr = { key: node[key] for key in node.attributes()}
             node_attr['degree'] = node.degree()
-            # neighbor nodes
-            # node_attr['neighbors'] = self.graph.neighbors(self.graph.vs.find(node.index)
             nodes.append(node_attr)
-        # for node in self.graph.vs:
-        #     # neighbor nodes
-        #     node_attr['neighbors'] = self.graph.neighbors(self.graph.vs.find(name == node['name']).index)
-        #     nodes.append(node_attr)
         return {
             'nodes': nodes,
             'edges': edges,

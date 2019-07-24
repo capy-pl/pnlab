@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { Message } from 'semantic-ui-react';
 
 interface ProductRankProps {
-  productRankInfo?: [];
+  productRankInfo?: string[];
   updateProductGraph: (productName) => void;
 }
 

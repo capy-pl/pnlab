@@ -2,13 +2,12 @@ import React, { PureComponent } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { Button, DropdownProps } from 'semantic-ui-react';
 
+import { ModalSave } from 'Component/modal';
+import { SearchItemDropdown } from '../../components/dropdown';
 import Graph from '../../components/graph';
 import Loader from '../../components/Loader';
 import { DropdownMenu } from '../../components/menu';
 import { CharacterMessage, CommunitiesMessage, ProductRank } from '../../components/message';
-
-import { ModalSave } from 'Component/modal';
-import { SearchDropdown } from '../../components/dropdown';
 
 import ReportAPI from '../../PnApp/Model/Report' ;
 import { Node } from '../../PnApp/Model/Report';
@@ -19,13 +18,13 @@ interface ReportState {
   loading: boolean;
   report?: ReportAPI;
   hookInfo?: {};
-  showCommunity?: boolean;
+  showCommunity: boolean;
   content: string;
   communitiesInfo?: {};
   selectedCommunities?: [];
   selectedProduct?: Node[];
+  searchItems?: string[];
   modalOpen: boolean;
-  searchItems?: any;
 }
 
 export default class Report extends PureComponent<ReportProps, ReportState> {
@@ -37,11 +36,11 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
       content: '',
       modalOpen: false,
     };
-    this.onClickP = this.onClickP.bind(this);
-    this.onClickC = this.onClickC.bind(this);
+    this.onShowProductNetwork = this.onShowProductNetwork.bind(this);
+    this.onShowCommunities = this.onShowCommunities.bind(this);
     this.onShowCharacter = this.onShowCharacter.bind(this);
     this.onShowProductRank = this.onShowProductRank.bind(this);
-    this.onShowCommunities = this.onShowCommunities.bind(this);
+    this.onShowCommunitiesRank = this.onShowCommunitiesRank.bind(this);
     this.updateGraph = this.updateGraph.bind(this);
     this.updateProductGraph = this.updateProductGraph.bind(this);
     this.onSaveGraph = this.onSaveGraph.bind(this);
@@ -63,14 +62,14 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
     });
   }
 
-  public onClickP() {
+  public onShowProductNetwork() {
     this.setState({showCommunity: false});
     this.setState({content: ''});
     this.setState({selectedCommunities: []});
     this.setState({selectedProduct: []});
   }
 
-  public onClickC() {
+  public onShowCommunities() {
     this.setState({showCommunity: true});
     this.setState({content: ''});
     this.setState({selectedCommunities: []});
@@ -88,9 +87,9 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
     this.setState({content: 'productRank'});
   }
 
-  public onShowCommunities(event) {
+  public onShowCommunitiesRank(event) {
     event.stopPropagation();
-    this.setState({content: 'communities'});
+    this.setState({content: 'communitiesRank'});
   }
 
   public updateGraph(communitiesList): void {
@@ -101,7 +100,7 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
   public updateProductGraph(productName) {
     console.log('got', productName);
     const selected = [...this.state.report.nodes].filter((node) => node.name === productName);
-    console.log(selected, selected[0].neighbors);
+    console.log(selected[0]);
     this.setState({selectedProduct: selected});
   }
 
@@ -129,7 +128,7 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
         message =  <CharacterMessage communitiesInfo={this.state.report.communities} hookInfo={this.state.hookInfo} />;
       } else if (this.state.content === 'productRank') {
         message = <ProductRank productRankInfo={this.state.report.rank} updateProductGraph={this.updateProductGraph} />;
-      } else if (this.state.content === 'communities') {
+      } else if (this.state.content === 'communitiesRank') {
         message = <CommunitiesMessage communitiesInfo={this.state.report.communities} updateGraph={this.updateGraph} />;
       }
     }
@@ -140,15 +139,25 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
         const dropdownOptions = this.state.report.nodes.map((node) => {
           return ({key: node.name, value: node.name, text: node.name});
         });
+        let searchItem;
+        if (!this.state.showCommunity) {
+          searchItem = (
+            <SearchItemDropdown
+              options={dropdownOptions}
+              placeholder='請輸入商品名稱'
+              onChange={this.onItemSearch}
+            />
+          );
+        }
         return (
           <React.Fragment>
             <DropdownMenu
               reportId={this.state.report.id}
-              onClickP={this.onClickP}
-              onClickC={this.onClickC}
+              onShowProductNetwork={this.onShowProductNetwork}
+              onShowCommunities={this.onShowCommunities}
               onShowCharacter={this.onShowCharacter}
               onShowProductRank={this.onShowProductRank}
-              onShowCommunities={this.onShowCommunities}
+              onShowCommunitiesRank={this.onShowCommunitiesRank}
             />
             <div style={{ position: 'relative' }}>
               <div style={{ width: '100%', position: 'absolute' }}>
@@ -180,11 +189,7 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
                 </ModalSave>
               </div>
               <div style={{ position: 'fixed', top: 80, right: 20 }}>
-                <SearchDropdown
-                  options={dropdownOptions}
-                  placeholder='請輸入商品名稱'
-                  onChange={this.onItemSearch}
-                />
+                {searchItem}
               </div>
             </div>
           </React.Fragment>
