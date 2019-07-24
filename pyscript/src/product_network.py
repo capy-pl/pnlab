@@ -5,6 +5,7 @@ class ProductNerwork:
         self.graph = graph
         self.communities = self.get_communities()
         self.product_rank = self.get_product_rank(20)
+        self.hooks = self.get_hooks()
 
     def get_product_rank(self, num):
         # The function must comes after get_communities, which compute the weight for all vs.
@@ -67,18 +68,21 @@ class ProductNerwork:
     def get_hooks(self):
         betweeness = self.graph.betweenness(weights='weight')
         ls = [(self.graph.vs[index], value) for index, value in enumerate(betweeness)]
-        sorted_ls = list(filter(lambda x: not x[0]['core'] and x[1] > 0, sorted(a, key=lambda x: x[1], reverse=True)))[:10]
-        return items
-
-    def normalizer(self, max_degree):
-        max_value = max_degree
-        min_value = 1
-        def normalize(value):
-            return (value - min_value) / max_value + 1
-        return normalize
+        sorted_ls = list(filter(lambda x: not x[0]['core'] and x[1] > 0, sorted(ls, key=lambda x: x[1], reverse=True)))
+        connectors = []
+        for vx, _ in sorted_ls:
+            connected_communities = set()
+            for neighbor in vx.neighbors():
+                if neighbor['community'] != vx['community']:
+                    connected_communities.add(neighbor['community'])
+            if len(connected_communities) > 0:
+                connectors.append({
+                    'name': vx['name'],
+                    'connectTo': list(connected_communities)
+                })
+        return connectors
 
     def to_document(self):
-        norm = self.normalizer(self.graph.maxdegree())
         nodes = []
         edges = []
         for edge in self.graph.es:
@@ -95,7 +99,8 @@ class ProductNerwork:
             'nodes': nodes,
             'edges': edges,
             'communities': self.communities,
-            'rank': self.product_rank
+            'rank': self.product_rank,
+            'hooks': self.hooks
         }
 
     def to_json(self):

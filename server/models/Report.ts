@@ -25,6 +25,11 @@ export interface Condition extends FieldSchemaInterface {
   name: string | 'filterGroups' | 'filterItems';
 }
 
+export interface Hook {
+  name: string;
+  connectTo: number[];
+}
+
 export interface ReportInterface extends Document {
   created: Date;
   conditions: Condition[];
@@ -100,6 +105,11 @@ const CommunitySchema = new Schema<Community>({
   },
 });
 
+const HookSchema = new Schema<Hook>({
+  name: String,
+  connectTo: [Number],
+});
+
 const ReportSchema = new Schema<ReportInterface>({
   conditions: [ConditionSchema],
   edges: [NodeSchema],
@@ -119,6 +129,9 @@ const ReportSchema = new Schema<ReportInterface>({
   modified: {
     type: Date,
     required: true,
+  },
+  hooks: {
+    type: [HookSchema],
   },
   errorMessage: String,
   startTime: {
