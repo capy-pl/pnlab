@@ -42,7 +42,7 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
     this.onShowCharacter = this.onShowCharacter.bind(this);
     this.onShowProductRank = this.onShowProductRank.bind(this);
     this.onShowCommunitiesRank = this.onShowCommunitiesRank.bind(this);
-    this.updateGraph = this.updateGraph.bind(this);
+    this.updateCommunitiesGraph = this.updateCommunitiesGraph.bind(this);
     this.updateProductGraph = this.updateProductGraph.bind(this);
     this.onSaveGraph = this.onSaveGraph.bind(this);
     this.onCancel = this.onCancel.bind(this);
@@ -75,7 +75,7 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
     this.setState({content: ''});
     this.setState({selectedCommunities: []});
     this.setState({selectedProduct: []});
-
+    this.setState({searchItems: []});
   }
 
   public onShowCharacter(event) {
@@ -93,7 +93,7 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
     this.setState({content: 'communitiesRank'});
   }
 
-  public updateGraph(communitiesList): void {
+  public updateCommunitiesGraph(communitiesList) {
     console.log('got', communitiesList);
     this.setState({selectedCommunities: communitiesList});
   }
@@ -124,14 +124,12 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
 
   public render() {
     let message;
-    if (this.state.report) {
-      if (this.state.content === 'character') {
-        message =  <CharacterMessage communitiesInfo={this.state.report.communities} hookInfo={this.state.hookInfo} />;
-      } else if (this.state.content === 'productRank') {
-        message = <ProductRank productRankInfo={this.state.report.rank} updateProductGraph={this.updateProductGraph} />;
-      } else if (this.state.content === 'communitiesRank') {
-        message = <CommunitiesMessage communitiesInfo={this.state.report.communities} updateGraph={this.updateGraph} />;
-      }
+    if (this.state.content === 'character') {
+      message =  <CharacterMessage communitiesInfo={this.state.report.communities} hookInfo={this.state.hookInfo} />;
+    } else if (this.state.content === 'productRank') {
+      message = <ProductRank productRankInfo={this.state.report.rank} updateProductGraph={this.updateProductGraph} />;
+    } else if (this.state.content === 'communitiesRank') {
+      message = <CommunitiesMessage communitiesInfo={this.state.report.communities} updateCommunitiesGraph={this.updateCommunitiesGraph} />;
     }
     if (this.state.loading) {
       return <Loader size='huge' />;
@@ -140,9 +138,9 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
         const dropdownOptions = this.state.report.nodes.map((node) => {
           return ({key: node.name, value: node.name, text: node.name});
         });
-        let searchItem;
+        let searchItemDropdown;
         if (!this.state.showCommunity) {
-          searchItem = (
+          searchItemDropdown = (
             <SearchItemDropdown
               options={dropdownOptions}
               placeholder='請輸入商品名稱'
@@ -153,7 +151,6 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
         return (
           <React.Fragment>
             <DropdownMenu
-              reportId={this.state.report.id}
               onShowProductNetwork={this.onShowProductNetwork}
               onShowCommunities={this.onShowCommunities}
               onShowCharacter={this.onShowCharacter}
@@ -190,7 +187,7 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
                 </ModalSave>
               </div>
               <div style={{ position: 'fixed', top: 80, right: 20 }}>
-                {searchItem}
+                {searchItemDropdown}
               </div>
             </div>
           </React.Fragment>

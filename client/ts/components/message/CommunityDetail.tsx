@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Checkbox, Message, Table, TableBody } from 'semantic-ui-react';
+import { Message, Table, TableBody } from 'semantic-ui-react';
 
 const CommunityDetail = (props) => {
   const productRank = props.community.items.map((product, index) => {
@@ -11,13 +11,6 @@ const CommunityDetail = (props) => {
     );
   });
 
-  // const back = (() => {
-  //   if (props.backTo === 'communitiesRankList') {
-  //     return <a onClick={props.onBacktoCommunitiesRank} style={{cursor: 'pointer'}}>&lt;&lt; 返回</a>;
-  //   } else if (props.backTo === 'selectedCommunities') {
-  //     return <a onClick={props.onBacktoSelectedCommunities} style={{cursor: 'pointer'}}>&lt;&lt; 返回</a>;
-  //   }
-  // });
   const back = (props.backTo === 'communitiesRankList') ?
     <a onClick={props.onBacktoCommunitiesRank} style={{cursor: 'pointer'}}>&lt;&lt; 返回</a> :
     <a onClick={props.onBacktoSelectedCommunities} style={{cursor: 'pointer'}}>&lt;&lt; 返回</a>;

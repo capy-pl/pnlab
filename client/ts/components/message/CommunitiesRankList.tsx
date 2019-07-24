@@ -2,9 +2,6 @@ import React from 'react';
 import { Button, Checkbox, Message, Table, TableBody } from 'semantic-ui-react';
 
 const CommunitiesRankList = (props) => {
-  // const handleCommClick = (community) => {
-  //   props.onCommClick(community);
-  // };
   const communitiesRank = props.communitiesInfo.slice(0, 20).map((community, index) => (
     <Table.Row key={community.id} textAlign='center'>
       <Table.Cell>{index + 1}</Table.Cell>

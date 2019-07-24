@@ -67,10 +67,6 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
     const nodes = this.network.body.data.nodes;
     if (this.props.showCommunity) {
       const communities = nodes.map((node) => {
-        let borderWidth = 1;
-        if (node.core) {
-          borderWidth = 5;
-        }
         return ({
           id: node.id,
           group: node.community,
@@ -81,7 +77,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
               <p>連接節點數: ${node.degree}</p>
             </div>
           `,
-          borderWidth,
+          borderWidth: node.core ? 5 : 1,
         });
       });
       nodes.update(communities);

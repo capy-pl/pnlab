@@ -6,7 +6,7 @@ import SelectedCommunities from './SelectedCommunities';
 
 interface CommunitiesMessageProps {
   communitiesInfo: Community[];
-  updateGraph: (communitiesList) => void;
+  updateCommunitiesGraph: (communitiesList) => void;
 }
 
 interface CommunitiesMessageState {
@@ -33,6 +33,7 @@ export default class CommunitiesMessage extends PureComponent<CommunitiesMessage
     this.handleSend = this.handleSend.bind(this);
     this.handleBacktoCommunitiesRank = this.handleBacktoCommunitiesRank.bind(this);
     this.handleBacktoSelectedCommunities = this.handleBacktoSelectedCommunities.bind(this);
+    this.updateGraph = this.updateGraph.bind(this);
   }
 
   public handleDismiss(): void {
@@ -44,7 +45,7 @@ export default class CommunitiesMessage extends PureComponent<CommunitiesMessage
     console.log(community.items);
     this.setState({content: 'communityDetail'});
     this.setState({clickedCommunity: community}, () => {
-      this.props.updateGraph([this.state.clickedCommunity]);
+      this.props.updateCommunitiesGraph([this.state.clickedCommunity]);
     });
     this.setState({backTo: 'communitiesRankList'});
   }
@@ -54,7 +55,7 @@ export default class CommunitiesMessage extends PureComponent<CommunitiesMessage
     console.log(community.items);
     this.setState({content: 'communityDetail'});
     this.setState({clickedCommunity: community}, () => {
-      this.props.updateGraph([this.state.clickedCommunity]);
+      this.props.updateCommunitiesGraph([this.state.clickedCommunity]);
     });
     this.setState({backTo: 'selectedCommunities'});
   }
@@ -63,32 +64,34 @@ export default class CommunitiesMessage extends PureComponent<CommunitiesMessage
     return this.state.checkedCommunities.some((checkedCommunity) => checkedCommunity.id === community.id);
   }
 
-  public handleCommCheck(community): void {
+  public handleCommCheck(community) {
     console.log(community.id);
-    if (this.checkExistance(community)) {
-      this.setState({checkedCommunities: this.state.checkedCommunities.filter(checkedCommunity => checkedCommunity.id !== community.id)});
-    } else {
+    this.checkExistance(community) ?
+      this.setState({checkedCommunities: this.state.checkedCommunities.filter(checkedCommunity => checkedCommunity.id !== community.id)}):
       this.setState({checkedCommunities: [...this.state.checkedCommunities, community]});
-    }
   }
 
-  public handleSend(): void {
+  public updateGraph() {
+    this.props.updateCommunitiesGraph(this.state.checkedCommunities);
+  }
+
+  public handleSend() {
     this.setState({content: 'selectedCommunities'});
-    this.props.updateGraph(this.state.checkedCommunities);
+    this.updateGraph();
   }
 
-  public handleBacktoCommunitiesRank(): void {
+  public handleBacktoCommunitiesRank() {
     this.setState({content: 'communitiesRank'});
     this.setState({checkedCommunities: []}, () => {
-      this.props.updateGraph(this.state.checkedCommunities);
+      this.updateGraph();
     });
     this.setState({backTo: ''});
   }
 
-  public handleBacktoSelectedCommunities(): void {
+  public handleBacktoSelectedCommunities() {
     this.setState({content: 'selectedCommunities'});
     this.setState({backTo: ''});
-    this.props.updateGraph(this.state.checkedCommunities);
+    this.updateGraph();
   }
 
   public render() {
