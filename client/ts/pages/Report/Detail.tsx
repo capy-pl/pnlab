@@ -10,7 +10,8 @@ import { DropdownMenu } from '../../components/menu';
 import { CharacterMessage, CommunitiesMessage, ProductRank } from '../../components/message';
 
 import ReportAPI from '../../PnApp/Model/Report' ;
-import { Node } from '../../PnApp/Model/Report';
+import { Community, Node } from '../../PnApp/Model/Report';
+
 interface ReportProps extends RouteComponentProps<{ id: string }> {
 }
 
@@ -20,7 +21,7 @@ interface ReportState {
   hookInfo?: {};
   showCommunity: boolean;
   content: string;
-  communitiesInfo?: {};
+  communitiesInfo?: Community[];
   selectedCommunities?: [];
   selectedProduct?: Node[];
   searchItems?: string[];

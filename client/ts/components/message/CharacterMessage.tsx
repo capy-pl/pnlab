@@ -2,8 +2,6 @@ import React, { PureComponent } from 'react';
 import { Message, Tab } from 'semantic-ui-react';
 import { Community } from '../../PnApp/Model/Report';
 
-// import TabPanel from './TabPanel';
-
 interface CharacterMessageProps {
   communitiesInfo?: Community[];
   hookInfo?: {};
@@ -24,9 +22,6 @@ export default class CharacterMessage extends PureComponent<CharacterMessageProp
 
   public handleDismiss(): void {
     this.setState({ visible: false });
-    setTimeout(() => {
-      this.setState({ visible: true });
-    }, 2000);
   }
 
   public render() {
@@ -99,12 +94,7 @@ export default class CharacterMessage extends PureComponent<CharacterMessageProp
     }
 
     return (
-      <p>
-        <br />
-        <i>The message will return in 2s</i>
-        <br />
-        <br />
-      </p>
+      <p />
     );
   }
 }

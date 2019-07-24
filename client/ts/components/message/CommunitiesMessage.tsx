@@ -1,11 +1,8 @@
 import React, { PureComponent } from 'react';
-import { Checkbox, Message, Table, TableBody } from 'semantic-ui-react';
 import { Community } from '../../PnApp/Model/Report';
 import CommunitiesRankList from './CommunitiesRankList';
 import CommunityDetail from './CommunityDetail';
 import SelectedCommunities from './SelectedCommunities';
-
-// import TabPanel from './TabPanel';
 
 interface CommunitiesMessageProps {
   communitiesInfo: Community[];
@@ -40,9 +37,6 @@ export default class CommunitiesMessage extends PureComponent<CommunitiesMessage
 
   public handleDismiss(): void {
     this.setState({ visible: false });
-    setTimeout(() => {
-      this.setState({ visible: true });
-    }, 2000);
   }
 
   public handleCommClick(community): void {
@@ -132,12 +126,7 @@ export default class CommunitiesMessage extends PureComponent<CommunitiesMessage
     }
 
     return (
-      <p>
-        <br />
-        <i>The message will return in 2s</i>
-        <br />
-        <br />
-      </p>
+      <p />
     );
   }
 }

@@ -1,8 +1,10 @@
 import React, { PureComponent } from 'react';
 import { DataSet, EdgeOptions, Network, NodeOptions } from 'vis';
 import { Community, Edge, Node } from '../../PnApp/Model/Report';
+
 interface GraphNode extends Node, NodeOptions {
 }
+
 interface GraphEdge extends Edge, EdgeOptions {
 }
 
@@ -13,7 +15,7 @@ const style = {
 interface GraphProps {
   nodes: Node[];
   edges: Edge[];
-  showCommunity?: boolean;
+  showCommunity: boolean;
   selectedCommunities?: [];
   selectedProduct?: Node[];
   searchItems?: any;

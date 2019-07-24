@@ -23,9 +23,6 @@ export default class ProductRank extends PureComponent<ProductRankProps, Message
 
   public handleDismiss(): void {
     this.setState({ visible: false });
-    setTimeout(() => {
-      this.setState({ visible: true });
-    }, 2000);
   }
 
   public handleProductClick(productName): void {
@@ -62,12 +59,7 @@ export default class ProductRank extends PureComponent<ProductRankProps, Message
     }
 
     return (
-      <p>
-        <br />
-        <i>The message will return in 2s</i>
-        <br />
-        <br />
-      </p>
+      <p />
     );
   }
 }
