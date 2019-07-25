@@ -9,11 +9,10 @@ class ProductNerwork:
 
     def get_product_rank(self, num):
         # The function must comes after get_communities, which compute the weight for all vs.
-        items_weight_dict = {}
-        for node in self.graph.vs:
-            items_weight_dict[node['name']] = node['weight'] 
-        products = [item for item in sorted(items_weight_dict, key=items_weight_dict.get, reverse=True)[:num]]
-        return products
+        items = [node for node in self.graph.vs]
+        items.sort(key=lambda x: x['weight'], reverse=True)
+        top_20 = [{ 'name': node['name'], 'weight': node['weight']} for node in items[:20]]
+        return top_20
 
     def get_communities(self, sort=True):
         # Use native method to get community
@@ -48,11 +47,10 @@ class ProductNerwork:
                 nodes.append(node_dict)
 
             # Sort nodes according to its weight.
-            community['items'] = list(map(lambda x: x['name'],
-                                     sorted(nodes, key=lambda x: x['weight'], reverse = True)
-                                    ))
+            community['items'] = list(sorted(nodes, key=lambda x: x['weight'], reverse = True))
+
             if len(subgraph.vs) > 3:
-                community['core'] = community['items'][0]
+                community['core'] = community['items'][0]['name']
             communities.append(community)
 
         # Add core attribute to graph vertex.
@@ -68,7 +66,7 @@ class ProductNerwork:
     def get_hooks(self):
         betweeness = self.graph.betweenness(weights='weight')
         ls = [(self.graph.vs[index], value) for index, value in enumerate(betweeness)]
-        sorted_ls = list(filter(lambda x: not x[0]['core'] and x[1] > 0, sorted(ls, key=lambda x: x[1], reverse=True)))
+        sorted_ls = list(filter(lambda x: x[0]['core'] and x[1] > 0, sorted(ls, key=lambda x: x[1], reverse=True)))
         connectors = []
         for vx, _ in sorted_ls:
             connected_communities = set()
@@ -78,6 +76,7 @@ class ProductNerwork:
             if len(connected_communities) > 0:
                 connectors.append({
                     'name': vx['name'],
+                    'weight': vx['weight'],
                     'connectTo': list(connected_communities)
                 })
         return connectors

@@ -138,7 +138,7 @@ class NetworkConverter:
     def to_graph(self, nodes, edges):
         g = igraph.Graph()
         for node in nodes:
-            g.add_vertex(node)
+            g.add_vertex(node, core=False)
         for edge, attrs in edges.items():
             weight = attrs['weight'] if attrs['weight'] > 0 else 1
             g.add_edge(edge[0], edge[1], weight=weight)
