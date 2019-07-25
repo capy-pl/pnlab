@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 import { Message } from 'semantic-ui-react';
 
 interface ProductRankProps {
-  productRankInfo?: string[];
+  productRankInfo?: [];
   updateProductGraph: (productName) => void;
 }
 
@@ -25,17 +25,18 @@ export default class ProductRank extends PureComponent<ProductRankProps, Message
     this.setState({ visible: false });
   }
 
-  public handleProductClick(productName): void {
-    this.setState({clickedProduct: productName});
-    this.props.updateProductGraph(productName);
+  public handleProductClick(product): void {
+    this.setState({clickedProduct: product});
+    this.props.updateProductGraph(product);
   }
 
   public render() {
     const productRank = this.props.productRankInfo.map((product, index) => {
       return(
-        <tr key={product} className='center aligned'>
+        <tr key={product.name} className='center aligned'>
           <td>{index + 1}</td>
-          <td><a onClick={() => this.handleProductClick(product)} style={{cursor: 'pointer'}}>{product}</a></td>
+          <td><a onClick={() => this.handleProductClick(product)} style={{cursor: 'pointer'}}>{product.name}</a></td>
+          <td>{Math.round(product.weight)}</td>
         </tr>
       );
     });
@@ -48,6 +49,7 @@ export default class ProductRank extends PureComponent<ProductRankProps, Message
               <tr className='center aligned'>
                 <th className='three wide'>排名</th>
                 <th>產品名稱</th>
+                <th>產品權重</th>
               </tr>
             </thead>
             <tbody>

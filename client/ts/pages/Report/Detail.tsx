@@ -98,9 +98,9 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
     this.setState({selectedCommunities: communitiesList});
   }
 
-  public updateProductGraph(productName) {
-    console.log('got', productName);
-    const selected = [...this.state.report.nodes].filter((node) => node.name === productName);
+  public updateProductGraph(product) {
+    console.log('got', product);
+    const selected = [...this.state.report.nodes].filter((node) => node.name === product.name);
     console.log(selected[0]);
     this.setState({selectedProduct: selected});
   }
@@ -168,7 +168,7 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
                   searchItems={this.state.searchItems}
                 />
               </div>
-              <div style={{ width: '20%', position: 'absolute', overflow: 'auto', maxHeight: 550 }}>
+              <div style={{ width: '23%', position: 'absolute', overflow: 'auto', maxHeight: 550 }}>
                 {message}
               </div>
               <div style={{ position: 'fixed', bottom: 0, right: 0 }}>

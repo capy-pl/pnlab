@@ -8,6 +8,9 @@ const CommunitiesRankList = (props) => {
       <Table.Cell>
         <a onClick={() => props.onCommClick(community)} style={{cursor: 'pointer'}}>{community.id}</a>
       </Table.Cell>
+      <Table.Cell>
+        {Math.round(community.weight)}
+      </Table.Cell>
       <Table.Cell><Checkbox onChange={() => props.onCommCheck(community)} /></Table.Cell>
     </Table.Row>
   ));
@@ -19,6 +22,7 @@ const CommunitiesRankList = (props) => {
           <Table.Row textAlign='center'>
             <Table.HeaderCell>名次</Table.HeaderCell>
             <Table.HeaderCell>商品群編號</Table.HeaderCell>
+            <Table.HeaderCell>商品群權重</Table.HeaderCell>
             <Table.HeaderCell>選取</Table.HeaderCell>
           </Table.Row>
         </Table.Header>

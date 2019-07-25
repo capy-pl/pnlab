@@ -12,7 +12,7 @@ interface CommunitiesMessageProps {
 interface CommunitiesMessageState {
   visible: boolean;
   content: string;
-  clickedCommunity?: number;
+  clickedCommunity?: {};
   checkedCommunities?: [];
   backTo?: string;
 }

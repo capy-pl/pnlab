@@ -6,7 +6,8 @@ const CommunityDetail = (props) => {
     return(
       <Table.Row key={product} textAlign='center'>
         <Table.Cell>{index + 1}</Table.Cell>
-        <Table.Cell>{product}</Table.Cell>
+        <Table.Cell>{product.name}</Table.Cell>
+        <Table.Cell>{Math.round(product.weight)}</Table.Cell>
       </Table.Row>
     );
   });
@@ -24,6 +25,7 @@ const CommunityDetail = (props) => {
           <Table.Row textAlign='center'>
             <Table.HeaderCell>名次</Table.HeaderCell>
             <Table.HeaderCell>產品名稱</Table.HeaderCell>
+            <Table.HeaderCell>產品權重</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
         <TableBody>
