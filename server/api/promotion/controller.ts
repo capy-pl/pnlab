@@ -1,6 +1,7 @@
 import e from 'express';
 import { connection } from 'mongoose';
 
+import { Logger } from '../../core/util';
 import Promotion, {
   PromotionInterface,
   PromotionType,
@@ -18,7 +19,8 @@ export async function AddPromotion(req: e.Request, res: e.Response): Promise<voi
   try {
     body.startTime = new Date(body.startTime);
     body.endTime = new Date(body.endTime);
-  } catch (err) {
+  } catch (error) {
+    Logger.error(error);
     return res.status(400).send({ message: 'startTime or endTime is not correct or provided.' }).end();
   }
 
@@ -47,6 +49,7 @@ export async function AddPromotion(req: e.Request, res: e.Response): Promise<voi
     await promotion.save();
     res.status(201).end();
   } catch (error) {
+    Logger.error(error);
     res.status(422).send({ message: error.message });
   }
 }
@@ -87,7 +90,8 @@ export async function UpdatePromotion(req: e.Request, res: e.Response): Promise<
   try {
     body.startTime = new Date(body.startTime);
     body.endTime = new Date(body.endTime);
-  } catch (err) {
+  } catch (error) {
+    Logger.error(error);
     return res.status(400).send({ message: 'startTime or endTime is not correct or provided.' }).end();
   }
   if (object) {
@@ -104,8 +108,9 @@ export async function UpdatePromotion(req: e.Request, res: e.Response): Promise<
     try {
       await object.save();
       res.status(200).end();
-    } catch (err) {
-      res.status(400).send({ message: err.message });
+    } catch (error) {
+      Logger.error(error);
+      res.status(400).send({ message: error.message });
     }
   }
 }
@@ -117,7 +122,8 @@ export async function DeletePromotion(req: e.Request, res: e.Response): Promise<
       await object.remove();
       res.status(200).end();
     }
-  } catch (err) {
+  } catch (error) {
+    Logger.error(error);
     res.status(400).end();
   }
 }

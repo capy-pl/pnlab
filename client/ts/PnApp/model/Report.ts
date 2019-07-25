@@ -12,8 +12,13 @@ export interface Node {
   community: number;
   id: number;
   degree: number;
-  core?: boolean;
-  neighbors: number[];
+  weight: number;
+  core: boolean;
+}
+
+interface SimpleNode {
+  name: string;
+  weight: number;
 }
 
 export interface Edge {
@@ -25,8 +30,14 @@ export interface Edge {
 export interface Community {
   id: number;
   core?: string;
-  items: string[];
+  items: SimpleNode[];
   weight: number;
+}
+
+export interface Hook {
+  name: string;
+  weight: number;
+  connectTo: number[];  // The community ids to which the hook connect
 }
 
 export type ReportStatus = 'error' | 'pending' | 'success';
@@ -52,7 +63,8 @@ export interface ReportModel {
   errMessage: string;
   nodes: Node[];
   edges: Edge[];
-  rank: string[];
+  hooks: Hook[];
+  rank: SimpleNode[];
   startTime: Date;
   endTime: Date;
 }
@@ -98,7 +110,7 @@ export default class Report {
   public communities: Community[];
   public startTime: Date;
   public endTime: Date;
-  public rank: string[];
+  public rank: SimpleNode[];
 
   constructor({
     _id,
