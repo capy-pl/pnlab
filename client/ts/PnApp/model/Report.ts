@@ -108,7 +108,7 @@ export default class Report {
   public edges: Edge[];
   public startTime: Date;
   public endTime: Date;
-  public rank: string[];
+  public rank: SimpleNode[];
 
   constructor({
     _id,
