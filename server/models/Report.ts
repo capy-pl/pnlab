@@ -6,7 +6,13 @@ export interface Node {
   community: number;
   id: number;
   degree: number;
-  core?: boolean;
+  weight: number;
+  core: boolean;
+}
+
+interface SimpleNode {
+  name: string;
+  weight: number;
 }
 
 export interface Edge {
@@ -17,7 +23,7 @@ export interface Edge {
 
 export interface Community {
   core?: string;
-  items: string[];
+  items: SimpleNode[];
   weight: number;
 }
 
@@ -34,7 +40,8 @@ export interface ReportInterface extends Document {
   created: Date;
   conditions: Condition[];
   modified: Date;
-  rank: string[];
+  rank: SimpleNode[];
+  communities: Community[];
   status: 'error' | 'pending' | 'success';
   errorMessage: string;
   nodes: Node[];
@@ -78,6 +85,11 @@ const NodeSchema = new Schema<Node>({
   core: Boolean,
 });
 
+const SimpleNodeSchema = new Schema<SimpleNode>({
+  name: String,
+  weight: Number,
+});
+
 const EdgeSchema = new Schema<Edge>({
   from: {
     type: Number,
@@ -96,7 +108,7 @@ const EdgeSchema = new Schema<Edge>({
 const CommunitySchema = new Schema<Community>({
   core: String,
   items: {
-    type: [String],
+    type: [SimpleNodeSchema],
     required: true,
   },
   weight: {
@@ -107,6 +119,7 @@ const CommunitySchema = new Schema<Community>({
 
 const HookSchema = new Schema<Hook>({
   name: String,
+  weight: Number,
   connectTo: [Number],
 });
 
@@ -142,7 +155,7 @@ const ReportSchema = new Schema<ReportInterface>({
     type: Date,
     // required: true
   },
-  rank: [String],
+  rank: [SimpleNodeSchema],
 });
 
 const Report = mongoose.model<ReportInterface>('report', ReportSchema);
