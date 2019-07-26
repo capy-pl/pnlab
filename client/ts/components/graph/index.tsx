@@ -41,13 +41,15 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
   public toNode(node: Node): GraphNode {
     const copy: GraphNode = Object.assign({}, node);
     copy.label = node.name;
-    copy.value = node.degree;
+    copy.value = node.weight;
     copy.title = `
     <div>
       <p>${copy.name}</p>
+      <p>weight: ${Math.round(copy.weight)}</p>
       <p>連接節點數: ${copy.degree}</p>
     </div>
     `;
+    copy.color = '#8DC1FF';
     return copy;
   }
 
@@ -56,7 +58,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
     copy.value = edge.weight;
     copy.title = `
     <div>
-      <p>weight: ${copy.weight}</p>
+      <p>edge weight: ${Math.round(copy.weight)}</p>
     </div>
     `;
     return copy;
@@ -74,6 +76,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
             <div>
               <p>${node.name}</p>
               <p>community: ${node.community}</p>
+              <p>weight: ${Math.round(node.weight)}</p>
               <p>連接節點數: ${node.degree}</p>
             </div>
           `,
@@ -105,15 +108,17 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
         return (
           {
             id: node.id,
+            label: node.name,
             title: `
               <div>
                 <p>${node.name}</p>
+                <p>weight: ${Math.round(node.weight)}</p>
                 <p>連接節點數: ${node.degree}</p>
               </div>
             `,
             group: undefined,
             hidden: false,
-            color: '#69bcd5',
+            color: '#8DC1FF',
             borderWidth: 1,
           }
         );
@@ -155,8 +160,9 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
         }
         nodes.forEach((node) => {
           if (!connectedNodesList.includes(node.id)) {
-            // 
-            selectProduct.push({id: node.id, color: {background: '#d2f3fa', border: '#d2f3fa'}, label: ' '});
+            // lighten the colors of unselected nodes
+            selectProduct.push({id: node.id, color: {background: '#D3E7FF', border: '#D3E7FF'}, label: ' '});
+            // hide unselected nodes
             // selectProduct.push({id: node.id, hidden: true});
           }
         });
