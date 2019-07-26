@@ -44,7 +44,7 @@ class Home extends PureComponent<RouteComponentProps, HomeState> {
         </div>
       );
     }
-    console.log(this.state.loading);
+
     return (
       <div>
         <Navbar />

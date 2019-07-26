@@ -23,7 +23,6 @@ class User {
   public org: OrganizationModel;
 
   constructor(obj: UserModel) {
-    console.log(obj);
     this.id = obj._id;
     this.email = obj.email;
     this.org = obj.org;

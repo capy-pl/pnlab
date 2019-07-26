@@ -67,7 +67,6 @@ app.use('/api/category', API.Category);
 app.use('/api/promotion', API.Promotion);
 
 app.get('/*', (req, res) => {
-  console.log('here');
   res.render('index.html');
 });
 
