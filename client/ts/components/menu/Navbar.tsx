@@ -1,10 +1,10 @@
 import React, { PureComponent } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Dropdown, Menu, MenuItemProps, Segment } from 'semantic-ui-react';
 import { Auth } from '../../PnApp';
 import { getCurrentUser } from '../../PnApp/Helper';
 import { User } from '../../PnApp/model';
-import { Link } from 'react-router-dom';
 
 interface MenuState {
   activeItem: string;

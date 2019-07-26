@@ -1,7 +1,14 @@
 import React from 'react';
+import { Container, Message } from 'semantic-ui-react';
 
 const NotFound = () => (
-  <h2>404 Not Found</h2>
+  <Container textAlign='center'>
+    <Message negative>
+      <Message.Header>
+        404 Pages Not Found
+      </Message.Header>
+    </Message>
+  </Container>
 );
 
 export default NotFound;
