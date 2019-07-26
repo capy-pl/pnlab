@@ -8,7 +8,7 @@ export interface CategoryModel {
 
 export default class Category {
   public static async getAll(): Promise<CategoryModel[]>  {
-    const response = await axios.get<CategoryModel[]>('/category');
+    const response = await axios.get<CategoryModel[]>('/api/category');
     return response.data;
   }
 

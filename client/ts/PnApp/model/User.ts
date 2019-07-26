@@ -14,7 +14,7 @@ export interface UserModel {
 
 class User {
   public static async get(): Promise<User> {
-    const response = await axios.get<UserModel>('/user/info');
+    const response = await axios.get<UserModel>('/api/user/info');
     return new User(response.data);
   }
 
@@ -23,6 +23,7 @@ class User {
   public org: OrganizationModel;
 
   constructor(obj: UserModel) {
+    console.log(obj);
     this.id = obj._id;
     this.email = obj.email;
     this.org = obj.org;

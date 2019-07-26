@@ -22,6 +22,7 @@ class ReportList extends PureComponent<RouteComponentProps, ReportListState> {
     this.listeningMap = new Map<string, WebSocket>();
 
     this.onFinish = this.onFinish.bind(this);
+    console.log(this.props);
   }
 
   public onFinish(id: string): (event: MessageEvent) => void {
