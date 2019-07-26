@@ -9,7 +9,7 @@ export default class SettingMenu extends PureComponent<{}, SettingMenuState> {
     constructor(props) {
       super(props);
       this.state = {
-        activeItem: 'Profile',
+        activeItem: 'Setting',
       };
       this.onClick = this.onClick.bind(this);
     }
@@ -22,25 +22,31 @@ export default class SettingMenu extends PureComponent<{}, SettingMenuState> {
       return (
         <Menu vertical tabular fluid>
           <Menu.Item
-            name='Profile'
-            active={this.state.activeItem === 'Profile'}
-            onClick={this.onClick}
-          >
-              <Link to='/settings/profile'>Profile</Link>
-          </Menu.Item>
-          <Menu.Item
             name='Setting'
+            as={Link}
+            to={'/settings'}
             active={this.state.activeItem === 'Setting'}
             onClick={this.onClick}
           >
-            <Link to='/settings/profile'>Setting</Link>
+            Setting
+          </Menu.Item>
+          <Menu.Item
+            name='Profile'
+            active={this.state.activeItem === 'Profile'}
+            onClick={this.onClick}
+            to='/settings/profile'
+            as={Link}
+          >
+            Profile
           </Menu.Item>
           <Menu.Item
             name='Manage Group'
+            as={Link}
+            to={'/settings'}
             active={this.state.activeItem === 'Manage Group'}
             onClick={this.onClick}
           >
-            <Link to='/settings'>Manage Group</Link>
+            Manage Group
           </Menu.Item>
       </Menu>
       );
