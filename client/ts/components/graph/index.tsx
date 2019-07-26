@@ -122,41 +122,44 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
       const selectProduct = [];
       if (this.props.selectedProduct.length !== 0) {
         // ----------- highlight node --------------
-        nodes.forEach((node) => {
-          if (this.props.selectedProduct[0].name === node.name) {
-            selectProduct.push (
-              {
-                id: node.id,
-                color: {
-                  background: 'orange',
-                  hover: {
-                    background: 'yellow',
-                  },
-                  highlight: {
-                    background: 'yellow',
-                  },
-                },
-              },
-            );
-          }
-        });
-        // --------- show connected products -------------
-        // let connectedNodes;
-        // const connectedNodesList = [];
         // nodes.forEach((node) => {
         //   if (this.props.selectedProduct[0].name === node.name) {
-        //     connectedNodesList.push(node.id);
-        //     connectedNodes = this.network.getConnectedNodes(node.id);
+        //     selectProduct.push (
+        //       {
+        //         id: node.id,
+        //         color: {
+        //           background: 'orange',
+        //           hover: {
+        //             background: 'yellow',
+        //           },
+        //           highlight: {
+        //             background: 'yellow',
+        //           },
+        //         },
+        //       },
+        //     );
         //   }
         // });
-        // for (const c of connectedNodes) {
-        //   connectedNodesList.push(c);
-        // }
-        // nodes.forEach((node) => {
-        //   if (!connectedNodesList.includes(node.id)) {
-        //     selectProduct.push({id: node.id, hidden: true});
-        //   }
-        // });
+        // --------- show connected products -------------
+        let connectedNodes;
+        const connectedNodesList = [];
+        nodes.forEach((node) => {
+          if (this.props.selectedProduct[0].name === node.name) {
+            connectedNodesList.push(node.id);
+            selectProduct.push({id: node.id, color: {background: 'orange', hover: 'orange', highlight: 'orange'}});
+            connectedNodes = this.network.getConnectedNodes(node.id);
+          }
+        });
+        for (const c of connectedNodes) {
+          connectedNodesList.push(c);
+        }
+        nodes.forEach((node) => {
+          if (!connectedNodesList.includes(node.id)) {
+            // 
+            selectProduct.push({id: node.id, color: {background: '#d2f3fa', border: '#d2f3fa'}, label: ' '});
+            // selectProduct.push({id: node.id, hidden: true});
+          }
+        });
         nodes.update(selectProduct);
       }
       if (this.props.searchItems !== undefined) {
@@ -172,6 +175,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
                     hover: {
                       background: 'orange',
                     },
+                    highlight: 'orange',
                   },
                 },
               );
