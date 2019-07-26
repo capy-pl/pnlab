@@ -6,8 +6,6 @@ import { getCurrentUser } from '../../PnApp/Helper';
 import { User } from '../../PnApp/model';
 import { Link } from '../route';
 
-import { getCurrentUser } from '../../PnApp/Helper';
-
 interface MenuState {
   activeItem: string;
   user: User | undefined;
