@@ -125,6 +125,10 @@ export async function ModifyAnalysisComment(req: Request, res: Response): Promis
     res.status(404).end();
   }
 
+  if (comment.user_id !== req.user._id) {
+    res.status(403).end();
+  }
+
   try {
     comment.set(body);
     await analysis.save();
@@ -143,6 +147,11 @@ export async function DeleteAnalysisComment(req: Request, res: Response): Promis
     Logger.error(new Error(`Comment ${commentId} not found in Analysis ${analysis._id}.`));
     res.status(404).end();
   }
+
+  if (comment.user_id !== req.user._id) {
+    res.status(403).end();
+  }
+
   try {
     analysis.comments.id(commentId).remove();
     await analysis.save();

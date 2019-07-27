@@ -1,6 +1,5 @@
-import mongoose, { Document, HookSyncCallback, Schema, Types } from 'mongoose';
+import mongoose, { Document, Schema, Types } from 'mongoose';
 import { ReportInterface } from './Report';
-import { doesNotReject } from 'assert';
 
 export interface AnalysisInterface extends Document {
   title: string;
