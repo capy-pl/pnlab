@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { Button, Divider, DropdownProps, Label, Menu, Segment, Sidebar } from 'semantic-ui-react';
+import { Button, DropdownProps, Header, Icon, Image, Menu, Segment, Sidebar } from 'semantic-ui-react';
 
 import { ModalSave } from 'Component/modal';
 import { SearchItemDropdown } from '../../components/dropdown';
@@ -18,12 +18,13 @@ interface ReportProps extends RouteComponentProps<{ id: string }> {
 interface ReportState {
   loading: boolean;
   report?: ReportAPI;
+  hookInfo?: {};
   showCommunity: boolean;
   content: string;
   communitiesInfo?: Community[];
-  selectedCommunities?: Community[];
+  selectedCommunities?: [];
   selectedProduct?: Node[];
-  searchItems?: any;
+  searchItems?: string[];
   modalOpen: boolean;
   visible: boolean;
 }
@@ -47,10 +48,8 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
     this.updateProductGraph = this.updateProductGraph.bind(this);
     this.onSaveGraph = this.onSaveGraph.bind(this);
     this.onCancel = this.onCancel.bind(this);
-    this.onConfirm = this.onConfirm.bind(this);
     this.onItemSearch = this.onItemSearch.bind(this);
     this.handleToggleSidebar = this.handleToggleSidebar.bind(this);
-    this.clearSelected = this.clearSelected.bind(this);
   }
 
   public async componentDidMount() {
@@ -58,25 +57,28 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
     this.setState({
       report,
       loading: false,
+      hookInfo: [
+        'milk',
+        'egg',
+      ],
       selectedCommunities: [],
       selectedProduct: [],
     });
   }
 
-  public clearSelected() {
+  public onShowProductNetwork() {
+    this.setState({showCommunity: false});
     this.setState({content: ''});
     this.setState({selectedCommunities: []});
     this.setState({selectedProduct: []});
-  }
-
-  public onShowProductNetwork() {
-    this.setState({showCommunity: false});
-    this.clearSelected();
+    console.log(this.state.report.conditions);
   }
 
   public onShowCommunities() {
     this.setState({showCommunity: true});
-    this.clearSelected();
+    this.setState({content: ''});
+    this.setState({selectedCommunities: []});
+    this.setState({selectedProduct: []});
     this.setState({searchItems: []});
   }
 
@@ -95,14 +97,16 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
     this.setState({content: 'communitiesRank'});
   }
 
-  public updateCommunitiesGraph(communitiesList: Community[]) {
+  public updateCommunitiesGraph(communitiesList) {
     console.log('got', communitiesList);
     this.setState({selectedCommunities: communitiesList});
   }
 
   public updateProductGraph(product) {
-    const selectedProduct = this.state.report.nodes.filter((node) => node.name === product.name);
-    this.setState({selectedProduct});
+    console.log('got', product);
+    const selected = [...this.state.report.nodes].filter((node) => node.name === product.name);
+    console.log(selected[0]);
+    this.setState({selectedProduct: selected});
   }
 
   public onSaveGraph() {
@@ -112,12 +116,6 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
   }
 
   public onCancel() {
-    this.setState({
-      modalOpen: false,
-    });
-  }
-
-  public onConfirm() {
     this.setState({
       modalOpen: false,
     });
@@ -133,44 +131,39 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
   }
 
   public render() {
+    let message;
+    if (this.state.content === 'character') {
+      message = (
+        <CharacterMessage
+          communitiesInfo={this.state.report.communities}
+          hookInfo={this.state.hookInfo}
+        />
+      );
+    } else if (this.state.content === 'productRank') {
+      message = (
+        <ProductRank
+          productRankInfo={this.state.report.rank}
+          updateProductGraph={this.updateProductGraph}
+          nodes={this.state.report.nodes}
+          edges={this.state.report.edges}
+        />
+      );
+    } else if (this.state.content === 'communitiesRank') {
+      message = (
+        <CommunitiesMessage
+          communitiesInfo={this.state.report.communities}
+          updateCommunitiesGraph={this.updateCommunitiesGraph}
+        />
+      );
+    }
     if (this.state.loading) {
       return <Loader size='huge' />;
     } else {
       if (this.state.report) {
-        let message;
-        switch (this.state.content) {
-          case 'character':
-            message = (
-              <CharacterMessage
-                communitiesInfo={this.state.report.communities}
-                hookInfo={this.state.report.hooks}
-              />
-            );
-            break;
-          case 'productRank':
-            message = (
-              <ProductRank
-                productRankInfo={this.state.report.rank}
-                updateProductGraph={this.updateProductGraph}
-                nodes={this.state.report.nodes}
-                edges={this.state.report.edges}
-              />
-            );
-            break;
-          case 'communitiesRank':
-            message = (
-              <CommunitiesMessage
-                communitiesInfo={this.state.report.communities}
-                updateCommunitiesGraph={this.updateCommunitiesGraph}
-              />
-            );
-            break;
-        }
-
-        let searchItemDropdown;
         const dropdownOptions = this.state.report.nodes.map((node) => {
           return ({key: node.name, value: node.name, text: node.name});
         });
+        let searchItemDropdown;
         if (!this.state.showCommunity) {
           searchItemDropdown = (
             <SearchItemDropdown
@@ -180,79 +173,53 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
             />
           );
         }
-
-        const conditionList = this.state.report.conditions.map((condition) => {
-          const values = condition.values.map((value) => {
-            return (<Label key={value} style={{margin: '.2rem'}}>{value}</Label>);
-          });
-          return (
-            <div key={condition.name} style={{margin: '1rem 0 1rem 0' }}>
-              <h5>{condition.name}: </h5>
-              {values}
-              <Divider />
-            </div>
-          );
-        });
         return (
           <React.Fragment>
             <DropdownMenu
               onShowProductNetwork={this.onShowProductNetwork}
               onShowCommunities={this.onShowCommunities}
+              onShowCharacter={this.onShowCharacter}
               onShowProductRank={this.onShowProductRank}
               onShowCommunitiesRank={this.onShowCommunitiesRank}
-              onShowCharacter={this.onShowCharacter}
             />
-            <Sidebar.Pushable style={{height: 800}}>
-              <Sidebar
-                as={Menu}
-                animation='overlay'
-                direction='right'
-                icon='labeled'
-                vertical
-                visible={this.state.visible}
-                width='thin'
-              >
-                {conditionList}
-              </Sidebar>
-              <Sidebar.Pusher>
-                <div style={{ position: 'relative'}}>
-                  <div style={{ width: '100%', position: 'absolute' }}>
-                    <Graph
-                      nodes={this.state.report.nodes}
-                      edges={this.state.report.edges}
-                      showCommunity={this.state.showCommunity}
-                      selectedCommunities={this.state.selectedCommunities}
-                      selectedProduct={this.state.selectedProduct}
-                      searchItems={this.state.searchItems}
-                    />
-                  </div>
-                  <div style={{ width: '23%', overflow: 'auto', maxHeight: 550 }}>
-                    {message}
-                  </div>
-                </div>
-              </Sidebar.Pusher>
-            </Sidebar.Pushable>
-            <div style={{ position: 'fixed', top: 80, right: 120, minWidth: '12%' }}>
-              {searchItemDropdown}
-            </div>
-            <div style={{ position: 'fixed', top: 80, right: 20 }}>
-              <Button onClick={this.handleToggleSidebar}>
-                條件
-              </Button>
-            </div>
-            <div style={{ position: 'fixed', bottom: 10, left: 10 }}>
-              <ModalSave
-                header='編輯圖片'
-                open={this.state.modalOpen}
-                onCancel={this.onCancel}
-                onConfirm={this.onConfirm}
-              >
-                <Button
-                  color='blue'
-                  onClick={this.onSaveGraph}
-                >儲存圖片
-                </Button>
-              </ModalSave>
+            <div style={{ position: 'relative' }}>
+              <div style={{ width: '100%', position: 'absolute' }}>
+                <Graph
+                  nodes={this.state.report.nodes}
+                  edges={this.state.report.edges}
+                  showCommunity={this.state.showCommunity}
+                  selectedCommunities={this.state.selectedCommunities}
+                  selectedProduct={this.state.selectedProduct}
+                  searchItems={this.state.searchItems}
+                />
+              </div>
+              <div style={{ width: '23%', overflow: 'auto', maxHeight: 550, position: 'absolute' }}>
+                {message}
+              </div>
+              <div style={{ position: 'fixed', bottom: 0, left: 0 }}>
+                <ModalSave
+                  header='編輯圖片'
+                  // content='Are you sure?'
+                  open={this.state.modalOpen}
+                  onCancel={this.onCancel}
+                  // onConfirm={this.onConfirm}
+                >
+                  <Button
+                    color='blue'
+                    onClick={this.onSaveGraph}
+                  >儲存圖片
+                  </Button>
+                </ModalSave>
+              </div>
+              <div style={{ position: 'fixed', top: 80, right: 120, minWidth: '12%' }}>
+                {searchItemDropdown}
+              </div>
+              <div style={{ position: 'fixed', top: 80, right: 20 }}>
+                <ConditionBar conditions={this.state.report.conditions}/>
+                {/* <Button onClick={this.handleToggleSidebar}>
+                  條件
+                </Button> */}
+              </div>
             </div>
           </React.Fragment>
         );

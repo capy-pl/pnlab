@@ -22,6 +22,7 @@ const SearchItemDropdown = ({ placeholder, options, onChange }: SearchDropDownPr
     selection
     onChange={onChange}
     options={options}
+    style={{width: '100%'}}
   />
 );
 

@@ -16,7 +16,7 @@ const CommunitiesRankList = (props) => {
   ));
   return (
     <Message onDismiss={props.onDismiss}>
-      <h3 style={{textAlign: 'center'}}>Communities排名</h3>
+      <h3 style={{textAlign: 'center'}}>Communities排名(前20名)</h3>
       <Table basic='very'>
         <Table.Header>
           <Table.Row textAlign='center'>

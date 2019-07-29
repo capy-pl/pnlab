@@ -12,8 +12,8 @@ interface CommunitiesMessageProps {
 interface CommunitiesMessageState {
   visible: boolean;
   content: string;
-  clickedCommunity?: {};
-  checkedCommunities?: [];
+  clickedCommunity?: Community;
+  checkedCommunities?: Community[];
   backTo?: string;
 }
 
@@ -34,40 +34,41 @@ export default class CommunitiesMessage extends PureComponent<CommunitiesMessage
     this.handleBacktoCommunitiesRank = this.handleBacktoCommunitiesRank.bind(this);
     this.handleBacktoSelectedCommunities = this.handleBacktoSelectedCommunities.bind(this);
     this.updateGraph = this.updateGraph.bind(this);
+    this.goToCommunityDetail = this.goToCommunityDetail.bind(this);
   }
 
-  public handleDismiss(): void {
+  public handleDismiss() {
     this.setState({ visible: false });
   }
 
-  public handleCommClick(community): void {
+  public goToCommunityDetail(community: Community) {
     console.log(community.id);
     console.log(community.items);
     this.setState({content: 'communityDetail'});
     this.setState({clickedCommunity: community}, () => {
       this.props.updateCommunitiesGraph([this.state.clickedCommunity]);
     });
+  }
+
+  public handleCommClick(community: Community) {
+    this.goToCommunityDetail(community);
     this.setState({backTo: 'communitiesRankList'});
   }
 
-  public handleCommDetailClick(community): void {
-    console.log(community.id);
-    console.log(community.items);
-    this.setState({content: 'communityDetail'});
-    this.setState({clickedCommunity: community}, () => {
-      this.props.updateCommunitiesGraph([this.state.clickedCommunity]);
-    });
+  public handleCommDetailClick(community: Community) {
+    this.goToCommunityDetail(community);
     this.setState({backTo: 'selectedCommunities'});
   }
 
-  public checkExistance(community) {
+  public checkExistance(community: Community) {
     return this.state.checkedCommunities.some((checkedCommunity) => checkedCommunity.id === community.id);
   }
 
-  public handleCommCheck(community) {
+  public handleCommCheck(community: Community) {
     console.log(community.id);
     this.checkExistance(community) ?
-      this.setState({checkedCommunities: this.state.checkedCommunities.filter(checkedCommunity => checkedCommunity.id !== community.id)}):
+      this.setState({checkedCommunities: [...this.state.checkedCommunities]
+        .filter((checkedCommunity) => checkedCommunity.id !== community.id)}) :
       this.setState({checkedCommunities: [...this.state.checkedCommunities, community]});
   }
 
@@ -90,8 +91,8 @@ export default class CommunitiesMessage extends PureComponent<CommunitiesMessage
 
   public handleBacktoSelectedCommunities() {
     this.setState({content: 'selectedCommunities'});
-    this.setState({backTo: ''});
     this.updateGraph();
+    this.setState({backTo: ''});
   }
 
   public render() {

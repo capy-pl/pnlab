@@ -1,9 +1,14 @@
 import React, { PureComponent } from 'react';
 import { Message } from 'semantic-ui-react';
-import { Edge, Node } from '../../PnApp/Model/Report';
+import { Edge, Node, SimpleNode } from '../../PnApp/Model/Report';
 
+interface ConnectedNodes {
+  name: string;
+  id: number;
+  edgeWeight: number;
+}
 interface ProductRankProps {
-  productRankInfo?: [];
+  productRankInfo?: SimpleNode[];
   updateProductGraph: (productName) => void;
   nodes: Node[];
   edges: Edge[];
@@ -11,9 +16,9 @@ interface ProductRankProps {
 
 interface MessageState {
   visible: boolean;
-  clickedProduct?: {};
+  clickedProduct?: SimpleNode;
   content: string;
-  connectedInfo?: [];
+  connectedInfo?: ConnectedNodes[];
 }
 
 export default class ProductRank extends PureComponent<ProductRankProps, MessageState> {
@@ -40,7 +45,7 @@ export default class ProductRank extends PureComponent<ProductRankProps, Message
         nodeId = node.id;
       }
     }
-    const connectedInfo = [];
+    const connectedInfo: ConnectedNodes[] = [];
     let connectedNodeId;
     let connectedNodeName;
     for (const edge of this.props.edges) {
@@ -50,18 +55,17 @@ export default class ProductRank extends PureComponent<ProductRankProps, Message
         } else if (edge.to !== nodeId) {
           connectedNodeId = edge.to;
         }
-        this.props.nodes.forEach((node) => {
+        for (const node of this.props.nodes) {
           if (node.id === connectedNodeId) {
             connectedNodeName = node.name;
           }
-        });
-        connectedInfo.push (
-          {
-            connectedNodeName,
-            connectedNodeId,
-            edgeWeight: edge.weight,
-          },
-        );
+        }
+        const connectedNode = {
+          name: connectedNodeName,
+          id: connectedNodeId,
+          edgeWeight: edge.weight,
+        };
+        connectedInfo.push(connectedNode);
       }
     }
     connectedInfo.sort((a, b) => {
@@ -122,9 +126,9 @@ export default class ProductRank extends PureComponent<ProductRankProps, Message
         if (this.state.connectedInfo) {
         const connectedMessage = this.state.connectedInfo.map((node, index) => {
           return (
-            <tr key={node.connectedNodeId} className='center aligned'>
+            <tr key={node.id} className='center aligned'>
               <td>{index + 1}</td>
-              <td>{node.connectedNodeName}</td>
+              <td>{node.name}</td>
               <td>{Math.round(node.edgeWeight)}</td>
             </tr>
           );

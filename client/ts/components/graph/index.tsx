@@ -16,7 +16,7 @@ interface GraphProps {
   nodes: Node[];
   edges: Edge[];
   showCommunity: boolean;
-  selectedCommunities?: [];
+  selectedCommunities?: Community[];
   selectedProduct?: Node[];
   searchItems?: any;
 }
@@ -71,6 +71,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
       const communities = nodes.map((node) => {
         return ({
           id: node.id,
+          label: node.name,
           group: node.community,
           title: `
             <div>
@@ -162,6 +163,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
           if (!connectedNodesList.includes(node.id)) {
             // lighten the colors of unselected nodes
             selectProduct.push({id: node.id, color: {background: '#D3E7FF', border: '#D3E7FF'}, label: ' '});
+
             // hide unselected nodes
             // selectProduct.push({id: node.id, hidden: true});
           }
