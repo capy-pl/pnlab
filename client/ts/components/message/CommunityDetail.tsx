@@ -4,7 +4,7 @@ import { Message, Table, TableBody } from 'semantic-ui-react';
 const CommunityDetail = (props) => {
   const productRank = props.community.items.map((product, index) => {
     return(
-      <Table.Row key={product} textAlign='center'>
+      <Table.Row key={product.name} textAlign='center'>
         <Table.Cell>{index + 1}</Table.Cell>
         <Table.Cell>{product.name}</Table.Cell>
         <Table.Cell>{Math.round(product.weight)}</Table.Cell>

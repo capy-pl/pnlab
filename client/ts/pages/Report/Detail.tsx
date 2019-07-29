@@ -125,11 +125,28 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
   public render() {
     let message;
     if (this.state.content === 'character') {
-      message =  <CharacterMessage communitiesInfo={this.state.report.communities} hookInfo={this.state.hookInfo} />;
+      message = (
+        <CharacterMessage
+          communitiesInfo={this.state.report.communities}
+          hookInfo={this.state.hookInfo}
+        />
+      );
     } else if (this.state.content === 'productRank') {
-      message = <ProductRank productRankInfo={this.state.report.rank} updateProductGraph={this.updateProductGraph} />;
+      message = (
+        <ProductRank
+          productRankInfo={this.state.report.rank}
+          updateProductGraph={this.updateProductGraph}
+          nodes={this.state.report.nodes}
+          edges={this.state.report.edges}
+        />
+      );
     } else if (this.state.content === 'communitiesRank') {
-      message = <CommunitiesMessage communitiesInfo={this.state.report.communities} updateCommunitiesGraph={this.updateCommunitiesGraph} />;
+      message = (
+        <CommunitiesMessage 
+          communitiesInfo={this.state.report.communities}
+          updateCommunitiesGraph={this.updateCommunitiesGraph}
+        />
+      );
     }
     if (this.state.loading) {
       return <Loader size='huge' />;
