@@ -71,22 +71,22 @@ export interface ReportModel {
 
 export default class Report {
   public static async add(conditions: Condition[]): Promise<{ id: string }> {
-    const { data } = await axios.post<{ id: string }>(`/report/`, { conditions });
+    const { data } = await axios.post<{ id: string }>(`/api/report/`, { conditions });
     return data;
   }
 
   public static async getConditions(): Promise<Condition[]> {
-    const conditions = await axios.get<{ conditions: Condition[]}>('/report/conditions');
+    const conditions = await axios.get<{ conditions: Condition[] }>('/api/report/conditions');
     return conditions.data.conditions;
   }
 
   public static async get(id: string): Promise<Report> {
-    const report = await axios.get<ReportModel>(`/report/${id}`);
+    const report = await axios.get<ReportModel>(`/api/report/${id}`);
     return new Report(report.data);
   }
 
   public static async getAll(limit?: number): Promise<ProjectedReport[]> {
-    const url = limit && limit > 0 ? `/report?limit=${limit}` : '/report';
+    const url = limit && limit > 0 ? `/api/report?limit=${limit}` : '/api/report';
     const reports = await axios.get<{ reports: ProjectedReport[]}>(url);
     reports.data.reports.forEach((report) => {
       // attributes below are type of string when returned from axios. need to

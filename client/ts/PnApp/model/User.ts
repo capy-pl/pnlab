@@ -14,7 +14,7 @@ export interface UserModel {
 
 class User {
   public static async get(): Promise<User> {
-    const response = await axios.get<UserModel>('/user/info');
+    const response = await axios.get<UserModel>('/api/user/info');
     return new User(response.data);
   }
 

@@ -1,3 +1,4 @@
+import Analysis from './Analysis';
 import Category from './Category';
 import ImportSchema from './ImportSchema';
 import Organization from './Organization';
@@ -7,6 +8,7 @@ import Transactinos from './Transactions';
 import User from './User';
 
 export {
+  Analysis,
   ImportSchema,
   Organization,
   Report,
@@ -17,6 +19,7 @@ export {
 };
 
 export default {
+  Analysis,
   ImportSchema,
   Organization,
   Report,

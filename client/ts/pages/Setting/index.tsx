@@ -3,7 +3,7 @@ import { Route } from 'react-router-dom';
 import { Container, Grid, Segment } from 'semantic-ui-react';
 
 import { SettingMenu } from 'Component/menu';
-import AnimatedSwitch from 'Component/Switch';
+import { Switch } from 'Component/route';
 import Profile from './Profile';
 
 export default class Setting extends PureComponent {
@@ -16,9 +16,9 @@ export default class Setting extends PureComponent {
           </Grid.Column>
           <Grid.Column width={11} >
             <Segment>
-              <AnimatedSwitch>
+              <Switch>
                 <Route exact path='/settings/profile' component={Profile} />
-              </AnimatedSwitch>
+              </Switch>
             </Segment>
           </Grid.Column>
         </Grid>
