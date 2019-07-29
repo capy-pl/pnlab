@@ -23,6 +23,7 @@ export interface Edge {
 
 export interface Community {
   core?: string;
+  id: number;
   items: SimpleNode[];
   weight: number;
 }
