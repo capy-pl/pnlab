@@ -8,7 +8,7 @@ class ProductNerwork:
         self.hooks = self.get_hooks()
 
     def get_product_rank(self, num):
-        # The function must comes after get_communities, which compute the weight for all vs.
+        # The function must come after get_communities, which compute the weight for all vertex.
         items = [node for node in self.graph.vs]
         items.sort(key=lambda x: x['weight'], reverse=True)
         top_20 = [{ 'name': node['name'], 'weight': node['weight']} for node in items[:20]]

@@ -1,6 +1,6 @@
 import Auth from './Auth';
 import Loader from './Loader';
-import Switch from './Switch';
+import Switch from './route/Switch';
 
 import {
   SearchDropdown,
