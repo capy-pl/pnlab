@@ -1,21 +1,3 @@
 #form {
     background-color:white;
 }
-
-.part-enter {
-    opacity: 0;
-}
-
-.part-enter-active {
-    opacity: 1;
-    transition: opacity 500ms ease-in;
-}
-
-.part-exit {
-    opacity: 1;
-}
-
-.part-exit-active {
-    opacity: 0;
-    transition: opacity 500ms ease-in;
-}

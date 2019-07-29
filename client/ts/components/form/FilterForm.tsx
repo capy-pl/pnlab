@@ -1,21 +1,24 @@
 import React, { PureComponent } from 'react';
-import { CSSTransition, SwitchTransition } from 'react-transition-group';
-import { Button, Dropdown, DropdownProps, Header, Segment } from 'semantic-ui-react';
+import {
+  Button,
+  Dropdown,
+  DropdownProps,
+  Header,
+  Icon,
+  Message,
+  Segment,
+  SemanticCOLORS,
+} from 'semantic-ui-react';
 
 import { Condition } from '../../PnApp/model/Report';
 
-interface FilterFormProps {
-  conditions: Condition[];
-  onChange: (name: string) =>
-  ((event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => void);
-}
-
 interface FilterFormInputProps {
   condition: Condition;
+  defaultValue: string[];
   onChange: (event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => void;
 }
 
-const FilterFormInput = ({ condition, onChange }: FilterFormInputProps) => {
+const FilterFormInput = ({ condition, onChange, defaultValue }: FilterFormInputProps) => {
   if (condition.type === 'string' || condition.type === 'promotion') {
     const options = condition.values.map((value) => {
       return {
@@ -28,6 +31,7 @@ const FilterFormInput = ({ condition, onChange }: FilterFormInputProps) => {
       <Segment color='teal'>
         <Header block>{condition.name}</Header>
         <Dropdown
+          defaultValue={defaultValue}
           onChange={onChange}
           placeholder={`Please select ${condition.name}`}
           fluid
@@ -52,25 +56,41 @@ interface Part {
 
 interface PartProps {
   title: string;
+  type: PartType;
   conditions: Condition[];
+  defaultValues: { [key: string]: [string] };
   onChange: (name: string) =>
     ((event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => void);
 }
 
-const Part = ({ conditions, onChange, title }: PartProps) => {
+const Part = ({ conditions, onChange, title, type, defaultValues }: PartProps) => {
   const inputs = conditions.map((condition) => (
     <FilterFormInput
+      defaultValue={condition.name in defaultValues ? defaultValues[condition.name] : []}
       key={condition.name}
       condition={condition}
       onChange={onChange(condition.name)}
     />));
+  let color: SemanticCOLORS = 'blue';
+  if (type === 'remove') {
+    color = 'red';
+  }
   return (
       <React.Fragment>
-        <Header textAlign='center' >{title}</Header>
+      <Message color={color}>
+        <Message.Header>{title}</Message.Header>
+      </Message>
         {inputs}
       </React.Fragment>
   );
 };
+
+interface FilterFormProps {
+  conditions: Condition[];
+  defaultValues: { [key: string]: [string] };
+  onChange: (name: string) =>
+    ((event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => void);
+}
 
 interface FilterFormState {
   counter: number;
@@ -146,20 +166,28 @@ class FilterForm extends PureComponent<FilterFormProps, FilterFormState> {
       <Segment>
         <Button.Group attached='top'>
           <Button
+            icon
+            labelPosition='left'
             onClick={this.previousPage}
             disabled={this.state.counter === 0}
           >
+            <Icon name='arrow left' />
             Previous
           </Button>
           <Button
+            icon
+            labelPosition='right'
             onClick={this.nextPage}
             disabled={this.state.counter === this.types.length - 1}
           >
+            <Icon name='arrow right' />
             Next
           </Button>
         </Button.Group>
           <Part
+            defaultValues={this.props.defaultValues}
             key={part.type}
+            type={part.type}
             onChange={this.props.onChange}
             title={part.title}
             conditions={part.conditions}
