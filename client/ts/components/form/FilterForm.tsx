@@ -58,7 +58,7 @@ interface PartProps {
   title: string;
   type: PartType;
   conditions: Condition[];
-  defaultValues: { [key: string]: [string] };
+  defaultValues: { [key: string]: string[] };
   onChange: (name: string) =>
     ((event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => void);
 }
@@ -87,7 +87,7 @@ const Part = ({ conditions, onChange, title, type, defaultValues }: PartProps) =
 
 interface FilterFormProps {
   conditions: Condition[];
-  defaultValues: { [key: string]: [string] };
+  defaultValues: { [key: string]: string[] };
   onChange: (name: string) =>
     ((event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => void);
 }
