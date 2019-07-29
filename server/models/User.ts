@@ -4,6 +4,7 @@ import { OrgSchema } from './Organization';
 
 export interface UserSchemaInterface extends PassportLocalDocument {
   email: string;
+  name: string;
   org: OrgSchema;
 }
 
@@ -26,6 +27,6 @@ UserSchema.plugin(passportLocalMongoose, {
 });
 
 const User =
-  mongoose.model<UserSchemaInterface, PassportLocalModel<UserSchemaInterface>>('User', UserSchema);
+  mongoose.model<UserSchemaInterface, PassportLocalModel<UserSchemaInterface>>('user', UserSchema);
 
 export default User;

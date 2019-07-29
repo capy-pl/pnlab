@@ -6,7 +6,7 @@ interface LoginResponse {
 
 export default class Auth {
   public static async login(email: string, password: string): Promise<string> {
-    const response = await axios.post<LoginResponse>('/auth/login', {
+    const response = await axios.post<LoginResponse>('/api/auth/login', {
         email,
         password,
       });
@@ -27,7 +27,7 @@ export default class Auth {
     const token = localStorage.getItem('Token');
     axios.defaults.headers.common.Authorization = `Bearer ${token}`;
     try {
-      await axios.get('/auth/validate');
+      await axios.get('/api/auth/validate');
       return true;
     } catch (err) {
       console.error(err);

@@ -20,10 +20,10 @@ if (!(process.env.NODE_ENV === 'test')) {
 }
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static('templates'));
+app.set('views', 'server/templates');
 
 // Configure template engine.
-nunjucks.configure('views', {
+nunjucks.configure('server/templates', {
   autoescape: true,
   express: app,
 });
@@ -59,16 +59,17 @@ app.use('/', express.static('static', {
   maxAge: '0.5y',
 }));
 
-app.get('/', (req, res) => {
+// Register Router
+app.use('/api/auth', API.Auth);
+app.use('/api/user', API.User);
+app.use('/api/report', API.Report);
+app.use('/api/category', API.Category);
+app.use('/api/promotion', API.Promotion);
+app.use('/api/analysis', API.Analysis);
+
+app.get('/*', (req, res) => {
   res.render('index.html');
 });
-
-// Register Router
-app.use('/auth', API.Auth);
-app.use('/user', API.User);
-app.use('/report', API.Report);
-app.use('/category', API.Category);
-app.use('/promotion', API.Promotion);
 
 app.use((
   err: Error,
