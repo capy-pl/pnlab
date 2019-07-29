@@ -106,6 +106,7 @@ export default class Add extends PureComponent<RouteComponentProps, AddState> {
       <Container>
         <Segment.Group>
           <FilterForm
+            defaultValues={this.state.conditionArgs}
             onChange={this.onChange}
             conditions={this.state.conditions}
           />
