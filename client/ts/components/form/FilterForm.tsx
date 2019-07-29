@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { CSSTransition } from 'react-transition-group';
+import { CSSTransition, SwitchTransition } from 'react-transition-group';
 import { Button, Dropdown, DropdownProps, Header, Segment } from 'semantic-ui-react';
 
 import { Condition } from '../../PnApp/model/Report';
@@ -65,10 +65,10 @@ const Part = ({ conditions, onChange, title }: PartProps) => {
       onChange={onChange(condition.name)}
     />));
   return (
-    <React.Fragment>
-      <Header textAlign='center' >{title}</Header>
-      {inputs}
-    </React.Fragment>
+      <React.Fragment>
+        <Header textAlign='center' >{title}</Header>
+        {inputs}
+      </React.Fragment>
   );
 };
 
@@ -141,15 +141,7 @@ class FilterForm extends PureComponent<FilterFormProps, FilterFormState> {
   }
 
   public render() {
-    const partPages = this.parts
-    .filter((part) => part.type === this.types[this.state.counter])
-    .map((part) => (
-      <Part
-        onChange={this.props.onChange}
-        title={part.title}
-        conditions={part.conditions}
-      />
-    ));
+    const part = this.parts[this.state.counter];
     return (
       <Segment>
         <Button.Group attached='top'>
@@ -166,9 +158,12 @@ class FilterForm extends PureComponent<FilterFormProps, FilterFormState> {
             Next
           </Button>
         </Button.Group>
-        {/* <CSSTransition> */}
-          {partPages}
-        {/* </CSSTransition> */}
+          <Part
+            key={part.type}
+            onChange={this.props.onChange}
+            title={part.title}
+            conditions={part.conditions}
+          />
       </Segment>
     );
   }
