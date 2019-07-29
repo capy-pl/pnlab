@@ -60,7 +60,7 @@ export default class Analysis {
   }
 
   public async addComment(content: string): Promise<void> {
-    await axios.post(`/api/analysis/${this.id}/comment`);
+    await axios.post(`/api/analysis/${this.id}/comment`, { content });
     await this.reload();
   }
 
