@@ -101,7 +101,7 @@ class NetworkConverter:
         if self.method == 'frequency':
             return 1
 
-    def transform(self, support=0.002):
+    def transform(self, support=0.0005):
         if not self.is_done():
             raise Exception()
         support_total = 0

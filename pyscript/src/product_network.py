@@ -28,7 +28,10 @@ class ProductNerwork:
         for subgraph in _communities.subgraphs():
             weight_sum = sum([edge['weight'] for edge in subgraph.es])
             nodes_ids = [node['name'] for node in subgraph.vs]
+            # add community id
+            comm_id = subgraph.vs[0]['community']
             community = {
+                'id': comm_id,
                 'weight': weight_sum,
             }
             # Only compute core for those communities have node number larger than 3.

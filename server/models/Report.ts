@@ -107,6 +107,7 @@ const EdgeSchema = new Schema<Edge>({
 });
 
 const CommunitySchema = new Schema<Community>({
+  id: Number,
   core: String,
   items: {
     type: [SimpleNodeSchema],
