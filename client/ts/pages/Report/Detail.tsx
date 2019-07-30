@@ -131,7 +131,6 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
   }
 
   public onItemSearch(event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) {
-    console.log(data.value);
     this.setState({searchItems: data.value});
   }
 
