@@ -7,12 +7,12 @@ class ProductNerwork:
         self.product_rank = self.get_product_rank(20)
         self.hooks = self.get_hooks()
 
-    def get_product_rank(self, num):
+    def get_product_rank(self, num=20):
         # The function must come after get_communities, which compute the weight for all vertex.
         items = [node for node in self.graph.vs]
         items.sort(key=lambda x: x['weight'], reverse=True)
-        top_20 = [{ 'name': node['name'], 'weight': node['weight']} for node in items[:20]]
-        return top_20
+        top_products = [{ 'name': node['name'], 'weight': node['weight']} for node in items[:num]]
+        return top_products
 
     def get_communities(self, sort=True):
         # Use native method to get community
@@ -32,19 +32,7 @@ class ProductNerwork:
                 'weight': weight_sum,
             }
             # Only compute core for those communities have node number larger than 3.
-            nodes = []
-            for node in nodes_ids:
-                node_dict = {
-                    'name': node
-                }
-                edges_ids = subgraph.incident(node, mode='ALL')
-                total_weight = sum([subgraph.es[e]['weight']
-                                   for e in edges_ids])
-
-                # Update the vertex's weight in the parent graph.
-                self.graph.vs.find(node)['weight'] = total_weight
-                node_dict['weight'] = total_weight
-                nodes.append(node_dict)
+            nodes = [{ 'name': vertex['name'], 'weight': vertex['weight'] } for vertex in subgraph.vs]
 
             # Sort nodes according to its weight.
             community['items'] = list(sorted(nodes, key=lambda x: x['weight'], reverse = True))
