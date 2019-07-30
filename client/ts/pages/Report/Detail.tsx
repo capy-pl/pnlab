@@ -76,7 +76,7 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
   public onShowCommunities() {
     this.setState({showCommunity: true});
     this.clearSelected();
-    this.setState({searchItems: []});
+    this.setState({searchItems: undefined});
   }
 
   public onShowCharacter(event) {
