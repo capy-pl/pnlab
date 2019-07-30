@@ -1,23 +1,17 @@
 import React from 'react';
-import { Button, Checkbox, Message, Table, TableBody } from 'semantic-ui-react';
+import { Message, Table, TableBody } from 'semantic-ui-react';
 
 const CommunityDetail = (props) => {
   const productRank = props.community.items.map((product, index) => {
     return(
-      <Table.Row key={product} textAlign='center'>
+      <Table.Row key={product.name} textAlign='center'>
         <Table.Cell>{index + 1}</Table.Cell>
-        <Table.Cell>{product}</Table.Cell>
+        <Table.Cell>{product.name}</Table.Cell>
+        <Table.Cell>{Math.round(product.weight)}</Table.Cell>
       </Table.Row>
     );
   });
 
-  // const back = (() => {
-  //   if (props.backTo === 'communitiesRankList') {
-  //     return <a onClick={props.onBacktoCommunitiesRank} style={{cursor: 'pointer'}}>&lt;&lt; 返回</a>;
-  //   } else if (props.backTo === 'selectedCommunities') {
-  //     return <a onClick={props.onBacktoSelectedCommunities} style={{cursor: 'pointer'}}>&lt;&lt; 返回</a>;
-  //   }
-  // });
   const back = (props.backTo === 'communitiesRankList') ?
     <a onClick={props.onBacktoCommunitiesRank} style={{cursor: 'pointer'}}>&lt;&lt; 返回</a> :
     <a onClick={props.onBacktoSelectedCommunities} style={{cursor: 'pointer'}}>&lt;&lt; 返回</a>;
@@ -31,6 +25,7 @@ const CommunityDetail = (props) => {
           <Table.Row textAlign='center'>
             <Table.HeaderCell>名次</Table.HeaderCell>
             <Table.HeaderCell>產品名稱</Table.HeaderCell>
+            <Table.HeaderCell>產品權重</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
         <TableBody>

@@ -14,7 +14,7 @@ export default class Logger {
     }
   }
 
-  public static errorMessage(message: string): void {
+  private static errorMessage(message: string): void {
     console.log(`${Color.FgRed}[${moment().format()}] ${message}${Color.Reset}`);
   }
 }

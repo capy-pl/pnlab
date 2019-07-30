@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { DataSet, EdgeOptions, Network, NodeOptions } from 'vis';
-import { Community, Edge, Node } from '../../PnApp/Model/Report';
+import { Community, Edge, Node } from '../../PnApp/model/Report';
 
 interface GraphNode extends Node, NodeOptions {
 }
@@ -15,8 +15,8 @@ const style = {
 interface GraphProps {
   nodes: Node[];
   edges: Edge[];
-  showCommunity?: boolean;
-  selectedCommunities?: [];
+  showCommunity: boolean;
+  selectedCommunities?: Community[];
   selectedProduct?: Node[];
   searchItems?: any;
 }
@@ -35,28 +35,21 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
   }
 
   public componentDidUpdate() {
-    // this.initializeGraph();
-
-    // // 自己寫一個update的function在這裡
     this.updateNodes();
   }
 
   public toNode(node: Node): GraphNode {
     const copy: GraphNode = Object.assign({}, node);
     copy.label = node.name;
-    copy.value = node.degree;
+    copy.value = node.weight;
     copy.title = `
     <div>
       <p>${copy.name}</p>
-      <p>community: ${copy.group}</p>
+      <p>weight: ${Math.round(copy.weight)}</p>
       <p>連接節點數: ${copy.degree}</p>
     </div>
     `;
-    if (this.props.showCommunity) {
-      if (node.core) {
-        copy.borderWidth = 5;
-      }
-    }
+    copy.color = '#8DC1FF';
     return copy;
   }
 
@@ -65,7 +58,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
     copy.value = edge.weight;
     copy.title = `
     <div>
-      <p>weight: ${copy.weight}</p>
+      <p>edge weight: ${Math.round(copy.weight)}</p>
     </div>
     `;
     return copy;
@@ -73,50 +66,102 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
 
   public updateNodes() {
     const nodes = this.network.body.data.nodes;
-    const edges = this.network.body.data.edges;
-    for (const node of nodes) {
-      if (this.props.showCommunity) {
-        node.group = node.community.toString();
-      }
-      // const selectedCommunities = [1, 21, 14, 15];
-      if (this.props.selectedCommunities.length !== 0) {
-        const communitiesIdList = this.props.selectedCommunities.map((community: Community) => {
-          return (community.id);
+
+    if (this.props.selectedCommunities !== undefined) {
+      const communitiesIdList = this.props.selectedCommunities.map((community: Community) => {
+        return (community.id);
+      });
+      const selectedCommunities = [];
+      nodes.forEach((node) => {
+        selectedCommunities.push({id: node.id, hidden: !communitiesIdList.includes(node.community) ? true : false});
+      });
+      nodes.update(selectedCommunities);
+    } else if (this.props.showCommunity) {
+      const communities = nodes.map((node) => {
+        return ({
+          id: node.id,
+          label: node.name,
+          group: node.community,
+          title: `
+            <div>
+              <p>${node.name}</p>
+              <p>community: ${node.community}</p>
+              <p>weight: ${Math.round(node.weight)}</p>
+              <p>連接節點數: ${node.degree}</p>
+            </div>
+          `,
+          borderWidth: node.core ? 5 : 1,
+          hidden: false,
         });
-        if (!communitiesIdList.includes(node.community)) {
-          node.hidden = true;
-        }
-      } else {
-        node.hidden = false;
-      }
+      });
+      nodes.update(communities);
+    }
 
-      if (this.props.selectedProduct.length !== 0) {
+    const selectProduct = [];
+    if (this.props.selectedProduct !== undefined) {
+      // highlight node & show connected products
+      let connectedNodes;
+      const connectedNodesList = [];
+      nodes.forEach((node) => {
         if (this.props.selectedProduct[0].name === node.name) {
-          // copy.hidden = false;
-          node.color = {
-            background: 'orange',
-            hover: {
-              background: 'yellow',
-            },
-            highlight: {
-              background: 'yellow',
-            },
-          };
+          connectedNodesList.push(node.id);
+          selectProduct.push({id: node.id, color: {background: 'orange', hover: 'orange', highlight: 'orange'}});
+          connectedNodes = this.network.getConnectedNodes(node.id);
         }
+      });
+      for (const c of connectedNodes) {
+        connectedNodesList.push(c);
       }
-
-      if (this.props.searchItems !== undefined) {
+      nodes.forEach((node) => {
+        if (!connectedNodesList.includes(node.id)) {
+          // lighten the colors of unselected nodes
+          selectProduct.push({id: node.id, color: {background: '#D3E7FF', border: '#D3E7FF'}, label: ' '});
+        }
+      });
+      nodes.update(selectProduct);
+    } else if (!this.props.showCommunity) {
+      const productNetwork = nodes.map((node) => {
+        return (
+          {
+            id: node.id,
+            label: node.name,
+            title: `
+              <div>
+                <p>${node.name}</p>
+                <p>weight: ${Math.round(node.weight)}</p>
+                <p>連接節點數: ${node.degree}</p>
+              </div>
+            `,
+            group: undefined,
+            hidden: false,
+            color: '#8DC1FF',
+            borderWidth: 1,
+          }
+        );
+      });
+      nodes.update(productNetwork);
+    }
+    if (this.props.searchItems !== undefined) {
+      const searchItems = [];
+      nodes.forEach((node) => {
         this.props.searchItems.forEach((item) => {
           if (node.name === item) {
-            return (
-              node.color = {
-                background: 'yellow',
-              }
+            searchItems.push (
+              {
+                id: node.id,
+                color: {
+                  background: 'yellow',
+                  hover: {
+                    background: 'orange',
+                  },
+                  highlight: 'orange',
+                },
+              },
             );
           }
         });
-      }
-      nodes.update(node);
+      });
+      nodes.update(searchItems);
     }
   }
 
@@ -183,8 +228,6 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
           interaction: {
               hover: true,
               tooltipDelay: 100,
-              // navigationButtons: true,
-              // multiselect: true
           },
         });
     }

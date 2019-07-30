@@ -1,12 +1,10 @@
 import React, { PureComponent } from 'react';
 import { Message, Tab } from 'semantic-ui-react';
-import { Community } from '../../PnApp/Model/Report';
-
-// import TabPanel from './TabPanel';
+import { Community, Hook } from '../../PnApp/model/Report';
 
 interface CharacterMessageProps {
   communitiesInfo?: Community[];
-  hookInfo?: {};
+  hookInfo?: Hook[];
 }
 
 interface MessageState {
@@ -22,32 +20,54 @@ export default class CharacterMessage extends PureComponent<CharacterMessageProp
     this.handleDismiss = this.handleDismiss.bind(this);
   }
 
-  public handleDismiss(): void {
+  public handleDismiss() {
     this.setState({ visible: false });
-    setTimeout(() => {
-      this.setState({ visible: true });
-    }, 2000);
   }
 
   public render() {
     const TabPanel = () => {
-      const cores = this.props.communitiesInfo.map((community) => {
-        if (community.core) {
-          return(
-            <tr key={community.id} className='center aligned'>
-              <td>{community.id}</td>
-              <td>{community.core}</td>
+      let cores;
+      if (this.props.communitiesInfo) {
+        if (this.props.communitiesInfo.length !== 0) {
+          cores = this.props.communitiesInfo.map((community) => {
+            if (community.core) {
+              return(
+                <tr key={community.id} className='center aligned'>
+                  <td>{community.id}</td>
+                  <td>{community.core}</td>
+                </tr>
+              );
+            }
+          });
+        } else {
+          cores = (
+            <tr className='center aligned'>
+              <td />
+              <td>There are no cores</td>
             </tr>
           );
         }
-      });
-      const hooks = this.props.hookInfo.map((data) => {
-        return(
-          <tr key={data} className='center aligned'>
-            <td>{data}</td>
-          </tr>
-        );
-      });
+      }
+
+      let hooks;
+      if (this.props.hookInfo) {
+        if (this.props.hookInfo.length !== 0) {
+          hooks = this.props.hookInfo.map((hook) => {
+            return(
+              <tr key={hook.name} className='center aligned'>
+                <td>{hook.name}</td>
+                <td>{hook.connectTo.join(', ')}</td>
+              </tr>
+            );
+          });
+        } else {
+          hooks = (
+            <tr className='center aligned'>
+              <td>No possible hooks</td>
+            </tr>
+          );
+        }
+      }
       const panes = [
         { menuItem: 'Core', render: () => {
             return(
@@ -73,7 +93,8 @@ export default class CharacterMessage extends PureComponent<CharacterMessageProp
                 <table className='ui very basic table'>
                   <thead>
                     <tr className='center aligned'>
-                      <th>Possible Hooks</th>
+                      <th>Possible Hook</th>
+                      <th>連結商品群</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -99,12 +120,7 @@ export default class CharacterMessage extends PureComponent<CharacterMessageProp
     }
 
     return (
-      <p>
-        <br />
-        <i>The message will return in 2s</i>
-        <br />
-        <br />
-      </p>
+      <React.Fragment />
     );
   }
 }

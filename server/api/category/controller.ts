@@ -36,8 +36,8 @@ export async function AddCategory(req: e.Request, res: e.Response): Promise<void
   try {
     await category.save();
     return res.status(201).end();
-  } catch (err) {
-    Logger.error(err);
+  } catch (error) {
+    Logger.error(error);
     res.status(422).end();
   }
 }
@@ -46,8 +46,8 @@ export async function GetCategory(req: e.Request, res: e.Response): Promise<void
   try {
     const { object } = req.params;
     res.send(object);
-  } catch (err) {
-    Logger.error(err);
+  } catch (error) {
+    Logger.error(error);
     res.status(400).end();
   }
 }
@@ -65,8 +65,8 @@ export async function ModifyCategory(req: e.Request, res: e.Response) {
     }
     await object.save();
     res.status(200).end();
-  } catch (err) {
-    Logger.error(err);
+  } catch (error) {
+    Logger.error(error);
     res.status(422).end();
   }
 }
@@ -76,8 +76,8 @@ export async function DeleteCategory(req: e.Request, res: e.Response): Promise<v
   try {
     await object.remove();
     res.status(200).end();
-  } catch (err) {
-    Logger.error(err);
+  } catch (error) {
+    Logger.error(error);
     res.status(400).end();
   }
 }
