@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Message } from 'semantic-ui-react';
-import { Edge, Node, SimpleNode } from '../../PnApp/Model/Report';
+import { Edge, Node, SimpleNode } from '../../PnApp/model/Report';
 
 interface ConnectedNodes {
   name: string;
@@ -39,39 +39,41 @@ export default class ProductRank extends PureComponent<ProductRankProps, Message
   }
 
   public getEdgeWeight() {
-    let nodeId;
-    for (const node of this.props.nodes) {
-      if (node.name === this.state.clickedProduct.name) {
-        nodeId = node.id;
-      }
-    }
-    const connectedInfo: ConnectedNodes[] = [];
-    let connectedNodeId;
-    let connectedNodeName;
-    for (const edge of this.props.edges) {
-      if (edge.from === nodeId || edge.to === nodeId) {
-        if (edge.from !== nodeId) {
-          connectedNodeId = edge.from;
-        } else if (edge.to !== nodeId) {
-          connectedNodeId = edge.to;
+    if (this.state.clickedProduct) {
+      let nodeId;
+      for (const node of this.props.nodes) {
+        if (node.name === this.state.clickedProduct.name) {
+          nodeId = node.id;
         }
-        for (const node of this.props.nodes) {
-          if (node.id === connectedNodeId) {
-            connectedNodeName = node.name;
+      }
+      const connectedInfo: ConnectedNodes[] = [];
+      let connectedNodeId;
+      let connectedNodeName;
+      for (const edge of this.props.edges) {
+        if (edge.from === nodeId || edge.to === nodeId) {
+          if (edge.from !== nodeId) {
+            connectedNodeId = edge.from;
+          } else if (edge.to !== nodeId) {
+            connectedNodeId = edge.to;
           }
+          for (const node of this.props.nodes) {
+            if (node.id === connectedNodeId) {
+              connectedNodeName = node.name;
+            }
+          }
+          const connectedNode = {
+            name: connectedNodeName,
+            id: connectedNodeId,
+            edgeWeight: edge.weight,
+          };
+          connectedInfo.push(connectedNode);
         }
-        const connectedNode = {
-          name: connectedNodeName,
-          id: connectedNodeId,
-          edgeWeight: edge.weight,
-        };
-        connectedInfo.push(connectedNode);
       }
+      connectedInfo.sort((a, b) => {
+        return b.edgeWeight - a.edgeWeight;
+      });
+      this.setState({connectedInfo});
     }
-    connectedInfo.sort((a, b) => {
-      return b.edgeWeight - a.edgeWeight;
-    });
-    this.setState({connectedInfo});
   }
 
   public handleProductClick(product) {
@@ -84,73 +86,75 @@ export default class ProductRank extends PureComponent<ProductRankProps, Message
 
   public backToProductRank() {
     this.setState({content: 'productRank'});
-    this.setState({clickedProduct: {}}, () => {
+    this.setState({clickedProduct: undefined}, () => {
       this.props.updateProductGraph(this.state.clickedProduct);
     });
   }
 
   public render() {
     let message;
-    if (this.state.content === 'productRank') {
-      const productRank = this.props.productRankInfo.map((product, index) => {
-        return(
-          <tr key={product.name} className='center aligned'>
-            <td>{index + 1}</td>
-            <td>
-              <a onClick={() => {this.handleProductClick(product)}} style={{cursor: 'pointer'}}>
-                {product.name}
-              </a>
-            </td>
-            <td>{Math.round(product.weight)}</td>
-          </tr>
-        );
-      });
-      message = (
-        <React.Fragment>
-          <h3 style={{textAlign: 'center'}}>產品排名</h3>
-          <table className='ui very basic table'>
-            <thead>
-              <tr className='center aligned'>
-                <th className='three wide'>排名</th>
-                <th>產品名稱</th>
-                <th>產品權重</th>
-              </tr>
-            </thead>
-            <tbody>
-              {productRank}
-            </tbody>
-          </table>
-        </React.Fragment>
-      );
-    } else if (this.state.content === 'productDetail') {
-        if (this.state.connectedInfo) {
-        const connectedMessage = this.state.connectedInfo.map((node, index) => {
-          return (
-            <tr key={node.id} className='center aligned'>
+    if (this.props.productRankInfo) {
+      if (this.state.content === 'productRank') {
+        const productRank = this.props.productRankInfo.map((product, index) => {
+          return(
+            <tr key={product.name} className='center aligned'>
               <td>{index + 1}</td>
-              <td>{node.name}</td>
-              <td>{Math.round(node.edgeWeight)}</td>
+              <td>
+                <a onClick={() => {this.handleProductClick(product)}} style={{cursor: 'pointer'}}>
+                  {product.name}
+                </a>
+              </td>
+              <td>{Math.round(product.weight)}</td>
             </tr>
           );
         });
         message = (
           <React.Fragment>
-            <a onClick={this.backToProductRank} style={{cursor: 'pointer'}}>&lt;&lt; 返回</a>
-            <h4 style={{textAlign: 'center'}}>與【{this.state.clickedProduct.name}】相連之產品關聯性排名</h4>
+            <h3 style={{textAlign: 'center'}}>產品排名</h3>
             <table className='ui very basic table'>
               <thead>
                 <tr className='center aligned'>
                   <th className='three wide'>排名</th>
                   <th>產品名稱</th>
-                  <th>關聯權重</th>
+                  <th>產品權重</th>
                 </tr>
               </thead>
               <tbody>
-                {connectedMessage}
+                {productRank}
               </tbody>
             </table>
           </React.Fragment>
         );
+      } else if (this.state.content === 'productDetail') {
+        if (this.state.clickedProduct && this.state.connectedInfo) {
+          const connectedMessage = this.state.connectedInfo.map((node, index) => {
+            return (
+              <tr key={node.id} className='center aligned'>
+                <td>{index + 1}</td>
+                <td>{node.name}</td>
+                <td>{Math.round(node.edgeWeight)}</td>
+              </tr>
+            );
+          });
+          message = (
+            <React.Fragment>
+              <a onClick={this.backToProductRank} style={{cursor: 'pointer'}}>&lt;&lt; 返回</a>
+              <h4 style={{textAlign: 'center'}}>與【{this.state.clickedProduct.name}】相連之產品關聯性排名</h4>
+              <table className='ui very basic table'>
+                <thead>
+                  <tr className='center aligned'>
+                    <th className='three wide'>排名</th>
+                    <th>產品名稱</th>
+                    <th>關聯權重</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {connectedMessage}
+                </tbody>
+              </table>
+            </React.Fragment>
+          );
+        }
       }
     }
 
@@ -163,7 +167,7 @@ export default class ProductRank extends PureComponent<ProductRankProps, Message
     }
 
     return (
-      <p />
+      <React.Fragment />
     );
   }
 }

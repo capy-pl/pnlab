@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { DataSet, EdgeOptions, Network, NodeOptions } from 'vis';
-import { Community, Edge, Node } from '../../PnApp/Model/Report';
+import { Community, Edge, Node } from '../../PnApp/model/Report';
 
 interface GraphNode extends Node, NodeOptions {
 }
@@ -16,8 +16,8 @@ interface GraphProps {
   nodes: Node[];
   edges: Edge[];
   showCommunity: boolean;
-  selectedCommunities: Community[];
-  selectedProduct: Node[];
+  selectedCommunities?: Community[];
+  selectedProduct?: Node[];
   searchItems?: any;
 }
 
@@ -65,10 +65,9 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
   }
 
   public updateNodes() {
-    console.log(this.network);
     const nodes = this.network.body.data.nodes;
 
-    if (this.props.selectedCommunities.length !== 0) {
+    if (this.props.selectedCommunities !== undefined) {
       const communitiesIdList = this.props.selectedCommunities.map((community: Community) => {
         return (community.id);
       });
@@ -97,9 +96,10 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
       });
       nodes.update(communities);
     }
+
     const selectProduct = [];
-    if (this.props.selectedProduct.length !== 0) {
-      // --------- highlight node & show connected products -------------
+    if (this.props.selectedProduct !== undefined) {
+      // highlight node & show connected products
       let connectedNodes;
       const connectedNodesList = [];
       nodes.forEach((node) => {
@@ -116,30 +116,8 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
         if (!connectedNodesList.includes(node.id)) {
           // lighten the colors of unselected nodes
           selectProduct.push({id: node.id, color: {background: '#D3E7FF', border: '#D3E7FF'}, label: ' '});
-
-          // hide unselected nodes
-          // selectProduct.push({id: node.id, hidden: true});
         }
       });
-      // ----------- only highlight selected node --------------
-      // nodes.forEach((node) => {
-      //   if (this.props.selectedProduct[0].name === node.name) {
-      //     selectProduct.push (
-      //       {
-      //         id: node.id,
-      //         color: {
-      //           background: 'orange',
-      //           hover: {
-      //             background: 'yellow',
-      //           },
-      //           highlight: {
-      //             background: 'yellow',
-      //           },
-      //         },
-      //       },
-      //     );
-      //   }
-      // });
       nodes.update(selectProduct);
     } else if (!this.props.showCommunity) {
       const productNetwork = nodes.map((node) => {
@@ -250,8 +228,6 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
           interaction: {
               hover: true,
               tooltipDelay: 100,
-              // navigationButtons: true,
-              // multiselect: true
           },
         });
     }

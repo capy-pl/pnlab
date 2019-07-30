@@ -1,17 +1,17 @@
 import React, { PureComponent } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { Button, Divider, DropdownProps, Label, Menu, Segment, Sidebar } from 'semantic-ui-react';
+import { Button, Divider, DropdownProps, Label, Menu, Sidebar } from 'semantic-ui-react';
 
 import { ModalSave } from 'Component/modal';
 import { SearchItemDropdown } from '../../components/dropdown';
 import Graph from '../../components/graph';
 import Loader from '../../components/Loader';
 import { DropdownMenu } from '../../components/menu';
-import { CharacterMessage, CommunitiesMessage, ConditionBar, ProductRank, SideBar } from '../../components/message';
+import { CharacterMessage, CommunitiesMessage, ProductRank } from '../../components/message';
 
-import { Analysis } from '../../PnApp/Model';
-import ReportAPI from '../../PnApp/Model/Report' ;
-import { Community, Node } from '../../PnApp/Model/Report';
+import { Analysis } from '../../PnApp/model';
+import ReportAPI from '../../PnApp/model/Report' ;
+import { Community, Node } from '../../PnApp/model/Report';
 
 interface ReportProps extends RouteComponentProps<{ id: string }> {
 }
@@ -24,7 +24,7 @@ interface ReportState {
   communitiesInfo?: Community[];
   selectedCommunities?: Community[];
   selectedProduct?: Node[];
-  searchItems?: any;
+  searchItems?: DropdownProps['value'];
   modalOpen: boolean;
   visible: boolean;
 }
@@ -59,15 +59,13 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
     this.setState({
       report,
       loading: false,
-      selectedCommunities: [],
-      selectedProduct: [],
     });
   }
 
   public clearSelected() {
     this.setState({content: ''});
-    this.setState({selectedCommunities: []});
-    this.setState({selectedProduct: []});
+    this.setState({selectedCommunities: undefined});
+    this.setState({selectedProduct: undefined});
   }
 
   public onShowProductNetwork() {
@@ -96,14 +94,19 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
     this.setState({content: 'communitiesRank'});
   }
 
-  public updateCommunitiesGraph(communitiesList: Community[]) {
-    console.log('got', communitiesList);
+  public updateCommunitiesGraph(communitiesList: Community[] | undefined) {
     this.setState({selectedCommunities: communitiesList});
   }
 
   public updateProductGraph(product) {
-    const selectedProduct = this.state.report.nodes.filter((node) => node.name === product.name);
-    this.setState({selectedProduct});
+    if (product === undefined) {
+      this.setState({selectedProduct: undefined});
+    } else {
+      if (this.state.report) {
+        const selectedProduct = this.state.report.nodes.filter((node) => node.name === product.name);
+        this.setState({selectedProduct});
+      }
+    }
   }
 
   public onSaveGraph() {

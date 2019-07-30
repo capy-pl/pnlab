@@ -1,6 +1,6 @@
 import React from 'react';
 import { Message } from 'semantic-ui-react';
-import { Community } from '../../PnApp/Model/Report';
+import { Community } from '../../PnApp/model/Report';
 
 interface SelectedCommunitiesProps {
   onDismiss: () => void;

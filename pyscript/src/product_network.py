@@ -29,7 +29,7 @@ class ProductNerwork:
             weight_sum = sum([edge['weight'] for edge in subgraph.es])
             nodes_ids = [node['name'] for node in subgraph.vs]
             # add community id
-            comm_id = self.graph.vs[[node['id'] for node in subgraph.vs][0]]['community']
+            comm_id = subgraph.vs[0]['community']
             community = {
                 'id': comm_id,
                 'weight': weight_sum,
