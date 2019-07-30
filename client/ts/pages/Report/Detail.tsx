@@ -9,6 +9,7 @@ import Loader from '../../components/Loader';
 import { DropdownMenu } from '../../components/menu';
 import { CharacterMessage, CommunitiesMessage, ConditionBar, ProductRank, SideBar } from '../../components/message';
 
+import { Analysis } from '../../PnApp/Model';
 import ReportAPI from '../../PnApp/Model/Report' ;
 import { Community, Node } from '../../PnApp/Model/Report';
 
@@ -121,6 +122,9 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
     this.setState({
       modalOpen: false,
     });
+    if (this.state.report) {
+      Analysis.add({report: this.state.report.id, title: 'testtest1'});
+    }
   }
 
   public onItemSearch(event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) {
@@ -226,7 +230,7 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
                       searchItems={this.state.searchItems}
                     />
                   </div>
-                  <div style={{ width: '23%', overflow: 'auto', maxHeight: 550 }}>
+                  <div style={{ width: '23%', overflow: 'auto', maxHeight: 550, position: 'absolute' }}>
                     {message}
                   </div>
                 </div>

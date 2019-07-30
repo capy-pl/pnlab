@@ -16,8 +16,8 @@ interface GraphProps {
   nodes: Node[];
   edges: Edge[];
   showCommunity: boolean;
-  selectedCommunities?: Community[];
-  selectedProduct?: Node[];
+  selectedCommunities: Community[];
+  selectedProduct: Node[];
   searchItems?: any;
 }
 
@@ -67,7 +67,17 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
   public updateNodes() {
     console.log(this.network);
     const nodes = this.network.body.data.nodes;
-    if (this.props.showCommunity) {
+
+    if (this.props.selectedCommunities.length !== 0) {
+      const communitiesIdList = this.props.selectedCommunities.map((community: Community) => {
+        return (community.id);
+      });
+      const selectedCommunities = [];
+      nodes.forEach((node) => {
+        selectedCommunities.push({id: node.id, hidden: !communitiesIdList.includes(node.community) ? true : false});
+      });
+      nodes.update(selectedCommunities);
+    } else if (this.props.showCommunity) {
       const communities = nodes.map((node) => {
         return ({
           id: node.id,
@@ -82,29 +92,56 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
             </div>
           `,
           borderWidth: node.core ? 5 : 1,
+          hidden: false,
         });
       });
       nodes.update(communities);
-      if (this.props.selectedCommunities.length !== 0) {
-        const communitiesIdList = this.props.selectedCommunities.map((community: Community) => {
-          return (community.id);
-        });
-        const selectCommunities = [];
-        nodes.forEach((node) => {
-          if (!communitiesIdList.includes(node.community)) {
-            selectCommunities.push({id: node.id, hidden: true});
-          } else {
-            selectCommunities.push({id: node.id, hidden: false});
-          }
-        });
-        nodes.update(selectCommunities);
-      } else {
-        const showAll = nodes.map((node) => {
-          return {id: node.id, hidden: false};
-        });
-        nodes.update(showAll);
+    }
+    const selectProduct = [];
+    if (this.props.selectedProduct.length !== 0) {
+      // --------- highlight node & show connected products -------------
+      let connectedNodes;
+      const connectedNodesList = [];
+      nodes.forEach((node) => {
+        if (this.props.selectedProduct[0].name === node.name) {
+          connectedNodesList.push(node.id);
+          selectProduct.push({id: node.id, color: {background: 'orange', hover: 'orange', highlight: 'orange'}});
+          connectedNodes = this.network.getConnectedNodes(node.id);
+        }
+      });
+      for (const c of connectedNodes) {
+        connectedNodesList.push(c);
       }
-    } else {
+      nodes.forEach((node) => {
+        if (!connectedNodesList.includes(node.id)) {
+          // lighten the colors of unselected nodes
+          selectProduct.push({id: node.id, color: {background: '#D3E7FF', border: '#D3E7FF'}, label: ' '});
+
+          // hide unselected nodes
+          // selectProduct.push({id: node.id, hidden: true});
+        }
+      });
+      // ----------- only highlight selected node --------------
+      // nodes.forEach((node) => {
+      //   if (this.props.selectedProduct[0].name === node.name) {
+      //     selectProduct.push (
+      //       {
+      //         id: node.id,
+      //         color: {
+      //           background: 'orange',
+      //           hover: {
+      //             background: 'yellow',
+      //           },
+      //           highlight: {
+      //             background: 'yellow',
+      //           },
+      //         },
+      //       },
+      //     );
+      //   }
+      // });
+      nodes.update(selectProduct);
+    } else if (!this.props.showCommunity) {
       const productNetwork = nodes.map((node) => {
         return (
           {
@@ -125,73 +162,28 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
         );
       });
       nodes.update(productNetwork);
-      const selectProduct = [];
-      if (this.props.selectedProduct.length !== 0) {
-        // ----------- highlight node --------------
-        // nodes.forEach((node) => {
-        //   if (this.props.selectedProduct[0].name === node.name) {
-        //     selectProduct.push (
-        //       {
-        //         id: node.id,
-        //         color: {
-        //           background: 'orange',
-        //           hover: {
-        //             background: 'yellow',
-        //           },
-        //           highlight: {
-        //             background: 'yellow',
-        //           },
-        //         },
-        //       },
-        //     );
-        //   }
-        // });
-        // --------- show connected products -------------
-        let connectedNodes;
-        const connectedNodesList = [];
-        nodes.forEach((node) => {
-          if (this.props.selectedProduct[0].name === node.name) {
-            connectedNodesList.push(node.id);
-            selectProduct.push({id: node.id, color: {background: 'orange', hover: 'orange', highlight: 'orange'}});
-            connectedNodes = this.network.getConnectedNodes(node.id);
-          }
-        });
-        for (const c of connectedNodes) {
-          connectedNodesList.push(c);
-        }
-        nodes.forEach((node) => {
-          if (!connectedNodesList.includes(node.id)) {
-            // lighten the colors of unselected nodes
-            selectProduct.push({id: node.id, color: {background: '#D3E7FF', border: '#D3E7FF'}, label: ' '});
-
-            // hide unselected nodes
-            // selectProduct.push({id: node.id, hidden: true});
-          }
-        });
-        nodes.update(selectProduct);
-      }
-      if (this.props.searchItems !== undefined) {
-        const searchItems = [];
-        nodes.forEach((node) => {
-          this.props.searchItems.forEach((item) => {
-            if (node.name === item) {
-              searchItems.push (
-                {
-                  id: node.id,
-                  color: {
-                    background: 'yellow',
-                    hover: {
-                      background: 'orange',
-                    },
-                    highlight: 'orange',
+    }
+    if (this.props.searchItems !== undefined) {
+      const searchItems = [];
+      nodes.forEach((node) => {
+        this.props.searchItems.forEach((item) => {
+          if (node.name === item) {
+            searchItems.push (
+              {
+                id: node.id,
+                color: {
+                  background: 'yellow',
+                  hover: {
+                    background: 'orange',
                   },
+                  highlight: 'orange',
                 },
-              );
-            }
-          });
+              },
+            );
+          }
         });
-        nodes.update(searchItems);
-      }
+      });
+      nodes.update(searchItems);
     }
   }
 
