@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import { DropdownProps } from 'semantic-ui-react';
 import { DataSet, EdgeOptions, Network, NodeOptions } from 'vis';
 import { Community, Edge, Node } from '../../PnApp/model/Report';
 
@@ -18,7 +19,7 @@ interface GraphProps {
   showCommunity: boolean;
   selectedCommunities?: Community[];
   selectedProduct?: Node[];
-  searchItems?: any;
+  searchItems?: DropdownProps['value'];
 }
 
 export default class GraphView extends PureComponent<GraphProps, {}> {
@@ -81,7 +82,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
   public updateNodes() {
     const nodes = this.network.body.data.nodes;
 
-    if (this.props.selectedCommunities !== undefined) {
+    if (this.props.selectedCommunities) {
       const communitiesIdList = this.props.selectedCommunities.map((community: Community) => {
         return (community.id);
       });
@@ -112,10 +113,10 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
     }
 
     const selectProduct = [];
-    if (this.props.selectedProduct !== undefined) {
+    if (this.props.selectedProduct) {
       // highlight node & show connected products
       let connectedNodes;
-      const connectedNodesList = [];
+      const connectedNodesList: number[] = [];
       nodes.forEach((node) => {
         if (this.props.selectedProduct[0].name === node.name) {
           connectedNodesList.push(node.id);
@@ -155,7 +156,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
       });
       nodes.update(productNetwork);
     }
-    if (this.props.searchItems !== undefined) {
+    if (this.props.searchItems) {
       const searchItems = [];
       nodes.forEach((node) => {
         this.props.searchItems.forEach((item) => {
