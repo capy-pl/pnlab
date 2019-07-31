@@ -1,6 +1,13 @@
 import React, { PureComponent } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { Button, Divider, DropdownProps, Label, Menu, Sidebar, Segment, Container } from 'semantic-ui-react';
+import {
+  Button,
+  Divider,
+  DropdownProps,
+  Label,
+  Menu,
+  Sidebar,
+} from 'semantic-ui-react';
 
 import { ModalSave } from 'Component/modal';
 import { SearchItemDropdown } from '../../components/dropdown';
@@ -240,10 +247,9 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
               onShowProductRank={this.onShowProductRank}
               onShowCommunitiesRank={this.onShowCommunitiesRank}
               onShowCharacter={this.onShowCharacter}
+              showCommunity={this.state.showCommunity}
             />
-            <Container style={messageStyle}>
-              {message}
-            </Container>
+            {message}
             <Sidebar.Pushable style={sidebarStyle}>
               <Sidebar
                 as={Menu}

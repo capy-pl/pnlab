@@ -27,7 +27,10 @@ const SelectedCommunities =
     );
   });
   return (
-    <Message onDismiss={onDismiss}>
+    <Message
+      onDismiss={onDismiss}
+      className='report-message'
+    >
       <a onClick={onBacktoCommunitiesRank} style={{cursor: 'pointer'}}>&lt;&lt; 返回</a>
       <h3 style={{textAlign: 'center'}}>已選取的商品群</h3>
       <div style={{margin: '0 auto', textAlign: 'center'}}>

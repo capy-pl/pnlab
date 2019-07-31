@@ -115,7 +115,7 @@ export default class CommunitiesMessage extends PureComponent<CommunitiesMessage
           message = (
             <SelectedCommunities
               onDismiss={this.handleDismiss}
-              selectedCommunities={this.state.checkedCommunities}
+              selectedCommunities={this.state.checkedCommunities as Community[]}
               onCommDetailClick={this.handleCommDetailClick}
               onBacktoCommunitiesRank={this.handleBacktoCommunitiesRank}
             />

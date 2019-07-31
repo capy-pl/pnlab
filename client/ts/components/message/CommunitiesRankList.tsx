@@ -25,7 +25,7 @@ const CommunitiesRankList = (props) => {
     </Table.Row>
   ));
   return (
-    <Message onDismiss={props.onDismiss}>
+    <Message className='report-message' onDismiss={props.onDismiss}>
       <h3 style={{textAlign: 'center'}}>Communities排名(前20名)</h3>
       <Table basic='very'>
         <Table.Header>
