@@ -79,9 +79,7 @@ export default class CommunitiesMessage extends PureComponent<CommunitiesMessage
 
   public handleBacktoCommunitiesRank() {
     this.setState({content: 'communitiesRank'});
-    this.setState({checkedCommunities: undefined, clickedCommunity: undefined}, () => {
-      this.updateGraph();
-    });
+    this.setState({checkedCommunities: undefined, clickedCommunity: undefined}, this.updateGraph);
     this.setState({backTo: ''});
   }
 
