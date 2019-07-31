@@ -1,17 +1,27 @@
 import React from 'react';
 import { Button, Checkbox, Message, Table, TableBody } from 'semantic-ui-react';
 
+interface CommunityRankProps {
+  // @TODO: Add props for the component.
+}
+
 const CommunitiesRankList = (props) => {
+  const onCheck = (community) => {
+    return () => {
+      props.onCommCheck(community);
+    };
+  };
+
   const communitiesRank = props.communitiesInfo.slice(0, 20).map((community, index) => (
     <Table.Row key={community.id} textAlign='center'>
       <Table.Cell>{index + 1}</Table.Cell>
       <Table.Cell>
-        <a onClick={() => props.onCommClick(community)} style={{cursor: 'pointer'}}>{community.id}</a>
+        <a onClick={onCheck(community)} style={{cursor: 'pointer'}}>{community.id}</a>
       </Table.Cell>
       <Table.Cell>
         {Math.round(community.weight)}
       </Table.Cell>
-      <Table.Cell><Checkbox onChange={() => props.onCommCheck(community)} /></Table.Cell>
+      <Table.Cell><Checkbox onChange={onCheck(community)} /></Table.Cell>
     </Table.Row>
   ));
   return (

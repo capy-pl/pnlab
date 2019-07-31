@@ -31,11 +31,25 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
   }
 
   public componentDidMount() {
+    if (this.graphRef.current) {
+      this.graphRef.current.style.height = this.getHeight();
+    }
     this.initializeGraph();
   }
 
   public componentDidUpdate() {
     this.updateNodes();
+  }
+
+  public getHeight(): string {
+    let height = 'auto';
+    if (this.graphRef.current) {
+      if (this.graphRef.current) {
+        const { top } = this.graphRef.current.getBoundingClientRect();
+        height = `${window.innerHeight - top}px`;
+      }
+    }
+    return height;
   }
 
   public toNode(node: Node): GraphNode {
@@ -189,7 +203,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
                   return 0.03;
                 } else {
                   const scale = 1 / (max - min);
-                  return Math.max(0,(value - min) * scale);
+                  return Math.max(0, (value - min) * scale);
                 }
               },
               max: 30,
@@ -235,7 +249,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
 
   public render() {
     return (
-      <div id='pn-graph' style={style} ref={this.graphRef} />
+      <div id='pn-graph' style={{ zIndex: -1 }} ref={this.graphRef} />
     );
   }
 }

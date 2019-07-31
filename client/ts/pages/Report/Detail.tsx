@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { Button, Divider, DropdownProps, Label, Menu, Sidebar } from 'semantic-ui-react';
+import { Button, Divider, DropdownProps, Label, Menu, Sidebar, Segment, Container } from 'semantic-ui-react';
 
 import { ModalSave } from 'Component/modal';
 import { SearchItemDropdown } from '../../components/dropdown';
@@ -28,6 +28,25 @@ interface ReportState {
   modalOpen: boolean;
   visible: boolean;
 }
+
+const messageStyle: React.CSSProperties = {
+  top: '18%',
+  left: '3%',
+  width: '23%',
+  overflow: 'auto',
+  maxHeight: 550,
+  position: 'absolute',
+  zIndex: 101,
+};
+
+const sidebarStyle: React.CSSProperties = {
+  zIndex: 100,
+  height: '80%',
+  width: '15%',
+  position: 'absolute',
+  top: '20%',
+  right: 0,
+};
 
 export default class Report extends PureComponent<ReportProps, ReportState> {
   constructor(props: ReportProps) {
@@ -138,55 +157,69 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
     this.setState((prevState) => ({ visible: !prevState.visible }));
   }
 
+  public getMessageComponent(): React.ReactChild {
+    let message: React.ReactChild;
+    const report = this.state.report as ReportAPI;
+    switch (this.state.content) {
+      case 'character':
+        message = (
+          <CharacterMessage
+            communitiesInfo={report.communities}
+            hookInfo={report.hooks}
+          />
+        );
+        break;
+      case 'productRank':
+        message = (
+          <ProductRank
+            productRankInfo={report.rank}
+            updateProductGraph={this.updateProductGraph}
+            nodes={report.nodes}
+            edges={report.edges}
+          />
+        );
+        break;
+      case 'communitiesRank':
+        message = (
+          <CommunitiesMessage
+            communitiesInfo={report.communities}
+            updateCommunitiesGraph={this.updateCommunitiesGraph}
+          />
+        );
+        break;
+      default:
+        return <React.Fragment />;
+    }
+    return message;
+  }
+
+  public getSearchDropDown(): React.ReactChild {
+    let searchItemDropdown: React.ReactChild;
+    const report = this.state.report as ReportAPI;
+    const dropdownOptions = report.nodes.map((node) => {
+      return ({ key: node.name, value: node.name, text: node.name });
+    });
+    if (!this.state.showCommunity) {
+      searchItemDropdown = (
+        <SearchItemDropdown
+          options={dropdownOptions}
+          placeholder='搜尋商品：請輸入商品名稱'
+          onChange={this.onItemSearch}
+        />
+      );
+    } else {
+      return <React.Fragment />;
+    }
+    return searchItemDropdown;
+  }
+
   public render() {
     if (this.state.loading) {
       return <Loader size='huge' />;
     } else {
       if (this.state.report) {
-        let message;
-        switch (this.state.content) {
-          case 'character':
-            message = (
-              <CharacterMessage
-                communitiesInfo={this.state.report.communities}
-                hookInfo={this.state.report.hooks}
-              />
-            );
-            break;
-          case 'productRank':
-            message = (
-              <ProductRank
-                productRankInfo={this.state.report.rank}
-                updateProductGraph={this.updateProductGraph}
-                nodes={this.state.report.nodes}
-                edges={this.state.report.edges}
-              />
-            );
-            break;
-          case 'communitiesRank':
-            message = (
-              <CommunitiesMessage
-                communitiesInfo={this.state.report.communities}
-                updateCommunitiesGraph={this.updateCommunitiesGraph}
-              />
-            );
-            break;
-        }
-
-        let searchItemDropdown;
-        const dropdownOptions = this.state.report.nodes.map((node) => {
-          return ({key: node.name, value: node.name, text: node.name});
-        });
-        if (!this.state.showCommunity) {
-          searchItemDropdown = (
-            <SearchItemDropdown
-              options={dropdownOptions}
-              placeholder='搜尋商品：請輸入商品名稱'
-              onChange={this.onItemSearch}
-            />
-          );
-        }
-
+        const message: React.ReactChild = this.getMessageComponent();
+        const searchItemDropdown: React.ReactChild = this.getSearchDropDown();
         const conditionList = this.state.report.conditions.map((condition) => {
           const values = condition.values.map((value) => {
             return (<Label key={value} style={{margin: '.2rem'}}>{value}</Label>);
@@ -208,7 +241,10 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
               onShowCommunitiesRank={this.onShowCommunitiesRank}
               onShowCharacter={this.onShowCharacter}
             />
-            <Sidebar.Pushable style={{height: 800}}>
+            <Container style={messageStyle}>
+              {message}
+            </Container>
+            <Sidebar.Pushable style={sidebarStyle}>
               <Sidebar
                 as={Menu}
                 animation='overlay'
@@ -220,33 +256,17 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
               >
                 {conditionList}
               </Sidebar>
-              <Sidebar.Pusher>
-                <div style={{ position: 'relative'}}>
-                  <div style={{ width: '100%', position: 'absolute' }}>
-                    <Graph
-                      nodes={this.state.report.nodes}
-                      edges={this.state.report.edges}
-                      showCommunity={this.state.showCommunity}
-                      selectedCommunities={this.state.selectedCommunities}
-                      selectedProduct={this.state.selectedProduct}
-                      searchItems={this.state.searchItems}
-                    />
-                  </div>
-                  <div style={{ width: '23%', overflow: 'auto', maxHeight: 550, position: 'absolute' }}>
-                    {message}
-                  </div>
-                </div>
-              </Sidebar.Pusher>
             </Sidebar.Pushable>
-            <div style={{ position: 'fixed', top: 80, right: 120, minWidth: '12%' }}>
+            <div style={{ position: 'absolute', top: 80, right: 120, minWidth: '12%', zIndex: 101 }}>
               {searchItemDropdown}
             </div>
-            <div style={{ position: 'fixed', top: 80, right: 20 }}>
-              <Button onClick={this.handleToggleSidebar}>
-                條件
-              </Button>
-            </div>
-            <div style={{ position: 'fixed', bottom: 10, left: 10 }}>
+            <Button
+              onClick={this.handleToggleSidebar}
+              style={{ position: 'absolute', top: 80, right: 20, zIndex: 101 }}
+            >
+              條件
+            </Button>
+            <div style={{ position: 'absolute', bottom: 10, left: 10, zIndex: 100 }}>
               <ModalSave
                 header='編輯圖片'
                 open={this.state.modalOpen}
@@ -256,10 +276,19 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
                 <Button
                   color='blue'
                   onClick={this.onSaveGraph}
-                >儲存圖片
+                >
+                  儲存圖片
                 </Button>
               </ModalSave>
             </div>
+            <Graph
+              nodes={this.state.report.nodes}
+              edges={this.state.report.edges}
+              showCommunity={this.state.showCommunity}
+              selectedCommunities={this.state.selectedCommunities}
+              selectedProduct={this.state.selectedProduct}
+              searchItems={this.state.searchItems}
+            />
           </React.Fragment>
         );
       }

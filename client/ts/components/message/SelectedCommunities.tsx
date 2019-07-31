@@ -4,17 +4,23 @@ import { Community } from '../../PnApp/model/Report';
 
 interface SelectedCommunitiesProps {
   onDismiss: () => void;
-  selectedCommunities?: Community[];
+  selectedCommunities: Community[];
   onCommDetailClick: (community: Community) => void;
   onBacktoCommunitiesRank: () => void;
 }
 
 const SelectedCommunities =
 ({onDismiss, selectedCommunities, onCommDetailClick, onBacktoCommunitiesRank}: SelectedCommunitiesProps) => {
+  const detailClick = (community: Community): () => void  => {
+    return () => {
+      onCommDetailClick(community);
+    };
+  };
+
   const selectedCommunitiesList = selectedCommunities.map((community) => {
     return (
       <h4 key={community.id}>
-        <a onClick={() => onCommDetailClick(community)} style={{cursor: 'pointer'}}>
+        <a onClick={detailClick(community)} style={{cursor: 'pointer'}}>
           Community {community.id} 詳細資料
         </a>
       </h4>
