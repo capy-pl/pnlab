@@ -17,7 +17,7 @@ const CommunityDetail = (props) => {
     <a onClick={props.onBacktoSelectedCommunities} style={{cursor: 'pointer'}}>&lt;&lt; 返回</a>;
 
   return (
-    <Message onDismiss={props.onDismiss}>
+    <Message className='report-message' onDismiss={props.onDismiss}>
       {back}
       <h3 style={{textAlign: 'center'}}>Community {props.community.id} 產品排名</h3>
       <Table basic='very'>

@@ -1,26 +1,32 @@
 import React, { PureComponent } from 'react';
-import { Form } from 'semantic-ui-react';
+import {
+  Form,
+  InputOnChangeData,
+  TextAreaProps,
+} from 'semantic-ui-react';
 
 interface FormSaveState {
   title: string;
   note: string;
+  [key: string]: string;
 }
+
 export default class SaveGraphForm extends PureComponent<{}, FormSaveState> {
-  constructor(props) {
+  constructor(props: {}) {
     super(props);
     this.state = {
       title: '',
       note: '',
     };
-    this.handleChange = this.handleChange.bind(this);
-
+    this.onChange = this.onChange.bind(this);
   }
-  public handleChange(keyName: 'title' | 'note', value: string): void {
-    if (keyName === 'title') {
-      this.setState({ title: value });
-    } else {
-      this.setState({ note: value });
-    }
+
+  public onChange(keyName: 'title' | 'note'):
+  (event: React.SyntheticEvent<HTMLInputElement, Event> | React.FormEvent<HTMLTextAreaElement>,
+   data: TextAreaProps | InputOnChangeData) => void {
+    return (e, { value }) => {
+      this.setState({ [keyName]: value as string});
+    };
   }
 
   public render() {
@@ -35,14 +41,14 @@ export default class SaveGraphForm extends PureComponent<{}, FormSaveState> {
             placeholder='圖片名稱'
             name='title'
             value={title}
-            onChange={(e, { value }) => { this.handleChange('title', value as string); }}
+            onChange={this.onChange('title')}
           />
           <Form.TextArea
             label='圖片註解'
             placeholder='圖片註解'
             name='note'
             value={note}
-            onChange={(e, { value }) => { this.handleChange('note', value as string); }}
+            onChange={this.onChange('note')}
           />
         </Form>
       </div>

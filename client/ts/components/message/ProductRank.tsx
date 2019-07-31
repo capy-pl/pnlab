@@ -76,12 +76,14 @@ export default class ProductRank extends PureComponent<ProductRankProps, Message
     }
   }
 
-  public handleProductClick(product) {
-    this.setState({clickedProduct: product}, () => {
-      this.props.updateProductGraph(this.state.clickedProduct);
-      this.getEdgeWeight();
-    });
-    this.setState({content: 'productDetail'});
+  public handleProductClick(product): () => void {
+    return () => {
+      this.setState({ clickedProduct: product }, () => {
+        this.props.updateProductGraph(this.state.clickedProduct);
+        this.getEdgeWeight();
+      });
+      this.setState({ content: 'productDetail' });
+    };
   }
 
   public backToProductRank() {
@@ -92,7 +94,7 @@ export default class ProductRank extends PureComponent<ProductRankProps, Message
   }
 
   public render() {
-    let message;
+    let message: React.ReactChild = <React.Fragment />;
     if (this.props.productRankInfo) {
       if (this.state.content === 'productRank') {
         const productRank = this.props.productRankInfo.map((product, index) => {
@@ -100,7 +102,7 @@ export default class ProductRank extends PureComponent<ProductRankProps, Message
             <tr key={product.name} className='center aligned'>
               <td>{index + 1}</td>
               <td>
-                <a onClick={() => {this.handleProductClick(product)}} style={{cursor: 'pointer'}}>
+                <a onClick={this.handleProductClick(product)} style={{cursor: 'pointer'}}>
                   {product.name}
                 </a>
               </td>
@@ -160,7 +162,7 @@ export default class ProductRank extends PureComponent<ProductRankProps, Message
 
     if (this.state.visible) {
       return (
-        <Message onDismiss={this.handleDismiss} style={{ backgroundColor: 'white' }}>
+        <Message className='report-message' onDismiss={this.handleDismiss} style={{ backgroundColor: 'white' }}>
           {message}
         </Message>
       );
