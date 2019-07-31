@@ -113,7 +113,7 @@ export default class CharacterMessage extends PureComponent<CharacterMessageProp
     };
     if (this.state.visible) {
       return (
-        <Message onDismiss={this.handleDismiss}>
+        <Message className='report-message' onDismiss={this.handleDismiss}>
           <TabPanel />
         </Message>
       );
