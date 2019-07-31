@@ -6,6 +6,12 @@ interface CommunityRankProps {
 }
 
 const CommunitiesRankList = (props) => {
+  const onClick = (community) => {
+    return () => {
+      props.onCommClick(community);
+    };
+  };
+
   const onCheck = (community) => {
     return () => {
       props.onCommCheck(community);
@@ -16,7 +22,7 @@ const CommunitiesRankList = (props) => {
     <Table.Row key={community.id} textAlign='center'>
       <Table.Cell>{index + 1}</Table.Cell>
       <Table.Cell>
-        <a onClick={onCheck(community)} style={{cursor: 'pointer'}}>{community.id}</a>
+        <a onClick={onClick(community)} style={{cursor: 'pointer'}}>{community.id}</a>
       </Table.Cell>
       <Table.Cell>
         {Math.round(community.weight)}
