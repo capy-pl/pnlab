@@ -19,6 +19,7 @@ export default class Setting extends PureComponent {
             <Segment>
               <Switch>
                 <Route exact path='/settings/profile' component={Profile} />
+                <Route exact path='/settings/promotion' component={Promotion} />
               </Switch>
             </Segment>
           </Grid.Column>

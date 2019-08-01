@@ -200,7 +200,7 @@ export default class PromotionItem extends PureComponent<RouteComponentProps, Pr
           </Table.Body>
         </Table>
 
-        <Modal trigger={<Button>Add</Button>} closeIcon onClose={this.onConfirm}>
+        <Modal trigger={<Button>Add</Button>} closeIcon onClose={this.load}>
           <Header content='欲刪除活動' />
           <Modal.Content>
             <PromotionForm

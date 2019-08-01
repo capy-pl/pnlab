@@ -100,7 +100,7 @@ class NetworkConverter:
             return sum([item['amount'] for item in edge]) / (len(transaction['items']) - 1)
         return 1
 
-    def transform(self, support=0.002):
+    def transform(self, support=0.02):
         if not self.is_done():
             raise Exception()
         support_total = 0
