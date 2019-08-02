@@ -12,14 +12,15 @@ const Analyses = ({ item, onButtonClick }: AnalysisItemProps) => {
   return (
     <Table.Row
       style={{ clear: 'both' }}
+      textAlign='center'
     >
-      <Table.Cell textAlign='center'>
+      <Table.Cell>
         {item.title}
       </Table.Cell>
-      <Table.Cell textAlign='center'>
+      <Table.Cell>
         {item.description}
       </Table.Cell>
-      <Table.Cell textAlign='center'>
+      <Table.Cell>
         {item.comments}
       </Table.Cell>
       <Table.Cell>
