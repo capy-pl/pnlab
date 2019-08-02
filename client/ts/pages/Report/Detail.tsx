@@ -9,12 +9,12 @@ import {
   Sidebar,
 } from 'semantic-ui-react';
 
-import { ModalSave } from 'Component/modal';
 import { SearchItemDropdown } from '../../components/dropdown';
 import Graph from '../../components/graph';
 import Loader from '../../components/Loader';
 import { DropdownMenu } from '../../components/menu';
 import { CharacterMessage, CommunitiesMessage, ProductRank } from '../../components/message';
+import { ModalSave } from '../../components/modal';
 
 import { Analysis } from '../../PnApp/model';
 import ReportAPI from '../../PnApp/model/Report' ;
