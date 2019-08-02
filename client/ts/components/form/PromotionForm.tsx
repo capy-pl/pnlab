@@ -1,122 +1,135 @@
 import React from 'react';
-import { Dropdown, DropdownOnSearchChangeData, DropdownProps, Form, Segment } from 'semantic-ui-react';
+import {
+  Dropdown,
+  Form,
+} from 'semantic-ui-react';
+import { searchItem } from '../../PnApp/Helper';
 
-interface PromotionFormProps {
-  productsA: string[];
-  productsB: string[];
-  dropChangeA?: (event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => void;
-  dropChangeB?: (event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => void;
-  typeChange?: (event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => void;
-  nameChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  startMonthChange?: (event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => void;
-  endMonthChange?: (event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => void;
-  startYearChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  endYearChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onSearchChangeA?: (event: React.SyntheticEvent<HTMLElement>, data: DropdownOnSearchChangeData) => void;
-  onSearchChangeB?: (event: React.SyntheticEvent<HTMLElement>, data: DropdownOnSearchChangeData) => void;
+import { DatetimeInput } from 'Component/';
+
+interface AddPromotionFormProps {
+  onChange: <T>(key: string) => (e, data: { [key: string]: T }) => void;
 }
 
-const PromotionForm = ({ productsA, productsB, dropChangeA, dropChangeB, typeChange, nameChange, startMonthChange,
-  startYearChange, endMonthChange, endYearChange, onSearchChangeA, onSearchChangeB }: PromotionFormProps) => {
-  const inputsA = productsA.map((value) => {
-    return {
-      text: value,
-      value,
-    };
-  });
-  const inputsB = productsB.map((value) => {
-    return {
-      text: value,
-      value,
-    };
-  });
-  const typeInput = [{text: 'combination', value: 'combination'}, {text: 'direct', value: 'direct'}];
-  const monthInput = [
-    {text: 'January', value: '01'},
-    {text: 'February', value: '02'},
-    {text: 'March', value: '03'},
-    {text: 'April', value: '04'},
-    {text: 'May', value: '05'},
-    {text: 'June', value: '06'},
-    {text: 'July', value: '07'},
-    {text: 'August', value: '08'},
-    {text: 'September', value: '09'},
-    {text: 'October', value: '10'},
-    {text: 'November', value: '11'},
-    {text: 'December', value: '12'},
-  ];
+type Type = 'combination' | 'direct';
 
-  return (
-    <Segment color='teal'>
+interface AddPromotionState {
+  productOptions: Option[];
+  type: Type;
+}
+
+interface Option {
+  text: string;
+  value: string;
+  key: string;
+}
+
+class AddPromotionForm extends React.PureComponent<AddPromotionFormProps, AddPromotionState> {
+  constructor(props: AddPromotionFormProps) {
+    super(props);
+    this.state = {
+      productOptions: [],
+      type: 'combination',
+    };
+
+    this.productSearchChange = this.productSearchChange.bind(this);
+    this.typeChange = this.typeChange.bind(this);
+  }
+
+  public async productSearchChange(e, data: {[key: string]: string}): Promise<void> {
+    const searchString = data.searchQuery as string;
+    const { items } = await searchItem(searchString);
+    const options = items.map((item) => ({
+      key: item,
+      value: item,
+      text: item,
+    }));
+    this.setState({
+      productOptions: options,
+    });
+  }
+
+  public typeChange(): (e, data: {[key: string]: string}) => void {
+    const parentTypeChange = this.props.onChange<string>('type');
+    return (e, data: { [key: string]: string }) => {
+      parentTypeChange(e, data);
+      this.setState({
+        type: data.value as Type,
+      });
+    };
+  }
+
+  public render() {
+    const typeInput = [
+      {
+        text: 'combination',
+        value: 'combination',
+      },
+      {
+        text: 'direct',
+        value: 'direct',
+      },
+    ];
+
+    return (
       <Form>
         <Form.Field>
-          <label>Promotion Name</label>
-          <input
-            placeholder='Promotion name'
-            onChange={nameChange}
+          <label>名稱</label>
+          <Form.Input
+            placeholder='名稱'
+            onChange={this.props.onChange<string>('name')}
           />
         </Form.Field>
         <Form.Field>
-          <label>Promotion Type</label>
+          <label>種類</label>
           <Dropdown
-            placeholder='Promotion Type'
+            placeholder='種類'
             selection
             fluid
+            closeOnChange={true}
             options={typeInput}
-            onChange={typeChange}
+            onChange={this.typeChange()}
           />
         </Form.Field>
         <Form.Field>
           <label>欲刪除產品</label>
           <Dropdown
-            onChange={dropChangeA}
-            placeholder={`Please select products A`}
+            onChange={this.props.onChange<string>('groupOne')}
+            placeholder={`請選擇產品群1`}
             fluid
             multiple
             search
+            deburr
+            closeOnChange={true}
             selection
-            options={inputsA}
-            onSearchChange={onSearchChangeA}
+            options={this.state.productOptions}
+            onSearchChange={this.productSearchChange}
           />
-          <br/>
+        </Form.Field>
+        <Form.Field>
           <Dropdown
-            onChange={dropChangeB}
-            placeholder={`Please select products B`}
+            onChange={this.props.onChange<string>('groupTwo')}
+            placeholder={`請選擇產品群2`}
             fluid
             multiple
             search
             selection
-            options={inputsB}
-            onSearchChange={onSearchChangeB}
+            deburr
+            closeOnChange={true}
+            disabled={this.state.type === 'direct'}
+            options={this.state.productOptions}
+            onSearchChange={this.productSearchChange}
           />
         </Form.Field>
         <Form.Field>
           <label>開始時間</label>
-          <Dropdown
-            onChange={startMonthChange}
-            options={monthInput}
-            placeholder={'Month'}
-          />
-          <input
-            onChange={startYearChange}
-            placeholder={'Year'}
-            maxLength={4}
-          />
+          <DatetimeInput onChange={this.props.onChange<string>('startTime')} />
           <label>結束時間</label>
-          <Dropdown
-            onChange={endMonthChange}
-            options={monthInput}
-            placeholder={'Month'}
-          />
-          <input
-            onChange={endYearChange}
-            placeholder={'Year'}
-            maxLength={4}
-          />
+          <DatetimeInput onChange={this.props.onChange<string>('endTime')} />
         </Form.Field>
       </Form>
-    </Segment>
-  );
-};
+    );
+  }
+}
 
-export default PromotionForm;
+export default AddPromotionForm;
