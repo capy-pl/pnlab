@@ -4,7 +4,7 @@ import { DropdownProps, Form } from 'semantic-ui-react';
 interface DatetimeInputProps {
   yearStart?: number;
   yearEnd?: number;
-  onChange?: (e, data: {[key: string]: any}) => void;
+  onChange?: (e, dateTime: Date) => void;
 }
 
 interface DatetimeInputState {
@@ -21,7 +21,7 @@ interface Option {
 
 type DatetimeKeys = 'year' | 'month' | 'day';
 
-class DatetimeInput extends React.Component<DatetimeInputProps, DatetimeInputState> {
+class DatetimeInput extends React.PureComponent<DatetimeInputProps, DatetimeInputState> {
   constructor(props: DatetimeInputProps) {
     super(props);
     this.state = {
@@ -92,9 +92,7 @@ class DatetimeInput extends React.Component<DatetimeInputProps, DatetimeInputSta
         [key]: value,
       } as any, () => {
         if (this.props.onChange) {
-          this.props.onChange(e, {
-            value: new Date(this.state.year, this.state.month - 1, this.state.day, 8).toISOString(),
-          });
+          this.props.onChange(e, new Date(this.state.year, this.state.month - 1, this.state.day, 8));
         }
       });
     };

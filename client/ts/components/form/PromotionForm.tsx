@@ -6,16 +6,22 @@ import {
 import { searchItem } from '../../PnApp/Helper';
 
 import { DatetimeInput } from 'Component/';
+import { PromotionModel } from '../../PnApp/model/Promotion';
 
 interface AddPromotionFormProps {
-  onChange: <T>(key: string) => (e, data: { [key: string]: T }) => void;
+  type: string;
+  groupOne?: string[];
+  groupTwo?: string[];
+  nameChange: (e, data: {[key: string]: any}) => void;
+  typeChange: (e, data: { [key: string]: any }) => void;
+  groupOneChange: (e, data: { [key: string]: any }) => void;
+  groupTwoChange: (e, data: { [key: string]: any }) => void;
+  startTimeChange: (e, dateTime: Date) => void;
+  endTimeChange: (e, dateTime: Date) => void;
 }
-
-type Type = 'combination' | 'direct';
 
 interface AddPromotionState {
   productOptions: Option[];
-  type: Type;
 }
 
 interface Option {
@@ -25,21 +31,42 @@ interface Option {
 }
 
 class AddPromotionForm extends React.PureComponent<AddPromotionFormProps, AddPromotionState> {
+  private prodcutPool: Set<string>;
   constructor(props: AddPromotionFormProps) {
     super(props);
     this.state = {
       productOptions: [],
-      type: 'combination',
     };
 
+    this.prodcutPool = new Set<string>();
     this.productSearchChange = this.productSearchChange.bind(this);
-    this.typeChange = this.typeChange.bind(this);
+  }
+
+  public componentWillReceiveProps(nextProps: AddPromotionFormProps) {
+    if (nextProps.groupOne) {
+      for (const product of nextProps.groupOne) {
+        if (!this.prodcutPool.has(product)) {
+          this.prodcutPool.add(product);
+        }
+      }
+    }
+    if (nextProps.groupTwo) {
+      for (const product of nextProps.groupTwo) {
+        if (!this.prodcutPool.has(product)) {
+          this.prodcutPool.add(product);
+        }
+      }
+    }
   }
 
   public async productSearchChange(e, data: {[key: string]: string}): Promise<void> {
     const searchString = data.searchQuery as string;
     const { items } = await searchItem(searchString);
-    const options = items.map((item) => ({
+    const options = items
+    .filter((item) => (!this.prodcutPool.has(item)))
+    .concat(this.props.groupOne || [])
+    .concat(this.props.groupTwo || [])
+    .map((item) => ({
       key: item,
       value: item,
       text: item,
@@ -47,16 +74,6 @@ class AddPromotionForm extends React.PureComponent<AddPromotionFormProps, AddPro
     this.setState({
       productOptions: options,
     });
-  }
-
-  public typeChange(): (e, data: {[key: string]: string}) => void {
-    const parentTypeChange = this.props.onChange<string>('type');
-    return (e, data: { [key: string]: string }) => {
-      parentTypeChange(e, data);
-      this.setState({
-        type: data.value as Type,
-      });
-    };
   }
 
   public render() {
@@ -77,7 +94,7 @@ class AddPromotionForm extends React.PureComponent<AddPromotionFormProps, AddPro
           <label>名稱</label>
           <Form.Input
             placeholder='名稱'
-            onChange={this.props.onChange<string>('name')}
+            onChange={this.props.nameChange}
           />
         </Form.Field>
         <Form.Field>
@@ -88,13 +105,13 @@ class AddPromotionForm extends React.PureComponent<AddPromotionFormProps, AddPro
             fluid
             closeOnChange={true}
             options={typeInput}
-            onChange={this.typeChange()}
+            onChange={this.props.typeChange}
           />
         </Form.Field>
         <Form.Field>
           <label>欲刪除產品</label>
           <Dropdown
-            onChange={this.props.onChange<string>('groupOne')}
+            onChange={this.props.groupOneChange}
             placeholder={`請選擇產品群1`}
             fluid
             multiple
@@ -108,7 +125,7 @@ class AddPromotionForm extends React.PureComponent<AddPromotionFormProps, AddPro
         </Form.Field>
         <Form.Field>
           <Dropdown
-            onChange={this.props.onChange<string>('groupTwo')}
+            onChange={this.props.groupTwoChange}
             placeholder={`請選擇產品群2`}
             fluid
             multiple
@@ -116,16 +133,16 @@ class AddPromotionForm extends React.PureComponent<AddPromotionFormProps, AddPro
             selection
             deburr
             closeOnChange={true}
-            disabled={this.state.type === 'direct'}
+            disabled={this.props.type === 'direct'}
             options={this.state.productOptions}
             onSearchChange={this.productSearchChange}
           />
         </Form.Field>
         <Form.Field>
           <label>開始時間</label>
-          <DatetimeInput onChange={this.props.onChange<string>('startTime')} />
+          <DatetimeInput onChange={this.props.startTimeChange} />
           <label>結束時間</label>
-          <DatetimeInput onChange={this.props.onChange<string>('endTime')} />
+          <DatetimeInput onChange={this.props.endTimeChange} />
         </Form.Field>
       </Form>
     );

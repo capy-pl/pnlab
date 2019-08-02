@@ -6,22 +6,10 @@ import PromotionList from 'Component/list/PromotionList';
 import { ModalAddPromotion } from 'Component/modal';
 
 import { Promotion } from '../../PnApp/Model';
-import { PromotionType } from '../../PnApp/Model/Promotion';
 
 interface PromotionItemState {
   loading: boolean;
   itemList: string[];
-  name: string;
-  productsA: string[];
-  productsB: string[];
-  productA: string[];
-  productB: string[];
-  type: PromotionType;
-  open: boolean;
-  startYear: string;
-  startMonth: string;
-  endYear: string;
-  endMonth: string;
   promotions: Promotion[];
 }
 
@@ -29,19 +17,8 @@ export default class PromotionItem extends PureComponent<RouteComponentProps, Pr
   constructor(props) {
     super(props);
     this.state = {
-      name: '',
       loading: false,
       itemList: [],
-      open: false,
-      productsA: [],
-      productsB: [],
-      productA: [],
-      productB: [],
-      type: 'combination',
-      startYear: '',
-      startMonth: '',
-      endMonth: '',
-      endYear: '',
       promotions: [],
     };
 

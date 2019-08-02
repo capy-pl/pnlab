@@ -1,6 +1,6 @@
 import ModalConfirm from './Confirm';
-import ModalSave from './SaveNetwork';
 import ModalAddPromotion from './ModalAddPromotion';
+import ModalSave from './SaveNetwork';
 
 export {
   ModalConfirm,

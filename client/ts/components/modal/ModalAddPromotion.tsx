@@ -5,13 +5,18 @@ import {
   Modal,
 } from 'semantic-ui-react';
 
-import Promotion, { PromotionModel } from '../../PnApp/model/Promotion';
+import Promotion, { PromotionModel, PromotionType } from '../../PnApp/model/Promotion';
 import AddPromotionForm from '../form/PromotionForm';
 
 interface ModalAddPromotionState {
   show: boolean;
   loading: boolean;
-  promotion?: PromotionModel;
+  name: string;
+  type: PromotionType;
+  groupOne: string[];
+  groupTwo: string[];
+  startTime?: Date;
+  endTime?: Date;
   error: boolean;
   errorMessage: string;
 }
@@ -27,6 +32,10 @@ export default class ModalAddPromotion extends React.PureComponent<ModalAddPromo
       show: false,
       loading: false,
       error: false,
+      name: '',
+      type: 'direct',
+      groupOne: [],
+      groupTwo: [],
       errorMessage: '',
     };
 
@@ -34,7 +43,12 @@ export default class ModalAddPromotion extends React.PureComponent<ModalAddPromo
     this.show = this.show.bind(this);
     this.close = this.close.bind(this);
     this.clear = this.clear.bind(this);
-    this.onChange = this.onChange.bind(this);
+    this.nameChange = this.nameChange.bind(this);
+    this.typeChange = this.typeChange.bind(this);
+    this.groupOneChange = this.groupOneChange.bind(this);
+    this.groupTwoChange = this.groupTwoChange.bind(this);
+    this.startTimeChange = this.startTimeChange.bind(this);
+    this.endTimeChange = this.endTimeChange.bind(this);
   }
 
   public show() {
@@ -46,26 +60,33 @@ export default class ModalAddPromotion extends React.PureComponent<ModalAddPromo
   public close() {
     this.setState({
       show: false,
-      promotion: undefined,
+      name: '',
+      type: 'direct',
+      groupOne: [],
+      groupTwo: [],
     });
   }
 
   public clear() {
     this.setState({
-      promotion: undefined,
+      name: '',
+      type: 'direct',
+      groupOne: [],
+      groupTwo: [],
     });
   }
 
-  public validate(promotion: PromotionModel): boolean {
+  public validate(): boolean {
     const keys = {
       name: '名稱',
       type: '種類',
       groupOne: `產品群1`,
+      groupTwo: `產品群2`,
       startTime: '開始時間',
       endTime: '結束時間',
     };
     for (const key in keys) {
-      if (!(key in promotion)) {
+      if (!(this.state[key])) {
         this.setState({
           error: true,
           errorMessage: `${keys[key]}尚未填寫。`,
@@ -74,7 +95,7 @@ export default class ModalAddPromotion extends React.PureComponent<ModalAddPromo
       }
     }
 
-    if (new Date(promotion.startTime) > new Date(promotion.endTime)) {
+    if ((this.state.startTime as Date) > (this.state.endTime as Date)) {
       this.setState({
         error: true,
         errorMessage: `開始時間大於結束時間。`,
@@ -82,7 +103,7 @@ export default class ModalAddPromotion extends React.PureComponent<ModalAddPromo
       return false;
     }
 
-    if (!promotion.groupOne.length) {
+    if (!this.state.groupOne.length) {
       this.setState({
         error: true,
         errorMessage: `產品群1為空。`,
@@ -90,7 +111,7 @@ export default class ModalAddPromotion extends React.PureComponent<ModalAddPromo
       return false;
     }
 
-    if (promotion.type === 'combination' && (!promotion.groupTwo || !promotion.groupTwo.length)) {
+    if (this.state.type === 'combination' && (!this.state.groupTwo || !this.state.groupTwo.length)) {
       this.setState({
         error: true,
         errorMessage: `產品群2為空。`,
@@ -101,22 +122,56 @@ export default class ModalAddPromotion extends React.PureComponent<ModalAddPromo
     return true;
   }
 
-  public onChange<T>(key: string): (e, data: {[key: string]: T }) => void {
-    return (e, data) => {
-      const promotion = this.state.promotion ? Object.assign({}, this.state.promotion) : {};
-      promotion[key] = data.value as T;
-      this.setState({
-        promotion: promotion as PromotionModel,
-        error: false,
-      });
-    };
+  public typeChange(e, data: {[key: string]: any}): void {
+    this.setState({
+      type: data.value,
+      groupTwo: [],
+    });
+  }
+
+  public nameChange(e, data: { [key: string]: any }): void {
+    this.setState({
+      name: data.value,
+    });
+  }
+
+  public groupOneChange(e, data: { [key: string]: any }): void {
+    this.setState({
+      groupOne: data.value,
+    });
+  }
+
+  public groupTwoChange(e, data: { [key: string]: any }): void {
+    this.setState({
+      groupTwo: data.value,
+    });
+  }
+
+  public startTimeChange(e, dateTime: Date): void {
+    this.setState({
+      startTime: dateTime,
+    });
+  }
+
+  public endTimeChange(e, dateTime: Date): void {
+    this.setState({
+      endTime: dateTime,
+    });
   }
 
   public add(): void {
-    const promotion = this.state.promotion;
-    if (promotion && this.validate(promotion)) {
+    if (this.validate()) {
       this.setState({ loading: true }, async () => {
         try {
+          const promotion: PromotionModel = {
+            name: this.state.name,
+            type: this.state.type,
+            groupOne: this.state.groupOne,
+            groupTwo: this.state.groupTwo,
+            startTime: (this.state.startTime as Date).toISOString(),
+            endTime: (this.state.endTime as Date).toISOString(),
+          };
+
           await Promotion.add(promotion);
           this.setState({
             loading: false,
@@ -153,7 +208,15 @@ export default class ModalAddPromotion extends React.PureComponent<ModalAddPromo
           <Modal.Header>新增促銷</Modal.Header>
           <Modal.Content>
             <AddPromotionForm
-              onChange={this.onChange}
+              type={this.state.type}
+              groupOne={this.state.groupOne}
+              groupTwo={this.state.groupTwo}
+              nameChange={this.nameChange}
+              typeChange={this.typeChange}
+              groupOneChange={this.groupOneChange}
+              groupTwoChange={this.groupTwoChange}
+              startTimeChange={this.startTimeChange}
+              endTimeChange={this.endTimeChange}
             />
           <Message
             hidden={!this.state.error}
