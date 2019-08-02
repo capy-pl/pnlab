@@ -15,7 +15,6 @@ interface SearchDropDownProps {
 
 const SearchItemDropdown = ({ placeholder, options, onChange }: SearchDropDownProps) => (
   <Dropdown
-    // clearable
     placeholder={placeholder}
     multiple
     search

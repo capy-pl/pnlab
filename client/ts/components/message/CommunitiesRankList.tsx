@@ -1,24 +1,29 @@
 import React from 'react';
 import { Button, Checkbox, Message, Table, TableBody } from 'semantic-ui-react';
+import { Community } from '../../PnApp/model/Report';
 
 interface CommunityRankProps {
-  // @TODO: Add props for the component.
+  communitiesInfo: Community[];
+  onDismiss: () => void;
+  onCommClick: (community: Community) => void;
+  onCommCheck: (community: Community) => void;
+  onSend: () => void;
 }
 
-const CommunitiesRankList = (props) => {
-  const onClick = (community) => {
+const CommunitiesRankList = ({communitiesInfo, onDismiss, onCommClick, onCommCheck, onSend}: CommunityRankProps) => {
+  const onClick = (community: Community) => {
     return () => {
-      props.onCommClick(community);
+      onCommClick(community);
     };
   };
 
-  const onCheck = (community) => {
+  const onCheck = (community: Community) => {
     return () => {
-      props.onCommCheck(community);
+      onCommCheck(community);
     };
   };
 
-  const communitiesRank = props.communitiesInfo.slice(0, 20).map((community, index) => (
+  const communitiesRank = communitiesInfo.slice(0, 20).map((community, index) => (
     <Table.Row key={community.id} textAlign='center'>
       <Table.Cell>{index + 1}</Table.Cell>
       <Table.Cell>
@@ -31,7 +36,7 @@ const CommunitiesRankList = (props) => {
     </Table.Row>
   ));
   return (
-    <Message className='report-message' onDismiss={props.onDismiss}>
+    <Message className='report-message' onDismiss={onDismiss}>
       <h3 style={{textAlign: 'center'}}>Communities排名(前20名)</h3>
       <Table basic='very'>
         <Table.Header>
@@ -46,7 +51,7 @@ const CommunitiesRankList = (props) => {
           {communitiesRank}
         </TableBody>
       </Table>
-      <Button content='送出' onClick={props.onSend} />
+      <Button content='送出' onClick={onSend} />
     </Message>
   );
 };
