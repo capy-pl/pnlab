@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Button, Header, Icon, Modal } from 'semantic-ui-react';
 
 import SaveGraphForm from '../form/SaveGraphForm';
@@ -12,7 +12,7 @@ interface ModalSaveProps {
   children?: React.ReactNode;
 }
 
-const ModalSave = ({ header, content, onConfirm, onCancel, open, children }: ModalSaveProps) => {
+const ModalSave = ({ header, onConfirm, onCancel, open, children }: ModalSaveProps) => {
   return (
     <React.Fragment>
       {children}

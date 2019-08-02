@@ -1,7 +1,7 @@
 import SearchDropdown from './SearchDropdown';
-import SearchDropdown2 from './SearchDropdown2';
+import SearchItemDropdown from './SearchItemDropdown';
 
 export {
   SearchDropdown,
-  SearchDropdown2,
+  SearchItemDropdown,
 };

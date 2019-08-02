@@ -1,14 +1,14 @@
 import axios from 'axios';
 
 import Store from './global';
-import { User } from './Model';
+import { User } from './model';
 
 export async function updateCurrentUser(): Promise<void> {
-    Store.user = await User.get();
+  Store.user = await User.get();
 }
 
 export function getCurrentUser(): User | undefined {
-    return Store.user;
+  return Store.user;
 }
 
 export function hasToken(): boolean {
@@ -19,12 +19,8 @@ export function isLoggedIn(): boolean {
   return !(Store.user === undefined);
 }
 
-export function urlPrefix(url: string): string {
-  return `/#${url}`;
-}
-
 export async function searchItem(name: string): Promise<{ items: string[]}> {
-  const response = await axios.get<{ items: string[]}>(`/report/searchItem?query=${name}`);
+  const response = await axios.get<{ items: string[] }>(`/api/report/searchItem?query=${name}`);
   return response.data;
 }
 

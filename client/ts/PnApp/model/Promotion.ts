@@ -14,16 +14,16 @@ export interface PromotionModel {
 
 export default class Promotion {
   public static async getAll(): Promise<Promotion[]> {
-    const response = await axios.get<PromotionModel[]>('/promotion');
+    const response = await axios.get<PromotionModel[]>('/api/promotion');
     return response.data.map((promotion) => new Promotion(promotion));
   }
 
   public static async add(body: PromotionModel): Promise<void> {
-    await axios.post('/promotion', body);
+    await axios.post('/api/promotion', body);
   }
 
   public static async get(id: string): Promise<Promotion> {
-    const response = await axios.get<PromotionModel>(`/promotion/${id}`);
+    const response = await axios.get<PromotionModel>(`/api/promotion/${id}`);
     return new Promotion(response.data);
   }
 
@@ -47,7 +47,7 @@ export default class Promotion {
   }
 
   public async update(props: PromotionModel): Promise<void> {
-    await axios.put(`/promotion/${this.id}`, props);
+    await axios.put(`/api/promotion/${this.id}`, props);
     for (const key in props) {
       if (key in this) {
         this[key] = props[key];
@@ -56,6 +56,6 @@ export default class Promotion {
   }
 
   public async delete(): Promise<void> {
-    await axios.delete(`/promotion/${this.id}`);
+    await axios.delete(`/api/promotion/${this.id}`);
   }
 }

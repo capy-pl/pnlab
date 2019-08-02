@@ -12,8 +12,13 @@ export interface Node {
   community: number;
   id: number;
   degree: number;
-  core?: boolean;
-  neighbors: number[];
+  weight: number;
+  core: boolean;
+}
+
+export interface SimpleNode {
+  name: string;
+  weight: number;
 }
 
 export interface Edge {
@@ -25,8 +30,14 @@ export interface Edge {
 export interface Community {
   id: number;
   core?: string;
-  items: string[];
+  items: SimpleNode[];
   weight: number;
+}
+
+export interface Hook {
+  name: string;
+  weight: number;
+  connectTo: number[];  // The community ids to which the hook connect
 }
 
 export type ReportStatus = 'error' | 'pending' | 'success';
@@ -52,29 +63,30 @@ export interface ReportModel {
   errMessage: string;
   nodes: Node[];
   edges: Edge[];
-  rank: string[];
+  hooks: Hook[];
+  rank: SimpleNode[];
   startTime: Date;
   endTime: Date;
 }
 
 export default class Report {
   public static async add(conditions: Condition[]): Promise<{ id: string }> {
-    const { data } = await axios.post<{ id: string }>(`/report/`, { conditions });
+    const { data } = await axios.post<{ id: string }>(`/api/report/`, { conditions });
     return data;
   }
 
   public static async getConditions(): Promise<Condition[]> {
-    const conditions = await axios.get<{ conditions: Condition[]}>('/report/conditions');
+    const conditions = await axios.get<{ conditions: Condition[] }>('/api/report/conditions');
     return conditions.data.conditions;
   }
 
   public static async get(id: string): Promise<Report> {
-    const report = await axios.get<ReportModel>(`/report/${id}`);
+    const report = await axios.get<ReportModel>(`/api/report/${id}`);
     return new Report(report.data);
   }
 
   public static async getAll(limit?: number): Promise<ProjectedReport[]> {
-    const url = limit && limit > 0 ? `/report?limit=${limit}` : '/report';
+    const url = limit && limit > 0 ? `/api/report?limit=${limit}` : '/api/report';
     const reports = await axios.get<{ reports: ProjectedReport[]}>(url);
     reports.data.reports.forEach((report) => {
       // attributes below are type of string when returned from axios. need to
@@ -96,9 +108,10 @@ export default class Report {
   public nodes: Node[];
   public edges: Edge[];
   public communities: Community[];
+  public hooks: Hook[];
   public startTime: Date;
   public endTime: Date;
-  public rank: string[];
+  public rank: SimpleNode[];
 
   constructor({
     _id,
@@ -111,6 +124,7 @@ export default class Report {
     nodes,
     edges,
     communities,
+    hooks,
     startTime,
     endTime }: ReportModel) {
     this.id = _id;
@@ -122,6 +136,7 @@ export default class Report {
     this.nodes = nodes;
     this.edges = edges;
     this.communities = communities;
+    this.hooks = hooks;
     this.startTime = new Date(startTime);
     this.endTime = new Date(endTime);
     this.rank = rank;

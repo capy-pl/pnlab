@@ -13,7 +13,8 @@ def all_pass(promotion_list, arg):
 
 
 class NetworkConverter:
-    def __init__(self, transactions):
+    def __init__(self, transactions, method='frequency'):
+        self.method = method
         self.transactions = transactions
         self._done = False
         self.promotion_filter = {
@@ -92,18 +93,28 @@ class NetworkConverter:
             transaction['items'], 2) if self.is_valid_edge(edge, transaction['資料日期與時間'])]
         return edges
 
-    def transform(self, method='degree-price', support=0.001):
+    def weight(self, edge, transaction, nums):
+        if self.method == 'adjust-degree':
+            return 1 / nums
+        if self.method == 'adjust-price':
+            return sum([item['amount'] for item in edge]) / (len(transaction['items']) - 1)
+        if self.method == 'frequency':
+            return 1
+
+
+    def transform(self, support=0.0005):
         if not self.is_done():
             raise Exception()
-        support = int(len(self.transactions) * support)
+        support_total = 0
         edge_dict = {}
-        nodes = set()
+        nodes_dict = {}
         for transaction in self.transactions:
             edges = self.get_edges(transaction)
             number = len(edges)
             for edge in edges:
                 simple_edge = tuple(item['單品名稱'] for item in edge)
-                weight = sum([item['amount'] for item in edge])
+                weight = self.weight(edge, transaction, number)
+                support_total += 1
                 if simple_edge in edge_dict or (simple_edge[1], simple_edge[0]) in edge_dict:
                     edge_in_list = simple_edge if simple_edge in edge_dict else (
                         simple_edge[1], simple_edge[0])
@@ -113,22 +124,27 @@ class NetworkConverter:
                     edge_dict[simple_edge] = {}
                     edge_dict[simple_edge]['count'] = 1
                     edge_dict[simple_edge]['weight'] = weight
+        support = support_total * support
         for edge in list(edge_dict.keys()):
             if edge_dict[edge]['count'] < support:
                 del edge_dict[edge]
         for edge in edge_dict.keys():
             for node in edge:
-                if node not in nodes:
-                    nodes.add(node)
-        if len(nodes) <= 0:
+                if node not in nodes_dict:
+                    nodes_dict[node] = {
+                        'weight': edge_dict[edge]['weight']
+                    }
+                else:
+                    nodes_dict[node]['weight'] += edge_dict[edge]['weight']
+        if len(nodes_dict.keys()) <= 0:
             raise ZeroNodeError(
                 'The resulted graph does not contain any node. Consider lower the support.')
-        return self.to_graph(nodes, edge_dict)
+        return self.to_graph(nodes_dict, edge_dict)
 
     def to_graph(self, nodes, edges):
         g = igraph.Graph()
-        for node in nodes:
-            g.add_vertex(node)
+        for node in nodes.keys():
+            g.add_vertex(node, core=False, weight=nodes[node]['weight'])
         for edge, attrs in edges.items():
             weight = attrs['weight'] if attrs['weight'] > 0 else 1
             g.add_edge(edge[0], edge[1], weight=weight)

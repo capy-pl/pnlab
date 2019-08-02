@@ -1,10 +1,10 @@
 import React, { PureComponent } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { Dropdown, Menu, Segment } from 'semantic-ui-react';
+import { Link } from 'react-router-dom';
+import { Dropdown, Menu, MenuItemProps, Segment } from 'semantic-ui-react';
 import { Auth } from '../../PnApp';
+import { getCurrentUser } from '../../PnApp/Helper';
 import { User } from '../../PnApp/model';
-
-import { getCurrentUser, urlPrefix } from '../../PnApp/Helper';
 
 interface MenuState {
   activeItem: string;
@@ -19,12 +19,17 @@ class Navbar extends PureComponent<RouteComponentProps, MenuState> {
       user: getCurrentUser(),
     };
     this.logout = this.logout.bind(this);
+    this.onClick = this.onClick.bind(this);
   }
 
   public logout(): void {
     Auth.logout();
     const { history } = this.props;
     history.push('/account/login');
+  }
+
+  public onClick(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, { name }: MenuItemProps): void {
+    this.setState({ activeItem: name as string });
   }
 
   public render() {
@@ -34,14 +39,21 @@ class Navbar extends PureComponent<RouteComponentProps, MenuState> {
       <Segment inverted>
         <Menu inverted secondary>
           <Menu.Item
-            href={urlPrefix('/')}
-            name='Home'
+            name={'home'}
+            onClick={this.onClick}
+            to={'/'}
+            as={Link}
             active={activeItem === 'home'}
-          />
+          >
+           Home
+          </Menu.Item>
           <Menu.Menu position='right'>
             <Dropdown item text={this.state.user ? this.state.user.email : ''}>
               <Dropdown.Menu>
-                <Dropdown.Item href={urlPrefix('/settings/profile')}>
+                <Dropdown.Item
+                  as={Link}
+                  to='/settings'
+                >
                   Setting
                 </Dropdown.Item>
                 <Dropdown.Item onClick={this.logout}>

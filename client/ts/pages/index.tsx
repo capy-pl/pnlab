@@ -1,9 +1,10 @@
-import AnimatedSwitch from 'Component/Switch';
+import { Switch } from 'Component/route';
 import React, { PureComponent } from 'react';
 import { hot } from 'react-hot-loader/root';
-import { HashRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 
 import Home from './Home';
+import NotFound from './NotFound';
 import SignIn from './SignIn';
 
 class App extends PureComponent {
@@ -11,10 +12,11 @@ class App extends PureComponent {
     return (
       <Router>
         <div className='page-container'>
-          <AnimatedSwitch>
+          <Switch>
             <Route path='/account/login' component={SignIn} />
             <Route path='/' component={Home} />
-          </AnimatedSwitch>
+            <Route component={NotFound} />
+          </Switch>
         </div>
       </Router>
     );

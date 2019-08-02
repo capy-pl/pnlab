@@ -1,21 +1,36 @@
 import React from 'react';
-import { Dropdown, Menu } from 'semantic-ui-react';
-import { urlPrefix } from '../../PnApp/Helper';
+import { Checkbox, Dropdown, Menu } from 'semantic-ui-react';
 
-// interface DropdownMenuProps {
-//   reportId: string;
-// }
+const style = {
+  // tslint:disable-next-line: object-literal-key-quotes
+  position: 'absolute',
+  zIndex: 100,
+};
+
+interface DropdownMenu {
+  // @TODO: Add props here.
+}
 
 const DropdownMenu = (props) => (
-  <Menu compact>
-    <Dropdown onClick={props.onClickP} text='Product Network' className='link item'>
+  <Menu
+    style={style}
+    compact
+  >
+    <Dropdown.Item>
+      <Checkbox
+        toggle
+        label={props.showCommunity ? '隱藏Community' : '顯示Community'}
+        onChange={props.showCommunity ? props.onShowProductNetwork : props.onShowCommunities}
+      />
+    </Dropdown.Item>
+    <Dropdown text='Product Network' className='link item'>
       <Dropdown.Menu>
         <Dropdown.Item onClick={props.onShowProductRank}>產品排名</Dropdown.Item>
       </Dropdown.Menu>
     </Dropdown>
-    <Dropdown onClick={props.onClickC} text='Communities' className='link item'>
+    <Dropdown text='Communities' className='link item'>
       <Dropdown.Menu>
-        <Dropdown.Item onClick={props.onShowCommunities}>Communities排名</Dropdown.Item>
+        <Dropdown.Item onClick={props.onShowCommunitiesRank}>Communities排名</Dropdown.Item>
         <Dropdown.Item onClick={props.onShowCharacter}>Communities角色</Dropdown.Item>
       </Dropdown.Menu>
     </Dropdown>

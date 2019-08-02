@@ -3,9 +3,11 @@ import { Route, RouteComponentProps, withRouter } from 'react-router-dom';
 import { Container, Dimmer, Loader } from 'semantic-ui-react';
 
 import Navbar from 'Component/menu/Navbar';
-import Switch from 'Component/Switch';
+import { Switch } from 'Component/route';
 import { Auth } from '../../PnApp';
 import { updateCurrentUser } from '../../PnApp/Helper';
+import AnalysisRouter from '../Analysis';
+import NotFound from '../NotFound';
 import ReportRouter, { ReportList } from '../Report';
 import Setting from '../Setting';
 
@@ -50,7 +52,9 @@ class Home extends PureComponent<RouteComponentProps, HomeState> {
             <Switch>
               <Route path='/report' component={ReportRouter} />
               <Route path='/settings' component={Setting} />
+              <Route path='/analysis' component={AnalysisRouter} />
               <Route exact path='/' component={ReportList} />
+              <Route component={NotFound} />
             </Switch>
       </div>
     );
