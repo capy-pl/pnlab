@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import { Button, Header, Icon, Modal } from 'semantic-ui-react';
+import { Button, DropdownProps, Header, Icon, Modal } from 'semantic-ui-react';
+
+import Analysis from '../../PnApp/model/Analysis';
+import AnalysisForm from '../form/AnalysisForm';
 
 interface CompareAddProps {
   header: string;
@@ -7,9 +10,14 @@ interface CompareAddProps {
   onConfirm?: () => void;
   onCancel?: () => void;
   children?: React.ReactNode;
+  analyses: Analysis[];
+  dropChangeA?: (event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => void;
+  dropChangeB?: (event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => void;
 }
 
-const CompareAdd = ({ header, onConfirm, onCancel, open, children }: CompareAddProps) => {
+const CompareAdd = ({ header, onConfirm, onCancel, open, children, analyses, dropChangeA,
+  dropChangeB }: CompareAddProps) => {
+
   return (
     <React.Fragment>
       {children}
@@ -20,8 +28,12 @@ const CompareAdd = ({ header, onConfirm, onCancel, open, children }: CompareAddP
       >
         <Header content={header} />
         <Modal.Content>
-          <p>
-          </p>
+          <AnalysisForm
+            analysesA={analyses}
+            analysesB={analyses}
+            dropChangeA={dropChangeA}
+            dropChangeB={dropChangeB}
+          />
         </Modal.Content>
         <Modal.Actions>
           <Button

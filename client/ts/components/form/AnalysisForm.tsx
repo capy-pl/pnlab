@@ -1,27 +1,26 @@
 import React from 'react';
 import { Dropdown, DropdownOnSearchChangeData, DropdownProps, Form, Segment } from 'semantic-ui-react';
 
+import Analysis from '../../PnApp/model/Analysis';
+
 interface AnalysisFormProps {
-  analysesA: string[];
-  analysesB: string[];
+  analysesA: Analysis[];
+  analysesB: Analysis[];
   dropChangeA?: (event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => void;
   dropChangeB?: (event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => void;
-  onSearchChangeA?: (event: React.SyntheticEvent<HTMLElement>, data: DropdownOnSearchChangeData) => void;
-  onSearchChangeB?: (event: React.SyntheticEvent<HTMLElement>, data: DropdownOnSearchChangeData) => void;
 }
 
-const AnalysisForm = ({ analysesA, analysesB, dropChangeA, dropChangeB, onSearchChangeA, 
-  onSearchChangeB }: AnalysisFormProps) => {
+const AnalysisForm = ({ analysesA, analysesB, dropChangeA, dropChangeB}: AnalysisFormProps) => {
   const inputsA = analysesA.map((value) => {
     return {
-      text: value,
-      value,
+      text: value.title,
+      value: value.id,
     };
   });
   const inputsB = analysesB.map((value) => {
     return {
-      text: value,
-      value,
+      text: value.title,
+      value: value.id,
     };
   });
 
@@ -38,7 +37,6 @@ const AnalysisForm = ({ analysesA, analysesB, dropChangeA, dropChangeB, onSearch
             search
             selection
             options={inputsA}
-            onSearchChange={onSearchChangeA}
           />
           <br/>
           <Dropdown
@@ -49,7 +47,6 @@ const AnalysisForm = ({ analysesA, analysesB, dropChangeA, dropChangeB, onSearch
             search
             selection
             options={inputsB}
-            onSearchChange={onSearchChangeB}
           />
         </Form.Field>
       </Form>

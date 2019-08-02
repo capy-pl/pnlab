@@ -14,7 +14,7 @@ export interface AnalysisModel {
   readonly _id?: string;
   title?: string;
   description?: string;
-  report: string | Report;
+  report: string;
   comments?: Comment[];
   created?: Date;
 }
@@ -41,6 +41,7 @@ export default class Analysis {
   public description: string;
   public comments: Comment[];
   public readonly created: Date;
+  public report: string;
 
   constructor(model: AnalysisModel) {
     this.id = model._id as string;
@@ -48,6 +49,7 @@ export default class Analysis {
     this.description = model.description as string;
     this.comments = model.comments as Comment[];
     this.created = model.created as Date;
+    this.report = model.report;
   }
 
   public async update(body: AnalysisModel): Promise<void> {

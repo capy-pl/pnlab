@@ -15,6 +15,7 @@ interface CompareState {
   reportB?: ReportAPI;
   reportAId: string;
   reportBId: string;
+  similarList?: Node[];
 }
 
 export default class Compare extends PureComponent<ReportProps, CompareState> {
@@ -38,7 +39,7 @@ export default class Compare extends PureComponent<ReportProps, CompareState> {
   }
 
   public nodeCompare() {
-    const similarList = [];
+    const similarList = Node[];
     const reportOne = this.state.reportA;
     const reportTwo = this.state.reportB;
     for (const node of reportOne.nodes) {
@@ -48,6 +49,9 @@ export default class Compare extends PureComponent<ReportProps, CompareState> {
         }
       }
     }
+    this.setState({
+      similarList,
+    });
   }
 
   public render() {
