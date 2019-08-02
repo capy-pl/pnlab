@@ -27,6 +27,7 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
     this.onCancel = this.onCancel.bind(this);
     this.onChangeA = this.onChangeA.bind(this);
     this.onChangeB = this.onChangeB.bind(this);
+    this.onClick = this.onClick. bind(this);
 
   }
 
@@ -44,7 +45,7 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
     };
   }
 
-  public onAddClick() {
+  public onClick() {
     this.setState({
       modalOpen: true,
     });
@@ -89,38 +90,40 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
     });
     return (
       <Segment loading={this.state.loading} size='large'>
-        <Button
-          floated='right'
-          inverted
-          color='blue'
-          style={{ margin: '10px'}}
-          onClick={this.onAddClick}
-        >
-          Add Compare
-        </Button>
-        <CompareAdd
-          header={'選擇比較網路圖'}
-          open={this.state.modalOpen}
-          analyses={this.state.analyses}
-          onConfirm={this.onConfirm}
-          onCancel={this.onCancel}
-          dropChangeA={this.onChangeA}
-          dropChangeB={this.onChangeB}
-        />
-        <Table selectable color='blue'>
-          <Table.Header>
-            <Table.Row>
-              <Table.HeaderCell width='1' textAlign='center'>Title</Table.HeaderCell>
-              <Table.HeaderCell width='2' textAlign='center'>Description</Table.HeaderCell>
-              <Table.HeaderCell width='2' textAlign='center'>Comments</Table.HeaderCell>
-              <Table.HeaderCell width='5' textAlign='center'>Created Time</Table.HeaderCell>
-              <Table.HeaderCell width='2' textAlign='center'>Link</Table.HeaderCell>
-            </Table.Row>
-          </Table.Header>
-          <Table.Body>
-            {history}
-          </Table.Body>
-        </Table>
+        <React.Fragment>
+          <CompareAdd
+            header={'選擇比較網路圖'}
+            open={this.state.modalOpen}
+            analyses={this.state.analyses}
+            onConfirm={this.onConfirm}
+            onCancel={this.onCancel}
+            dropChangeA={this.onChangeA}
+            dropChangeB={this.onChangeB}
+          />
+          <Button
+            floated='right'
+            inverted
+            color='blue'
+            style={{ margin: '10px'}}
+            onClick={this.onClick}
+          >
+            Add Compare
+          </Button>
+          <Table selectable color='blue'>
+            <Table.Header>
+              <Table.Row>
+                <Table.HeaderCell width='1' textAlign='center'>Title</Table.HeaderCell>
+                <Table.HeaderCell width='2' textAlign='center'>Description</Table.HeaderCell>
+                <Table.HeaderCell width='2' textAlign='center'>Comments</Table.HeaderCell>
+                <Table.HeaderCell width='5' textAlign='center'>Created Time</Table.HeaderCell>
+                <Table.HeaderCell width='2' textAlign='center'>Link</Table.HeaderCell>
+              </Table.Row>
+            </Table.Header>
+            <Table.Body>
+              {history}
+            </Table.Body>
+          </Table>
+        </React.Fragment>
       </Segment>
     );
   }

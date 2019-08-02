@@ -33,7 +33,6 @@ const AnalysisForm = ({ analysesA, analysesB, dropChangeA, dropChangeB}: Analysi
             onChange={dropChangeA}
             placeholder={`Please select Report A`}
             fluid
-            multiple
             search
             selection
             options={inputsA}
@@ -43,7 +42,6 @@ const AnalysisForm = ({ analysesA, analysesB, dropChangeA, dropChangeB}: Analysi
             onChange={dropChangeB}
             placeholder={`Please select Report B`}
             fluid
-            multiple
             search
             selection
             options={inputsB}

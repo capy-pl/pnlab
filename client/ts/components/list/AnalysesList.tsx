@@ -23,7 +23,7 @@ const Analyses = ({ item, onButtonClick }: AnalysisItemProps) => {
         {item.comments}
       </Table.Cell>
       <Table.Cell>
-      {item.created.toLocaleDateString() === 'Invalid Date' ? 'All' : item.created.toLocaleDateString()}
+        {item.created}
       </Table.Cell>
       <Table.Cell>
         <Button onClick={onButtonClick}>Detail</Button>
