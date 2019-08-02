@@ -56,6 +56,13 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
       modalOpen: false,
       loading: true,
     });
+    this.props.history.push({
+      pathname: '/analysis/compare',
+      state: {
+        analysisA: this.state.analysisA,
+        analysisB: this.state.analysisB,
+      },
+    });
   }
 
   public onCancel() {
