@@ -15,3 +15,14 @@ html, body {
 div {
     box-sizing: border-box;
 }
+
+.ui.message.report-message {
+    top: 18%;
+    left: 3%;
+    width: 23%;
+    overflow: auto;
+    max-height: 550px;
+    position: absolute;
+    z-index: 101;
+    padding-bottom: 5px;
+}

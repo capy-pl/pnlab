@@ -23,6 +23,7 @@ export interface Edge {
 
 export interface Community {
   core?: string;
+  id: number;
   items: SimpleNode[];
   weight: number;
 }
@@ -106,6 +107,7 @@ const EdgeSchema = new Schema<Edge>({
 });
 
 const CommunitySchema = new Schema<Community>({
+  id: Number,
   core: String,
   items: {
     type: [SimpleNodeSchema],
