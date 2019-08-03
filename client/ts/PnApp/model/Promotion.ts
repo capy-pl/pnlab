@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-type PromotionType = 'combination' | 'direct';
+export type PromotionType = 'combination' | 'direct';
 
 export interface PromotionModel {
   name: string;
@@ -14,7 +14,7 @@ export interface PromotionModel {
 
 export default class Promotion {
   public static async getAll(): Promise<Promotion[]> {
-    const response = await axios.get<PromotionModel[]>('/promotion');
+    const response = await axios.get<PromotionModel[]>('/api/promotion');
     return response.data.map((promotion) => new Promotion(promotion));
   }
 
@@ -23,7 +23,7 @@ export default class Promotion {
   }
 
   public static async get(id: string): Promise<Promotion> {
-    const response = await axios.get<PromotionModel>(`/promotion/${id}`);
+    const response = await axios.get<PromotionModel>(`/api/promotion/${id}`);
     return new Promotion(response.data);
   }
 
