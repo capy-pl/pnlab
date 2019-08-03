@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Community } from '../../PnApp/Model/Report';
+import { Community } from '../../PnApp/model/Report';
 import CommunitiesRankList from './CommunitiesRankList';
 import CommunityDetail from './CommunityDetail';
 import SelectedCommunities from './SelectedCommunities';
@@ -12,8 +12,8 @@ interface CommunitiesMessageProps {
 interface CommunitiesMessageState {
   visible: boolean;
   content: string;
-  clickedCommunity?: {};
-  checkedCommunities?: [];
+  clickedCommunity?: Community;
+  checkedCommunities?: Community[];
   backTo?: string;
 }
 
@@ -28,108 +28,111 @@ export default class CommunitiesMessage extends PureComponent<CommunitiesMessage
     this.handleDismiss = this.handleDismiss.bind(this);
     this.handleCommClick = this.handleCommClick.bind(this);
     this.handleCommDetailClick = this.handleCommDetailClick.bind(this);
-    this.checkExistance = this.checkExistance.bind(this);
     this.handleCommCheck = this.handleCommCheck.bind(this);
-    this.handleSend = this.handleSend.bind(this);
+    this.goToSelectedCommunities = this.goToSelectedCommunities.bind(this);
     this.handleBacktoCommunitiesRank = this.handleBacktoCommunitiesRank.bind(this);
-    this.handleBacktoSelectedCommunities = this.handleBacktoSelectedCommunities.bind(this);
     this.updateGraph = this.updateGraph.bind(this);
+    this.goToCommunityDetail = this.goToCommunityDetail.bind(this);
   }
 
-  public handleDismiss(): void {
+  public handleDismiss() {
     this.setState({ visible: false });
   }
 
-  public handleCommClick(community): void {
-    console.log(community.id);
-    console.log(community.items);
+  public goToCommunityDetail(community: Community) {
     this.setState({content: 'communityDetail'});
     this.setState({clickedCommunity: community}, () => {
       this.props.updateCommunitiesGraph([this.state.clickedCommunity]);
     });
+  }
+
+  public handleCommClick(community: Community) {
+    this.goToCommunityDetail(community);
     this.setState({backTo: 'communitiesRankList'});
   }
 
-  public handleCommDetailClick(community): void {
-    console.log(community.id);
-    console.log(community.items);
-    this.setState({content: 'communityDetail'});
-    this.setState({clickedCommunity: community}, () => {
-      this.props.updateCommunitiesGraph([this.state.clickedCommunity]);
-    });
+  public handleCommDetailClick(community: Community) {
+    this.goToCommunityDetail(community);
     this.setState({backTo: 'selectedCommunities'});
   }
 
-  public checkExistance(community) {
-    return this.state.checkedCommunities.some((checkedCommunity) => checkedCommunity.id === community.id);
-  }
-
-  public handleCommCheck(community) {
-    console.log(community.id);
-    this.checkExistance(community) ?
-      this.setState({checkedCommunities: this.state.checkedCommunities.filter(checkedCommunity => checkedCommunity.id !== community.id)}):
-      this.setState({checkedCommunities: [...this.state.checkedCommunities, community]});
+  public handleCommCheck(community: Community) {
+    if (this.state.checkedCommunities) {
+      this.state.checkedCommunities.some((checkedCommunity) => checkedCommunity.id === community.id) ?
+        this.setState({checkedCommunities: [...this.state.checkedCommunities]
+          .filter((checkedCommunity) => checkedCommunity.id !== community.id)}) :
+        this.setState({checkedCommunities: [...this.state.checkedCommunities, community]});
+    } else {
+      this.setState({checkedCommunities: [community]});
+    }
   }
 
   public updateGraph() {
     this.props.updateCommunitiesGraph(this.state.checkedCommunities);
   }
 
-  public handleSend() {
+  public goToSelectedCommunities() {
     this.setState({content: 'selectedCommunities'});
     this.updateGraph();
+    this.setState({backTo: 'communitiesRankList'});
   }
 
   public handleBacktoCommunitiesRank() {
     this.setState({content: 'communitiesRank'});
-    this.setState({checkedCommunities: []}, () => {
-      this.updateGraph();
-    });
+    this.setState({checkedCommunities: undefined, clickedCommunity: undefined}, this.updateGraph);
     this.setState({backTo: ''});
-  }
-
-  public handleBacktoSelectedCommunities() {
-    this.setState({content: 'selectedCommunities'});
-    this.setState({backTo: ''});
-    this.updateGraph();
   }
 
   public render() {
     if (this.state.visible) {
-      if (this.state.content === 'communitiesRank') {
-        return (
-          <CommunitiesRankList
-            communitiesInfo={this.props.communitiesInfo}
-            onDismiss={this.handleDismiss}
-            onCommClick={this.handleCommClick}
-            onCommCheck={this.handleCommCheck}
-            onSend={this.handleSend}
-          />
-        );
-      } else if (this.state.content === 'communityDetail') {
-        return (
-          <CommunityDetail
-            community={this.state.clickedCommunity}
-            onDismiss={this.handleDismiss}
-            onBacktoCommunitiesRank={this.handleBacktoCommunitiesRank}
-            onBacktoSelectedCommunities={this.handleBacktoSelectedCommunities}
-            backTo={this.state.backTo}
-          />
-        );
-      } else if (this.state.content === 'selectedCommunities') {
-        return (
-          <SelectedCommunities
-            onDismiss={this.handleDismiss}
-            selectedCommunities={this.state.checkedCommunities}
-            onCommDetailClick={this.handleCommDetailClick}
-            onBacktoCommunitiesRank={this.handleBacktoCommunitiesRank}
-          />
-        );
+      let message;
+      switch (this.state.content) {
+        case 'communitiesRank':
+          message = (
+            <CommunitiesRankList
+              communitiesInfo={this.props.communitiesInfo}
+              onDismiss={this.handleDismiss}
+              onCommClick={this.handleCommClick}
+              onCommCheck={this.handleCommCheck}
+              onSend={this.goToSelectedCommunities}
+            />
+          );
+          break;
+        case 'communityDetail':
+          message = (
+            <CommunityDetail
+              community={this.state.clickedCommunity}
+              onDismiss={this.handleDismiss}
+              onBacktoCommunitiesRank={this.handleBacktoCommunitiesRank}
+              onBacktoSelectedCommunities={this.goToSelectedCommunities}
+              backTo={this.state.backTo}
+            />
+          );
+          break;
+        case 'selectedCommunities':
+          message = (
+            <SelectedCommunities
+              onDismiss={this.handleDismiss}
+              selectedCommunities={this.state.checkedCommunities as Community[]}
+              onCommDetailClick={this.handleCommDetailClick}
+              onBacktoCommunitiesRank={this.handleBacktoCommunitiesRank}
+            />
+          );
+          break;
+        default:
+          message = (
+            <React.Fragment>
+              No Result
+            </React.Fragment>
+          );
       }
+      return (
+        message
+      );
     }
 
     return (
-      <p />
+      <React.Fragment />
     );
   }
 }

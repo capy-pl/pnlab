@@ -1,18 +1,16 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Button, Header, Icon, Modal } from 'semantic-ui-react';
 
-import SaveGraphForm from '../form/SaveGraphForm';
-
-interface ModalSaveProps {
+interface ModalConfirmProps {
   header: string;
-  content?: string;
+  content: string;
   open: boolean;
   onConfirm?: () => void;
   onCancel?: () => void;
   children?: React.ReactNode;
 }
 
-const ModalSave = ({ header, content, onConfirm, onCancel, open, children }: ModalSaveProps) => {
+const ModalConfirmReport = ({ header, content, onConfirm, onCancel, open, children }: ModalConfirmProps) => {
   return (
     <React.Fragment>
       {children}
@@ -23,7 +21,9 @@ const ModalSave = ({ header, content, onConfirm, onCancel, open, children }: Mod
       >
         <Header content={header} />
         <Modal.Content>
-          <SaveGraphForm />
+          <p>
+            {content}
+          </p>
         </Modal.Content>
         <Modal.Actions>
           <Button
@@ -32,18 +32,18 @@ const ModalSave = ({ header, content, onConfirm, onCancel, open, children }: Mod
             inverted
             onClick={onCancel}
           >
-            <Icon name='remove' /> 取消
+            <Icon name='remove' /> No
           </Button>
           <Button
             color='green'
             inverted
             onClick={onConfirm}
           >
-            <Icon name='checkmark' /> 確定儲存
+            <Icon name='checkmark' /> Yes
           </Button>
         </Modal.Actions>
       </Modal>
     </React.Fragment>);
 };
 
-export default ModalSave;
+export default ModalConfirmReport;

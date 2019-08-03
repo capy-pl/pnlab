@@ -4,7 +4,6 @@ import CommunitiesRankList from './CommunitiesRankList';
 import CommunityDetail from './CommunityDetail';
 import ProductRank from './ProductRank';
 import SelectedCommunities from './SelectedCommunities';
-import TabPanel from './TabPanel';
 
 export {
   CharacterMessage,
@@ -13,5 +12,4 @@ export {
   CommunityDetail,
   ProductRank,
   SelectedCommunities,
-  TabPanel,
 };

@@ -2,9 +2,9 @@ import { storiesOf } from '@storybook/react';
 import React from 'react';
 import 'semantic-ui-css/semantic.min.css';
 
-import FilterForm from 'Component/form/FilterForm';
-import LoginForm from 'Component/form/LoginForm';
-import ProfileForm from 'Component/form/ProfileForm';
+import FormAddReport from 'Component/form/FormAddReport';
+import FormLogin from 'Component/form/FormLogin';
+import FormProfile from 'Component/form/FormProfile';
 import { ConditionType } from '../PnApp/model/Report';
 
 const stories = storiesOf('Forms', module);
@@ -19,10 +19,10 @@ stories
           values: ['早餐時間帶', '中餐時間帶', '午餐時間帶', '一般時間帶'],
         },
       ];
-      return <FilterForm conditions={conditions} />;
+      return <FormAddReport conditions={conditions} />;
     })
   .add('Login Form', () => (
-    <LoginForm />
+    <FormLogin />
   ))
   .add('Profile Form', () => {
     const fakeUser = {
@@ -36,5 +36,5 @@ stories
         name: 'nccu',
       },
     };
-    return <ProfileForm user={fakeUser} />;
+    return <FormProfile user={fakeUser} />;
   });

@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
+import { DropdownProps } from 'semantic-ui-react';
 import { DataSet, EdgeOptions, Network, NodeOptions } from 'vis';
-import { Community, Edge, Node } from '../../PnApp/Model/Report';
+import { Community, Edge, Node } from '../../PnApp/model/Report';
 
 interface GraphNode extends Node, NodeOptions {
 }
@@ -16,9 +17,9 @@ interface GraphProps {
   nodes: Node[];
   edges: Edge[];
   showCommunity: boolean;
-  selectedCommunities?: [];
+  selectedCommunities?: Community[];
   selectedProduct?: Node[];
-  searchItems?: any;
+  searchItems?: DropdownProps['value'];
 }
 
 export default class GraphView extends PureComponent<GraphProps, {}> {
@@ -31,11 +32,25 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
   }
 
   public componentDidMount() {
+    if (this.graphRef.current) {
+      this.graphRef.current.style.height = this.getHeight();
+    }
     this.initializeGraph();
   }
 
   public componentDidUpdate() {
     this.updateNodes();
+  }
+
+  public getHeight(): string {
+    let height = 'auto';
+    if (this.graphRef.current) {
+      if (this.graphRef.current) {
+        const { top } = this.graphRef.current.getBoundingClientRect();
+        height = `${window.innerHeight - top}px`;
+      }
+    }
+    return height;
   }
 
   public toNode(node: Node): GraphNode {
@@ -65,12 +80,22 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
   }
 
   public updateNodes() {
-    console.log(this.network);
     const nodes = this.network.body.data.nodes;
-    if (this.props.showCommunity) {
+
+    if (this.props.selectedCommunities) {
+      const communitiesIdList = this.props.selectedCommunities.map((community: Community) => {
+        return (community.id);
+      });
+      const selectedCommunities = [];
+      nodes.forEach((node) => {
+        selectedCommunities.push({id: node.id, hidden: !communitiesIdList.includes(node.community) ? true : false});
+      });
+      nodes.update(selectedCommunities);
+    } else if (this.props.showCommunity) {
       const communities = nodes.map((node) => {
         return ({
           id: node.id,
+          label: node.name,
           group: node.community,
           title: `
             <div>
@@ -81,29 +106,35 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
             </div>
           `,
           borderWidth: node.core ? 5 : 1,
+          hidden: false,
         });
       });
       nodes.update(communities);
-      if (this.props.selectedCommunities.length !== 0) {
-        const communitiesIdList = this.props.selectedCommunities.map((community: Community) => {
-          return (community.id);
-        });
-        const selectCommunities = [];
-        nodes.forEach((node) => {
-          if (!communitiesIdList.includes(node.community)) {
-            selectCommunities.push({id: node.id, hidden: true});
-          } else {
-            selectCommunities.push({id: node.id, hidden: false});
-          }
-        });
-        nodes.update(selectCommunities);
-      } else {
-        const showAll = nodes.map((node) => {
-          return {id: node.id, hidden: false};
-        });
-        nodes.update(showAll);
+    }
+
+    const selectProduct = [];
+    if (this.props.selectedProduct) {
+      // highlight node & show connected products
+      let connectedNodes;
+      const connectedNodesList: number[] = [];
+      nodes.forEach((node) => {
+        if (this.props.selectedProduct[0].name === node.name) {
+          connectedNodesList.push(node.id);
+          selectProduct.push({id: node.id, color: {background: 'orange', hover: 'orange', highlight: 'orange'}});
+          connectedNodes = this.network.getConnectedNodes(node.id);
+        }
+      });
+      for (const c of connectedNodes) {
+        connectedNodesList.push(c);
       }
-    } else {
+      nodes.forEach((node) => {
+        if (!connectedNodesList.includes(node.id)) {
+          // lighten the colors of unselected nodes
+          selectProduct.push({id: node.id, color: {background: '#D3E7FF', border: '#D3E7FF'}, label: ' '});
+        }
+      });
+      nodes.update(selectProduct);
+    } else if (!this.props.showCommunity) {
       const productNetwork = nodes.map((node) => {
         return (
           {
@@ -124,72 +155,28 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
         );
       });
       nodes.update(productNetwork);
-      const selectProduct = [];
-      if (this.props.selectedProduct.length !== 0) {
-        // ----------- highlight node --------------
-        // nodes.forEach((node) => {
-        //   if (this.props.selectedProduct[0].name === node.name) {
-        //     selectProduct.push (
-        //       {
-        //         id: node.id,
-        //         color: {
-        //           background: 'orange',
-        //           hover: {
-        //             background: 'yellow',
-        //           },
-        //           highlight: {
-        //             background: 'yellow',
-        //           },
-        //         },
-        //       },
-        //     );
-        //   }
-        // });
-        // --------- show connected products -------------
-        let connectedNodes;
-        const connectedNodesList = [];
-        nodes.forEach((node) => {
-          if (this.props.selectedProduct[0].name === node.name) {
-            connectedNodesList.push(node.id);
-            selectProduct.push({id: node.id, color: {background: 'orange', hover: 'orange', highlight: 'orange'}});
-            connectedNodes = this.network.getConnectedNodes(node.id);
-          }
-        });
-        for (const c of connectedNodes) {
-          connectedNodesList.push(c);
-        }
-        nodes.forEach((node) => {
-          if (!connectedNodesList.includes(node.id)) {
-            // lighten the colors of unselected nodes
-            selectProduct.push({id: node.id, color: {background: '#D3E7FF', border: '#D3E7FF'}, label: ' '});
-            // hide unselected nodes
-            // selectProduct.push({id: node.id, hidden: true});
-          }
-        });
-        nodes.update(selectProduct);
-      }
-      if (this.props.searchItems !== undefined) {
-        const searchItems = [];
-        nodes.forEach((node) => {
-          this.props.searchItems.forEach((item) => {
-            if (node.name === item) {
-              searchItems.push (
-                {
-                  id: node.id,
-                  color: {
-                    background: 'yellow',
-                    hover: {
-                      background: 'orange',
-                    },
-                    highlight: 'orange',
+    }
+    if (this.props.searchItems) {
+      const searchItems = [];
+      nodes.forEach((node) => {
+        this.props.searchItems.forEach((item) => {
+          if (node.name === item) {
+            searchItems.push (
+              {
+                id: node.id,
+                color: {
+                  background: 'yellow',
+                  hover: {
+                    background: 'orange',
                   },
+                  highlight: 'orange',
                 },
-              );
-            }
-          });
+              },
+            );
+          }
         });
-        nodes.update(searchItems);
-      }
+      });
+      nodes.update(searchItems);
     }
   }
 
@@ -217,7 +204,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
                   return 0.03;
                 } else {
                   const scale = 1 / (max - min);
-                  return Math.max(0,(value - min) * scale);
+                  return Math.max(0, (value - min) * scale);
                 }
               },
               max: 30,
@@ -256,8 +243,6 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
           interaction: {
               hover: true,
               tooltipDelay: 100,
-              // navigationButtons: true,
-              // multiselect: true
           },
         });
     }
@@ -265,7 +250,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
 
   public render() {
     return (
-      <div id='pn-graph' style={style} ref={this.graphRef} />
+      <div id='pn-graph' style={{ zIndex: -1 }} ref={this.graphRef} />
     );
   }
 }

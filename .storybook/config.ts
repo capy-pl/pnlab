@@ -7,6 +7,7 @@ function loadStories() {
   require('../client/ts/stories/Dropdown.stories');
   require('../client/ts/stories/List.stories');
   require('../client/ts/stories/Message.stories');
+  require('../client/ts/stories/Input.stories');
   require('../client/ts/stories/Sidebar.stories');
 }
 

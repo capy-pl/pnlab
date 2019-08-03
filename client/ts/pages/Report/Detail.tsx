@@ -1,16 +1,24 @@
 import React, { PureComponent } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { Button, DropdownProps } from 'semantic-ui-react';
+import {
+  Button,
+  Divider,
+  DropdownProps,
+  Label,
+  Menu,
+  Sidebar,
+} from 'semantic-ui-react';
 
-import { ModalSave } from 'Component/modal';
-import { SearchItemDropdown } from '../../components/dropdown';
+import { DropdownSearchItem } from 'Component/dropdown';
+import { ModalAddAnalysis } from 'Component/modal';
 import Graph from '../../components/graph';
 import Loader from '../../components/Loader';
 import { DropdownMenu } from '../../components/menu';
 import { CharacterMessage, CommunitiesMessage, ProductRank } from '../../components/message';
 
-import ReportAPI from '../../PnApp/Model/Report' ;
-import { Community, Node } from '../../PnApp/Model/Report';
+import { Analysis } from '../../PnApp/model';
+import ReportAPI from '../../PnApp/model/Report' ;
+import { Community, Node } from '../../PnApp/model/Report';
 
 interface ReportProps extends RouteComponentProps<{ id: string }> {
 }
@@ -18,15 +26,34 @@ interface ReportProps extends RouteComponentProps<{ id: string }> {
 interface ReportState {
   loading: boolean;
   report?: ReportAPI;
-  hookInfo?: {};
   showCommunity: boolean;
   content: string;
   communitiesInfo?: Community[];
-  selectedCommunities?: [];
+  selectedCommunities?: Community[];
   selectedProduct?: Node[];
-  searchItems?: string[];
+  searchItems?: DropdownProps['value'];
   modalOpen: boolean;
+  visible: boolean;
 }
+
+const messageStyle: React.CSSProperties = {
+  top: '18%',
+  left: '3%',
+  width: '23%',
+  overflow: 'auto',
+  maxHeight: 550,
+  position: 'absolute',
+  zIndex: 101,
+};
+
+const sidebarStyle: React.CSSProperties = {
+  zIndex: 100,
+  height: '80%',
+  width: '15%',
+  position: 'absolute',
+  top: '20%',
+  right: 0,
+};
 
 export default class Report extends PureComponent<ReportProps, ReportState> {
   constructor(props: ReportProps) {
@@ -36,6 +63,7 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
       showCommunity: false,
       content: '',
       modalOpen: false,
+      visible: false,
     };
     this.onShowProductNetwork = this.onShowProductNetwork.bind(this);
     this.onShowCommunities = this.onShowCommunities.bind(this);
@@ -46,7 +74,10 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
     this.updateProductGraph = this.updateProductGraph.bind(this);
     this.onSaveGraph = this.onSaveGraph.bind(this);
     this.onCancel = this.onCancel.bind(this);
+    this.onConfirm = this.onConfirm.bind(this);
     this.onItemSearch = this.onItemSearch.bind(this);
+    this.handleToggleSidebar = this.handleToggleSidebar.bind(this);
+    this.clearSelected = this.clearSelected.bind(this);
   }
 
   public async componentDidMount() {
@@ -54,28 +85,24 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
     this.setState({
       report,
       loading: false,
-      hookInfo: [
-        'milk',
-        'egg',
-      ],
-      selectedCommunities: [],
-      selectedProduct: [],
     });
+  }
+
+  public clearSelected() {
+    this.setState({content: ''});
+    this.setState({selectedCommunities: undefined});
+    this.setState({selectedProduct: undefined});
   }
 
   public onShowProductNetwork() {
     this.setState({showCommunity: false});
-    this.setState({content: ''});
-    this.setState({selectedCommunities: []});
-    this.setState({selectedProduct: []});
+    this.clearSelected();
   }
 
   public onShowCommunities() {
     this.setState({showCommunity: true});
-    this.setState({content: ''});
-    this.setState({selectedCommunities: []});
-    this.setState({selectedProduct: []});
-    this.setState({searchItems: []});
+    this.clearSelected();
+    this.setState({searchItems: undefined});
   }
 
   public onShowCharacter(event) {
@@ -93,16 +120,19 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
     this.setState({content: 'communitiesRank'});
   }
 
-  public updateCommunitiesGraph(communitiesList) {
-    console.log('got', communitiesList);
+  public updateCommunitiesGraph(communitiesList: Community[] | undefined) {
     this.setState({selectedCommunities: communitiesList});
   }
 
   public updateProductGraph(product) {
-    console.log('got', product);
-    const selected = [...this.state.report.nodes].filter((node) => node.name === product.name);
-    console.log(selected[0]);
-    this.setState({selectedProduct: selected});
+    if (product === undefined) {
+      this.setState({selectedProduct: undefined});
+    } else {
+      if (this.state.report) {
+        const selectedProduct = this.state.report.nodes.filter((node) => node.name === product.name);
+        this.setState({selectedProduct});
+      }
+    }
   }
 
   public onSaveGraph() {
@@ -117,96 +147,154 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
     });
   }
 
+  public onConfirm() {
+    this.setState({
+      modalOpen: false,
+    });
+    if (this.state.report) {
+      Analysis.add({report: this.state.report.id, title: 'testtest1'});
+    }
+  }
+
   public onItemSearch(event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) {
-    console.log(data.value);
     this.setState({searchItems: data.value});
   }
 
-  public render() {
-    let message;
-    if (this.state.content === 'character') {
-      message = (
-        <CharacterMessage
-          communitiesInfo={this.state.report.communities}
-          hookInfo={this.state.hookInfo}
-        />
-      );
-    } else if (this.state.content === 'productRank') {
-      message = (
-        <ProductRank
-          productRankInfo={this.state.report.rank}
-          updateProductGraph={this.updateProductGraph}
-          nodes={this.state.report.nodes}
-          edges={this.state.report.edges}
-        />
-      );
-    } else if (this.state.content === 'communitiesRank') {
-      message = (
-        <CommunitiesMessage 
-          communitiesInfo={this.state.report.communities}
-          updateCommunitiesGraph={this.updateCommunitiesGraph}
-        />
-      );
+  public handleToggleSidebar() {
+    this.setState((prevState) => ({ visible: !prevState.visible }));
+  }
+
+  public getMessageComponent(): React.ReactChild {
+    let message: React.ReactChild;
+    const report = this.state.report as ReportAPI;
+    switch (this.state.content) {
+      case 'character':
+        message = (
+          <CharacterMessage
+            communitiesInfo={report.communities}
+            hookInfo={report.hooks}
+          />
+        );
+        break;
+      case 'productRank':
+        message = (
+          <ProductRank
+            productRankInfo={report.rank}
+            updateProductGraph={this.updateProductGraph}
+            nodes={report.nodes}
+            edges={report.edges}
+          />
+        );
+        break;
+      case 'communitiesRank':
+        message = (
+          <CommunitiesMessage
+            communitiesInfo={report.communities}
+            updateCommunitiesGraph={this.updateCommunitiesGraph}
+          />
+        );
+        break;
+      default:
+        return <React.Fragment />;
     }
+    return message;
+  }
+
+  public getDropdownSearch(): React.ReactChild {
+    let searchItemDropdown: React.ReactChild;
+    const report = this.state.report as ReportAPI;
+    const dropdownOptions = report.nodes.map((node) => {
+      return ({ key: node.name, value: node.name, text: node.name });
+    });
+    if (!this.state.showCommunity) {
+      searchItemDropdown = (
+        <DropdownSearchItem
+          options={dropdownOptions}
+          placeholder='搜尋商品：請輸入商品名稱'
+          onChange={this.onItemSearch}
+        />
+      );
+    } else {
+      return <React.Fragment />;
+    }
+    return searchItemDropdown;
+  }
+
+  public render() {
     if (this.state.loading) {
       return <Loader size='huge' />;
     } else {
       if (this.state.report) {
-        const dropdownOptions = this.state.report.nodes.map((node) => {
-          return ({key: node.name, value: node.name, text: node.name});
-        });
-        let searchItemDropdown;
-        if (!this.state.showCommunity) {
-          searchItemDropdown = (
-            <SearchItemDropdown
-              options={dropdownOptions}
-              placeholder='請輸入商品名稱'
-              onChange={this.onItemSearch}
-            />
+        const message: React.ReactChild = this.getMessageComponent();
+        const searchItemDropdown: React.ReactChild = this.getDropdownSearch();
+        const conditionList = this.state.report.conditions.map((condition) => {
+          const values = condition.values.map((value) => {
+            return (<Label key={value} style={{margin: '.2rem'}}>{value}</Label>);
+          });
+          return (
+            <div key={condition.name} style={{margin: '1rem 0 1rem 0' }}>
+              <h5>{condition.name}: </h5>
+              {values}
+              <Divider />
+            </div>
           );
-        }
+        });
         return (
           <React.Fragment>
             <DropdownMenu
               onShowProductNetwork={this.onShowProductNetwork}
               onShowCommunities={this.onShowCommunities}
-              onShowCharacter={this.onShowCharacter}
               onShowProductRank={this.onShowProductRank}
               onShowCommunitiesRank={this.onShowCommunitiesRank}
+              onShowCharacter={this.onShowCharacter}
+              showCommunity={this.state.showCommunity}
             />
-            <div style={{ position: 'relative' }}>
-              <div style={{ width: '100%', position: 'absolute' }}>
-                <Graph
-                  nodes={this.state.report.nodes}
-                  edges={this.state.report.edges}
-                  showCommunity={this.state.showCommunity}
-                  selectedCommunities={this.state.selectedCommunities}
-                  selectedProduct={this.state.selectedProduct}
-                  searchItems={this.state.searchItems}
-                />
-              </div>
-              <div style={{ width: '23%', position: 'absolute', overflow: 'auto', maxHeight: 550 }}>
-                {message}
-              </div>
-              <div style={{ position: 'fixed', bottom: 0, right: 0 }}>
-                <ModalSave
-                  header='編輯圖片'
-                  // content='Are you sure?'
-                  open={this.state.modalOpen}
-                  onCancel={this.onCancel}
-                  // onConfirm={this.onConfirm}
-                >
-                  <Button
-                    color='blue'
-                    onClick={this.onSaveGraph}
-                  >儲存圖片
-                  </Button>
-                </ModalSave>
-              </div>
-              <div style={{ position: 'fixed', top: 80, right: 20 }}>
-                {searchItemDropdown}
-              </div>
+            {message}
+            <Sidebar.Pushable style={sidebarStyle}>
+              <Sidebar
+                as={Menu}
+                animation='overlay'
+                direction='right'
+                icon='labeled'
+                vertical
+                visible={this.state.visible}
+                width='thin'
+              >
+                {conditionList}
+              </Sidebar>
+            </Sidebar.Pushable>
+            <div style={{ position: 'absolute', top: 80, right: 120, minWidth: '12%', zIndex: 101 }}>
+              {searchItemDropdown}
             </div>
+            <Button
+              onClick={this.handleToggleSidebar}
+              style={{ position: 'absolute', top: 80, right: 20, zIndex: 101 }}
+            >
+              條件
+            </Button>
+            <div style={{ position: 'absolute', bottom: 10, left: 10, zIndex: 100 }}>
+              <ModalAddAnalysis
+                header='編輯圖片'
+                open={this.state.modalOpen}
+                onCancel={this.onCancel}
+                onConfirm={this.onConfirm}
+              >
+                <Button
+                  color='blue'
+                  onClick={this.onSaveGraph}
+                >
+                  儲存圖片
+                </Button>
+              </ModalAddAnalysis>
+            </div>
+            <Graph
+              nodes={this.state.report.nodes}
+              edges={this.state.report.edges}
+              showCommunity={this.state.showCommunity}
+              selectedCommunities={this.state.selectedCommunities}
+              selectedProduct={this.state.selectedProduct}
+              searchItems={this.state.searchItems}
+            />
           </React.Fragment>
         );
       }

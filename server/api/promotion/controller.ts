@@ -33,7 +33,7 @@ export async function AddPromotion(req: e.Request, res: e.Response): Promise<voi
 
   if (body.type === 'combination') {
     if (body.groupTwo) {
-      for (const item of body.groupOne) {
+      for (const item of body.groupTwo) {
         const hasFound = await connection.db.collection('items').findOne({ 單品名稱: item });
         if (!hasFound) {
           return res.status(404).send({ message: `Cannot not found item "${item}".` }).end();
@@ -65,10 +65,10 @@ export async function GetPromotions(req: e.Request, res: e.Response): Promise<vo
     const promotions = await Promotion.find({
       type: query.type,
     });
-    return res.send({ promotions }).end();
+    return res.send(promotions).end();
   } else {
     const promotions = await Promotion.find({});
-    res.send({ promotions });
+    res.send(promotions);
   }
 }
 

@@ -40,13 +40,13 @@ export default class SettingMenu extends PureComponent<{}, SettingMenuState> {
             Profile
           </Menu.Item>
           <Menu.Item
-            name='Manage Group'
+            name='Promotion'
             as={Link}
-            to={'/settings'}
-            active={this.state.activeItem === 'Manage Group'}
+            to='/settings/promotion'
+            active={this.state.activeItem === 'Promotion'}
             onClick={this.onClick}
           >
-            Manage Group
+            Promotion
           </Menu.Item>
       </Menu>
       );

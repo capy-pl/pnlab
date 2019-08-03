@@ -1,16 +1,18 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Button, Header, Icon, Modal } from 'semantic-ui-react';
 
-interface ModalConfirmProps {
+import SaveGraphForm from '../form/FormAddAnalysis';
+
+interface ModalAddAnalysisProps {
   header: string;
-  content: string;
+  content?: string;
   open: boolean;
   onConfirm?: () => void;
   onCancel?: () => void;
   children?: React.ReactNode;
 }
 
-const ModalConfirm = ({ header, content, onConfirm, onCancel, open, children }: ModalConfirmProps) => {
+const ModalAddAnalysis = ({ header, onConfirm, onCancel, open, children }: ModalAddAnalysisProps) => {
   return (
     <React.Fragment>
       {children}
@@ -21,9 +23,7 @@ const ModalConfirm = ({ header, content, onConfirm, onCancel, open, children }: 
       >
         <Header content={header} />
         <Modal.Content>
-          <p>
-            {content}
-          </p>
+          <SaveGraphForm />
         </Modal.Content>
         <Modal.Actions>
           <Button
@@ -32,18 +32,18 @@ const ModalConfirm = ({ header, content, onConfirm, onCancel, open, children }: 
             inverted
             onClick={onCancel}
           >
-            <Icon name='remove' /> No
+            <Icon name='remove' /> 取消
           </Button>
           <Button
             color='green'
             inverted
             onClick={onConfirm}
           >
-            <Icon name='checkmark' /> Yes
+            <Icon name='checkmark' /> 確定儲存
           </Button>
         </Modal.Actions>
       </Modal>
     </React.Fragment>);
 };
 
-export default ModalConfirm;
+export default ModalAddAnalysis;

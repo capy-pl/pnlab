@@ -16,7 +16,7 @@ export interface Node {
   core: boolean;
 }
 
-interface SimpleNode {
+export interface SimpleNode {
   name: string;
   weight: number;
 }
@@ -108,6 +108,7 @@ export default class Report {
   public nodes: Node[];
   public edges: Edge[];
   public communities: Community[];
+  public hooks: Hook[];
   public startTime: Date;
   public endTime: Date;
   public rank: SimpleNode[];
@@ -123,6 +124,7 @@ export default class Report {
     nodes,
     edges,
     communities,
+    hooks,
     startTime,
     endTime }: ReportModel) {
     this.id = _id;
@@ -134,6 +136,7 @@ export default class Report {
     this.nodes = nodes;
     this.edges = edges;
     this.communities = communities;
+    this.hooks = hooks;
     this.startTime = new Date(startTime);
     this.endTime = new Date(endTime);
     this.rank = rank;

@@ -1,4 +1,4 @@
-import LoginForm from 'Component/form/LoginForm';
+import FormLogin from 'Component/form/FormLogin';
 import React, { PureComponent } from 'react';
 
 const outerStyle = {
@@ -22,7 +22,7 @@ class SignInPage extends PureComponent {
     return (
       <div style={outerStyle}>
         <div style={style}>
-          <LoginForm />
+          <FormLogin />
         </div>
       </div>
     );
