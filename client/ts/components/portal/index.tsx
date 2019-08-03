@@ -9,6 +9,16 @@ interface ComparePortalProps {
   onClose: () => void;
 }
 
+const segmentStyle = {
+  position: 'fixed',
+  left: '15%',
+  top: '15%',
+  zIndex: 1000,
+  overflow: 'auto',
+  maxHeight: '75%',
+  width: '60%',
+};
+
 const ComparePortal = ({open, reportA, reportB, onClose}: ComparePortalProps) => {
   const nodesA = reportA.rank.map((node) => {
     return (
@@ -41,7 +51,7 @@ const ComparePortal = ({open, reportA, reportB, onClose}: ComparePortalProps) =>
   return (
     <Portal onClose={onClose} open={open}>
       <Segment
-        style={{position: 'fixed', left: '15%', top: '15%', zIndex: 1000, overflow: 'auto', maxHeight: '75%', width: '60%'}}
+        style={segmentStyle}
       >
         <Header>網路圖比較</Header>
         <Grid columns='three' divided>
@@ -50,7 +60,7 @@ const ComparePortal = ({open, reportA, reportB, onClose}: ComparePortalProps) =>
               <Table celled padded>
                 <Table.Header>
                   <Table.Row>
-                    <Table.HeaderCell>圖A產品</Table.HeaderCell>
+                    <Table.HeaderCell>圖A產品（前20名）</Table.HeaderCell>
                     <Table.HeaderCell>權重</Table.HeaderCell>
                   </Table.Row>
                 </Table.Header>
@@ -60,6 +70,7 @@ const ComparePortal = ({open, reportA, reportB, onClose}: ComparePortalProps) =>
                 </Table.Body>
               </Table>
             </Grid.Column>
+
             <Grid.Column>
               <Table celled padded>
                 <Table.Header>
@@ -73,11 +84,12 @@ const ComparePortal = ({open, reportA, reportB, onClose}: ComparePortalProps) =>
                 </Table.Body>
               </Table>
             </Grid.Column>
+
             <Grid.Column>
               <Table celled padded>
                 <Table.Header>
                   <Table.Row>
-                    <Table.HeaderCell>圖B產品</Table.HeaderCell>
+                    <Table.HeaderCell>圖B產品（前20名）</Table.HeaderCell>
                     <Table.HeaderCell>權重</Table.HeaderCell>
                   </Table.Row>
                 </Table.Header>
