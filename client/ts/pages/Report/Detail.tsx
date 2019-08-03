@@ -9,8 +9,8 @@ import {
   Sidebar,
 } from 'semantic-ui-react';
 
+import { DropdownSearchItem } from 'Component/dropdown';
 import { ModalAddAnalysis } from 'Component/modal';
-import { DropdownSearchItem } from '../../components/dropdown';
 import Graph from '../../components/graph';
 import Loader from '../../components/Loader';
 import { DropdownMenu } from '../../components/menu';
