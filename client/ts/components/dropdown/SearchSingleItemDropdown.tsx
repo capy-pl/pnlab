@@ -13,11 +13,10 @@ interface SearchDropDownProps {
   onChange: (event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => void;
 }
 
-const SearchItemDropdown = ({ placeholder, options, onChange }: SearchDropDownProps) => (
+const SearchSingleItemDropdown = ({ placeholder, options, onChange }: SearchDropDownProps) => (
   <Dropdown
     clearable
     placeholder={placeholder}
-    multiple
     search
     selection
     onChange={onChange}
@@ -26,4 +25,4 @@ const SearchItemDropdown = ({ placeholder, options, onChange }: SearchDropDownPr
   />
 );
 
-export default SearchItemDropdown;
+export default SearchSingleItemDropdown;

@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react';
 import { Button, Divider, DropdownProps } from 'semantic-ui-react';
 
-import { SearchItemDropdown } from '../../components/dropdown';
-import Graph2 from '../../components/graph2/index';
+import { SearchItemDropdown, SearchSingleItemDropdown } from '../../components/dropdown';
+import { GraphView2 } from '../../components/graph2/index';
 import Loader from '../../components/Loader';
 import ComparePortal from '../../components/portal/index';
 import AnalysisAPI from '../../PnApp/model/Analysis' ;
@@ -24,6 +24,7 @@ interface AnalysisState {
   shareNodes?: Node[];
   open: boolean;
   searchItems?: DropdownProps['value'];
+  selectedProduct?: Node[];
 }
 
 export default class Compare extends PureComponent<AnalysisProps, AnalysisState> {
@@ -32,10 +33,13 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
     this.state = {
       loading: true,
       open: false,
+      searchItems: [],
+      selectedProduct: [],
     };
     this.handleOpen = this.handleOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.onItemSearch = this.onItemSearch.bind(this);
+    this.onSingleItemSearch = this.onSingleItemSearch.bind(this);
   }
 
   public async componentDidMount() {
@@ -87,6 +91,18 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
     this.setState({searchItems: data.value});
   }
 
+  public onSingleItemSearch(event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) {
+    for (const node of this.state.shareNodes) {
+      if (node.name === data.value) {
+        console.log(node.name);
+        this.setState({selectedProduct: [node]});
+      }
+    }
+    if (!data.value) {
+      this.setState({selectedProduct: []});
+    }
+  }
+
   public render() {
     if (this.state.loading) {
       return <Loader size='huge' />;
@@ -103,13 +119,27 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
         });
         return (
           <React.Fragment>
-            <SearchItemDropdown options={dropdownOption} placeholder='搜尋共同商品' onChange={this.onItemSearch}/>
+            <div style={{position: 'absolute', minWidth: '20%', zIndex: 1001}}>
+              <SearchItemDropdown
+                options={dropdownOption}
+                placeholder='搜尋共同商品'
+                onChange={this.onItemSearch}
+              />
+            </div>
+            <div style={{position: 'absolute', right: 0, minWidth: '20%', zIndex: 1001}}>
+              <SearchSingleItemDropdown
+                options={dropdownOption}
+                placeholder='搜尋共同商品'
+                onChange={this.onSingleItemSearch}
+              />
+            </div>
             <div style={{display: 'flex', justifyContent: 'center', position: 'relative'}}>
               <div>
-                <Graph2
+                <GraphView2
                   nodes={this.state.reportA.nodes}
                   edges={this.state.reportA.edges}
                   searchItems={this.state.searchItems}
+                  selectedProduct={this.state.selectedProduct}
                 />
               </div>
               <Divider vertical>
@@ -118,10 +148,11 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
                 </Button>
               </Divider>
               <div>
-                <Graph2
+                <GraphView2
                   nodes={this.state.reportB.nodes}
                   edges={this.state.reportB.edges}
                   searchItems={this.state.searchItems}
+                  selectedProduct={this.state.selectedProduct}
                 />
               </div>
             </div>
