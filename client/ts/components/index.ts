@@ -21,6 +21,10 @@ import {
   ModalConfirm,
 } from './modal';
 
+import {
+  DatetimeInput,
+} from './input';
+
 export {
   Auth,
   Loader,
@@ -30,5 +34,6 @@ export {
   SearchHistoryItem,
   Navbar,
   SettingMenu,
+  DatetimeInput,
   ModalConfirm,
 };
