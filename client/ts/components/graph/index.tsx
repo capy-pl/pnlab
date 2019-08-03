@@ -250,7 +250,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
 
   public render() {
     return (
-      <div id='pn-graph' style={{ zIndex: -1 }} ref={this.graphRef} />
+      <div id='pn-graph' style={style} ref={this.graphRef} />
     );
   }
 }
