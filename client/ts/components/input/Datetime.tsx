@@ -4,6 +4,7 @@ import { DropdownProps, Form } from 'semantic-ui-react';
 interface DatetimeInputProps {
   yearStart?: number;
   yearEnd?: number;
+  defaultValue?: string;
   onChange?: (e, dateTime: Date) => void;
 }
 
@@ -24,11 +25,20 @@ type DatetimeKeys = 'year' | 'month' | 'day';
 class DatetimeInput extends React.PureComponent<DatetimeInputProps, DatetimeInputState> {
   constructor(props: DatetimeInputProps) {
     super(props);
-    this.state = {
-      year: 1970,
-      month: 1,
-      day: 1,
-    };
+    if (props.defaultValue) {
+      const parsed = new Date(props.defaultValue);
+      this.state = {
+        year: parsed.getFullYear(),
+        month: parsed.getMonth() + 1,
+        day: parsed.getDate(),
+      };
+    } else {
+      this.state = {
+        year: 1970,
+        month: 1,
+        day: 1,
+      };
+    }
   }
 
   public getYearOptions(): Option[] {
@@ -107,6 +117,7 @@ class DatetimeInput extends React.PureComponent<DatetimeInputProps, DatetimeInpu
             onChange={this.onChange('year')}
             options={this.getYearOptions()}
             placeholder='年'
+            defaultValue={this.state.year}
             selection
             fluid
           />
@@ -115,6 +126,7 @@ class DatetimeInput extends React.PureComponent<DatetimeInputProps, DatetimeInpu
             search
             placeholder='月'
             closeOnChange={true}
+            defaultValue={this.state.month}
             onChange={this.onChange('month')}
             options={this.getMonthOptions()}
             fluid
@@ -125,6 +137,7 @@ class DatetimeInput extends React.PureComponent<DatetimeInputProps, DatetimeInpu
             search
             closeOnChange={true}
             placeholder='日'
+            defaultValue={this.state.day}
             onChange={this.onChange('day')}
             options={this.getDayOptions()}
             fluid

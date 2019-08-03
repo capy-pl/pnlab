@@ -2,18 +2,18 @@ import React, { PureComponent } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { Table } from 'semantic-ui-react';
 
-import PromotionList from 'Component/list/PromotionList';
+import { PromotionItem } from 'Component/list/promotion';
 import { ModalAddPromotion } from 'Component/modal';
 
 import { Promotion } from '../../PnApp/Model';
 
-interface PromotionItemState {
+interface PromotionPageState {
   loading: boolean;
   itemList: string[];
   promotions: Promotion[];
 }
 
-export default class PromotionItem extends PureComponent<RouteComponentProps, PromotionItemState> {
+export default class PromotionPage extends PureComponent<RouteComponentProps, PromotionPageState> {
   constructor(props) {
     super(props);
     this.state = {
@@ -48,10 +48,10 @@ export default class PromotionItem extends PureComponent<RouteComponentProps, Pr
   public render() {
     const promotionHistory = this.state.promotions.map((promotion) => {
       return (
-        <PromotionList
+        <PromotionItem
           key={promotion.id}
-          item={promotion}
-          onButtonClick={this.onButtonClick(promotion)}
+          onSave={this.load}
+          promotion={promotion}
         />
       );
     });
@@ -62,10 +62,11 @@ export default class PromotionItem extends PureComponent<RouteComponentProps, Pr
         <Table selectable color='blue'>
           <Table.Header>
             <Table.Row>
-              <Table.HeaderCell width='1' textAlign='center'>Promotion Name</Table.HeaderCell>
-              <Table.HeaderCell width='1' textAlign='center'>Start Time</Table.HeaderCell>
-              <Table.HeaderCell width='1' textAlign='center'>End Time</Table.HeaderCell>
-              <Table.HeaderCell width='1' textAlign='center'>Type</Table.HeaderCell>
+              <Table.HeaderCell width='1' textAlign='center'>促銷名稱</Table.HeaderCell>
+              <Table.HeaderCell width='1' textAlign='center'>開始時間</Table.HeaderCell>
+              <Table.HeaderCell width='1' textAlign='center'>結束時間</Table.HeaderCell>
+              <Table.HeaderCell width='1' textAlign='center'>種類</Table.HeaderCell>
+              <Table.HeaderCell width='1' textAlign='center' />
             </Table.Row>
           </Table.Header>
           <Table.Body>
