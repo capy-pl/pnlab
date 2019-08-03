@@ -19,7 +19,7 @@ interface GraphProps {
   showCommunity: boolean;
   selectedCommunities?: Community[];
   selectedProduct?: Node[];
-  searchItems?: any;
+  searchItems?: [];
 }
 
 export default class GraphView2 extends PureComponent<GraphProps, {}> {
@@ -113,15 +113,17 @@ export default class GraphView2 extends PureComponent<GraphProps, {}> {
     }
 
     const selectProduct = [];
-    if (this.props.selectedProduct !== undefined) {
+    if (this.props.selectedProduct.length !== 0) {
       // highlight node & show connected products
       let connectedNodes;
       const connectedNodesList = [];
       nodes.forEach((node) => {
         if (this.props.selectedProduct[0].name === node.name) {
           connectedNodesList.push(node.id);
-          selectProduct.push({id: node.id, color: {background: 'orange', hover: 'orange', highlight: 'orange'}});
+          selectProduct.push({id: node.id, color: {background: 'orange', border: '#8DC1FF', hover: 'orange', highlight: 'orange'}});
           connectedNodes = this.network.getConnectedNodes(node.id);
+        } else {
+          selectProduct.push({id: node.id, color: {background: '#8DC1FF', border: '#8DC1FF', hover: '#8DC1FF', highlight: '#8DC1FF'}, label: node.name});
         }
       });
       for (const c of connectedNodes) {
@@ -134,6 +136,27 @@ export default class GraphView2 extends PureComponent<GraphProps, {}> {
         }
       });
       nodes.update(selectProduct);
+    } else if (this.props.selectedProduct.length === 0) {
+      const productNetwork = nodes.map((node) => {
+        return (
+          {
+            id: node.id,
+            label: node.name,
+            title: `
+              <div>
+                <p>${node.name}</p>
+                <p>weight: ${Math.round(node.weight)}</p>
+                <p>連接節點數: ${node.degree}</p>
+              </div>
+            `,
+            group: undefined,
+            hidden: false,
+            color: '#8DC1FF',
+            borderWidth: 1,
+          }
+        );
+      });
+      nodes.update(productNetwork);
     } else if (!this.props.showCommunity) {
       const productNetwork = nodes.map((node) => {
         return (
@@ -156,7 +179,7 @@ export default class GraphView2 extends PureComponent<GraphProps, {}> {
       });
       nodes.update(productNetwork);
     }
-    if (this.props.searchItems !== undefined) {
+    if (this.props.searchItems.length !== 0) {
       const searchItems = [];
       nodes.forEach((node) => {
         this.props.searchItems.forEach((item) => {
