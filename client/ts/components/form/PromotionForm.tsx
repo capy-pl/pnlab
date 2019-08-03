@@ -104,6 +104,7 @@ class AddPromotionForm extends React.PureComponent<AddPromotionFormProps, AddPro
             selection
             fluid
             closeOnChange={true}
+            defaultValue='direct'
             options={typeInput}
             onChange={this.props.typeChange}
           />
