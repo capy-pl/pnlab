@@ -1,4 +1,4 @@
-import DatetimeInput from './DatetimeInput';
+import DatetimeInput from './Datetime';
 
 export {
   DatetimeInput,

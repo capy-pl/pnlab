@@ -3,7 +3,7 @@ import Loader from './Loader';
 import Switch from './route/Switch';
 
 import {
-  SearchDropdown,
+  DropdownSearch,
 } from './dropdown';
 
 import GraphView from './graph';
@@ -18,7 +18,7 @@ import {
 } from './menu';
 
 import {
-  ModalConfirm,
+  ModalConfirmReport,
 } from './modal';
 
 import {
@@ -29,11 +29,11 @@ export {
   Auth,
   Loader,
   Switch,
-  SearchDropdown,
+  DropdownSearch,
   GraphView,
   SearchHistoryItem,
   Navbar,
   SettingMenu,
   DatetimeInput,
-  ModalConfirm,
+  ModalConfirmReport,
 };

@@ -9,8 +9,8 @@ import {
   Sidebar,
 } from 'semantic-ui-react';
 
-import { ModalSave } from 'Component/modal';
-import { SearchItemDropdown } from '../../components/dropdown';
+import { ModalAddAnalysis } from 'Component/modal';
+import { DropdownSearchItem } from '../../components/dropdown';
 import Graph from '../../components/graph';
 import Loader from '../../components/Loader';
 import { DropdownMenu } from '../../components/menu';
@@ -200,7 +200,7 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
     return message;
   }
 
-  public getSearchDropDown(): React.ReactChild {
+  public getDropdownSearch(): React.ReactChild {
     let searchItemDropdown: React.ReactChild;
     const report = this.state.report as ReportAPI;
     const dropdownOptions = report.nodes.map((node) => {
@@ -208,7 +208,7 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
     });
     if (!this.state.showCommunity) {
       searchItemDropdown = (
-        <SearchItemDropdown
+        <DropdownSearchItem
           options={dropdownOptions}
           placeholder='搜尋商品：請輸入商品名稱'
           onChange={this.onItemSearch}
@@ -226,7 +226,7 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
     } else {
       if (this.state.report) {
         const message: React.ReactChild = this.getMessageComponent();
-        const searchItemDropdown: React.ReactChild = this.getSearchDropDown();
+        const searchItemDropdown: React.ReactChild = this.getDropdownSearch();
         const conditionList = this.state.report.conditions.map((condition) => {
           const values = condition.values.map((value) => {
             return (<Label key={value} style={{margin: '.2rem'}}>{value}</Label>);
@@ -273,7 +273,7 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
               條件
             </Button>
             <div style={{ position: 'absolute', bottom: 10, left: 10, zIndex: 100 }}>
-              <ModalSave
+              <ModalAddAnalysis
                 header='編輯圖片'
                 open={this.state.modalOpen}
                 onCancel={this.onCancel}
@@ -285,7 +285,7 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
                 >
                   儲存圖片
                 </Button>
-              </ModalSave>
+              </ModalAddAnalysis>
             </div>
             <Graph
               nodes={this.state.report.nodes}

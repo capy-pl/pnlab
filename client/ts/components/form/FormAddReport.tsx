@@ -12,13 +12,13 @@ import {
 
 import { Condition } from '../../PnApp/model/Report';
 
-interface FilterFormInputProps {
+interface FormAddReportInputProps {
   condition: Condition;
   defaultValue: string[];
   onChange: (event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => void;
 }
 
-const FilterFormInput = ({ condition, onChange, defaultValue }: FilterFormInputProps) => {
+const FormAddReportInput = ({ condition, onChange, defaultValue }: FormAddReportInputProps) => {
   if (condition.type === 'string' || condition.type === 'promotion') {
     const options = condition.values.map((value) => {
       return {
@@ -65,7 +65,7 @@ interface PartProps {
 
 const Part = ({ conditions, onChange, title, type, defaultValues }: PartProps) => {
   const inputs = conditions.map((condition) => (
-    <FilterFormInput
+    <FormAddReportInput
       defaultValue={condition.name in defaultValues ? defaultValues[condition.name] : []}
       key={condition.name}
       condition={condition}
@@ -85,21 +85,21 @@ const Part = ({ conditions, onChange, title, type, defaultValues }: PartProps) =
   );
 };
 
-interface FilterFormProps {
+interface FormAddReportProps {
   conditions: Condition[];
   defaultValues: { [key: string]: string[] };
   onChange: (name: string) =>
     ((event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => void);
 }
 
-interface FilterFormState {
+interface FormAddReportState {
   counter: number;
 }
 
-class FilterForm extends PureComponent<FilterFormProps, FilterFormState> {
+class FormAddReport extends PureComponent<FormAddReportProps, FormAddReportState> {
   public parts: Part[];
   public types: PartType[];
-  constructor(props: FilterFormProps) {
+  constructor(props: FormAddReportProps) {
     super(props);
     this.state = {
       counter: 0,
@@ -197,4 +197,4 @@ class FilterForm extends PureComponent<FilterFormProps, FilterFormState> {
   }
 }
 
-export default FilterForm;
+export default FormAddReport;

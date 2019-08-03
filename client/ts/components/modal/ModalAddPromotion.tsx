@@ -6,7 +6,7 @@ import {
 } from 'semantic-ui-react';
 
 import Promotion, { PromotionModel, PromotionType } from '../../PnApp/model/Promotion';
-import AddPromotionForm from '../form/PromotionForm';
+import FormAddPromotion from '../form/FormAddPromotion';
 
 interface ModalAddPromotionState {
   show: boolean;
@@ -207,7 +207,7 @@ export default class ModalAddPromotion extends React.PureComponent<ModalAddPromo
         >
           <Modal.Header>新增促銷</Modal.Header>
           <Modal.Content>
-            <AddPromotionForm
+            <FormAddPromotion
               type={this.state.type}
               groupOne={this.state.groupOne}
               groupTwo={this.state.groupTwo}

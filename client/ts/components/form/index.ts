@@ -1,11 +1,11 @@
-import FilterForm from './FilterForm';
-import LoginForm from './LoginForm';
-import ProfileForm from './ProfileForm';
-import SaveGraphForm from './SaveGraphForm';
+import FormAddAnalysis from './FormAddAnalysis';
+import FormAddReport from './FormAddReport';
+import FormLogin from './FormLogin';
+import FormProfile from './FormProfile';
 
 export {
-  FilterForm,
-  LoginForm,
-  ProfileForm,
-  SaveGraphForm,
+  FormAddReport,
+  FormLogin,
+  FormProfile,
+  FormAddAnalysis,
 };

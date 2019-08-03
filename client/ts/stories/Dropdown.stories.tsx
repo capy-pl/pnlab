@@ -8,9 +8,9 @@ import {
 } from 'semantic-ui-react';
 
 import {
-  SearchItemDropdown,
+  DropdownSearchItem,
 } from 'Component/dropdown';
-import SearchDropdown from 'Component/dropdown/SearchDropdown';
+import DropdownSearch from 'Component/dropdown/DropdownSearch';
 
 const stories = storiesOf('Dropdown', module);
 
@@ -100,16 +100,13 @@ stories
 
       const placeholder = 'Please select a country';
 
-      return <SearchDropdown placeholder={
-        placeholder
-      }
-      options={
-        countryOptions
-      }
-      onChange={
-        onChange
-      }
-      />;
+      return (
+      <DropdownSearch
+        placeholder={placeholder}
+        options={countryOptions}
+        onChange={onChange}
+      />
+      );
     },
   )
   .add(
@@ -162,7 +159,7 @@ stories
       }
 
       return (
-      <SearchItemDropdown
+      <DropdownSearchItem
         placeholder={placeholder}
         options={options}
         onChange={onChange}

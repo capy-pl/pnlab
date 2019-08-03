@@ -1,9 +1,11 @@
-import ModalConfirm from './Confirm';
+import ModalAddAnalysis from './ModalAddAnalysis';
+import ModalAddCompare from './ModalAddCompare';
 import ModalAddPromotion from './ModalAddPromotion';
-import ModalSave from './SaveNetwork';
+import ModalConfirmReport from './ModalConfirmReport';
 
 export {
-  ModalConfirm,
   ModalAddPromotion,
-  ModalSave,
+  ModalAddCompare,
+  ModalConfirmReport,
+  ModalAddAnalysis,
 };

@@ -3,7 +3,7 @@ import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { Button, DropdownProps, Segment, Table } from 'semantic-ui-react';
 
 import { AnalysesList } from '../../components/list';
-import CompareAdd from '../../components/modal/CampareAdd';
+import ModalAddCompare from '../../components/modal/ModalAddCompare';
 import Analysis from '../../PnApp/model/Analysis';
 
 interface AnalysisListState {
@@ -91,7 +91,7 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
     return (
       <Segment loading={this.state.loading} size='large'>
         <React.Fragment>
-          <CompareAdd
+          <ModalAddCompare
             header={'選擇比較網路圖'}
             open={this.state.modalOpen}
             analyses={this.state.analyses}

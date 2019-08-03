@@ -8,7 +8,7 @@ import { searchItem } from '../../PnApp/Helper';
 import { DatetimeInput } from 'Component/';
 import { PromotionModel } from '../../PnApp/model/Promotion';
 
-interface AddPromotionFormProps {
+interface FormAddPromotionProps {
   type: string;
   groupOne?: string[];
   groupTwo?: string[];
@@ -30,9 +30,9 @@ interface Option {
   key: string;
 }
 
-class AddPromotionForm extends React.PureComponent<AddPromotionFormProps, AddPromotionState> {
+class FormAddPromotion extends React.PureComponent<FormAddPromotionProps, AddPromotionState> {
   private prodcutPool: Set<string>;
-  constructor(props: AddPromotionFormProps) {
+  constructor(props: FormAddPromotionProps) {
     super(props);
     this.state = {
       productOptions: [],
@@ -42,7 +42,7 @@ class AddPromotionForm extends React.PureComponent<AddPromotionFormProps, AddPro
     this.productSearchChange = this.productSearchChange.bind(this);
   }
 
-  public componentWillReceiveProps(nextProps: AddPromotionFormProps) {
+  public componentWillReceiveProps(nextProps: FormAddPromotionProps) {
     if (nextProps.groupOne) {
       for (const product of nextProps.groupOne) {
         if (!this.prodcutPool.has(product)) {
@@ -150,4 +150,4 @@ class AddPromotionForm extends React.PureComponent<AddPromotionFormProps, AddPro
   }
 }
 
-export default AddPromotionForm;
+export default FormAddPromotion;
