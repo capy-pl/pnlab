@@ -10,7 +10,7 @@ interface ModalConfirmProps {
   children?: React.ReactNode;
 }
 
-const ModalConfirm = ({ header, content, onConfirm, onCancel, open, children }: ModalConfirmProps) => {
+const ModalConfirmReport = ({ header, content, onConfirm, onCancel, open, children }: ModalConfirmProps) => {
   return (
     <React.Fragment>
       {children}
@@ -46,4 +46,4 @@ const ModalConfirm = ({ header, content, onConfirm, onCancel, open, children }: 
     </React.Fragment>);
 };
 
-export default ModalConfirm;
+export default ModalConfirmReport;

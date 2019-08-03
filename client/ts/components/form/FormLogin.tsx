@@ -6,7 +6,7 @@ import { Button, Form, Grid, Header, Message, Segment } from 'semantic-ui-react'
 import { Auth } from '../../PnApp';
 import { updateCurrentUser } from '../../PnApp/Helper';
 
-interface LoginFormState {
+interface FormLoginState {
   email: string;
   password: string;
   loading: boolean;
@@ -14,7 +14,7 @@ interface LoginFormState {
   redirect: boolean;
 }
 
-class LoginForm extends PureComponent<{}, LoginFormState> {
+class FormLogin extends PureComponent<{}, FormLoginState> {
   constructor(props) {
     super(props);
     this.state = {
@@ -105,4 +105,4 @@ class LoginForm extends PureComponent<{}, LoginFormState> {
   }
 }
 
-export default LoginForm;
+export default FormLogin;

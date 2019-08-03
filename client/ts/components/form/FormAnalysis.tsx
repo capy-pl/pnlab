@@ -1,16 +1,16 @@
 import React from 'react';
-import { Dropdown, DropdownOnSearchChangeData, DropdownProps, Form, Segment } from 'semantic-ui-react';
+import { Dropdown, DropdownProps, Form, Segment } from 'semantic-ui-react';
 
 import Analysis from '../../PnApp/model/Analysis';
 
-interface AnalysisFormProps {
+interface FormAnalysisProps {
   analysesA: Analysis[];
   analysesB: Analysis[];
   dropChangeA?: (event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => void;
   dropChangeB?: (event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => void;
 }
 
-const AnalysisForm = ({ analysesA, analysesB, dropChangeA, dropChangeB}: AnalysisFormProps) => {
+const FormAnalysis = ({ analysesA, analysesB, dropChangeA, dropChangeB }: FormAnalysisProps) => {
   const inputsA = analysesA.map((value) => {
     return {
       text: value.title,
@@ -52,4 +52,4 @@ const AnalysisForm = ({ analysesA, analysesB, dropChangeA, dropChangeB}: Analysi
   );
 };
 
-export default AnalysisForm;
+export default FormAnalysis;
