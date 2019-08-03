@@ -1,9 +1,9 @@
 import React from 'react';
 import { Button, Header, Icon, Modal } from 'semantic-ui-react';
 
-import SaveGraphForm from '../form/SaveGraphForm';
+import SaveGraphForm from '../form/FormAddAnalysis';
 
-interface ModalSaveProps {
+interface ModalAddAnalysisProps {
   header: string;
   content?: string;
   open: boolean;
@@ -12,7 +12,7 @@ interface ModalSaveProps {
   children?: React.ReactNode;
 }
 
-const ModalSave = ({ header, onConfirm, onCancel, open, children }: ModalSaveProps) => {
+const ModalAddAnalysis = ({ header, onConfirm, onCancel, open, children }: ModalAddAnalysisProps) => {
   return (
     <React.Fragment>
       {children}
@@ -46,4 +46,4 @@ const ModalSave = ({ header, onConfirm, onCancel, open, children }: ModalSavePro
     </React.Fragment>);
 };
 
-export default ModalSave;
+export default ModalAddAnalysis;

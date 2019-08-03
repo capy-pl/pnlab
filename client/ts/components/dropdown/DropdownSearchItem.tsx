@@ -7,13 +7,13 @@ interface Option {
   text: string;
 }
 
-interface SearchDropDownProps {
+interface DropdownSearchProps {
   options: Option[];
   placeholder: string;
   onChange: (event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => void;
 }
 
-const SearchItemDropdown = ({ placeholder, options, onChange }: SearchDropDownProps) => (
+const DropdownSearchItem = ({ placeholder, options, onChange }: DropdownSearchProps) => (
   <Dropdown
     placeholder={placeholder}
     multiple
@@ -25,4 +25,4 @@ const SearchItemDropdown = ({ placeholder, options, onChange }: SearchDropDownPr
   />
 );
 
-export default SearchItemDropdown;
+export default DropdownSearchItem;

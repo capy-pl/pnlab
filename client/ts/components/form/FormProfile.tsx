@@ -3,18 +3,18 @@ import { Button, Form, Message } from 'semantic-ui-react';
 
 import { User } from '../../PnApp/model';
 
-interface ProfileFormProps {
+interface FormProfileProps {
   user: User;
 }
 
-interface ProfileFormState {
+interface FormProfileState {
   email: string;
   isError: boolean;
   errorMessage: string;
 }
 
-export default class ProfileForm extends PureComponent<ProfileFormProps, ProfileFormState> {
-  constructor(props: ProfileFormProps) {
+export default class FormProfile extends PureComponent<FormProfileProps, FormProfileState> {
+  constructor(props: FormProfileProps) {
     super(props);
     this.state = {
       email: '',

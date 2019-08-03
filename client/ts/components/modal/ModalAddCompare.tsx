@@ -1,16 +1,23 @@
 import React from 'react';
-import { Button, Header, Icon, Modal } from 'semantic-ui-react';
+import { Button, DropdownProps, Header, Icon, Modal } from 'semantic-ui-react';
 
-interface ModalConfirmProps {
+import Analysis from '../../PnApp/model/Analysis';
+import FormAnalysis from '../form/FormAnalysis';
+
+interface ModalAddCompareProps {
   header: string;
-  content: string;
   open: boolean;
   onConfirm?: () => void;
   onCancel?: () => void;
   children?: React.ReactNode;
+  analyses: Analysis[];
+  dropChangeA?: (event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => void;
+  dropChangeB?: (event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => void;
 }
 
-const ModalConfirm = ({ header, content, onConfirm, onCancel, open, children }: ModalConfirmProps) => {
+const ModalAddCompare = ({ header, onConfirm, onCancel, open, children, analyses, dropChangeA,
+  dropChangeB }: ModalAddCompareProps) => {
+
   return (
     <React.Fragment>
       {children}
@@ -21,9 +28,12 @@ const ModalConfirm = ({ header, content, onConfirm, onCancel, open, children }: 
       >
         <Header content={header} />
         <Modal.Content>
-          <p>
-            {content}
-          </p>
+          <FormAnalysis
+            analysesA={analyses}
+            analysesB={analyses}
+            dropChangeA={dropChangeA}
+            dropChangeB={dropChangeB}
+          />
         </Modal.Content>
         <Modal.Actions>
           <Button
@@ -46,4 +56,4 @@ const ModalConfirm = ({ header, content, onConfirm, onCancel, open, children }: 
     </React.Fragment>);
 };
 
-export default ModalConfirm;
+export default ModalAddCompare;

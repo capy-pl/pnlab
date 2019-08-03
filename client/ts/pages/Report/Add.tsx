@@ -2,9 +2,9 @@ import React, { PureComponent } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { Button, Container, DropdownProps, Segment } from 'semantic-ui-react';
 
-import FilterForm from 'Component/form/FilterForm';
+import FormAddReport from 'Component/form/FormAddReport';
 import Loader from 'Component/Loader';
-import ModalConfirm from 'Component/modal/Confirm';
+import { ModalConfirmReport } from 'Component/modal';
 import { Report } from '../../PnApp/model';
 import { Condition, ConditionType } from '../../PnApp/model/Report';
 
@@ -105,12 +105,12 @@ export default class Add extends PureComponent<RouteComponentProps, AddState> {
     return (
       <Container>
         <Segment.Group>
-          <FilterForm
+          <FormAddReport
             defaultValues={this.state.conditionArgs}
             onChange={this.onChange}
             conditions={this.state.conditions}
           />
-          <ModalConfirm
+          <ModalConfirmReport
             header='Confirm'
             content='Are you sure?'
             open={this.state.modalOpen}
@@ -123,7 +123,7 @@ export default class Add extends PureComponent<RouteComponentProps, AddState> {
               onClick={this.onAdd}
             >Confirm
             </Button>
-          </ModalConfirm>
+          </ModalConfirmReport>
         </Segment.Group>
       </Container>
     );

@@ -5,13 +5,13 @@ import {
   TextAreaProps,
 } from 'semantic-ui-react';
 
-interface FormSaveState {
+interface FormAddAnalysisState {
   title: string;
   note: string;
   [key: string]: string;
 }
 
-export default class SaveGraphForm extends PureComponent<{}, FormSaveState> {
+export default class FormAddAnalysis extends PureComponent<{}, FormAddAnalysisState> {
   constructor(props: {}) {
     super(props);
     this.state = {
