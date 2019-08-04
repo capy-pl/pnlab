@@ -17,7 +17,7 @@ const segmentStyle = {
   zIndex: 1000,
   overflow: 'auto',
   maxHeight: '75%',
-  width: '60%',
+  width: '70%',
 };
 
 const ComparePortal = ({open, nodesA, nodesB, shareNodes, onClose}: ComparePortalProps) => {
