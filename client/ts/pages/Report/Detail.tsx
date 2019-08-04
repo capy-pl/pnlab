@@ -274,7 +274,7 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
                 {conditionList}
               </Sidebar>
             </Sidebar.Pushable>
-            <div style={{ position: 'absolute', top: 80, right: 120, minWidth: '12%', zIndex: 101 }}>
+            <div style={{ position: 'absolute', top: 80, right: 120, minWidth: '15%', zIndex: 101 }}>
               {searchItemDropdown}
             </div>
             <Button
@@ -285,7 +285,7 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
             </Button>
             <div style={{ position: 'absolute', bottom: 10, left: 10, zIndex: 100 }}>
               <ModalAddAnalysis
-                header='編輯圖片'
+                header='儲存圖片'
                 open={this.state.modalOpen}
                 onCancel={this.onCancel}
                 onConfirm={this.onConfirm}
