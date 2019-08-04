@@ -46,7 +46,6 @@ export default class ModalAddPromotion extends React.PureComponent<ModalEditProm
     this.save = this.save.bind(this);
     this.show = this.show.bind(this);
     this.close = this.close.bind(this);
-    this.clear = this.clear.bind(this);
     this.nameChange = this.nameChange.bind(this);
     this.typeChange = this.typeChange.bind(this);
     this.groupOneChange = this.groupOneChange.bind(this);
@@ -64,19 +63,6 @@ export default class ModalAddPromotion extends React.PureComponent<ModalEditProm
   public close() {
     this.setState({
       show: false,
-      name: '',
-      type: 'direct',
-      groupOne: [],
-      groupTwo: [],
-    });
-  }
-
-  public clear() {
-    this.setState({
-      name: '',
-      type: 'direct',
-      groupOne: [],
-      groupTwo: [],
     });
   }
 
@@ -206,7 +192,6 @@ export default class ModalAddPromotion extends React.PureComponent<ModalEditProm
           open={this.state.show}
           centered={false}
           closeOnDimmerClick={false}
-          onClose={this.clear}
         >
           <Modal.Header>編輯促銷</Modal.Header>
           <Modal.Content>
