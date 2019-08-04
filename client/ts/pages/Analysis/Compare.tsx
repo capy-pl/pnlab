@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Button, Divider, DropdownProps } from 'semantic-ui-react';
+import { Button, Checkbox, Divider, Dropdown, DropdownProps, Menu } from 'semantic-ui-react';
 
 import { DropdownSearchItem, SearchSingleItemDropdown } from '../../components/dropdown';
 import { GraphView2 } from '../../components/graph2/index';
@@ -25,6 +25,7 @@ interface AnalysisState {
   open: boolean;
   searchItems?: DropdownProps['value'];
   selectedProduct?: Node[];
+  showCommunity: boolean;
 }
 
 export default class Compare extends PureComponent<AnalysisProps, AnalysisState> {
@@ -35,11 +36,13 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
       open: false,
       searchItems: [],
       selectedProduct: [],
+      showCommunity: false,
     };
     this.handleOpen = this.handleOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.onItemSearch = this.onItemSearch.bind(this);
     this.onSingleItemSearch = this.onSingleItemSearch.bind(this);
+    this.toggleShowCommunity = this.toggleShowCommunity.bind(this);
   }
 
   public async componentDidMount() {
@@ -103,6 +106,10 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
     }
   }
 
+  public toggleShowCommunity() {
+    this.state.showCommunity ? this.setState({showCommunity: false}) : this.setState({showCommunity: true});
+  }
+
   public render() {
     if (this.state.loading) {
       return <Loader size='huge' />;
@@ -126,6 +133,19 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
                 onChange={this.onItemSearch}
               />
             </div>
+            <div style={{position: 'absolute', right: 600, minWidth: '20%', zIndex: 1001}}>
+              <Menu
+                compact
+              >
+                <Dropdown.Item>
+                  <Checkbox
+                    toggle
+                    label={this.state.showCommunity ? '隱藏Community' : '顯示Community'}
+                    onChange={this.toggleShowCommunity}
+                  />
+                </Dropdown.Item>
+              </Menu>
+            </div>
             <div style={{position: 'absolute', right: 0, minWidth: '20%', zIndex: 1001}}>
               <SearchSingleItemDropdown
                 options={dropdownOption}
@@ -140,6 +160,7 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
                   edges={this.state.reportA.edges}
                   searchItems={this.state.searchItems}
                   selectedProduct={this.state.selectedProduct}
+                  showCommunity={this.state.showCommunity}
                 />
               </div>
               <Divider vertical>
@@ -153,6 +174,7 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
                   edges={this.state.reportB.edges}
                   searchItems={this.state.searchItems}
                   selectedProduct={this.state.selectedProduct}
+                  showCommunity={this.state.showCommunity}
                 />
               </div>
             </div>
