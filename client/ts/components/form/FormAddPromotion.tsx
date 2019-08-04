@@ -29,6 +29,19 @@ interface Option {
   key: string;
 }
 
+const TYPE_OPTIONS = [
+  {
+    key: 'combination',
+    text: 'combination',
+    value: 'combination',
+  },
+  {
+    key: 'direct',
+    text: 'direct',
+    value: 'direct',
+  },
+];
+
 class FormAddPromotion extends React.PureComponent<FormAddPromotionProps, AddPromotionState> {
   private prodcutPool: Set<string>;
   constructor(props: FormAddPromotionProps) {
@@ -76,17 +89,6 @@ class FormAddPromotion extends React.PureComponent<FormAddPromotionProps, AddPro
   }
 
   public render() {
-    const typeInput = [
-      {
-        text: 'combination',
-        value: 'combination',
-      },
-      {
-        text: 'direct',
-        value: 'direct',
-      },
-    ];
-
     return (
       <Form>
         <Form.Field>
@@ -104,7 +106,7 @@ class FormAddPromotion extends React.PureComponent<FormAddPromotionProps, AddPro
             fluid
             closeOnChange={true}
             defaultValue='direct'
-            options={typeInput}
+            options={TYPE_OPTIONS}
             onChange={this.props.typeChange}
           />
         </Form.Field>
