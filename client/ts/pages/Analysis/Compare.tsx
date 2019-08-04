@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Button, Divider, DropdownProps } from 'semantic-ui-react';
 
-import { SearchItemDropdown, SearchSingleItemDropdown } from '../../components/dropdown';
+import { DropdownSearchItem, SearchSingleItemDropdown } from '../../components/dropdown';
 import { GraphView2 } from '../../components/graph2/index';
 import Loader from '../../components/Loader';
 import ComparePortal from '../../components/portal/index';
@@ -120,7 +120,7 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
         return (
           <React.Fragment>
             <div style={{position: 'absolute', minWidth: '20%', zIndex: 1001}}>
-              <SearchItemDropdown
+              <DropdownSearchItem
                 options={dropdownOption}
                 placeholder='搜尋共同商品'
                 onChange={this.onItemSearch}
