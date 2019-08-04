@@ -1,14 +1,21 @@
+from os import getenv
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 import traceback
 from datetime import datetime
+from dotenv import load_dotenv
 
 from .preprocessor import NetworkConverter
 from .utils import to_query, to_datetime
-from .error import ZeroTransactionError
+from .error import ZeroTransactionError, ZeroNodeError
 
-client = MongoClient('localhost', 27017)
-db = client['pn']
+load_dotenv()
+
+MONGO_PORT = int(getenv('MONGO_PORT'))
+MONGO_DB_NAME = getenv('MONGO_DB_NAME')
+
+client = MongoClient('localhost', MONGO_PORT)
+db = client[MONGO_DB_NAME]
 
 def network_analysis(report_id):
     report = db['reports'].find_one({ '_id': ObjectId(report_id) })
