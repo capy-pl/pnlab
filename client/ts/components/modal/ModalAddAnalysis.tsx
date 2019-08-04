@@ -10,9 +10,10 @@ interface ModalAddAnalysisProps {
   onConfirm?: () => void;
   onCancel?: () => void;
   children?: React.ReactNode;
+  updateFormAdd: (title) => void;
 }
 
-const ModalAddAnalysis = ({ header, onConfirm, onCancel, open, children }: ModalAddAnalysisProps) => {
+const ModalAddAnalysis = ({ header, onConfirm, onCancel, open, children, updateFormAdd }: ModalAddAnalysisProps) => {
   return (
     <React.Fragment>
       {children}
@@ -23,7 +24,7 @@ const ModalAddAnalysis = ({ header, onConfirm, onCancel, open, children }: Modal
       >
         <Header content={header} />
         <Modal.Content>
-          <SaveGraphForm />
+          <SaveGraphForm updateFormAdd={updateFormAdd}/>
         </Modal.Content>
         <Modal.Actions>
           <Button

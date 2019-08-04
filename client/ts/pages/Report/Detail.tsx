@@ -34,6 +34,7 @@ interface ReportState {
   searchItems?: DropdownProps['value'];
   modalOpen: boolean;
   visible: boolean;
+  title?: string;
 }
 
 const messageStyle: React.CSSProperties = {
@@ -78,6 +79,7 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
     this.onItemSearch = this.onItemSearch.bind(this);
     this.handleToggleSidebar = this.handleToggleSidebar.bind(this);
     this.clearSelected = this.clearSelected.bind(this);
+    this.updateFormAdd = this.updateFormAdd.bind(this);
   }
 
   public async componentDidMount() {
@@ -150,10 +152,19 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
   public onConfirm() {
     this.setState({
       modalOpen: false,
+      loading: true,
     });
     if (this.state.report) {
-      Analysis.add({report: this.state.report.id, title: 'testtest1'});
+      const title = this.state.title;
+      Analysis.add({report: this.state.report.id, title})
+        .then(() => {
+          this.setState({loading: false});
+        });
     }
+  }
+
+  public updateFormAdd(title) {
+    this.setState({title});
   }
 
   public onItemSearch(event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) {
@@ -278,6 +289,7 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
                 open={this.state.modalOpen}
                 onCancel={this.onCancel}
                 onConfirm={this.onConfirm}
+                updateFormAdd={this.updateFormAdd}
               >
                 <Button
                   color='blue'
