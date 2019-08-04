@@ -9,17 +9,12 @@ import {
   Sidebar,
 } from 'semantic-ui-react';
 
-<<<<<<< HEAD
-import { SearchItemDropdown } from '../../components/dropdown';
-=======
 import { DropdownSearchItem } from 'Component/dropdown';
 import { ModalAddAnalysis } from 'Component/modal';
->>>>>>> de185b2f0a3bd812645026c7080307814041cdc7
 import Graph from '../../components/graph';
 import Loader from '../../components/Loader';
 import { DropdownMenu } from '../../components/menu';
 import { CharacterMessage, CommunitiesMessage, ProductRank } from '../../components/message';
-import { ModalSave } from '../../components/modal';
 
 import { Analysis } from '../../PnApp/model';
 import ReportAPI from '../../PnApp/model/Report' ;
@@ -152,12 +147,16 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
     });
   }
 
-  public onConfirm() {
+  public async onConfirm() {
     this.setState({
       modalOpen: false,
+      loading: true,
     });
     if (this.state.report) {
-      Analysis.add({report: this.state.report.id, title: 'testtest1'});
+      Analysis.add({report: this.state.report.id, title: 'testtest4'})
+        .then(() => {
+          this.setState({loading: false});
+        });
     }
   }
 
