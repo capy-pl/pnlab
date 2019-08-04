@@ -208,9 +208,7 @@ export default class GraphView2 extends PureComponent<GraphProps, {}> {
               searchItems.push (
                 {
                   id: node.id,
-                  color: {
-                    background: 'black',
-                  },
+                  borderWidth: 50,
                   // color: {
                   //   background: 'yellow',
                   //   hover: {
