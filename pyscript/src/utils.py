@@ -9,13 +9,20 @@ def to_query(conditions):
             '$exists': True
         }
     }
+    item_query = {
+    }
     promotions = []
     for condition in conditions:
         if condition['type'] == 'string':
             if len(condition['values']) > 0:
-                default_query[condition['name']] = {
-                    '$in': condition['values']
-                }
+                if condition['belong'] == 'transaction':
+                    default_query[condition['name']] = {
+                        '$in': condition['values']
+                    }
+                if condition['belong'] == 'item':
+                    item_query[condition['name']] = {
+                        '$in': condition['values']
+                    }
         if condition['type'] == 'date':
             if len(condition['values']) > 0:
                 if len(condition['values']) == 2:
@@ -32,4 +39,8 @@ def to_query(conditions):
         if condition['type'] == 'promotion':
             for promotion in condition['values']:
                 promotions.append(promotion)
+        if len(item_query.keys()) > 0:
+            default_query['items'] = {
+                '$elemMatch': item_query
+            }
     return default_query, promotions

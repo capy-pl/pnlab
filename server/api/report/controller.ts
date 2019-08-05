@@ -67,16 +67,19 @@ export async function GetConditions(req: e.Request, res: e.Response): Promise<vo
   try {
     const { user } = req;
     const { org } = user as UserSchemaInterface;
-    const { transactionFields } = org.importSchema;
+    const { transactionFields, itemFields } = org.importSchema;
     const promotions = await Promotion.find({}, { name: 1 });
+    const conditions: FieldSchemaInterface[] = transactionFields.concat(itemFields);
     const promotionField: FieldSchemaInterface  = {
       name: '促銷',
       type: 'promotion',
+      belong: 'promotion',
+      actions: ['delete'],
       values: promotions.map((promotion) => promotion.name),
     };
-    transactionFields.push(promotionField);
+    conditions.push(promotionField);
     res.send({
-      conditions: transactionFields,
+      conditions,
     });
   } catch (error) {
     Logger.error(error);
@@ -92,7 +95,7 @@ export interface AddReportResponseBody {
   id: string;
 }
 
-export async function AddReport(req: e.Request, res: e.Response, next: e.NextFunction): Promise<void> {
+export async function AddReport(req: e.Request, res: e.Response): Promise<void> {
   const { user } = req;
   const { org } = user as UserSchemaInterface;
   try {
@@ -108,16 +111,21 @@ export async function AddReport(req: e.Request, res: e.Response, next: e.NextFun
     for (const field of org.importSchema.transactionFields) {
       mapping[field.name] = field;
     }
+
+    for (const field of org.importSchema.itemFields) {
+      mapping[field.name] = field;
+    }
+
     // tslint:disable-next-line: no-string-literal
     mapping['促銷'] = {
       name: '促銷',
       type: 'promotion',
+      belong: 'promotion',
+      actions: ['delete'],
     };
     for (const condition of conditions) {
-      if (condition.name in mapping) {
-        if (condition.type === mapping[condition.name].type) {
-          report.conditions.push(condition);
-        }
+      if (condition.name in mapping && condition.type === mapping[condition.name].type) {
+        report.conditions.push(condition);
       }
     }
     await report.save();

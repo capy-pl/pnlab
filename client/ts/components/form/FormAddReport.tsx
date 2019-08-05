@@ -145,6 +145,7 @@ class FormAddReport extends PureComponent<FormAddReportProps, FormAddReportState
       conditions: [],
     };
 
+    // TODO: Should condition.actions to categorize. 懶得弄zz
     for (const condition of conditions) {
       if (condition.type === 'string') {
         add.conditions.push(condition);

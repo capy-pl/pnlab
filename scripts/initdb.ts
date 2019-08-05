@@ -38,20 +38,41 @@ dotenv.config();
       transactionFields: [{
         name: '餐別帶',
         type: 'string',
+        belong: 'transaction',
+        actions: ['reserve'],
       }, {
         name: '縣市別',
         type: 'string',
+        belong: 'transaction',
+        actions: ['reserve'],
       }, {
         name: '主商圈',
         type: 'string',
+        belong: 'transaction',
+        actions: ['reserve'],
       }, {
         name: '資料日期與時間',
         type: 'date',
+        belong: 'transaction',
+        actions: ['reserve'],
       }],
       amountName: '交易金額',
       itemName: '單品名稱',
       transactionName: '交易id',
-      itemFields: [],
+      itemFields: [
+        {
+          name: '品號-品名稱',
+          type: 'string',
+          belong: 'item',
+          actions: ['reserve'],
+        },
+        {
+          name: '群號-群名稱',
+          type: 'string',
+          belong: 'item',
+          actions: ['reserve'],
+        },
+      ],
     };
 
     for (const field of defaultSchema.transactionFields) {
@@ -78,6 +99,14 @@ dotenv.config();
         })
         .toArray();
         field.values = [new Date(min[field.name]).toISOString(), new Date(max[field.name]).toISOString()];
+      }
+    }
+
+    for (const field of defaultSchema.itemFields) {
+      if (field.type === 'string') {
+        const values = await connection.db.collection('items')
+          .distinct(field.name, {});
+        field.values = values;
       }
     }
 
