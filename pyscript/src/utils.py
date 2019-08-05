@@ -4,8 +4,10 @@ def to_datetime(string):
     return datetime.strptime(string, '%Y-%m-%dT%H:%M:%S.000Z')
 
 def to_query(conditions):
-    default_query = {'items.1':
-        { '$exists': True }
+    default_query = {
+        'items.1': {
+            '$exists': True
+        }
     }
     promotions = []
     for condition in conditions:

@@ -1,5 +1,6 @@
 import igraph
 from itertools import filterfalse, combinations
+from pandas import Series
 
 from .product_network import ProductNerwork
 from .promotion import Promotion
@@ -101,8 +102,7 @@ class NetworkConverter:
         if self.method == 'frequency':
             return 1
 
-
-    def transform(self, support=0.0005):
+    def transform(self, support=0.001):
         if not self.is_done():
             raise Exception()
         support_total = 0
@@ -112,19 +112,20 @@ class NetworkConverter:
             edges = self.get_edges(transaction)
             number = len(edges)
             for edge in edges:
-                simple_edge = tuple(item['單品名稱'] for item in edge)
+                edge_one = tuple(item['單品名稱'] for item in edge)
+                edge_two = (edge_one[1], edge_one[0])
                 weight = self.weight(edge, transaction, number)
                 support_total += 1
-                if simple_edge in edge_dict or (simple_edge[1], simple_edge[0]) in edge_dict:
-                    edge_in_list = simple_edge if simple_edge in edge_dict else (
-                        simple_edge[1], simple_edge[0])
+                if edge_one in edge_dict or edge_two in edge_dict:
+                    edge_in_list = edge_one if edge_one in edge_dict else edge_two
                     edge_dict[edge_in_list]['count'] += 1
                     edge_dict[edge_in_list]['weight'] += weight
                 else:
-                    edge_dict[simple_edge] = {}
-                    edge_dict[simple_edge]['count'] = 1
-                    edge_dict[simple_edge]['weight'] = weight
-        support = support_total * support
+                    edge_dict[edge_one] = {}
+                    edge_dict[edge_one]['count'] = 1
+                    edge_dict[edge_one]['weight'] = weight
+        series = Series([edge['weight'] for edge in edge_dict.values()])
+        support = series.quantile(1 - support)
         for edge in list(edge_dict.keys()):
             if edge_dict[edge]['count'] < support:
                 del edge_dict[edge]
