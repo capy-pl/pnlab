@@ -19,7 +19,7 @@ describe('Test Auth API.', () => {
   });
 
   test('SignUp: Duplicate email.', async () => {
-    const response = await req.post('/auth/signup')
+    const response = await req.post('/api/auth/signup')
       .send({
         email: 'admin@gmail.com',
         password: '1234',
@@ -28,7 +28,7 @@ describe('Test Auth API.', () => {
   });
 
   test('SignUp: Missing argument.', async () => {
-    const response = await req.post('/auth/signup')
+    const response = await req.post('/api/auth/signup')
       .send({
         email: 'admin@gmail.com',
       });
@@ -36,7 +36,7 @@ describe('Test Auth API.', () => {
   });
 
   test('SignUp: Valid.', async () => {
-    const response = await req.post('/auth/signup')
+    const response = await req.post('/api/auth/signup')
       .send({
         email: 'apple@gmail.com',
         password: '1234',
@@ -51,7 +51,7 @@ describe('Test Auth API.', () => {
   });
 
   test('Login: Missing argument.', async () => {
-    const response = await req.post('/auth/login')
+    const response = await req.post('/api/auth/login')
     .send({
       email: 'admin@gmail.com',
     });
@@ -59,7 +59,7 @@ describe('Test Auth API.', () => {
   });
 
   test('Login: Email or password error.', async () => {
-    const response = await req.post('/auth/login')
+    const response = await req.post('/api/auth/login')
       .send({
         email: 'admin@gmail.com',
         password: '2223',
@@ -68,7 +68,7 @@ describe('Test Auth API.', () => {
   });
 
   test('Login: Valid.', async () => {
-    const response = await req.post('/auth/login')
+    const response = await req.post('/api/auth/login')
       .send({
         email: 'admin@gmail.com',
         password: 'admin',
@@ -81,18 +81,18 @@ describe('Test Auth API.', () => {
   });
 
   test('Valid: Without auth header.', async () => {
-    const response = await req.get('/auth/validate');
+    const response = await req.get('/api/auth/validate');
     expect(response.status).toEqual(401);
   });
 
   test('Valid: With Authentication header.', async () => {
-    const logInResponse = await req.post('/auth/login')
+    const logInResponse = await req.post('/api/auth/login')
       .send({
         email: 'admin@gmail.com',
         password: 'admin',
       });
     const { token } = logInResponse.body;
-    const response = await req.get('/auth/validate')
+    const response = await req.get('/api/auth/validate')
       .set('Authorization', `Bearer ${token}`);
     expect(response.status).toEqual(204);
   });
