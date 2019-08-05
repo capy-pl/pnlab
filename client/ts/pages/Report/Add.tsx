@@ -112,8 +112,8 @@ export default class Add extends PureComponent<RouteComponentProps, AddState> {
             conditions={this.state.conditions}
           />
           <ModalConfirmReport
-            header='Confirm'
-            content='Are you sure?'
+            header='新增一個Report'
+            content='請確認是否要新增一個Report？在沒有設定任何條件的情況下，有可能需要等候一些時間。'
             open={this.state.modalOpen}
             onCancel={this.onCancel}
             onConfirm={this.onConfirm}
@@ -122,7 +122,7 @@ export default class Add extends PureComponent<RouteComponentProps, AddState> {
               color='blue'
               fluid
               onClick={this.onAdd}
-            >Confirm
+            >新增
             </Button>
           </ModalConfirmReport>
         </Segment.Group>
