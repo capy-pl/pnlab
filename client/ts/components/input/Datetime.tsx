@@ -15,7 +15,7 @@ interface DatetimeInputState {
 }
 
 interface Option {
-  key: number;
+  key: string;
   text: number;
   value: number;
 }
@@ -34,7 +34,7 @@ class DatetimeInput extends React.PureComponent<DatetimeInputProps, DatetimeInpu
       };
     } else {
       this.state = {
-        year: 1970,
+        year: 1990,
         month: 1,
         day: 1,
       };
@@ -42,8 +42,8 @@ class DatetimeInput extends React.PureComponent<DatetimeInputProps, DatetimeInpu
   }
 
   public getYearOptions(): Option[] {
-    let start = 1970;
-    let end = 2200;
+    let start = 1990;
+    let end = 2040;
     const options: Option[] = [];
     if (this.props.yearStart) {
       start = this.props.yearStart;
@@ -54,7 +54,7 @@ class DatetimeInput extends React.PureComponent<DatetimeInputProps, DatetimeInpu
     for (let i = start; i <= end; i++ ) {
       options.push(
         {
-          key: i,
+          key: i.toString(),
           text: i,
           value: i,
         });
@@ -66,7 +66,7 @@ class DatetimeInput extends React.PureComponent<DatetimeInputProps, DatetimeInpu
     const options: Option[] = [];
     for (let i = 1; i < 13; i++) {
       options.push({
-        key: i,
+        key: i.toString(),
         text: i,
         value: i,
       });
@@ -89,7 +89,7 @@ class DatetimeInput extends React.PureComponent<DatetimeInputProps, DatetimeInpu
       options.push({
         text: i,
         value: i,
-        key: i,
+        key: i.toString(),
       });
     }
 

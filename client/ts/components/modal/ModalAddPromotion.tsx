@@ -15,8 +15,8 @@ interface ModalAddPromotionState {
   type: PromotionType;
   groupOne: string[];
   groupTwo: string[];
-  startTime?: Date;
-  endTime?: Date;
+  startTime: Date;
+  endTime: Date;
   error: boolean;
   errorMessage: string;
 }
@@ -36,13 +36,14 @@ export default class ModalAddPromotion extends React.PureComponent<ModalAddPromo
       type: 'direct',
       groupOne: [],
       groupTwo: [],
+      startTime: new Date(1990, 1, 1, 8),
+      endTime: new Date(1990, 1, 1, 8),
       errorMessage: '',
     };
 
     this.add = this.add.bind(this);
     this.show = this.show.bind(this);
     this.close = this.close.bind(this);
-    this.clear = this.clear.bind(this);
     this.nameChange = this.nameChange.bind(this);
     this.typeChange = this.typeChange.bind(this);
     this.groupOneChange = this.groupOneChange.bind(this);
@@ -64,15 +65,10 @@ export default class ModalAddPromotion extends React.PureComponent<ModalAddPromo
       type: 'direct',
       groupOne: [],
       groupTwo: [],
-    });
-  }
-
-  public clear() {
-    this.setState({
-      name: '',
-      type: 'direct',
-      groupOne: [],
-      groupTwo: [],
+      startTime: new Date(1990, 1, 1, 8),
+      endTime: new Date(1990, 1, 1, 8),
+      error: false,
+      errorMessage: '',
     });
   }
 
@@ -203,7 +199,6 @@ export default class ModalAddPromotion extends React.PureComponent<ModalAddPromo
           open={this.state.show}
           centered={false}
           closeOnDimmerClick={false}
-          onClose={this.clear}
         >
           <Modal.Header>新增促銷</Modal.Header>
           <Modal.Content>

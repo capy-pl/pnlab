@@ -23,4 +23,6 @@ class App extends PureComponent {
   }
 }
 
-export default hot(App);
+const PApp: typeof React.PureComponent = ENV === 'production' ? App : hot(App);
+
+export default PApp;
