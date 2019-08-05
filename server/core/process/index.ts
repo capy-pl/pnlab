@@ -14,9 +14,10 @@ export function startPythonWorker(): Promise<ChildProcess> {
 
     ps.on('exit', (code) => {
       if (code === 1) {
-        reject(new Error(`Python process exited with code ${code}`));
+        reject(new Error(`Python process exited with code ${code}.\
+  Please check your virtual environment or run python index.py to debug.`));
       } else {
-        Logger.info(`Python process exited with code ${code}`);
+        Logger.info(`Python process exited with code ${code}.`);
       }
     });
 
