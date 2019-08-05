@@ -1,29 +1,32 @@
-import { encryptPassword } from '../core/crypto';
-import Model from '../core/model';
+import mongoose, {PassportLocalDocument, PassportLocalModel, Schema  } from 'mongoose';
+import passportLocalMongoose from 'passport-local-mongoose';
+import { OrgSchema } from './Organization';
 
-export default class User extends Model {
-  public collectionName: string = 'users';
-  public username: string;
-  private hashedPassword!: string;
-  private salt!: string;
-  constructor(username: string) {
-    super();
-    if (!(username)) {
-      throw new Error('Username must be provided.');
-    }
-    this.username = username;
-  }
-
-  public async setPassword(password: string): Promise<void> {
-    const { hashedPassword, salt } = await encryptPassword(password);
-    this.hashedPassword = hashedPassword;
-    this.salt = salt;
-    return;
-  }
-
-  public save() {
-    if (!this.hashedPassword) {
-      throw new Error('Password must be set before saved.(only when create new user)');
-    }
-  }
+export interface UserSchemaInterface extends PassportLocalDocument {
+  email: string;
+  name: string;
+  org: OrgSchema;
 }
+
+const UserSchema = new Schema<UserSchemaInterface>({
+  email: {
+    type: String,
+    unique: true,
+  },
+  name: {
+    type: String,
+  },
+  org: {
+    ref: 'Org',
+    type: Schema.Types.ObjectId,
+  },
+});
+
+UserSchema.plugin(passportLocalMongoose, {
+  usernameField: 'email',
+});
+
+const User =
+  mongoose.model<UserSchemaInterface, PassportLocalModel<UserSchemaInterface>>('user', UserSchema);
+
+export default User;

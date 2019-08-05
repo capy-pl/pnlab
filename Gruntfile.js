@@ -3,21 +3,22 @@ module.exports = function(grunt) {
   const tslintConfig = {
     options: {
       configuration: './tslint.json',
-      fix: false
+      fix: true
     },
     client: {
       files: {
         src: [
-          './client/**/*.ts',
-          './spec/client/**/*.ts'
+          'client/ts/**/*.ts',
+          'client/ts/**/*.tsx',
+          'spec/client/**/*.ts'
         ]
       }
     },
     server: {
       files: {
         src: [
-          './server/**/*.ts',
-          './spec/server/**/*.ts'
+          'server/**/*.ts',
+          'spec/server/**/*.ts'
         ]
       }
     },
@@ -53,7 +54,7 @@ module.exports = function(grunt) {
       exitCode: 0,
     },
     initdb: {
-      command: 'node scripts/initdb.js',
+      command: 'ts-node scripts/initdb.ts',
       stdout: true,
       exitCode: 0,
     },

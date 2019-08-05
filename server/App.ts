@@ -1,21 +1,29 @@
 import compression from 'compression';
+import dotenv from 'dotenv';
 import express from 'express';
 import helmet from 'helmet';
+import morgan from 'morgan';
 import nunjucks from 'nunjucks';
 
-// relative import
-import errorHandler from './controllers/error';
+// import routes
+import API from './api';
+import { Logger } from './core/util';
+
+dotenv.config();
 
 const app = express();
 
 app.use(helmet());
 app.use(compression());
+if (!(process.env.NODE_ENV === 'test')) {
+  app.use(morgan('combined'));
+}
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static('templates'));
+app.set('views', 'server/templates');
 
 // Configure template engine.
-nunjucks.configure('views', {
+nunjucks.configure('server/templates', {
   autoescape: true,
   express: app,
 });
@@ -29,7 +37,7 @@ if (process.env.NODE_ENV === 'development') {
   } = require('../webpack.config.js');
   const compiler = webpack(clientConfig);
   app.use(devMiddleware(compiler, {
-    logLevel: 'info',
+    logLevel: 'error',
     publicPath: clientConfig.output.publicPath,
     stats: {
       colors: true,
@@ -51,10 +59,26 @@ app.use('/', express.static('static', {
   maxAge: '0.5y',
 }));
 
-app.get('/', (req, res) => {
+// Register Router
+app.use('/api/auth', API.Auth);
+app.use('/api/user', API.User);
+app.use('/api/report', API.Report);
+app.use('/api/category', API.Category);
+app.use('/api/promotion', API.Promotion);
+app.use('/api/analysis', API.Analysis);
+
+app.get('/*', (req, res) => {
   res.render('index.html');
 });
 
-app.use(errorHandler);
+app.use((
+  err: Error,
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction,
+) => {
+    Logger.error(err);
+    res.status(500);
+  });
 
 export default app;
