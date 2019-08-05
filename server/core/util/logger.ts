@@ -56,13 +56,13 @@ class Logger {
 
   private logError(level: string, message: string): void {
     if (levelMap[this.level] <= levelMap[level]) {
-      console.log(`${Color.FgRed}[${moment().format()}] ${level} ${message}${Color.Reset}`);
+      console.log(`${Color.FgRed}[${moment().format()}] ${level.toUpperCase()} ${message}${Color.Reset}`);
     }
   }
 
   private log(level: string, message: string): void {
     if (levelMap[this.level] <= levelMap[level]) {
-      console.log(`[${moment().format()}] ${level} ${message}`);
+      console.log(`[${moment().format()}] ${level.toUpperCase()} ${message}`);
     }
   }
 }
