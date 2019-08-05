@@ -18,20 +18,32 @@ dotenv.config();
     try {
       await connection.dropCollection('users');
     } catch (err) {
-      Logger.log('No default users collection, continue.');
+      Logger.info('No default users collection, continue.');
     }
 
     // drop organization
     try {
       await connection.dropCollection('orgs');
     } catch (err) {
-      Logger.log('No default users collection, continue.');
+      Logger.info('No default users collection, continue.');
     }
 
     try {
       await connection.dropCollection('reports');
     } catch (err) {
-      Logger.log('No default report, continue.');
+      Logger.info('No default report, continue.');
+    }
+
+    try {
+      await connection.dropCollection('analyses');
+    } catch (err) {
+      Logger.info('No default analyses, continue.');
+    }
+
+    try {
+      await connection.dropCollection('promotions');
+    } catch (err) {
+      Logger.info('No default promotions, continue.');
     }
 
     const defaultSchema: ImportSchemaInterface = {
@@ -125,8 +137,8 @@ dotenv.config();
     });
     await admin.setPassword('admin');
     await admin.save();
-    Logger.log('Default user has been created.');
+    Logger.info('Default user has been created.');
     await connection.close();
-    Logger.log('Close mongo connection');
+    Logger.info('Close mongo connection.');
   }
 })();
