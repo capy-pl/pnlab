@@ -46,7 +46,7 @@ export default class SettingMenu extends PureComponent<{}, SettingMenuState> {
             active={this.state.activeItem === 'Promotion'}
             onClick={this.onClick}
           >
-            Promotion
+            促銷
           </Menu.Item>
       </Menu>
       );

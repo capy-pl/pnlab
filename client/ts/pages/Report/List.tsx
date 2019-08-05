@@ -85,16 +85,16 @@ class ReportList extends PureComponent<RouteComponentProps, ReportListState> {
           style={{ margin: '10px'}}
           onClick={this.onLinkClick('add')}
         >
-          Add Report
+          新增Report
         </Button>
         <Table selectable color='blue'>
           <Table.Header>
             <Table.Row>
-              <Table.HeaderCell width='1' textAlign='center'>Status</Table.HeaderCell>
-              <Table.HeaderCell width='2' textAlign='center'>Start Time</Table.HeaderCell>
-              <Table.HeaderCell width='2' textAlign='center'>End Time</Table.HeaderCell>
-              <Table.HeaderCell width='5' textAlign='center'>Conditions</Table.HeaderCell>
-              <Table.HeaderCell width='2' textAlign='center'>Link</Table.HeaderCell>
+              <Table.HeaderCell width='1' textAlign='center'>狀態</Table.HeaderCell>
+              <Table.HeaderCell width='2' textAlign='center'>開始時間</Table.HeaderCell>
+              <Table.HeaderCell width='2' textAlign='center'>結束時間</Table.HeaderCell>
+              <Table.HeaderCell width='5' textAlign='center'>條件</Table.HeaderCell>
+              <Table.HeaderCell width='2' textAlign='center' />
             </Table.Row>
           </Table.Header>
           <Table.Body>
