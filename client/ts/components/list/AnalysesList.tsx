@@ -16,12 +16,6 @@ const Analyses = ({ item, onButtonClick }: AnalysisItemProps) => {
       <Table.Cell textAlign='center'>
         {item.title}
       </Table.Cell>
-      <Table.Cell textAlign='center'>
-        {item.description}
-      </Table.Cell>
-      <Table.Cell textAlign='center'>
-        {item.comments}
-      </Table.Cell>
       <Table.Cell>
         {item.created}
       </Table.Cell>
