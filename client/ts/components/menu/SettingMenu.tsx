@@ -40,7 +40,7 @@ export default class SettingMenu extends PureComponent<{}, SettingMenuState> {
             個人資訊
           </Menu.Item>
           <Menu.Item
-            name='促銷'
+            name='Promotion'
             as={Link}
             to='/settings/promotion'
             active={this.state.activeItem === 'Promotion'}
