@@ -9,9 +9,17 @@ const stories = storiesOf('Input', module);
 stories
   .add(
     'DatetimeInput', () => {
-      const onChange = (date: Date) => {
+      const onChange = (e, date: Date) => {
         console.log(date.toISOString());
       };
-      return <DatetimeInput onChange={onChange}/>;
+      const start = new Date(2017, 11, 1);
+      const end = new Date(2017, 11, 31);
+      return (
+        <DatetimeInput
+          min={start}
+          max={end}
+          onChange={onChange}
+        />
+      );
     },
   );

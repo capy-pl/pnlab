@@ -4,9 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 import 'semantic-ui-css/semantic.min.css';
 
 import {
-  DropdownMenu,
   Navbar,
-  SecondaryNavbar,
   SettingMenu,
 } from 'Component/menu';
 
@@ -26,12 +24,4 @@ stories
     ))
   .add('Setting Menu', () => (
     <SettingMenu />
-  ))
-  .add(
-    'Secondary Navigation Bar', () => (
-      <SecondaryNavbar />
-  ))
-  .add(
-    'Dropdown Menu', () => (
-      <DropdownMenu />
   ));
