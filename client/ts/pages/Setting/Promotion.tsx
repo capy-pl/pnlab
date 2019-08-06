@@ -59,7 +59,7 @@ export default class PromotionPage extends PureComponent<RouteComponentProps, Pr
     return (
       <React.Fragment>
         <ModalAddPromotion onAdd={this.load} />
-        <Table selectable color='blue'>
+        <Table selectable color='teal'>
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell width='1' textAlign='center'>促銷名稱</Table.HeaderCell>

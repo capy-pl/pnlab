@@ -90,7 +90,6 @@ const Item = ({ item, onLinkClick }: ItemProps) => {
       <Table.Cell>
         <Button
           content='View Detail'
-          color='blue'
           icon='right arrow'
           labelPosition='right'
           disabled={item.status === 'success' ? false : true}

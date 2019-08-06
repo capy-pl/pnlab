@@ -182,7 +182,8 @@ export default class ModalAddPromotion extends React.PureComponent<ModalEditProm
     return (
       <React.Fragment>
         <Button
-          color='green'
+          color='blue'
+          size='small'
           onClick={this.show}
           icon='edit'
           style={{ marginBottom: '5px' }}
