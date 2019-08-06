@@ -1,10 +1,15 @@
 import axios from 'axios';
 
 export type ConditionType = 'string' | 'int' | 'date' | 'float' | 'promotion';
+export type ConditionAction = 'reserve' | 'delete' | 'promotion';
+export type ConditionBelong = 'transaction' | 'item' | 'promotion';
+
 export interface Condition {
   name: string;
   type: ConditionType;
   values: string[];
+  actions: ConditionAction[];
+  belong: ConditionBelong;
 }
 
 export interface Node {

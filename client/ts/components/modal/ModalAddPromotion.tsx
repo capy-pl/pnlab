@@ -193,7 +193,7 @@ export default class ModalAddPromotion extends React.PureComponent<ModalAddPromo
           floated='right'
           style={{ marginBottom: '5px' }}
         >
-          新增
+          新增促銷
         </Button>
         <Modal
           open={this.state.show}
