@@ -10,6 +10,23 @@
 		"fdev": "ts-node server/index.ts",
 		"storybook": "start-storybook"
 	},
+	"nodemonConfig": {
+		"watch": ["server"],
+		"ext": "ts",
+		"ignore": ["spec/**/*.spec.ts"],
+		"exec": "ts-node ./server/index.ts"
+	},
+	"jest": {
+		"preset": "ts-jest",
+		"testEnvironment": "node",
+		"globals": {
+			"ts-jest": {
+				"diagnostics": {
+					"ignoreCodes": [2688]
+				}
+			}
+		}
+	},
 	"license": "ISC",
 	"dependencies": {
 		"amqplib": "^0.5.3",
