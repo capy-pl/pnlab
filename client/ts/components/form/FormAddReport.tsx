@@ -10,7 +10,6 @@ import {
 } from 'semantic-ui-react';
 
 import { DatetimeInput } from 'Component/';
-import { ModalConfirmReport } from 'Component/modal';
 import { Condition } from '../../PnApp/model/Report';
 
 interface FormAddReportInputProps {
@@ -162,7 +161,7 @@ class FormAddReport extends PureComponent<FormAddReportProps, FormAddReportState
       conditions: [],
     };
 
-    // TODO: Should condition.actions to categorize. 懶得弄zz
+    // TODO: Should use condition.actions to categorize. 懶得弄zz
     for (const condition of conditions) {
       if (condition.type === 'string') {
         add.conditions.push(condition);
@@ -235,7 +234,7 @@ class FormAddReport extends PureComponent<FormAddReportProps, FormAddReportState
             disabled={this.state.counter === 0}
           >
             <Icon name='arrow left' />
-            Previous
+            前一步
           </Button>
           <Button
             icon
@@ -244,7 +243,7 @@ class FormAddReport extends PureComponent<FormAddReportProps, FormAddReportState
             disabled={this.state.counter === this.types.length - 1}
           >
             <Icon name='arrow right' />
-            Next
+            下一步
           </Button>
         </Button.Group>
           <Part

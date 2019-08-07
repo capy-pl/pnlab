@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import {
-  Button,
   Container,
   DropdownProps,
   Segment,
