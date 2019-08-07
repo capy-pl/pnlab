@@ -12,6 +12,7 @@
 	},
 	"license": "ISC",
 	"dependencies": {
+		"@babel/plugin-proposal-class-properties": "^7.5.5",
 		"@babel/plugin-transform-runtime": "7.4.3",
 		"@babel/runtime": "7.4.3",
 		"@types/moment": "^2.13.0",
@@ -46,6 +47,7 @@
 		"semantic-ui-css": "2.4.1",
 		"semantic-ui-react": "0.81.3",
 		"typescript": "3.2.2",
+		"uglifyjs-webpack-plugin": "^2.2.0",
 		"url-loader": "1.1.2",
 		"vis": "4.21.0",
 		"webpack-cli": "3.2.0",

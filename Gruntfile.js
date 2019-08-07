@@ -1,5 +1,6 @@
 module.exports = function(grunt) {
-  const { clientConfig, serverConfig } = require('./webpack.config');
+  const devConfig = require('./config/webpack.dev');
+  const prodConfig = require('./config/webpack.prod');
   const tslintConfig = {
     options: {
       configuration: './tslint.json',
@@ -25,10 +26,16 @@ module.exports = function(grunt) {
   };
 
   const webpackConfig = {
-      serverWatch: Object.assign({ watch: true }, serverConfig),
-      clientWatch: Object.assign({ watch: true }, clientConfig),
-      server: serverConfig,
-      client: clientConfig,
+      serverWatch: Object.assign({
+        watch: true
+      }, devConfig.serverConfig),
+      clientWatch: Object.assign({
+        watch: true
+      }, devConfig.clientConfig),
+      server: devConfig.serverConfig,
+      client: devConfig.clientConfig,
+      prodServer: prodConfig.serverConfig,
+      prodClient: prodConfig.clientConfig,
     };
 
   const execConfig = {
@@ -69,6 +76,8 @@ module.exports = function(grunt) {
   grunt.task.registerTask('watch:client', ['webpack:clientWatch']);
   grunt.task.registerTask('build:client', ['webpack:client']);
   grunt.task.registerTask('build:server', ['webpack:server']);
+  grunt.task.registerTask('build:prodServer', ['webpack:prodServer']);
+  grunt.task.registerTask('build:prodClient', ['webpack:prodClient']);
   grunt.task.registerTask('build', ['tslint', 'webpack:client', 'webpack:server']);
   grunt.task.registerTask('test', ['tslint', 'exec:test']);
   grunt.task.registerTask('test:client', ['tslint:client', 'exec:testClient']);
