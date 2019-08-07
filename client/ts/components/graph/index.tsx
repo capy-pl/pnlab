@@ -9,8 +9,13 @@ interface GraphNode extends Node, NodeOptions {
 interface GraphEdge extends Edge, EdgeOptions {
 }
 
-const style = {
-  height: '800px',
+const customScalingFunction = (min: number, max: number, total: number, value: number): number => {
+  if (max === min) {
+    return 0.03;
+  } else {
+    const scale = 1 / (max - min);
+    return Math.max(0, (value - min) * scale);
+  }
 };
 
 interface GraphProps {
@@ -81,7 +86,6 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
 
   public updateNodes() {
     const nodes = this.network.body.data.nodes;
-
     if (this.props.selectedCommunities) {
       const communitiesIdList = this.props.selectedCommunities.map((community: Community) => {
         return (community.id);
@@ -112,16 +116,23 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
       nodes.update(communities);
     }
 
-    const selectProduct = [];
+    const selectProduct: GraphNode[] = [];
     if (this.props.selectedProduct) {
       // highlight node & show connected products
       let connectedNodes;
       const connectedNodesList: number[] = [];
       nodes.forEach((node) => {
-        if (this.props.selectedProduct[0].name === node.name) {
+        if (this.props.selectedProduct && this.props.selectedProduct[0].name === node.name) {
           connectedNodesList.push(node.id);
-          selectProduct.push({id: node.id, color: {background: 'orange', hover: 'orange', highlight: 'orange'}});
-          connectedNodes = this.network.getConnectedNodes(node.id);
+          selectProduct.push({
+            id: node.id,
+            color: {
+              background: 'orange',
+              hover: 'orange',
+              highlight: 'orange',
+            },
+          } as any);
+          connectedNodes = (this.network as Network).getConnectedNodes(node.id);
         }
       });
       for (const c of connectedNodes) {
@@ -130,7 +141,15 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
       nodes.forEach((node) => {
         if (!connectedNodesList.includes(node.id)) {
           // lighten the colors of unselected nodes
-          selectProduct.push({id: node.id, color: {background: '#D3E7FF', border: '#D3E7FF'}, label: ' '});
+          selectProduct.push({
+            id: node.id,
+            color:
+              {
+                background: '#D3E7FF',
+                border: '#D3E7FF',
+              },
+            label: ' ',
+          } as any);
         }
       });
       nodes.update(selectProduct);
@@ -199,14 +218,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
           edges: {
             smooth: false,
             scaling: {
-              customScalingFunction: (min, max, total, value) => {
-                if (max === min) {
-                  return 0.03;
-                } else {
-                  const scale = 1 / (max - min);
-                  return Math.max(0, (value - min) * scale);
-                }
-              },
+              customScalingFunction,
               max: 30,
               min: 1,
             },
@@ -217,14 +229,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
           },
           nodes: {
             scaling: {
-              customScalingFunction: (min, max, total, value) => {
-                if (max === min) {
-                  return 0.03;
-                } else {
-                  const scale = 1 / (max - min);
-                  return Math.max(0, (value - min) * scale);
-                }
-              },
+              customScalingFunction,
               label: {
                 enabled: true,
               },

@@ -28,7 +28,7 @@ export default class SettingMenu extends PureComponent<{}, SettingMenuState> {
             active={this.state.activeItem === 'Setting'}
             onClick={this.onClick}
           >
-            Setting
+            設定
           </Menu.Item>
           <Menu.Item
             name='Profile'
@@ -37,7 +37,7 @@ export default class SettingMenu extends PureComponent<{}, SettingMenuState> {
             to='/settings/profile'
             as={Link}
           >
-            Profile
+            個人資訊
           </Menu.Item>
           <Menu.Item
             name='Promotion'
@@ -46,7 +46,7 @@ export default class SettingMenu extends PureComponent<{}, SettingMenuState> {
             active={this.state.activeItem === 'Promotion'}
             onClick={this.onClick}
           >
-            Promotion
+            促銷
           </Menu.Item>
       </Menu>
       );

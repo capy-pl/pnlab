@@ -15,7 +15,7 @@ export default async function connectMongo(): Promise<mongoose.Connection | unde
     const connection = await mongoose.connect(`mongodb://127.0.0.1:${MONGO_PORT}/${MONGO_DB_NAME}`, {
       useNewUrlParser: true,
     });
-    Logger.log('Successfully connect to mongodb.');
+    Logger.info('Successfully connect to mongodb.');
     return connection.connection;
   } catch (err) {
     Logger.error(err);
@@ -29,7 +29,7 @@ export async function connectTestMongo(): Promise<mongoose.Connection | undefine
     const connection = await mongoose.connect(`mongodb://127.0.0.1:${MONGO_PORT}/${MONGO_DB_NAME}_test`, {
       useNewUrlParser: true,
     });
-    Logger.log('Successfully connect to mongodb.');
+    Logger.info('Successfully connect to mongodb.');
     return connection.connection;
   } catch (err) {
     Logger.error(err);

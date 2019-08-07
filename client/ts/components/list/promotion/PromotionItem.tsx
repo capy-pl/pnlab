@@ -8,21 +8,6 @@ interface PromotionItemProps {
   onSave: () => Promise<void>;
 }
 
-const COLORS = [
-  'orange',
-  'yellow',
-  'olive',
-  'green',
-  'teal',
-  'blue',
-  'violet',
-  'purple',
-  'pink',
-  'brown',
-  'grey',
-  'black',
-];
-
 const PromotionItem = ({ promotion, onSave }: PromotionItemProps) => {
   return (
     <Table.Row

@@ -2,39 +2,46 @@ const dotenv = require('dotenv');
 const path = require('path');
 const nodeExternals = require('webpack-node-externals');
 const webpack = require('webpack');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 dotenv.config();
 
 const baseConfig = {
-  mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
+  mode: 'production',
   devtool: "cheap-module-eval-source-map",
   stats: {
     errors: true,
   },
+  optimization: {
+    minimizer: [new UglifyJsPlugin({
+      parallel: true,
+    })],
+    splitChunks: {
+      chunks: 'all'
+    }
+  }
 };
 
 const clientConfig = {
-  entry:{
-    client: 
-    [
-      './client/ts/index.tsx',
+  entry: {
+    client: [
+      path.resolve(__dirname, '..', 'client', 'ts', 'index.tsx'),
       'webpack-hot-middleware/client?reload=true&&noInfo=true',
     ]
   },
   resolve: {
     alias: {
-      Component: path.resolve(__dirname, 'client', 'ts', 'components'),
+      Component: path.resolve(__dirname, '..', 'client', 'ts', 'components'),
     },
     extensions: ['.ts', '.js', '.jsx', '.tsx', '.json', '.scss', '.css'],
   },
   output: {
-    path: path.resolve(__dirname, 'dist', 'client'),
+    path: path.resolve(__dirname, '..', 'dist', 'client'),
     filename: '[name].bundle.js',
     publicPath: '/static'
   },
   module: {
-    rules: [
-      {
+    rules: [{
         test: /\.tsx?/,
         loader: 'babel-loader',
         exclude: /node_modules/,
@@ -76,21 +83,20 @@ const clientConfig = {
 const serverConfig = {
   target: 'node',
   entry: {
-    server: './server/index.ts',
+    server: path.resolve(__dirname, '..', 'server', 'index.ts')
   },
   resolve: {
     extensions: ['.ts', '.js', '.json'],
   },
   module: {
     rules: [{
-        test: /\.ts/,
-        loader: 'babel-loader',
-        exclude: /node_modules/,
-      },
-    ],
+      test: /\.ts/,
+      loader: 'babel-loader',
+      exclude: /node_modules/,
+    }, ],
   },
   output: {
-    path: path.resolve(__dirname, 'dist', 'server'),
+    path: path.resolve(__dirname, '..', 'dist', 'server'),
     filename: '[name].bundle.js',
   },
   externals: [nodeExternals()]

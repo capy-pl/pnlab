@@ -45,7 +45,7 @@ class Navbar extends PureComponent<RouteComponentProps, MenuState> {
             as={Link}
             active={activeItem === 'home'}
           >
-           Home
+           首頁
           </Menu.Item>
           <Menu.Item
             name={'analysis'}
@@ -63,10 +63,10 @@ class Navbar extends PureComponent<RouteComponentProps, MenuState> {
                   as={Link}
                   to='/settings'
                 >
-                  Setting
+                  設定
                 </Dropdown.Item>
                 <Dropdown.Item onClick={this.logout}>
-                  Log out
+                  登出
                 </Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>

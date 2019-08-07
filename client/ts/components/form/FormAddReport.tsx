@@ -10,6 +10,7 @@ import {
   SemanticCOLORS,
 } from 'semantic-ui-react';
 
+import { DatetimeInput } from 'Component/';
 import { Condition } from '../../PnApp/model/Report';
 
 interface FormAddReportInputProps {
@@ -41,6 +42,13 @@ const FormAddReportInput = ({ condition, onChange, defaultValue }: FormAddReport
           options={options}
         />
       </Segment>
+    );
+  } else if (condition.type === 'date') {
+    return (
+    <Segment color='grey'>
+      <Header block>開始時間</Header>
+      <Header block>結束時間</Header>
+    </Segment>
     );
   } else {
     return <React.Fragment />;
@@ -145,6 +153,7 @@ class FormAddReport extends PureComponent<FormAddReportProps, FormAddReportState
       conditions: [],
     };
 
+    // TODO: Should condition.actions to categorize. 懶得弄zz
     for (const condition of conditions) {
       if (condition.type === 'string') {
         add.conditions.push(condition);
