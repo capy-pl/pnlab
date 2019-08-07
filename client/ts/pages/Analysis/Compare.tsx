@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
-import { Button, Checkbox, Divider, Dropdown, DropdownProps, Menu } from 'semantic-ui-react';
+import { Button, Checkbox, Divider, Dropdown, DropdownProps, Grid, Header, Menu } from 'semantic-ui-react';
 
-import { DropdownSearchItem, SearchSingleItemDropdown } from '../../components/dropdown';
+import { SearchSingleItemDropdown } from '../../components/dropdown';
 import { GraphView2 } from '../../components/graph2/index';
 import Loader from '../../components/Loader';
 import ComparePortal from '../../components/portal/index';
@@ -40,7 +40,6 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
     };
     this.handleOpen = this.handleOpen.bind(this);
     this.handleClose = this.handleClose.bind(this);
-    this.onItemSearch = this.onItemSearch.bind(this);
     this.onSingleItemSearch = this.onSingleItemSearch.bind(this);
     this.toggleShowCommunity = this.toggleShowCommunity.bind(this);
   }
@@ -90,10 +89,6 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
     this.setState({ open: true });
   }
 
-  public onItemSearch(event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) {
-    this.setState({searchItems: data.value});
-  }
-
   public onSingleItemSearch(event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) {
     for (const node of this.state.shareNodes) {
       if (node.name === data.value) {
@@ -126,14 +121,7 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
         });
         return (
           <React.Fragment>
-            <div style={{position: 'absolute', minWidth: '20%', zIndex: 1001}}>
-              <DropdownSearchItem
-                options={dropdownOption}
-                placeholder='搜尋共同商品'
-                onChange={this.onItemSearch}
-              />
-            </div>
-            <div style={{position: 'absolute', right: 600, minWidth: '20%', zIndex: 1001}}>
+            <div style={{position: 'relative', left: '50%', zIndex: 1001, display: 'inline'}}>
               <Menu
                 compact
               >
@@ -146,38 +134,42 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
                 </Dropdown.Item>
               </Menu>
             </div>
-            <div style={{position: 'absolute', right: 0, minWidth: '20%', zIndex: 1001}}>
+            <div style={{position: 'fixed', minWidth: '15%', right: 0, zIndex: 1001, display: 'inline'}}>
               <SearchSingleItemDropdown
                 options={dropdownOption}
                 placeholder='搜尋共同商品'
                 onChange={this.onSingleItemSearch}
               />
             </div>
-            <div style={{display: 'flex', justifyContent: 'center', position: 'relative'}}>
-              <div>
-                <GraphView2
-                  nodes={this.state.reportA.nodes}
-                  edges={this.state.reportA.edges}
-                  searchItems={this.state.searchItems}
-                  selectedProduct={this.state.selectedProduct}
-                  showCommunity={this.state.showCommunity}
-                />
-              </div>
-              <Divider vertical>
-                <Button onClick={this.handleOpen}>
-                  A vs B
-                </Button>
-              </Divider>
-              <div>
-                <GraphView2
-                  nodes={this.state.reportB.nodes}
-                  edges={this.state.reportB.edges}
-                  searchItems={this.state.searchItems}
-                  selectedProduct={this.state.selectedProduct}
-                  showCommunity={this.state.showCommunity}
-                />
-              </div>
-            </div>
+            <Grid columns='two' divided>
+              <Grid.Row>
+                <Grid.Column>
+                  <Header as='h3' dividing textAlign='left'>
+                    {this.state.analysisA.title}
+                  </Header>
+                  <GraphView2
+                    nodes={this.state.reportA.nodes}
+                    edges={this.state.reportA.edges}
+                    searchItems={this.state.searchItems}
+                    selectedProduct={this.state.selectedProduct}
+                    showCommunity={this.state.showCommunity}
+                  />
+                </Grid.Column>
+                <Grid.Column>
+                  <Header as='h3' dividing textAlign='left'>
+                    {this.state.analysisB.title}
+                  </Header>
+                  <GraphView2
+                    nodes={this.state.reportB.nodes}
+                    edges={this.state.reportB.edges}
+                    searchItems={this.state.searchItems}
+                    selectedProduct={this.state.selectedProduct}
+                    showCommunity={this.state.showCommunity}
+                  />
+                </Grid.Column>
+              </Grid.Row>
+            </Grid>
+
             <ComparePortal
               open={this.state.open}
               nodesA={this.state.nodesA}

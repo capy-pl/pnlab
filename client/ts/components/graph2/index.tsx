@@ -10,7 +10,8 @@ interface GraphEdge extends Edge, EdgeOptions {
 
 const style = {
   height: '800px',
-  width: '900px',
+  width: '100%',
+  margin: '0 auto',
 };
 
 interface GraphProps {
