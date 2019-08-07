@@ -11,6 +11,11 @@ const baseConfig = {
   stats: {
     errors: true,
   },
+  optimization: {
+    splitChunks: {
+      chunks: 'all'
+    }
+  }
 };
 
 const clientConfig = {
