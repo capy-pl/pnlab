@@ -6,7 +6,7 @@ import FormAddReport from 'Component/form/FormAddReport';
 import Loader from 'Component/Loader';
 import { ModalConfirmReport } from 'Component/modal';
 import { Report } from '../../PnApp/model';
-import { Condition, ConditionType } from '../../PnApp/model/Report';
+import { Condition } from '../../PnApp/model/Report';
 
 interface AddState {
   loading: boolean;
@@ -55,16 +55,18 @@ export default class Add extends PureComponent<RouteComponentProps, AddState> {
   }
 
   public transformArgsToCondition(): Condition[] {
-    const conditionTypeMap = new Map<string, string>();
+    const conditionTypeMap = new Map<string, Condition>();
     const conditionList: Condition[] = [];
     for (const condition of this.state.conditions) {
-      conditionTypeMap.set(condition.name, condition.type);
+      conditionTypeMap.set(condition.name, condition);
     }
     for (const name in this.state.conditionArgs) {
       if (conditionTypeMap.get(name)) {
         const condition = {
-          type: conditionTypeMap.get(name) as ConditionType,
+          type: (conditionTypeMap.get(name) as Condition).type,
           name,
+          belong: (conditionTypeMap.get(name) as Condition).belong,
+          actions: [],
           values: this.state.conditionArgs[name],
         };
         conditionList.push(condition);
@@ -73,15 +75,14 @@ export default class Add extends PureComponent<RouteComponentProps, AddState> {
     return conditionList;
   }
 
-  public onConfirm() {
+  public async onConfirm() {
     this.setState({
       modalOpen: false,
       loading: true,
-    });
-    Report.add(this.transformArgsToCondition())
-      .then(() => {
+    }, async () => {
+        await Report.add(this.transformArgsToCondition());
         this.props.history.push('/');
-      });
+    });
   }
 
   public onCancel() {
@@ -111,8 +112,8 @@ export default class Add extends PureComponent<RouteComponentProps, AddState> {
             conditions={this.state.conditions}
           />
           <ModalConfirmReport
-            header='Confirm'
-            content='Are you sure?'
+            header='新增一個Report'
+            content='請確認是否要新增一個Report？在沒有設定任何條件的情況下，有可能需要等候一些時間。'
             open={this.state.modalOpen}
             onCancel={this.onCancel}
             onConfirm={this.onConfirm}
@@ -121,7 +122,7 @@ export default class Add extends PureComponent<RouteComponentProps, AddState> {
               color='blue'
               fluid
               onClick={this.onAdd}
-            >Confirm
+            >新增
             </Button>
           </ModalConfirmReport>
         </Segment.Group>

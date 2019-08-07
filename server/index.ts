@@ -26,9 +26,9 @@ server.listen(process.env.PORT, async () => {
   }
   await Promise.all([amqpConnect(), dbConnect()]);
   startSocketServer(server, () => {
-    Logger.log('Websocket server is listening.');
+    Logger.info('Websocket server is listening.');
   });
-  Logger.log(`Server is available on 127.0.0.1:${process.env.PORT}`);
+  Logger.info(`Server is available on 127.0.0.1:${process.env.PORT}`);
 });
 
 server.on('error', (err) => {

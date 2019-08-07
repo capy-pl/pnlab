@@ -1,4 +1,5 @@
 import json
+from math import ceil
 
 class ProductNerwork:
     def __init__(self, graph):
@@ -55,9 +56,12 @@ class ProductNerwork:
         return communities
 
     def get_hooks(self):
-        betweeness = self.graph.betweenness(weights='weight')
+        betweeness = self.graph.betweenness()
         ls = [(self.graph.vs[index], value) for index, value in enumerate(betweeness)]
-        sorted_ls = list(filter(lambda x: x[0]['core'] and x[1] > 0, sorted(ls, key=lambda x: x[1], reverse=True)))
+        sorted_ls = list(filter(lambda x: x[1] > 0, sorted(ls, key=lambda x: x[1], reverse=True)))
+        nums = ceil(int(len(sorted_ls) * 0.3))
+        nums = nums if nums > 1 else 1
+        sorted_ls = sorted_ls[:nums]
         connectors = []
         for vx, _ in sorted_ls:
             connected_communities = set()

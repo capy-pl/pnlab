@@ -18,40 +18,73 @@ dotenv.config();
     try {
       await connection.dropCollection('users');
     } catch (err) {
-      Logger.log('No default users collection, continue.');
+      Logger.info('No default users collection, continue.');
     }
 
     // drop organization
     try {
       await connection.dropCollection('orgs');
     } catch (err) {
-      Logger.log('No default users collection, continue.');
+      Logger.info('No default users collection, continue.');
     }
 
     try {
       await connection.dropCollection('reports');
     } catch (err) {
-      Logger.log('No default report, continue.');
+      Logger.info('No default report, continue.');
+    }
+
+    try {
+      await connection.dropCollection('analyses');
+    } catch (err) {
+      Logger.info('No default analyses, continue.');
+    }
+
+    try {
+      await connection.dropCollection('promotions');
+    } catch (err) {
+      Logger.info('No default promotions, continue.');
     }
 
     const defaultSchema: ImportSchemaInterface = {
       transactionFields: [{
         name: '餐別帶',
         type: 'string',
+        belong: 'transaction',
+        actions: ['reserve'],
       }, {
         name: '縣市別',
         type: 'string',
+        belong: 'transaction',
+        actions: ['reserve'],
       }, {
         name: '主商圈',
         type: 'string',
+        belong: 'transaction',
+        actions: ['reserve'],
       }, {
         name: '資料日期與時間',
         type: 'date',
+        belong: 'transaction',
+        actions: ['reserve'],
       }],
       amountName: '交易金額',
       itemName: '單品名稱',
       transactionName: '交易id',
-      itemFields: [],
+      itemFields: [
+        {
+          name: '品號-品名稱',
+          type: 'string',
+          belong: 'item',
+          actions: ['reserve'],
+        },
+        {
+          name: '群號-群名稱',
+          type: 'string',
+          belong: 'item',
+          actions: ['reserve'],
+        },
+      ],
     };
 
     for (const field of defaultSchema.transactionFields) {
@@ -81,6 +114,14 @@ dotenv.config();
       }
     }
 
+    for (const field of defaultSchema.itemFields) {
+      if (field.type === 'string') {
+        const values = await connection.db.collection('items')
+          .distinct(field.name, {});
+        field.values = values;
+      }
+    }
+
     const defaultOrg = new Organization({
       name: 'nccu',
       dbName: 'nccu',
@@ -96,8 +137,8 @@ dotenv.config();
     });
     await admin.setPassword('admin');
     await admin.save();
-    Logger.log('Default user has been created.');
+    Logger.info('Default user has been created.');
     await connection.close();
-    Logger.log('Close mongo connection');
+    Logger.info('Close mongo connection.');
   }
 })();
