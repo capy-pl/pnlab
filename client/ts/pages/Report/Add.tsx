@@ -1,6 +1,10 @@
 import React, { PureComponent } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { Button, Container, DropdownProps, Segment } from 'semantic-ui-react';
+import {
+  Container,
+  DropdownProps,
+  Segment,
+} from 'semantic-ui-react';
 
 import FormAddReport from 'Component/form/FormAddReport';
 import Loader from 'Component/Loader';
@@ -107,6 +111,7 @@ export default class Add extends PureComponent<RouteComponentProps, AddState> {
       <Container>
         <Segment.Group>
           <FormAddReport
+            onAdd={this.onAdd}
             defaultValues={this.state.conditionArgs}
             onChange={this.onChange}
             conditions={this.state.conditions}
@@ -117,14 +122,7 @@ export default class Add extends PureComponent<RouteComponentProps, AddState> {
             open={this.state.modalOpen}
             onCancel={this.onCancel}
             onConfirm={this.onConfirm}
-          >
-            <Button
-              color='blue'
-              fluid
-              onClick={this.onAdd}
-            >新增
-            </Button>
-          </ModalConfirmReport>
+          />
         </Segment.Group>
       </Container>
     );
