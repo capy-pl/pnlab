@@ -120,10 +120,10 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
     if (this.props.selectedProduct) {
       // highlight node & show connected products
       let connectedNodes;
-      const connectedNodesList: number[] = [];
       nodes.forEach((node) => {
         if (this.props.selectedProduct && this.props.selectedProduct[0].name === node.name) {
-          connectedNodesList.push(node.id);
+          connectedNodes = (this.network as Network).getConnectedNodes(node.id);
+          connectedNodes.push(node.id);
           selectProduct.push({
             id: node.id,
             color: {
@@ -132,14 +132,10 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
               highlight: 'orange',
             },
           } as any);
-          connectedNodes = (this.network as Network).getConnectedNodes(node.id);
         }
       });
-      for (const c of connectedNodes) {
-        connectedNodesList.push(c);
-      }
       nodes.forEach((node) => {
-        if (!connectedNodesList.includes(node.id)) {
+        if (!connectedNodes.includes(node.id)) {
           // lighten the colors of unselected nodes
           selectProduct.push({
             id: node.id,

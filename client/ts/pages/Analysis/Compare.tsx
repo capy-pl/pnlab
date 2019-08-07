@@ -24,8 +24,9 @@ interface AnalysisState {
   shareNodes?: Node[];
   open: boolean;
   searchItems?: DropdownProps['value'];
-  selectedProduct?: Node[];
+  selectedProduct?: string[];
   showCommunity: boolean;
+  allProducts?: string[];
 }
 
 export default class Compare extends PureComponent<AnalysisProps, AnalysisState> {
@@ -42,6 +43,7 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
     this.handleClose = this.handleClose.bind(this);
     this.onSingleItemSearch = this.onSingleItemSearch.bind(this);
     this.toggleShowCommunity = this.toggleShowCommunity.bind(this);
+    this.getAllProducts = this.getAllProducts.bind(this);
   }
 
   public async componentDidMount() {
@@ -69,6 +71,7 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
         }
       }
     }
+    const allProducts = this.getAllProducts(reportA, reportB);
     this.setState({
       analysisA,
       analysisB,
@@ -78,6 +81,7 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
       nodesB,
       shareNodes,
       loading: false,
+      allProducts,
     });
   }
 
@@ -89,11 +93,25 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
     this.setState({ open: true });
   }
 
+  public getAllProducts(reportA, reportB) {
+    const reportANodesNames = reportA.nodes.map((node) => {
+      return node.name;
+    });
+    const reportBNodesNames = reportB.nodes.map((node) => {
+      return node.name;
+    });
+    const allProducts = reportANodesNames.concat(reportBNodesNames.filter((node) => {
+      return reportANodesNames.indexOf(node) < 0;
+    }));
+    return allProducts;
+  }
+
   public onSingleItemSearch(event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) {
-    for (const node of this.state.shareNodes) {
-      if (node.name === data.value) {
-        console.log(node.name);
-        this.setState({selectedProduct: [node]});
+    if (this.state.allProducts) {
+      for (const product of this.state.allProducts) {
+        if (product === data.value) {
+          this.setState({selectedProduct: [product]});
+        }
       }
     }
     if (!data.value) {
@@ -109,19 +127,34 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
     if (this.state.loading) {
       return <Loader size='huge' />;
     } else {
-      if (this.state.shareNodes) {
-        const dropdownOption = this.state.shareNodes.map((node) => {
+      if (this.state.reportA && this.state.reportB) {
+        const reportANodesNames = this.state.reportA.nodes.map((node) => {
+          return node.name;
+        });
+        const reportBNodesNames = this.state.reportB.nodes.map((node) => {
+          return node.name;
+        });
+        const allProducts = reportANodesNames.concat(reportBNodesNames.filter((node) => {
+          return reportANodesNames.indexOf(node) < 0;
+        }));
+        const dropdownOption = allProducts.map((node) => {
           return (
             {
-              key: node.name,
-              value: node.name,
-              text: node.name,
+              key: node,
+              value: node,
+              text: node,
             }
           );
         });
         return (
           <React.Fragment>
-            <div style={{position: 'relative', left: '50%', zIndex: 1001, display: 'inline'}}>
+            <Button
+              color='teal'
+              onClick={this.handleOpen}
+            >
+              比較兩張網路圖
+            </Button>
+            <div style={{position: 'relative', left: '1rem', zIndex: 1001, display: 'inline'}}>
               <Menu
                 compact
               >
@@ -150,9 +183,9 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
                   <GraphView2
                     nodes={this.state.reportA.nodes}
                     edges={this.state.reportA.edges}
-                    searchItems={this.state.searchItems}
                     selectedProduct={this.state.selectedProduct}
                     showCommunity={this.state.showCommunity}
+                    shareNodes={this.state.shareNodes}
                   />
                 </Grid.Column>
                 <Grid.Column>
@@ -162,9 +195,9 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
                   <GraphView2
                     nodes={this.state.reportB.nodes}
                     edges={this.state.reportB.edges}
-                    searchItems={this.state.searchItems}
                     selectedProduct={this.state.selectedProduct}
                     showCommunity={this.state.showCommunity}
+                    shareNodes={this.state.shareNodes}
                   />
                 </Grid.Column>
               </Grid.Row>
