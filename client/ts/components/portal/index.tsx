@@ -13,7 +13,7 @@ interface ComparePortalProps {
 const segmentStyle = {
   position: 'fixed',
   left: '15%',
-  top: '15%',
+  top: '18%',
   zIndex: 1000,
   overflow: 'auto',
   maxHeight: '75%',

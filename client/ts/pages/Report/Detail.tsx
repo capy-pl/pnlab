@@ -35,6 +35,7 @@ interface ReportState {
   modalOpen: boolean;
   visible: boolean;
   title?: string;
+  note?: string;
 }
 
 const messageStyle: React.CSSProperties = {
@@ -156,15 +157,17 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
     });
     if (this.state.report) {
       const title = this.state.title;
-      Analysis.add({report: this.state.report.id, title})
+      const description = this.state.note;
+      Analysis.add({report: this.state.report.id, title, description})
         .then(() => {
           this.setState({loading: false});
         });
     }
   }
 
-  public updateFormAdd(title) {
+  public updateFormAdd(title, note) {
     this.setState({title});
+    this.setState({note});
   }
 
   public onItemSearch(event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) {

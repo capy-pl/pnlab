@@ -178,15 +178,13 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
                 />
               </div>
             </div>
-            <div style={{width: '80%'}}>
-              <ComparePortal
-                open={this.state.open}
-                nodesA={this.state.nodesA}
-                nodesB={this.state.nodesB}
-                shareNodes={this.state.shareNodes}
-                onClose={this.handleClose}
-              />
-            </div>
+            <ComparePortal
+              open={this.state.open}
+              nodesA={this.state.nodesA}
+              nodesB={this.state.nodesB}
+              shareNodes={this.state.shareNodes}
+              onClose={this.handleClose}
+            />
           </React.Fragment>
         );
       }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Header, Icon, Modal } from 'semantic-ui-react';
 
-import SaveGraphForm from '../form/FormAddAnalysis';
+import FormAddAnalysis from '../form/FormAddAnalysis';
 
 interface ModalAddAnalysisProps {
   header: string;
@@ -10,7 +10,7 @@ interface ModalAddAnalysisProps {
   onConfirm?: () => void;
   onCancel?: () => void;
   children?: React.ReactNode;
-  updateFormAdd: (title) => void;
+  updateFormAdd: (title, note) => void;
 }
 
 const ModalAddAnalysis = ({ header, onConfirm, onCancel, open, children, updateFormAdd }: ModalAddAnalysisProps) => {
@@ -24,7 +24,7 @@ const ModalAddAnalysis = ({ header, onConfirm, onCancel, open, children, updateF
       >
         <Header content={header} />
         <Modal.Content>
-          <SaveGraphForm updateFormAdd={updateFormAdd}/>
+          <FormAddAnalysis updateFormAdd={updateFormAdd}/>
         </Modal.Content>
         <Modal.Actions>
           <Button

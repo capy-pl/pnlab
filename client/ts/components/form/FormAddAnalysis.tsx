@@ -6,7 +6,7 @@ import {
 } from 'semantic-ui-react';
 
 interface FormAddAnalysisProps {
-  updateFormAdd: (title) => void;
+  updateFormAdd: (title, note) => void;
 }
 
 interface FormAddAnalysisState {
@@ -30,7 +30,7 @@ export default class FormAddAnalysis extends PureComponent<FormAddAnalysisProps,
    data: TextAreaProps | InputOnChangeData) => void {
     return (e, { value }) => {
       this.setState({ [keyName]: value as string}, () => {
-        this.props.updateFormAdd(this.state.title);
+        this.props.updateFormAdd(this.state.title, this.state.note);
       });
     };
   }
