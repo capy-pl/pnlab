@@ -1,7 +1,9 @@
+import _ from 'lodash';
 import React, { PureComponent } from 'react';
-import { DropdownProps } from 'semantic-ui-react';
 import { DataSet, EdgeOptions, Network, NodeOptions } from 'vis';
-import { Community, Edge, Node } from '../../PnApp/model/Report';
+
+import Jgraph from '../../PnApp/Jgraph';
+import { Community, Edge, Node, SimpleNode } from '../../PnApp/model/Report';
 
 interface GraphNode extends Node, NodeOptions {
 }
@@ -23,17 +25,26 @@ interface GraphProps {
   edges: Edge[];
   showCommunity: boolean;
   selectedCommunities?: Community[];
-  selectedProduct?: Node[];
-  searchItems?: DropdownProps['value'];
+  selectedProduct?: SimpleNode;
+  searchItems?: number[];
 }
 
 export default class GraphView extends PureComponent<GraphProps, {}> {
   public graphRef: React.RefObject<HTMLDivElement>;
   public network?: Network;
+  public jgraph?: Jgraph;
+  public nodes: DataSet<GraphNode>;
+  public edges: DataSet<GraphEdge>;
   constructor(props: GraphProps) {
     super(props);
     this.graphRef = React.createRef();
-    this.updateNodes = this.updateNodes.bind(this);
+    this.nodes = new DataSet();
+    this.edges = new DataSet();
+
+    this.paintCommunity = this.paintCommunity.bind(this);
+    this.paintSearchItems = this.paintSearchItems.bind(this);
+    this.paintSelectedCommunity = this.paintSelectedCommunity.bind(this);
+    this.paintSelectedProduct = this.paintSelectedProduct.bind(this);
   }
 
   public componentDidMount() {
@@ -43,8 +54,11 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
     this.initializeGraph();
   }
 
-  public componentDidUpdate() {
-    this.updateNodes();
+  public componentDidUpdate(prevProps: GraphProps) {
+    this.paintCommunity();
+    this.paintSearchItems();
+    this.paintSelectedCommunity();
+    this.paintSelectedProduct();
   }
 
   public getHeight(): string {
@@ -84,19 +98,77 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
     return copy;
   }
 
-  public updateNodes() {
-    const nodes = this.network.body.data.nodes;
-    if (this.props.selectedCommunities) {
+  public paintSearchItems(): void {
+    if (this.props.searchItems && this.props.searchItems.length) {
+      const searchItems = this.nodes
+        .get(this.props.searchItems)
+        .map((node) => {
+          console.log(node);
+          return ({
+            id: node.id,
+            color: {
+              background: 'yellow',
+              hover: {
+                background: 'orange',
+              },
+              highlight: 'orange',
+            },
+          }) as any;
+        });
+      this.nodes.update(searchItems);
+    }
+  }
+
+  public paintSelectedProduct(): void {
+    if (this.props.selectedProduct) {
+      let updateList: GraphNode[];
+      const selectedNode: GraphNode = {
+        ...this.props.selectedProduct,
+        color: {
+          background: 'orange',
+          hover: 'orange',
+          highlight: 'orange',
+        },
+      } as any;
+      const connectedNodes = (this.network as Network).getConnectedNodes(selectedNode.id);
+      updateList = this.nodes.map<GraphNode>((node) => {
+        if (!connectedNodes.includes(node.id as any) && node.id !== selectedNode.id) {
+          return {
+            id: node.id,
+            color:
+            {
+              background: '#D3E7FF',
+              border: '#D3E7FF',
+            },
+            label: '',
+          } as any;
+        }
+      });
+      updateList.push(selectedNode);
+      this.nodes.update(updateList);
+    }
+  }
+
+  public paintSelectedCommunity(): void {
+    if (this.props.selectedCommunities && this.props.selectedCommunities.length) {
       const communitiesIdList = this.props.selectedCommunities.map((community: Community) => {
         return (community.id);
       });
-      const selectedCommunities = [];
-      nodes.forEach((node) => {
-        selectedCommunities.push({id: node.id, hidden: !communitiesIdList.includes(node.community) ? true : false});
+      const selectedNodes: GraphNode[] = [];
+      this.nodes.forEach((node) => {
+        const update: any = {
+          id: node.id,
+          hidden: !communitiesIdList.includes(node.community),
+        };
+        selectedNodes.push(update);
       });
-      nodes.update(selectedCommunities);
-    } else if (this.props.showCommunity) {
-      const communities = nodes.map((node) => {
+      this.nodes.update(selectedNodes);
+    }
+  }
+
+  public paintCommunity(): void {
+    if (this.props.showCommunity) {
+      const nodes: GraphNode[] = this.nodes.map((node) => {
         return ({
           id: node.id,
           label: node.name,
@@ -111,50 +183,11 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
           `,
           borderWidth: node.core ? 5 : 1,
           hidden: false,
-        });
+        }) as any;
       });
-      nodes.update(communities);
-    }
-
-    const selectProduct: GraphNode[] = [];
-    if (this.props.selectedProduct) {
-      // highlight node & show connected products
-      let connectedNodes;
-      const connectedNodesList: number[] = [];
-      nodes.forEach((node) => {
-        if (this.props.selectedProduct && this.props.selectedProduct[0].name === node.name) {
-          connectedNodesList.push(node.id);
-          selectProduct.push({
-            id: node.id,
-            color: {
-              background: 'orange',
-              hover: 'orange',
-              highlight: 'orange',
-            },
-          } as any);
-          connectedNodes = (this.network as Network).getConnectedNodes(node.id);
-        }
-      });
-      for (const c of connectedNodes) {
-        connectedNodesList.push(c);
-      }
-      nodes.forEach((node) => {
-        if (!connectedNodesList.includes(node.id)) {
-          // lighten the colors of unselected nodes
-          selectProduct.push({
-            id: node.id,
-            color:
-              {
-                background: '#D3E7FF',
-                border: '#D3E7FF',
-              },
-            label: ' ',
-          } as any);
-        }
-      });
-      nodes.update(selectProduct);
-    } else if (!this.props.showCommunity) {
-      const productNetwork = nodes.map((node) => {
+      this.nodes.update(nodes);
+    } else {
+      const nodes: GraphNode[] = this.nodes.map((node) => {
         return (
           {
             id: node.id,
@@ -171,49 +204,25 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
             color: '#8DC1FF',
             borderWidth: 1,
           }
-        );
+        ) as any;
       });
-      nodes.update(productNetwork);
-    }
-    if (this.props.searchItems) {
-      const searchItems = [];
-      nodes.forEach((node) => {
-        this.props.searchItems.forEach((item) => {
-          if (node.name === item) {
-            searchItems.push (
-              {
-                id: node.id,
-                color: {
-                  background: 'yellow',
-                  hover: {
-                    background: 'orange',
-                  },
-                  highlight: 'orange',
-                },
-              },
-            );
-          }
-        });
-      });
-      nodes.update(searchItems);
+      this.nodes.update(nodes);
     }
   }
 
   public initializeGraph(): void {
-    const nodes = new DataSet<GraphNode>();
-    const edges = new DataSet<GraphEdge>();
     for (const node of this.props.nodes) {
-      nodes.add(this.toNode(node));
+      this.nodes.add(this.toNode(node));
     }
 
     for (const edge of this.props.edges) {
-      edges.add(this.toEdge(edge));
+      this.edges.add(this.toEdge(edge));
     }
 
     if (this.graphRef.current) {
       this.network = new Network(this.graphRef.current, {
-        edges,
-        nodes,
+        nodes: this.nodes,
+        edges: this.edges,
       }, {
           edges: {
             smooth: false,

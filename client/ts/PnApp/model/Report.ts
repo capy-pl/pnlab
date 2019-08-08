@@ -22,6 +22,7 @@ export interface Node {
 }
 
 export interface SimpleNode {
+  id: number;
   name: string;
   weight: number;
 }

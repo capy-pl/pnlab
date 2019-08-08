@@ -12,7 +12,11 @@ class ProductNerwork:
         # The function must come after get_communities, which compute the weight for all vertex.
         items = [node for node in self.graph.vs]
         items.sort(key=lambda x: x['weight'], reverse=True)
-        top_products = [{ 'name': node['name'], 'weight': node['weight']} for node in items[:num]]
+        top_products = [{
+            'id': node['id'],
+            'name': node['name'],
+            'weight': node['weight']
+        } for node in items[:num]]
         return top_products
 
     def get_communities(self, sort=True):

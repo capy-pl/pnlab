@@ -7,9 +7,10 @@ interface ConnectedNodes {
   id: number;
   edgeWeight: number;
 }
+
 interface ProductRankProps {
   productRankInfo?: SimpleNode[];
-  updateProductGraph: (productName) => void;
+  updateProductGraph: (product: SimpleNode | undefined) => void;
   nodes: Node[];
   edges: Edge[];
 }
@@ -76,7 +77,7 @@ export default class ProductRank extends PureComponent<ProductRankProps, Message
     }
   }
 
-  public handleProductClick(product): () => void {
+  public handleProductClick(product: SimpleNode): () => void {
     return () => {
       this.setState({ clickedProduct: product }, () => {
         this.props.updateProductGraph(this.state.clickedProduct);
