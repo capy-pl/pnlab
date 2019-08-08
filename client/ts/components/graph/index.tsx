@@ -55,10 +55,19 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
   }
 
   public componentDidUpdate(prevProps: GraphProps) {
-    this.paintCommunity();
-    this.paintSearchItems();
-    this.paintSelectedCommunity();
-    this.paintSelectedProduct();
+    // Do not call repaint function if correspondent props don't change.
+    if (!_.isEqual(this.props.showCommunity, prevProps.showCommunity)) {
+      this.paintCommunity();
+    }
+    if (!_.isEqual(this.props.searchItems, prevProps.searchItems)) {
+      this.paintSearchItems();
+    }
+    if (!_.isEqual(this.props.selectedProduct, prevProps.selectedProduct)) {
+      this.paintSelectedProduct();
+    }
+    if (!_.isEqual(this.props.selectedCommunities, prevProps.selectedProduct)) {
+      this.paintSelectedCommunity();
+    }
   }
 
   public getHeight(): string {
@@ -131,7 +140,8 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
         },
       } as any;
       const connectedNodes = (this.network as Network).getConnectedNodes(selectedNode.id);
-      updateList = this.nodes.map<GraphNode>((node) => {
+      updateList = this.nodes
+      .map<GraphNode>((node) => {
         if (!connectedNodes.includes(node.id as any) && node.id !== selectedNode.id) {
           return {
             id: node.id,
@@ -140,10 +150,12 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
               background: '#D3E7FF',
               border: '#D3E7FF',
             },
+            group: undefined,
             label: '',
           } as any;
         }
-      });
+      })
+      .filter((node) => node);
       updateList.push(selectedNode);
       this.nodes.update(updateList);
     }
