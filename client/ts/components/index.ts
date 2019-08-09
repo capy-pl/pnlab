@@ -25,6 +25,10 @@ import {
   DatetimeInput,
 } from './input';
 
+import {
+  Window,
+} from './window';
+
 export {
   Auth,
   Loader,
@@ -36,4 +40,5 @@ export {
   SettingMenu,
   DatetimeInput,
   ModalConfirmReport,
+  Window,
 };

@@ -90,9 +90,12 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
   }
 
   public clearSelected() {
-    this.setState({content: ''});
-    this.setState({selectedCommunities: undefined});
-    this.setState({selectedProduct: undefined});
+    this.setState(
+      {
+        content: '',
+        selectedCommunities: undefined,
+        selectedProduct: undefined,
+      });
   }
 
   public onShowProductNetwork() {

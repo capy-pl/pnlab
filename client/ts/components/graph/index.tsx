@@ -45,6 +45,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
     this.paintSearchItems = this.paintSearchItems.bind(this);
     this.paintSelectedCommunity = this.paintSelectedCommunity.bind(this);
     this.paintSelectedProduct = this.paintSelectedProduct.bind(this);
+    this.repaint = this.repaint.bind(this);
   }
 
   public componentDidMount() {
@@ -55,17 +56,21 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
   }
 
   public componentDidUpdate(prevProps: GraphProps) {
-    // Do not call repaint function if correspondent props don't change.
+    // Do not call repaint if correspondent props don't change.
     if (!_.isEqual(this.props.showCommunity, prevProps.showCommunity)) {
       this.paintCommunity();
     }
+
     if (!_.isEqual(this.props.searchItems, prevProps.searchItems)) {
       this.paintSearchItems();
     }
+
     if (!_.isEqual(this.props.selectedProduct, prevProps.selectedProduct)) {
+      this.repaint();
       this.paintSelectedProduct();
     }
-    if (!_.isEqual(this.props.selectedCommunities, prevProps.selectedProduct)) {
+
+    if (!_.isEqual(this.props.selectedCommunities, prevProps.selectedCommunities)) {
       this.paintSelectedCommunity();
     }
   }
@@ -105,6 +110,18 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
     </div>
     `;
     return copy;
+  }
+
+  public repaint(): void {
+    let updateList: GraphNode[];
+    updateList = this.nodes.map((node) => (
+        {
+        id: node.id,
+        label: node.name,
+        group: this.props.showCommunity ? node.community : undefined,
+        color: '#8DC1FF',
+      } as any));
+    this.nodes.update(updateList);
   }
 
   public paintSearchItems(): void {
