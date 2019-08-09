@@ -125,7 +125,10 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
   }
 
   public updateCommunitiesGraph(communitiesList: Community[] | undefined) {
-    this.setState({selectedCommunities: communitiesList});
+    this.setState({
+      selectedCommunities: communitiesList,
+      selectedProduct: undefined,
+    });
   }
 
   public updateProductGraph(product: SimpleNode | undefined) {
