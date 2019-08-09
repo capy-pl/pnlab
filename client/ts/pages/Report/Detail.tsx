@@ -129,13 +129,12 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
   }
 
   public updateProductGraph(product: SimpleNode | undefined) {
-    if (product === undefined) {
-      this.setState({selectedProduct: undefined});
-    } else {
       if (this.state.report) {
-        this.setState({ selectedProduct: product });
+        this.setState({
+          selectedProduct: product,
+          selectedCommunities: undefined,
+        });
       }
-    }
   }
 
   public onSaveGraph() {

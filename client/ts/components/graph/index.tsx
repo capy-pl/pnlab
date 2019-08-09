@@ -120,6 +120,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
         label: node.name,
         group: this.props.showCommunity ? node.community : undefined,
         color: '#8DC1FF',
+        hidden: false,
       } as any));
     this.nodes.update(updateList);
   }
@@ -175,6 +176,9 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
       .filter((node) => node);
       updateList.push(selectedNode);
       this.nodes.update(updateList);
+      (this.network as Network).focus(selectedNode.id, {
+        scale: 0.6,
+      });
     }
   }
 
