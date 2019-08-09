@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, ReactText } from 'react';
 import { DataSet, EdgeOptions, Network, NodeOptions } from 'vis';
 import { Community, Edge, Node } from '../../PnApp/model/Report';
 
@@ -20,7 +20,6 @@ interface GraphProps {
   showCommunity: boolean;
   selectedCommunities?: Community[];
   selectedProduct?: string[];
-  searchItems?: [];
   shareNodes?: Node[];
 }
 
@@ -30,13 +29,12 @@ export default class GraphView2 extends PureComponent<GraphProps, {}> {
   constructor(props: GraphProps) {
     super(props);
     this.graphRef = React.createRef();
-    this.updateNodes = this.updateNodes.bind(this);
   }
 
   public componentDidMount() {
-    // if (this.graphRef.current) {
-    //   this.graphRef.current.style.height = this.getHeight();
-    // }
+    if (this.graphRef.current) {
+      this.graphRef.current.style.height = this.getHeight();
+    }
     this.initializeGraph();
   }
 
@@ -66,11 +64,21 @@ export default class GraphView2 extends PureComponent<GraphProps, {}> {
       <p>連接節點數: ${copy.degree}</p>
     </div>
     `;
-    this.props.shareNodes.forEach((shareNode) => {
-      if (node.name === shareNode.name) {
-        copy.color = {background: 'yellow'};
-      }
-    });
+    if (this.isSharedNodes(node)) {
+      copy.color = {
+        background: 'yellow',
+        border: '#3f83d4',
+        hover: '#ffdd00',
+        highlight: '#ffdd00',
+      };
+    } else {
+      copy.color = {
+        background: '#8DC1FF',
+        border: '#3f83d4',
+        hover: '#3692ff',
+        highlight: '#3692ff',
+      };
+    }
     return copy;
   }
 
@@ -82,16 +90,18 @@ export default class GraphView2 extends PureComponent<GraphProps, {}> {
       <p>edge weight: ${Math.round(copy.weight)}</p>
     </div>
     `;
+    // copy.color = {
+    //   color: '#3f83d4',
+    //   highlight: '#8DC1FF',
+    //   hover: '#8DC1FF',
+    // };
     return copy;
   }
 
-  public resetGraphColor(nodes) {
-    const shareNodesNames = this.props.shareNodes.map((node) => {
-      return node.name;
-    });
+  public resetGraphColor(nodes, edges) {
     const updateNodes = nodes.map((node) => {
       let color;
-      (shareNodesNames.includes(node.name)) ?
+      this.isSharedNodes(node) ?
         color = {background: 'yellow', border: '#3f83d4', hover: '#ffdd00', highlight: '#ffdd00'} :
         color = {background: '#8DC1FF', border: '#3f83d4', hover: '#3692ff', highlight: '#3692ff'};
       return (
@@ -112,22 +122,39 @@ export default class GraphView2 extends PureComponent<GraphProps, {}> {
         }
       );
     });
+    // const updateEdges = edges.map((edge) => {
+    //   return (
+    //     {
+    //       from: edge.from,
+    //       to: edge.to,
+    //       color: {
+    //         color: '#3f83d4',
+    //         highlight: '#8DC1FF',
+    //         hover: '#8DC1FF',
+    //       },
+    //     }
+    //   );
+    // });
     nodes.update(updateNodes);
+    // edges.update(updateEdges);
+  }
+
+  public isSharedNodes(node: Node) {
+    let isShared;
+    if (this.props.shareNodes) {
+      const shareNodesNames = this.props.shareNodes.map((shareNode) => {
+        return shareNode.name;
+      });
+      isShared = shareNodesNames.includes(node.name) ? true : false;
+    }
+    return isShared;
   }
 
   public updateNodes() {
     const nodes = this.network.body.data.nodes;
+    const edges = this.network.body.data.edges;
 
-    if (this.props.selectedCommunities !== undefined) {
-      const communitiesIdList = this.props.selectedCommunities.map((community: Community) => {
-        return (community.id);
-      });
-      const selectedCommunities = [];
-      nodes.forEach((node) => {
-        selectedCommunities.push({id: node.id, hidden: !communitiesIdList.includes(node.community) ? true : false});
-      });
-      nodes.update(selectedCommunities);
-    } else if (this.props.showCommunity) {
+    if (this.props.showCommunity) {
       const communities = nodes.map((node) => {
         return ({
           id: node.id,
@@ -146,120 +173,83 @@ export default class GraphView2 extends PureComponent<GraphProps, {}> {
         });
       });
       nodes.update(communities);
-    }
-
-    const selectProduct = [];
-    if (!this.props.showCommunity) {
-      this.resetGraphColor(nodes);
+      // const communityEdges = edges.map((edge) => {
+      //   return (
+      //     {
+      //       from: edge.from,
+      //       to: edge.to,
+      //       // color: {
+      //       //   inherit: true,
+      //       // },
+      //     }
+      //   );
+      // });
+      // edges.update(communityEdges);
+    } else {
+      const updateSelectGraph = [];
+      this.resetGraphColor(nodes, edges);
       if (this.props.selectedProduct.length !== 0) {
         // highlight node & show connected products
-        let connectedNodes;
+        let highlightNodes = [];
         nodes.forEach((node) => {
           if (this.props.selectedProduct[0] === node.name) {
-            connectedNodes = this.network.getConnectedNodes(node.id);
-            connectedNodes.push(node.id);
-            selectProduct.push(
+            highlightNodes = this.network.getConnectedNodes(node.id);
+            highlightNodes.push(node.id);
+            updateSelectGraph.push(
               {
                 id: node.id,
                 color: {
-                  background: 'orange',
+                  background: 'black',
                   border: '#3f83d4',
-                  hover: 'orange',
-                  highlight: 'orange',
+                  hover: 'grey',
+                  highlight: 'black',
                 },
-              },
-            );
-          } else {
-            selectProduct.push(
-              {
-                id: node.id,
-                color: {
-                  background: '#8DC1FF',
-                  border: '#3f83d4',
-                  hover: '#8DC1FF',
-                  highlight: '#8DC1FF',
-                },
-                label: node.name,
               },
             );
           }
+          // else {
+          //   selectProduct.push(
+          //     {
+          //       id: node.id,
+          //       color: {
+          //         background: '#8DC1FF',
+          //         border: '#3f83d4',
+          //         hover: '#8DC1FF',
+          //         highlight: '#8DC1FF',
+          //       },
+          //       label: node.name,
+          //     },
+          //   );
+          // }
         });
         nodes.forEach((node) => {
-          if (connectedNodes) {
-            if (!connectedNodes.includes(node.id)) {
-              // lighten the colors of unselected nodes
-              selectProduct.push(
-                {
-                  id: node.id,
-                  color: {
-                    background: '#D3E7FF',
-                    border: '#D3E7FF',
-                  },
-                  label: ' ',
-                },
-              );
+          let background;
+          let border;
+          if (!highlightNodes.includes(node.id)) {
+            // lighten the colors of unselected nodes
+            if (this.isSharedNodes(node)) {
+              background = '#ffffa8';
+              border = '#D3E7FF';
+            } else {
+              background = '#D3E7FF';
+              border = '#D3E7FF';
             }
-          } else {
-            selectProduct.push(
+            updateSelectGraph.push(
               {
                 id: node.id,
                 color: {
-                  background: '#D3E7FF',
-                  border: '#D3E7FF',
+                  background,
+                  border,
                 },
                 label: ' ',
               },
             );
           }
         });
-        nodes.update(selectProduct);
+        nodes.update(updateSelectGraph);
       } else if (this.props.selectedProduct.length === 0) {
-        this.resetGraphColor(nodes);
+        this.resetGraphColor(nodes, edges);
       }
-    }
-    if (this.props.searchItems) {
-      const searchItems = [];
-      if (!this.props.showCommunity) {
-        nodes.forEach((node) => {
-          this.props.searchItems.forEach((item) => {
-            if (node.name === item) {
-              searchItems.push (
-                {
-                  id: node.id,
-                  color: {
-                    background: 'yellow',
-                    hover: {
-                      background: 'orange',
-                    },
-                    highlight: 'orange',
-                  },
-                },
-              );
-            }
-          });
-        });
-      } else {
-        nodes.forEach((node) => {
-          this.props.searchItems.forEach((item) => {
-            if (node.name === item) {
-              searchItems.push (
-                {
-                  id: node.id,
-                  borderWidth: 50,
-                  // color: {
-                  //   background: 'yellow',
-                  //   hover: {
-                  //     background: 'orange',
-                  //   },
-                  //   highlight: 'orange',
-                  // },
-                },
-              );
-            }
-          });
-        });
-      }
-      nodes.update(searchItems);
     }
   }
 
@@ -333,7 +323,7 @@ export default class GraphView2 extends PureComponent<GraphProps, {}> {
 
   public render() {
     return (
-      <div className='pn-graph2' style={style} ref={this.graphRef} />
+      <div className='pn-graph2' ref={this.graphRef} />
     );
   }
 }
