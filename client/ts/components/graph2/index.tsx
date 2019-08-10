@@ -15,15 +15,14 @@ const style = {
 };
 
 interface GraphProps {
-  nodes: Node[];
-  edges: Edge[];
+  nodes?: Node[];
+  edges?: Edge[];
   showCommunity: boolean;
-  selectedCommunities?: Community[];
-  selectedProduct?: string[];
-  shareNodes?: Node[];
+  selectedProduct: string[];
+  shareNodes: string[];
 }
 
-export default class GraphView2 extends PureComponent<GraphProps, {}> {
+export default class GraphViewCompare extends PureComponent<GraphProps, {}> {
   public graphRef: React.RefObject<HTMLDivElement>;
   public network?: Network;
   constructor(props: GraphProps) {
@@ -64,7 +63,7 @@ export default class GraphView2 extends PureComponent<GraphProps, {}> {
       <p>連接節點數: ${copy.degree}</p>
     </div>
     `;
-    if (this.isSharedNodes(node)) {
+    if (this.props.shareNodes.includes(node.name)) {
       copy.color = {
         background: 'yellow',
         border: '#3f83d4',
@@ -90,20 +89,19 @@ export default class GraphView2 extends PureComponent<GraphProps, {}> {
       <p>edge weight: ${Math.round(copy.weight)}</p>
     </div>
     `;
-    // copy.color = {
-    //   color: '#3f83d4',
-    //   highlight: '#8DC1FF',
-    //   hover: '#8DC1FF',
-    // };
     return copy;
   }
 
-  public resetGraphColor(nodes, edges) {
+  public resetGraphColor(nodes) {
     const updateNodes = nodes.map((node) => {
       let color;
-      this.isSharedNodes(node) ?
-        color = {background: 'yellow', border: '#3f83d4', hover: '#ffdd00', highlight: '#ffdd00'} :
+      if (this.props.shareNodes) {
+        this.props.shareNodes.includes(node.name) ?
+          color = {background: 'yellow', border: '#3f83d4', hover: '#ffdd00', highlight: '#ffdd00'} :
+          color = {background: '#8DC1FF', border: '#3f83d4', hover: '#3692ff', highlight: '#3692ff'};
+      } else {
         color = {background: '#8DC1FF', border: '#3f83d4', hover: '#3692ff', highlight: '#3692ff'};
+      }
       return (
         {
           id: node.id,
@@ -122,75 +120,68 @@ export default class GraphView2 extends PureComponent<GraphProps, {}> {
         }
       );
     });
-    // const updateEdges = edges.map((edge) => {
-    //   return (
-    //     {
-    //       from: edge.from,
-    //       to: edge.to,
-    //       color: {
-    //         color: '#3f83d4',
-    //         highlight: '#8DC1FF',
-    //         hover: '#8DC1FF',
-    //       },
-    //     }
-    //   );
-    // });
     nodes.update(updateNodes);
-    // edges.update(updateEdges);
   }
 
-  public isSharedNodes(node: Node) {
-    let isShared;
-    if (this.props.shareNodes) {
-      const shareNodesNames = this.props.shareNodes.map((shareNode) => {
-        return shareNode.name;
-      });
-      isShared = shareNodesNames.includes(node.name) ? true : false;
-    }
-    return isShared;
-  }
-
-  public updateNodes() {
+  public async updateNodes() {
     const nodes = this.network.body.data.nodes;
-    const edges = this.network.body.data.edges;
 
     if (this.props.showCommunity) {
-      const communities = nodes.map((node) => {
-        return ({
-          id: node.id,
-          label: node.name,
-          group: node.community,
-          title: `
-            <div>
-              <p>${node.name}</p>
-              <p>community: ${node.community}</p>
-              <p>weight: ${Math.round(node.weight)}</p>
-              <p>連接節點數: ${node.degree}</p>
-            </div>
-          `,
-          borderWidth: node.core ? 5 : 1,
-          hidden: false,
+      let updateSelectedCommunities;
+      if (this.props.selectedProduct.length !== 0) {
+        let group;
+        nodes.forEach((node) => {
+          if (this.props.selectedProduct[0] === node.name) {
+            group = node.community;
+          }
         });
-      });
-      nodes.update(communities);
-      // const communityEdges = edges.map((edge) => {
-      //   return (
-      //     {
-      //       from: edge.from,
-      //       to: edge.to,
-      //       // color: {
-      //       //   inherit: true,
-      //       // },
-      //     }
-      //   );
-      // });
-      // edges.update(communityEdges);
+        updateSelectedCommunities = nodes.map((node) => {
+          return (
+            {
+              id: node.id,
+              label: node.name,
+              group: node.community,
+              title: `
+                <div>
+                  <p>${node.name}</p>
+                  <p>community: ${node.community}</p>
+                  <p>weight: ${Math.round(node.weight)}</p>
+                  <p>連接節點數: ${node.degree}</p>
+                </div>
+              `,
+              borderWidth: node.core ? 5 : 1,
+              hidden: node.community !== group ? true : false,
+            }
+          );
+        });
+      } else {
+        updateSelectedCommunities = nodes.map((node) => {
+          return (
+            {
+              id: node.id,
+              label: node.name,
+              group: node.community,
+              title: `
+                <div>
+                  <p>${node.name}</p>
+                  <p>community: ${node.community}</p>
+                  <p>weight: ${Math.round(node.weight)}</p>
+                  <p>連接節點數: ${node.degree}</p>
+                </div>
+              `,
+              borderWidth: node.core ? 5 : 1,
+              hidden: false,
+            }
+          );
+        });
+      }
+      nodes.update(updateSelectedCommunities);
     } else {
+      this.resetGraphColor(nodes);
       const updateSelectGraph = [];
-      this.resetGraphColor(nodes, edges);
       if (this.props.selectedProduct.length !== 0) {
         // highlight node & show connected products
-        let highlightNodes = [];
+        let highlightNodes: number[] = [];
         nodes.forEach((node) => {
           if (this.props.selectedProduct[0] === node.name) {
             highlightNodes = this.network.getConnectedNodes(node.id);
@@ -207,39 +198,18 @@ export default class GraphView2 extends PureComponent<GraphProps, {}> {
               },
             );
           }
-          // else {
-          //   selectProduct.push(
-          //     {
-          //       id: node.id,
-          //       color: {
-          //         background: '#8DC1FF',
-          //         border: '#3f83d4',
-          //         hover: '#8DC1FF',
-          //         highlight: '#8DC1FF',
-          //       },
-          //       label: node.name,
-          //     },
-          //   );
-          // }
         });
         nodes.forEach((node) => {
           let background;
-          let border;
           if (!highlightNodes.includes(node.id)) {
             // lighten the colors of unselected nodes
-            if (this.isSharedNodes(node)) {
-              background = '#ffffa8';
-              border = '#D3E7FF';
-            } else {
-              background = '#D3E7FF';
-              border = '#D3E7FF';
-            }
+            background = this.props.shareNodes.includes(node.name) ? '#ffffc9' : '#D3E7FF';
             updateSelectGraph.push(
               {
                 id: node.id,
                 color: {
                   background,
-                  border,
+                  border: '#D3E7FF',
                 },
                 label: ' ',
               },
@@ -248,7 +218,7 @@ export default class GraphView2 extends PureComponent<GraphProps, {}> {
         });
         nodes.update(updateSelectGraph);
       } else if (this.props.selectedProduct.length === 0) {
-        this.resetGraphColor(nodes, edges);
+        this.resetGraphColor(nodes);
       }
     }
   }
@@ -329,5 +299,5 @@ export default class GraphView2 extends PureComponent<GraphProps, {}> {
 }
 
 export {
-  GraphView2,
+  GraphViewCompare,
 };

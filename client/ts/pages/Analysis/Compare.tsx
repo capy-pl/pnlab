@@ -1,12 +1,12 @@
 import React, { PureComponent } from 'react';
-import { Button, Checkbox, Divider, Dropdown, DropdownProps, Grid, Header, Menu } from 'semantic-ui-react';
+import { Button, Checkbox, Dropdown, DropdownProps, Grid, Header, Menu } from 'semantic-ui-react';
 
 import { SearchSingleItemDropdown } from '../../components/dropdown';
-import { GraphView2 } from '../../components/graph2/index';
+import { GraphViewCompare } from '../../components/graph2/index';
 import Loader from '../../components/Loader';
 import ComparePortal from '../../components/portal/index';
 import AnalysisAPI from '../../PnApp/model/Analysis' ;
-import ReportAPI, { Node } from '../../PnApp/model/Report';
+import ReportAPI, { Condition } from '../../PnApp/model/Report';
 
 interface AnalysisProps {
   analysisA?: string;
@@ -19,14 +19,12 @@ interface AnalysisState {
   analysisB?: AnalysisAPI;
   reportA?: ReportAPI;
   reportB?: ReportAPI;
-  nodesA?: Node[];
-  nodesB?: Node[];
-  shareNodes?: Node[];
+  shareNodes?: string[];
   open: boolean;
-  searchItems?: DropdownProps['value'];
   selectedProduct?: string[];
   showCommunity: boolean;
   allProducts?: string[];
+  conditions?: Condition[];
 }
 
 export default class Compare extends PureComponent<AnalysisProps, AnalysisState> {
@@ -35,7 +33,6 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
     this.state = {
       loading: true,
       open: false,
-      searchItems: [],
       selectedProduct: [],
       showCommunity: false,
     };
@@ -51,37 +48,23 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
     const analysisB = await AnalysisAPI.get(this.props.location.state.analysisB);
     const reportA = await ReportAPI.get(analysisA.report);
     const reportB = await ReportAPI.get(analysisB.report);
-    const nodesA = reportA.nodes.map((node) => {
-      return node;
-    });
-    nodesA.sort((a, b) => {
-      return b.weight - a.weight;
-    });
-    const nodesB = reportB.nodes.map((node) => {
-      return node;
-    });
-    nodesB.sort((a, b) => {
-      return b.weight - a.weight;
-    });
-    const shareNodes: Node[] = [];
-    for (const nodeA of nodesA) {
-      for (const nodeB of nodesB) {
+    const shareNodes: string[] = [];
+    for (const nodeA of reportA.nodes) {
+      for (const nodeB of reportB.nodes) {
         if (nodeA.name === nodeB.name) {
-          shareNodes.push(nodeA);
+          shareNodes.push(nodeA.name);
         }
       }
     }
-    const allProducts = this.getAllProducts(reportA, reportB);
+    const conditions = await ReportAPI.getConditions();
     this.setState({
       analysisA,
       analysisB,
       reportA,
       reportB,
-      nodesA,
-      nodesB,
       shareNodes,
       loading: false,
-      allProducts,
+      conditions,
     });
   }
 
@@ -107,11 +90,10 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
   }
 
   public onSingleItemSearch(event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) {
-    if (this.state.allProducts) {
-      for (const product of this.state.allProducts) {
-        if (product === data.value) {
-          this.setState({selectedProduct: [product]});
-        }
+    const allProducts = this.getAllProducts(this.state.reportA, this.state.reportB);
+    for (const product of allProducts) {
+      if (product === data.value) {
+        this.setState({selectedProduct: [product]});
       }
     }
     if (!data.value) {
@@ -180,7 +162,7 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
                   <Header as='h3' dividing textAlign='left'>
                     {this.state.analysisA.title}
                   </Header>
-                  <GraphView2
+                  <GraphViewCompare
                     nodes={this.state.reportA.nodes}
                     edges={this.state.reportA.edges}
                     selectedProduct={this.state.selectedProduct}
@@ -192,7 +174,7 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
                   <Header as='h3' dividing textAlign='left'>
                     {this.state.analysisB.title}
                   </Header>
-                  <GraphView2
+                  <GraphViewCompare
                     nodes={this.state.reportB.nodes}
                     edges={this.state.reportB.edges}
                     selectedProduct={this.state.selectedProduct}
@@ -205,10 +187,13 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
 
             <ComparePortal
               open={this.state.open}
-              nodesA={this.state.nodesA}
-              nodesB={this.state.nodesB}
+              reportA={this.state.reportA}
+              reportB={this.state.reportB}
               shareNodes={this.state.shareNodes}
               onClose={this.handleClose}
+              conditions={this.state.conditions}
+              analysisA={this.state.analysisA}
+              analysisB={this.state.analysisB}
             />
           </React.Fragment>
         );
