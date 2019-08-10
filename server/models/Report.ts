@@ -1,5 +1,6 @@
 import mongoose, { Document, Schema } from 'mongoose';
 import { FieldSchemaInterface } from './ImportSchema';
+import { number } from 'prop-types';
 
 export interface Node {
   name: string;
@@ -11,6 +12,7 @@ export interface Node {
 }
 
 interface SimpleNode {
+  id: number;
   name: string;
   weight: number;
 }
@@ -94,6 +96,7 @@ const NodeSchema = new Schema<Node>({
 });
 
 const SimpleNodeSchema = new Schema<SimpleNode>({
+  id: Number,
   name: String,
   weight: Number,
 });

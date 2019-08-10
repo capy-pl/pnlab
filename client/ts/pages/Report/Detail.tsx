@@ -17,7 +17,7 @@ import { DropdownMenu } from '../../components/menu';
 import { CharacterMessage, CommunitiesMessage, ProductRank } from '../../components/message';
 
 import { Analysis } from '../../PnApp/model';
-import ReportAPI from '../../PnApp/model/Report' ;
+import ReportAPI, { SimpleNode } from '../../PnApp/model/Report' ;
 import { Community, Node } from '../../PnApp/model/Report';
 
 interface ReportProps extends RouteComponentProps<{ id: string }> {
@@ -30,8 +30,8 @@ interface ReportState {
   content: string;
   communitiesInfo?: Community[];
   selectedCommunities?: Community[];
-  selectedProduct?: Node[];
-  searchItems?: DropdownProps['value'];
+  selectedProduct?: SimpleNode;
+  searchItems?: number[];
   modalOpen: boolean;
   visible: boolean;
   title?: string;
@@ -67,6 +67,7 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
       modalOpen: false,
       visible: false,
     };
+
     this.onShowProductNetwork = this.onShowProductNetwork.bind(this);
     this.onShowCommunities = this.onShowCommunities.bind(this);
     this.onShowCharacter = this.onShowCharacter.bind(this);
@@ -92,9 +93,12 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
   }
 
   public clearSelected() {
-    this.setState({content: ''});
-    this.setState({selectedCommunities: undefined});
-    this.setState({selectedProduct: undefined});
+    this.setState(
+      {
+        content: '',
+        selectedCommunities: undefined,
+        selectedProduct: undefined,
+      });
   }
 
   public onShowProductNetwork() {
@@ -124,18 +128,19 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
   }
 
   public updateCommunitiesGraph(communitiesList: Community[] | undefined) {
-    this.setState({selectedCommunities: communitiesList});
+    this.setState({
+      selectedCommunities: communitiesList,
+      selectedProduct: undefined,
+    });
   }
 
-  public updateProductGraph(product) {
-    if (product === undefined) {
-      this.setState({selectedProduct: undefined});
-    } else {
+  public updateProductGraph(product: SimpleNode | undefined) {
       if (this.state.report) {
-        const selectedProduct = this.state.report.nodes.filter((node) => node.name === product.name);
-        this.setState({selectedProduct});
+        this.setState({
+          selectedProduct: product,
+          selectedCommunities: undefined,
+        });
       }
-    }
   }
 
   public onSaveGraph() {
@@ -171,7 +176,9 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
   }
 
   public onItemSearch(event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) {
-    this.setState({searchItems: data.value});
+    this.setState({
+      searchItems: data.value as number[]
+    });
   }
 
   public handleToggleSidebar() {
@@ -218,7 +225,11 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
     let searchItemDropdown: React.ReactChild;
     const report = this.state.report as ReportAPI;
     const dropdownOptions = report.nodes.map((node) => {
-      return ({ key: node.name, value: node.name, text: node.name });
+      return ({
+        key: node.name,
+        value: node.id,
+        text: node.name,
+      });
     });
     if (!this.state.showCommunity) {
       searchItemDropdown = (

@@ -5,9 +5,8 @@ import {
   DropdownProps,
   Header,
   Icon,
-  Message,
   Segment,
-  SemanticCOLORS,
+  Step,
 } from 'semantic-ui-react';
 
 import { DatetimeInput } from 'Component/';
@@ -55,23 +54,36 @@ const FormAddReportInput = ({ condition, onChange, defaultValue }: FormAddReport
   }
 };
 
-type PartType = 'add' | 'remove' | 'time';
+type PartType = 'add' | 'remove' | 'time' | 'confirm';
 interface Part {
-  title: string;
   type: PartType;
   conditions: Condition[];
 }
 
 interface PartProps {
-  title: string;
   type: PartType;
+  onAdd: () => void;
   conditions: Condition[];
   defaultValues: { [key: string]: string[] };
   onChange: (name: string) =>
     ((event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => void);
 }
 
-const Part = ({ conditions, onChange, title, type, defaultValues }: PartProps) => {
+const Part = ({ conditions, onChange, type, defaultValues, onAdd }: PartProps) => {
+  if (type === 'confirm') {
+    return (
+      <Segment textAlign='center'>
+        <Button
+          color='blue'
+          fluid
+          onClick={onAdd}
+        >
+          確認新增
+        </Button>
+      </Segment>
+    );
+  }
+
   const inputs = conditions.map((condition) => (
     <FormAddReportInput
       defaultValue={condition.name in defaultValues ? defaultValues[condition.name] : []}
@@ -79,15 +91,8 @@ const Part = ({ conditions, onChange, title, type, defaultValues }: PartProps) =
       condition={condition}
       onChange={onChange(condition.name)}
     />));
-  let color: SemanticCOLORS = 'blue';
-  if (type === 'remove') {
-    color = 'red';
-  }
   return (
       <React.Fragment>
-      <Message color={color}>
-        <Message.Header>{title}</Message.Header>
-      </Message>
         {inputs}
       </React.Fragment>
   );
@@ -96,6 +101,7 @@ const Part = ({ conditions, onChange, title, type, defaultValues }: PartProps) =
 interface FormAddReportProps {
   conditions: Condition[];
   defaultValues: { [key: string]: string[] };
+  onAdd: () => void;
   onChange: (name: string) =>
     ((event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => void);
 }
@@ -112,7 +118,7 @@ class FormAddReport extends PureComponent<FormAddReportProps, FormAddReportState
     this.state = {
       counter: 0,
     };
-    this.types = ['add', 'remove', 'time'];
+    this.types = ['add', 'remove', 'time', 'confirm'];
     this.parts = this.getParts(this.props.conditions);
     this.nextPage = this.nextPage.bind(this);
     this.previousPage = this.previousPage.bind(this);
@@ -139,21 +145,23 @@ class FormAddReport extends PureComponent<FormAddReportProps, FormAddReportState
   public getParts(conditions: Condition[]): Part[] {
     const add: Part = {
       type: 'add',
-      title: '選擇要留下的項目',
       conditions: [],
     };
     const remove: Part = {
       type: 'remove',
-      title: '請選擇要刪除的項目',
       conditions: [],
     };
     const time: Part = {
       type: 'time',
-      title: '請選擇時間範圍',
       conditions: [],
     };
 
-    // TODO: Should condition.actions to categorize. 懶得弄zz
+    const confirm: Part = {
+      type: 'confirm',
+      conditions: [],
+    };
+
+    // TODO: Should use condition.actions to categorize. 懶得弄zz
     for (const condition of conditions) {
       if (condition.type === 'string') {
         add.conditions.push(condition);
@@ -166,13 +174,58 @@ class FormAddReport extends PureComponent<FormAddReportProps, FormAddReportState
       }
     }
 
-    return [add, remove, time];
+    return [add, remove, time, confirm];
   }
 
   public render() {
     const part = this.parts[this.state.counter];
     return (
       <Segment>
+        <Step.Group
+          fluid
+          ordered
+        >
+          <Step
+            active={this.state.counter === 0}
+            completed={0 < this.state.counter}
+          >
+            <Step.Content>
+              <Step.Title>
+                請選擇要篩選標籤
+              </Step.Title>
+            </Step.Content>
+          </Step>
+          <Step
+            active={this.state.counter === 1}
+            completed={1 < this.state.counter}
+          >
+            <Step.Content>
+              <Step.Title>
+                請選擇要刪除的項目
+              </Step.Title>
+            </Step.Content>
+          </Step>
+          <Step
+            active={this.state.counter === 2}
+            completed={2 < this.state.counter}
+          >
+            <Step.Content>
+              <Step.Title>
+                請選擇時間範圍
+              </Step.Title>
+            </Step.Content>
+          </Step>
+          <Step
+            active={this.state.counter === 3}
+            completed={3 < this.state.counter}
+          >
+            <Step.Content>
+              <Step.Title>
+                確認新增
+              </Step.Title>
+            </Step.Content>
+          </Step>
+        </Step.Group>
         <Button.Group attached='top'>
           <Button
             icon
@@ -181,7 +234,7 @@ class FormAddReport extends PureComponent<FormAddReportProps, FormAddReportState
             disabled={this.state.counter === 0}
           >
             <Icon name='arrow left' />
-            Previous
+            前一步
           </Button>
           <Button
             icon
@@ -190,15 +243,15 @@ class FormAddReport extends PureComponent<FormAddReportProps, FormAddReportState
             disabled={this.state.counter === this.types.length - 1}
           >
             <Icon name='arrow right' />
-            Next
+            下一步
           </Button>
         </Button.Group>
           <Part
+            onAdd={this.props.onAdd}
             defaultValues={this.props.defaultValues}
             key={part.type}
             type={part.type}
             onChange={this.props.onChange}
-            title={part.title}
             conditions={part.conditions}
           />
       </Segment>
