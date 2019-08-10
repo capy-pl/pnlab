@@ -47,6 +47,15 @@ class Navbar extends PureComponent<RouteComponentProps, MenuState> {
           >
            首頁
           </Menu.Item>
+          <Menu.Item
+            name={'analysis'}
+            onClick={this.onClick}
+            to={'/analysis'}
+            as={Link}
+            active={activeItem === 'analysis'}
+          >
+           過去儲存圖庫與比較
+          </Menu.Item>
           <Menu.Menu position='right'>
             <Dropdown item text={this.state.user ? this.state.user.email : ''}>
               <Dropdown.Menu>
