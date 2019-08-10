@@ -253,16 +253,18 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
         const message: React.ReactChild = this.getMessageComponent();
         const searchItemDropdown: React.ReactChild = this.getDropdownSearch();
         const conditionList = this.state.report.conditions.map((condition) => {
-          const values = condition.values.map((value) => {
-            return (<Label key={value} style={{margin: '.2rem'}}>{value}</Label>);
-          });
-          return (
-            <div key={condition.name} style={{margin: '1rem 0 1rem 0' }}>
-              <h5>{condition.name}: </h5>
-              {values}
-              <Divider />
-            </div>
-          );
+          if (condition.values.length !== 0) {
+            const values = condition.values.map((value) => {
+              return (<Label key={value} style={{margin: '.2rem'}}>{value}</Label>);
+            });
+            return (
+              <div key={condition.name} style={{margin: '1rem 0 1rem 0' }}>
+                <h5>{condition.name}: </h5>
+                {values}
+                <Divider />
+              </div>
+            );
+          }
         });
         return (
           <React.Fragment>

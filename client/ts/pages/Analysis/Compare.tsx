@@ -152,7 +152,7 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
             <div style={{position: 'fixed', minWidth: '15%', right: 0, zIndex: 1001, display: 'inline'}}>
               <SearchSingleItemDropdown
                 options={dropdownOption}
-                placeholder='搜尋共同商品'
+                placeholder='搜尋商品連結'
                 onChange={this.onSingleItemSearch}
               />
             </div>
