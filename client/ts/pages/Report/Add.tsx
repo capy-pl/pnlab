@@ -35,6 +35,7 @@ export default class Add extends PureComponent<RouteComponentProps, AddState> {
     this.onAdd = this.onAdd.bind(this);
     this.onConfirm = this.onConfirm.bind(this);
     this.onCancel = this.onCancel.bind(this);
+    this.validate = this.validate.bind(this);
   }
 
   public async componentDidMount() {
@@ -79,6 +80,21 @@ export default class Add extends PureComponent<RouteComponentProps, AddState> {
     return conditionList;
   }
 
+  public validate(): string[] {
+    const conditions: Condition[] = this.transformArgsToCondition();
+    const errorMessages: string[] = [];
+    conditions.forEach((condition) => {
+      if (condition.type === 'date') {
+        const start = new Date(condition.values[0]);
+        const end = new Date(condition.values[1]);
+        if (start > end) {
+          errorMessages.push('開始時間不能大於結束時間。');
+        }
+      }
+    });
+    return errorMessages;
+  }
+
   public async onConfirm() {
     this.setState({
       modalOpen: false,
@@ -115,6 +131,7 @@ export default class Add extends PureComponent<RouteComponentProps, AddState> {
             defaultValues={this.state.conditionArgs}
             onChange={this.onChange}
             conditions={this.state.conditions}
+            validate={this.validate}
           />
           <ModalConfirmReport
             header='新增一個Report'
