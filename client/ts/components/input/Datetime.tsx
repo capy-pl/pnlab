@@ -112,7 +112,6 @@ class DatetimeInput extends React.PureComponent<DatetimeInputProps, DatetimeInpu
       && this.state.year === this.props.max.getFullYear()
       && this.state.month === this.props.max.getMonth() + 1
     ) {
-      console.log(this.props.max.getDate());
       end = this.props.max.getDate();
     }
     for (let i = start; i <= end; i++) {

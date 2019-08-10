@@ -49,8 +49,6 @@ export interface ReportInterface extends Document {
   errorMessage: string;
   nodes: Node[];
   edges: Edge[];
-  startTime: Date;
-  endTime: Date;
 }
 
 const ConditionSchema = new Schema<Condition>({
@@ -159,14 +157,6 @@ const ReportSchema = new Schema<ReportInterface>({
     type: [HookSchema],
   },
   errorMessage: String,
-  startTime: {
-    type: Date,
-    // required: true
-  },
-  endTime: {
-    type: Date,
-    // required: true
-  },
   rank: [SimpleNodeSchema],
 });
 
