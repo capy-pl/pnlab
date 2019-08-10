@@ -71,6 +71,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
     }
 
     if (!_.isEqual(this.props.selectedCommunities, prevProps.selectedCommunities)) {
+      this.repaint();
       this.paintSelectedCommunity();
     }
   }
@@ -169,7 +170,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
               border: '#D3E7FF',
             },
             group: undefined,
-            label: '',
+            label: ' ',
           } as any;
         }
       })
