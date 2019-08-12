@@ -188,7 +188,7 @@ export default class ModalAddPromotion extends React.PureComponent<ModalAddPromo
     return (
       <React.Fragment>
         <Button
-          color='blue'
+          color='teal'
           onClick={this.show}
           floated='right'
           style={{ marginBottom: '5px' }}

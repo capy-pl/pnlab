@@ -1,5 +1,4 @@
 import axios from 'axios';
-
 import Store from './global';
 import { User } from './model';
 
@@ -22,6 +21,16 @@ export function isLoggedIn(): boolean {
 export async function searchItem(name: string): Promise<{ items: string[]}> {
   const response = await axios.get<{ items: string[] }>(`/api/report/searchItem?query=${name}`);
   return response.data;
+}
+
+export function stringToDate(str: string): Date {
+  const date = new Date(str);
+  const offset = date.getTimezoneOffset() * 60000;
+  return new Date(date.getTime() + offset);
+}
+
+export function dateToString(date: Date): string {
+  return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
 }
 
 export default {

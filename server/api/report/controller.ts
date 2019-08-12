@@ -166,8 +166,6 @@ export interface ProjectedReport {
   modified: Date;
   status: 'error' | 'pending' | 'success';
   errorMessage: string;
-  startTime: Date;
-  endTime: Date;
 }
 
 export interface GetReportsResponseBody {

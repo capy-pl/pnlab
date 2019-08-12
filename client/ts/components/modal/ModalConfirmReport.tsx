@@ -31,14 +31,13 @@ const ModalConfirmReport = ({ header, content, onConfirm, onCancel, open, childr
             inverted
             onClick={onCancel}
           >
-            <Icon name='remove' /> 取消
+            <Icon name='remove' />取消
           </Button>
           <Button
-            color='green'
             inverted
             onClick={onConfirm}
           >
-            <Icon name='checkmark' /> 確認
+            <Icon name='checkmark' />確認
           </Button>
         </Modal.Actions>
       </Modal>

@@ -4,6 +4,7 @@ import express from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import nunjucks from 'nunjucks';
+import path from 'path';
 
 // import routes
 import API from './api';
@@ -34,7 +35,7 @@ if (process.env.NODE_ENV === 'development') {
   const devMiddleware = require('webpack-dev-middleware');
   const {
     clientConfig,
-  } = require('../webpack.config.js');
+  } = require('../config/webpack.dev');
   const compiler = webpack(clientConfig);
   app.use(devMiddleware(compiler, {
     logLevel: 'error',
@@ -51,7 +52,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 // Serve static files.
-app.use('/static/', express.static('dist/client/'));
+app.use('/static/', express.static(path.resolve(__dirname, '..', 'dist', 'client')));
 
 // // Serve media files.
 app.use('/', express.static('static', {
