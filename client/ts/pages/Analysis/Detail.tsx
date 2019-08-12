@@ -1,12 +1,12 @@
 import React, { PureComponent } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 
-import AnalysisSidebar from 'Component/sidebar/AnalysisSidebar';
-import AnalysisAccordion from 'Component/accrodion/AnalysisAccordion'
+import AnalysisAccordion from 'Component/accrodion/AnalysisAccordion';
 import { Button } from 'semantic-ui-react';
 import Graph from '../../components/graph';
 import Loader from '../../components/Loader';
-import AnalysisAPI from '../../PnApp/model/Analysis' ;
+import AnalysisAPI from '../../PnApp/model/Analysis';
+import {Comments} from '../../PnApp/model/Analysis' ;
 import ReportAPI from '../../PnApp/model/Report';
 
 interface AnalysisProps extends RouteComponentProps<{ id: string }> {
@@ -27,9 +27,14 @@ export default class Analysis extends PureComponent<AnalysisProps, AnalysisState
       visible: false,
     };
     this.onHandleClick = this.onHandleClick.bind(this);
+    this.load = this.load.bind(this);
   }
 
   public async componentDidMount() {
+    await this.load();
+  }
+
+  public async load() {
     const analysis = await AnalysisAPI.get(this.props.match.params.id);
     const report = await ReportAPI.get(analysis.report);
     this.setState({
@@ -50,18 +55,10 @@ export default class Analysis extends PureComponent<AnalysisProps, AnalysisState
       if (this.state.report) {
         return (
           <React.Fragment>
-            {/* <AnalysisSidebar
-              visible={this.state.visible}
-            /> */}
             <AnalysisAccordion
-              description={this.state.analysis.description}
+              analysis={this.state.analysis}
+              onSave={this.load}
             />
-            <Button
-              onClick={this.onHandleClick}
-              style={{ position: 'absolute', top: 80, right: 20, zIndex: 101 }}
-            >
-              Description
-            </Button>
             <Graph
               nodes={this.state.report.nodes}
               edges={this.state.report.edges}

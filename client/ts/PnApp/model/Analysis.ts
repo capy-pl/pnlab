@@ -1,7 +1,7 @@
 import axios from 'axios';
 import Report from './Report';
 
-export interface Comment {
+export interface Comments {
   readonly user_id: string;
   _id?: string;
   name?: string;
@@ -15,7 +15,7 @@ export interface AnalysisModel {
   title?: string;
   description?: string;
   report: string;
-  comments?: Comment[];
+  comments?: Comments[];
   created?: Date;
 }
 
@@ -39,7 +39,7 @@ export default class Analysis {
   public readonly id: string;
   public title: string;
   public description: string;
-  public comments: Comment[];
+  public comments: Comments[];
   public readonly created: Date;
   public report: string;
 
@@ -47,7 +47,7 @@ export default class Analysis {
     this.id = model._id as string;
     this.title = model.title as string;
     this.description = model.description as string;
-    this.comments = model.comments as Comment[];
+    this.comments = model.comments as Comments[];
     this.created = model.created as Date;
     this.report = model.report;
   }
@@ -66,7 +66,7 @@ export default class Analysis {
     await this.reload();
   }
 
-  public async updateComment(body: Comment): Promise<void> {
+  public async updateComment(body: Comments): Promise<void> {
     await axios.post(`/api/analysis/${this.id}/comment/${body._id}`, body);
     await this.reload();
   }
