@@ -177,7 +177,7 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
 
   public onItemSearch(event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) {
     this.setState({
-      searchItems: data.value as number[]
+      searchItems: data.value as number[],
     });
   }
 
@@ -231,17 +231,17 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
         text: node.name,
       });
     });
-    if (!this.state.showCommunity) {
-      searchItemDropdown = (
-        <DropdownSearchItem
-          options={dropdownOptions}
-          placeholder='搜尋商品：請輸入商品名稱'
-          onChange={this.onItemSearch}
-        />
-      );
-    } else {
-      return <React.Fragment />;
-    }
+    // if (!this.state.showCommunity) {
+    searchItemDropdown = (
+      <DropdownSearchItem
+        options={dropdownOptions}
+        placeholder='搜尋商品：請輸入商品名稱'
+        onChange={this.onItemSearch}
+      />
+    );
+    // } else {
+    //   return <React.Fragment />;
+    // }
     return searchItemDropdown;
   }
 

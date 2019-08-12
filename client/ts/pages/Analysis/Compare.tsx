@@ -6,11 +6,11 @@ import { GraphViewCompare } from '../../components/graph2/index';
 import Loader from '../../components/Loader';
 import ComparePortal from '../../components/portal/index';
 import AnalysisAPI from '../../PnApp/model/Analysis' ;
-import ReportAPI, { Condition } from '../../PnApp/model/Report';
+import ReportAPI from '../../PnApp/model/Report';
 
 interface AnalysisProps {
-  analysisA?: string;
-  analysisB?: string;
+  analysisA: string;
+  analysisB: string;
 }
 
 interface AnalysisState {
@@ -24,7 +24,6 @@ interface AnalysisState {
   selectedProduct?: string[];
   showCommunity: boolean;
   allProducts?: string[];
-  conditions?: Condition[];
 }
 
 export default class Compare extends PureComponent<AnalysisProps, AnalysisState> {
@@ -56,7 +55,6 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
         }
       }
     }
-    const conditions = await ReportAPI.getConditions();
     this.setState({
       analysisA,
       analysisB,
@@ -64,7 +62,6 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
       reportB,
       shareNodes,
       loading: false,
-      conditions,
     });
   }
 
@@ -76,21 +73,24 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
     this.setState({ open: true });
   }
 
-  public getAllProducts(reportA, reportB) {
-    const reportANodesNames = reportA.nodes.map((node) => {
-      return node.name;
-    });
-    const reportBNodesNames = reportB.nodes.map((node) => {
-      return node.name;
-    });
-    const allProducts = reportANodesNames.concat(reportBNodesNames.filter((node) => {
-      return reportANodesNames.indexOf(node) < 0;
-    }));
-    return allProducts;
+  public getAllProducts() {
+    if (this.state.reportA && this.state.reportB) {
+      const reportANodesNames = this.state.reportA.nodes.map((node) => {
+        return node.name;
+      });
+      const reportBNodesNames = this.state.reportB.nodes.map((node) => {
+        return node.name;
+      });
+      const allProducts = reportANodesNames.concat(reportBNodesNames.filter((node) => {
+        return reportANodesNames.indexOf(node) < 0;
+      }));
+      return allProducts;
+    }
+    return [];
   }
 
   public onSingleItemSearch(event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) {
-    const allProducts = this.getAllProducts(this.state.reportA, this.state.reportB);
+    const allProducts = this.getAllProducts();
     for (const product of allProducts) {
       if (product === data.value) {
         this.setState({selectedProduct: [product]});
@@ -109,16 +109,8 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
     if (this.state.loading) {
       return <Loader size='huge' />;
     } else {
-      if (this.state.reportA && this.state.reportB) {
-        const reportANodesNames = this.state.reportA.nodes.map((node) => {
-          return node.name;
-        });
-        const reportBNodesNames = this.state.reportB.nodes.map((node) => {
-          return node.name;
-        });
-        const allProducts = reportANodesNames.concat(reportBNodesNames.filter((node) => {
-          return reportANodesNames.indexOf(node) < 0;
-        }));
+      if (this.state.reportA && this.state.reportB && this.state.analysisA && this.state.analysisB) {
+        const allProducts = this.getAllProducts();
         const dropdownOption = allProducts.map((node) => {
           return (
             {
@@ -191,7 +183,6 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
               reportB={this.state.reportB}
               shareNodes={this.state.shareNodes}
               onClose={this.handleClose}
-              conditions={this.state.conditions}
               analysisA={this.state.analysisA}
               analysisB={this.state.analysisB}
             />

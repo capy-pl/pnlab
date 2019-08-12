@@ -71,7 +71,6 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
     }
 
     if (!_.isEqual(this.props.selectedCommunities, prevProps.selectedCommunities)) {
-      this.repaint();
       this.paintSelectedCommunity();
     }
   }
@@ -128,22 +127,41 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
 
   public paintSearchItems(): void {
     if (this.props.searchItems && this.props.searchItems.length) {
-      const searchItems = this.nodes
-        .get(this.props.searchItems)
-        .map((node) => {
-          console.log(node);
-          return ({
-            id: node.id,
-            color: {
-              background: 'yellow',
-              hover: {
-                background: 'orange',
+      if (!this.props.showCommunity) {
+        const searchItems = this.nodes
+          .get(this.props.searchItems)
+          .map((node) => {
+            console.log(node);
+            return ({
+              id: node.id,
+              color: {
+                background: 'yellow',
+                hover: {
+                  background: 'orange',
+                },
+                highlight: 'orange',
               },
-              highlight: 'orange',
-            },
-          }) as any;
-        });
-      this.nodes.update(searchItems);
+            }) as any;
+          });
+        this.nodes.update(searchItems);
+      } else {
+        const searchItems = this.nodes
+          .get(this.props.searchItems)
+          .map((node) => {
+            console.log(node);
+            return ({
+              id: node.id,
+              group: undefined,
+              color: {
+                border: 'black',
+              },
+              borderWidth: 5,
+            }) as any;
+          });
+        this.nodes.update(searchItems);
+      }
+    } else {
+      this.repaint();
     }
   }
 
@@ -197,6 +215,8 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
         selectedNodes.push(update);
       });
       this.nodes.update(selectedNodes);
+    } else {
+      this.repaint();
     }
   }
 

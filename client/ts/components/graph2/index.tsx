@@ -1,6 +1,6 @@
-import React, { PureComponent, ReactText } from 'react';
+import React, { PureComponent } from 'react';
 import { DataSet, EdgeOptions, Network, NodeOptions } from 'vis';
-import { Community, Edge, Node } from '../../PnApp/model/Report';
+import { Edge, Node } from '../../PnApp/model/Report';
 
 interface GraphNode extends Node, NodeOptions {
 }
@@ -15,11 +15,11 @@ const style = {
 };
 
 interface GraphProps {
-  nodes?: Node[];
-  edges?: Edge[];
+  nodes: Node[];
+  edges: Edge[];
   showCommunity: boolean;
-  selectedProduct: string[];
-  shareNodes: string[];
+  selectedProduct?: string[];
+  shareNodes?: string[];
 }
 
 export default class GraphViewCompare extends PureComponent<GraphProps, {}> {
@@ -106,17 +106,26 @@ export default class GraphViewCompare extends PureComponent<GraphProps, {}> {
         {
           id: node.id,
           label: node.name,
-          title: `
-            <div>
-              <p>${node.name}</p>
-              <p>weight: ${Math.round(node.weight)}</p>
-              <p>連接節點數: ${node.degree}</p>
-            </div>
-          `,
-          group: undefined,
-          hidden: false,
+          title: this.props.showCommunity ?
+            `
+              <div>
+                <p>${node.name}</p>
+                <p>community: ${node.community}</p>
+                <p>weight: ${Math.round(node.weight)}</p>
+                <p>連接節點數: ${node.degree}</p>
+              </div>
+            ` :
+            `
+              <div>
+                <p>${node.name}</p>
+                <p>weight: ${Math.round(node.weight)}</p>
+                <p>連接節點數: ${node.degree}</p>
+              </div>
+            `,
+          group: this.props.showCommunity ? node.community : undefined,
           color,
-          borderWidth: 1,
+          borderWidth: (this.props.showCommunity && node.core) ? 5 : 1,
+          hidden: false,
         }
       );
     });
@@ -127,7 +136,6 @@ export default class GraphViewCompare extends PureComponent<GraphProps, {}> {
     const nodes = this.network.body.data.nodes;
 
     if (this.props.showCommunity) {
-      let updateSelectedCommunities;
       if (this.props.selectedProduct.length !== 0) {
         let group;
         nodes.forEach((node) => {
@@ -135,7 +143,7 @@ export default class GraphViewCompare extends PureComponent<GraphProps, {}> {
             group = node.community;
           }
         });
-        updateSelectedCommunities = nodes.map((node) => {
+        const updateSelectedCommunities = nodes.map((node) => {
           return (
             {
               id: node.id,
@@ -154,28 +162,10 @@ export default class GraphViewCompare extends PureComponent<GraphProps, {}> {
             }
           );
         });
+        nodes.update(updateSelectedCommunities);
       } else {
-        updateSelectedCommunities = nodes.map((node) => {
-          return (
-            {
-              id: node.id,
-              label: node.name,
-              group: node.community,
-              title: `
-                <div>
-                  <p>${node.name}</p>
-                  <p>community: ${node.community}</p>
-                  <p>weight: ${Math.round(node.weight)}</p>
-                  <p>連接節點數: ${node.degree}</p>
-                </div>
-              `,
-              borderWidth: node.core ? 5 : 1,
-              hidden: false,
-            }
-          );
-        });
+        this.resetGraphColor(nodes);
       }
-      nodes.update(updateSelectedCommunities);
     } else {
       this.resetGraphColor(nodes);
       const updateSelectGraph = [];

@@ -9,9 +9,8 @@ interface ComparePortalProps {
   reportB?: Report;
   shareNodes?: string[];
   onClose: () => void;
-  conditions: Condition[];
-  analysisA: AnalysisAPI;
-  analysisB: AnalysisAPI;
+  analysisA?: AnalysisAPI;
+  analysisB?: AnalysisAPI;
 }
 
 interface ComparePortalState {
