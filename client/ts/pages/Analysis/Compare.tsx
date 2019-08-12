@@ -5,6 +5,7 @@ import { SearchSingleItemDropdown } from '../../components/dropdown';
 import { GraphViewCompare } from '../../components/graph2/index';
 import Loader from '../../components/Loader';
 import ComparePortal from '../../components/portal/index';
+import SingleProductComparePortal from '../../components/portal/SingleProductCompare';
 import AnalysisAPI from '../../PnApp/model/Analysis' ;
 import ReportAPI from '../../PnApp/model/Report';
 
@@ -20,10 +21,10 @@ interface AnalysisState {
   reportA?: ReportAPI;
   reportB?: ReportAPI;
   shareNodes?: string[];
-  open: boolean;
+  openCompare: boolean;
+  openSingleCompare: boolean;
   selectedProduct?: string[];
   showCommunity: boolean;
-  allProducts?: string[];
 }
 
 export default class Compare extends PureComponent<AnalysisProps, AnalysisState> {
@@ -31,12 +32,15 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
     super(props);
     this.state = {
       loading: true,
-      open: false,
+      openCompare: false,
+      openSingleCompare: false,
       selectedProduct: [],
       showCommunity: false,
     };
-    this.handleOpen = this.handleOpen.bind(this);
-    this.handleClose = this.handleClose.bind(this);
+    this.handleOpenCompare = this.handleOpenCompare.bind(this);
+    this.handleOpenSingleCompare = this.handleOpenSingleCompare.bind(this);
+    this.handleCloseCompare = this.handleCloseCompare.bind(this);
+    this.handleCloseSingleCompare = this.handleCloseSingleCompare.bind(this);
     this.onSingleItemSearch = this.onSingleItemSearch.bind(this);
     this.toggleShowCommunity = this.toggleShowCommunity.bind(this);
     this.getAllProducts = this.getAllProducts.bind(this);
@@ -65,12 +69,20 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
     });
   }
 
-  public handleClose() {
-    this.setState({ open: false });
+  public handleCloseCompare() {
+    this.setState({ openCompare: false });
   }
 
-  public handleOpen() {
-    this.setState({ open: true });
+  public handleCloseSingleCompare() {
+    this.setState({ openSingleCompare: false });
+  }
+
+  public handleOpenCompare() {
+    this.setState({ openCompare: true });
+  }
+
+  public handleOpenSingleCompare() {
+    this.setState({ openSingleCompare: true });
   }
 
   public getAllProducts() {
@@ -124,7 +136,7 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
           <React.Fragment>
             <Button
               color='teal'
-              onClick={this.handleOpen}
+              onClick={this.handleOpenCompare}
             >
               比較兩張網路圖
             </Button>
@@ -141,6 +153,12 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
                 </Dropdown.Item>
               </Menu>
             </div>
+            <Button
+              color='teal'
+              onClick={this.handleOpenSingleCompare}
+            >
+              比較
+            </Button>
             <div style={{position: 'fixed', minWidth: '15%', right: 0, zIndex: 1001, display: 'inline'}}>
               <SearchSingleItemDropdown
                 options={dropdownOption}
@@ -178,13 +196,20 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
             </Grid>
 
             <ComparePortal
-              open={this.state.open}
+              open={this.state.openCompare}
               reportA={this.state.reportA}
               reportB={this.state.reportB}
               shareNodes={this.state.shareNodes}
-              onClose={this.handleClose}
+              onClose={this.handleCloseCompare}
               analysisA={this.state.analysisA}
               analysisB={this.state.analysisB}
+            />
+            <SingleProductComparePortal
+              open={this.state.openSingleCompare}
+              reportA={this.state.reportA}
+              reportB={this.state.reportB}
+              onClose={this.handleCloseSingleCompare}
+              selectedProduct={this.state.selectedProduct}
             />
           </React.Fragment>
         );

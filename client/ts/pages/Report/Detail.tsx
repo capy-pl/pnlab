@@ -82,6 +82,7 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
     this.handleToggleSidebar = this.handleToggleSidebar.bind(this);
     this.clearSelected = this.clearSelected.bind(this);
     this.updateFormAdd = this.updateFormAdd.bind(this);
+    this.getCurrentContent = this.getCurrentContent.bind(this);
   }
 
   public async componentDidMount() {
@@ -119,11 +120,13 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
 
   public onShowProductRank(event) {
     event.stopPropagation();
+    this.clearSelected();
     this.setState({content: 'productRank'});
   }
 
   public onShowCommunitiesRank(event) {
     event.stopPropagation();
+    this.clearSelected();
     this.setState({content: 'communitiesRank'});
   }
 
@@ -194,6 +197,7 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
           <CharacterMessage
             communitiesInfo={report.communities}
             hookInfo={report.hooks}
+            getCurrentContent={this.getCurrentContent}
           />
         );
         break;
@@ -204,6 +208,7 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
             updateProductGraph={this.updateProductGraph}
             nodes={report.nodes}
             edges={report.edges}
+            getCurrentContent={this.getCurrentContent}
           />
         );
         break;
@@ -212,6 +217,7 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
           <CommunitiesMessage
             communitiesInfo={report.communities}
             updateCommunitiesGraph={this.updateCommunitiesGraph}
+            getCurrentContent={this.getCurrentContent}
           />
         );
         break;
@@ -243,6 +249,10 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
     //   return <React.Fragment />;
     // }
     return searchItemDropdown;
+  }
+
+  public getCurrentContent(content) {
+    this.setState({content});
   }
 
   public render() {

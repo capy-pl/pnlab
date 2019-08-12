@@ -13,6 +13,7 @@ interface ProductRankProps {
   updateProductGraph: (product: SimpleNode | undefined) => void;
   nodes: Node[];
   edges: Edge[];
+  getCurrentContent: (content) => void;
 }
 
 interface MessageState {
@@ -35,8 +36,9 @@ export default class ProductRank extends PureComponent<ProductRankProps, Message
     this.getEdgeWeight = this.getEdgeWeight.bind(this);
   }
 
-  public handleDismiss() {
-    this.setState({ visible: false });
+  public async handleDismiss() {
+    await this.setState({ visible: false, content: '' });
+    this.props.getCurrentContent(this.state.content);
   }
 
   public getEdgeWeight() {

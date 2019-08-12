@@ -7,6 +7,7 @@ import SelectedCommunities from './SelectedCommunities';
 interface CommunitiesMessageProps {
   communitiesInfo: Community[];
   updateCommunitiesGraph: (communitiesList) => void;
+  getCurrentContent: (content) => void;
 }
 
 interface CommunitiesMessageState {
@@ -35,8 +36,9 @@ export default class CommunitiesMessage extends PureComponent<CommunitiesMessage
     this.goToCommunityDetail = this.goToCommunityDetail.bind(this);
   }
 
-  public handleDismiss() {
-    this.setState({ visible: false });
+  public async handleDismiss() {
+    await this.setState({ visible: false, content: '' });
+    this.props.getCurrentContent(this.state.content);
   }
 
   public goToCommunityDetail(community: Community) {

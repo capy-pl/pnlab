@@ -5,10 +5,12 @@ import { Community, Hook } from '../../PnApp/model/Report';
 interface CharacterMessageProps {
   communitiesInfo?: Community[];
   hookInfo?: Hook[];
+  getCurrentContent: (content) => void;
 }
 
 interface MessageState {
   visible: boolean;
+  content: string;
 }
 
 export default class CharacterMessage extends PureComponent<CharacterMessageProps, MessageState> {
@@ -16,12 +18,14 @@ export default class CharacterMessage extends PureComponent<CharacterMessageProp
     super(props);
     this.state = {
       visible: true,
+      content: 'character',
     };
     this.handleDismiss = this.handleDismiss.bind(this);
   }
 
-  public handleDismiss() {
-    this.setState({ visible: false });
+  public async handleDismiss() {
+    await this.setState({ visible: false, content: '' });
+    this.props.getCurrentContent(this.state.content);
   }
 
   public render() {
