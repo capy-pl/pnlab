@@ -125,8 +125,8 @@ export async function ModifyAnalysisComment(req: Request, res: Response): Promis
     res.status(404).end();
   }
 
-  if (comment.user_id !== req.user._id) {
-    res.status(403).end();
+  if (comment.user_id.toString() !== req.user._id.toString()) {
+    return res.status(403).end();
   }
 
   try {
@@ -148,8 +148,8 @@ export async function DeleteAnalysisComment(req: Request, res: Response): Promis
     res.status(404).end();
   }
 
-  if (comment.user_id !== req.user._id) {
-    res.status(403).end();
+  if (comment.user_id.toString() !== req.user._id.toString()) {
+    return res.status(403).end();
   }
 
   try {

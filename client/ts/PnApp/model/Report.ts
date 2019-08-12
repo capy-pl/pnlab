@@ -55,8 +55,6 @@ export interface ProjectedReport {
   modified: Date;
   status: ReportStatus;
   errMessage: string;
-  startTime: Date;
-  endTime: Date;
 }
 
 export interface ReportModel {
@@ -71,8 +69,6 @@ export interface ReportModel {
   edges: Edge[];
   hooks: Hook[];
   rank: SimpleNode[];
-  startTime: Date;
-  endTime: Date;
 }
 
 export default class Report {
@@ -115,8 +111,6 @@ export default class Report {
   public edges: Edge[];
   public communities: Community[];
   public hooks: Hook[];
-  public startTime: Date;
-  public endTime: Date;
   public rank: SimpleNode[];
 
   constructor({
@@ -131,8 +125,7 @@ export default class Report {
     edges,
     communities,
     hooks,
-    startTime,
-    endTime }: ReportModel) {
+     }: ReportModel) {
     this.id = _id;
     this.created = new Date(created);
     this.conditions = conditions;
@@ -143,8 +136,6 @@ export default class Report {
     this.edges = edges;
     this.communities = communities;
     this.hooks = hooks;
-    this.startTime = new Date(startTime);
-    this.endTime = new Date(endTime);
     this.rank = rank;
   }
 }

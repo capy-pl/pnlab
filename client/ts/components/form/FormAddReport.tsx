@@ -5,11 +5,12 @@ import {
   DropdownProps,
   Header,
   Icon,
+  Message,
   Segment,
   Step,
 } from 'semantic-ui-react';
 
-import { DatetimeInput } from 'Component/';
+import { AddReportTime } from 'Component/input';
 import { Condition } from '../../PnApp/model/Report';
 
 interface FormAddReportInputProps {
@@ -44,10 +45,11 @@ const FormAddReportInput = ({ condition, onChange, defaultValue }: FormAddReport
     );
   } else if (condition.type === 'date') {
     return (
-    <Segment color='grey'>
-      <Header block>開始時間</Header>
-      <Header block>結束時間</Header>
-    </Segment>
+      <AddReportTime
+        onChange={onChange}
+        condition={condition}
+        defaultValues={defaultValue}
+      />
     );
   } else {
     return <React.Fragment />;
@@ -55,6 +57,7 @@ const FormAddReportInput = ({ condition, onChange, defaultValue }: FormAddReport
 };
 
 type PartType = 'add' | 'remove' | 'time' | 'confirm';
+
 interface Part {
   type: PartType;
   conditions: Condition[];
@@ -101,6 +104,7 @@ const Part = ({ conditions, onChange, type, defaultValues, onAdd }: PartProps) =
 interface FormAddReportProps {
   conditions: Condition[];
   defaultValues: { [key: string]: string[] };
+  validate: () => string[];
   onAdd: () => void;
   onChange: (name: string) =>
     ((event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => void);
@@ -108,6 +112,8 @@ interface FormAddReportProps {
 
 interface FormAddReportState {
   counter: number;
+  error: boolean;
+  errorMessages: string[];
 }
 
 class FormAddReport extends PureComponent<FormAddReportProps, FormAddReportState> {
@@ -117,6 +123,8 @@ class FormAddReport extends PureComponent<FormAddReportProps, FormAddReportState
     super(props);
     this.state = {
       counter: 0,
+      error: false,
+      errorMessages: [],
     };
     this.types = ['add', 'remove', 'time', 'confirm'];
     this.parts = this.getParts(this.props.conditions);
@@ -128,8 +136,18 @@ class FormAddReport extends PureComponent<FormAddReportProps, FormAddReportState
     if (this.state.counter === this.types.length - 1) {
       return;
     }
+    const errorMessages = this.props.validate();
+    if (errorMessages.length > 0) {
+      this.setState({
+        error: true,
+        errorMessages,
+      });
+      return;
+    }
     this.setState({
       counter: this.state.counter + 1,
+      error: false,
+      errorMessages: [],
     });
   }
 
@@ -137,7 +155,12 @@ class FormAddReport extends PureComponent<FormAddReportProps, FormAddReportState
     if (this.state.counter === 0) {
       return;
     }
+    if (this.state.errorMessages.length > 0) {
+      return;
+    }
     this.setState({
+      error: false,
+      errorMessages: [],
       counter: this.state.counter - 1,
     });
   }
@@ -179,6 +202,8 @@ class FormAddReport extends PureComponent<FormAddReportProps, FormAddReportState
 
   public render() {
     const part = this.parts[this.state.counter];
+    const errorMessages = this.state.errorMessages
+    .map((err) => <Message.Item key={err}>{err}</Message.Item>);
     return (
       <Segment>
         <Step.Group
@@ -246,14 +271,23 @@ class FormAddReport extends PureComponent<FormAddReportProps, FormAddReportState
             下一步
           </Button>
         </Button.Group>
-          <Part
-            onAdd={this.props.onAdd}
-            defaultValues={this.props.defaultValues}
-            key={part.type}
-            type={part.type}
-            onChange={this.props.onChange}
-            conditions={part.conditions}
-          />
+        <Message
+          hidden={!this.state.error}
+          error
+        >
+          <Message.Header>錯誤</Message.Header>
+          <Message.List>
+            {errorMessages}
+          </Message.List>
+        </Message>
+        <Part
+          onAdd={this.props.onAdd}
+          defaultValues={this.props.defaultValues}
+          key={part.type}
+          type={part.type}
+          onChange={this.props.onChange}
+          conditions={part.conditions}
+        />
       </Segment>
     );
   }
