@@ -42,9 +42,7 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
 
   public onLinkClick(path: string): () => void {
     return async () => {
-      const analysis = await Analysis.get(path);
-      const report = await ReportAPI.get(analysis.report);
-      this.props.history.push(`/report/${report.id}`);
+      this.props.history.push(`/analysis/${path}`);
     };
   }
 
