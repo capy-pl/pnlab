@@ -21,6 +21,7 @@ const SearchSingleItemDropdown = ({ placeholder, options, onChange }: SearchDrop
     selection
     onChange={onChange}
     options={options}
+    // style={{minWidth: '18%'}}
     style={{width: '100%'}}
   />
 );

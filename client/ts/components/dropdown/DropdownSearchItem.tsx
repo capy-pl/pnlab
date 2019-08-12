@@ -3,7 +3,7 @@ import { Dropdown, DropdownProps } from 'semantic-ui-react';
 
 interface Option {
   key: string;
-  value: string;
+  value: number;
   text: string;
 }
 
@@ -15,6 +15,7 @@ interface DropdownSearchProps {
 
 const DropdownSearchItem = ({ placeholder, options, onChange }: DropdownSearchProps) => (
   <Dropdown
+    clearable
     placeholder={placeholder}
     multiple
     search

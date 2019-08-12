@@ -5,14 +5,18 @@ import {
   TextAreaProps,
 } from 'semantic-ui-react';
 
+interface FormAddAnalysisProps {
+  updateFormAdd: (title, note) => void;
+}
+
 interface FormAddAnalysisState {
   title: string;
   note: string;
   [key: string]: string;
 }
 
-export default class FormAddAnalysis extends PureComponent<{}, FormAddAnalysisState> {
-  constructor(props: {}) {
+export default class FormAddAnalysis extends PureComponent<FormAddAnalysisProps, FormAddAnalysisState> {
+  constructor(props) {
     super(props);
     this.state = {
       title: '',
@@ -25,7 +29,9 @@ export default class FormAddAnalysis extends PureComponent<{}, FormAddAnalysisSt
   (event: React.SyntheticEvent<HTMLInputElement, Event> | React.FormEvent<HTMLTextAreaElement>,
    data: TextAreaProps | InputOnChangeData) => void {
     return (e, { value }) => {
-      this.setState({ [keyName]: value as string});
+      this.setState({ [keyName]: value as string}, () => {
+        this.props.updateFormAdd(this.state.title, this.state.note);
+      });
     };
   }
 

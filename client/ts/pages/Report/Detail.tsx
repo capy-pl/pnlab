@@ -17,7 +17,7 @@ import { DropdownMenu } from '../../components/menu';
 import { CharacterMessage, CommunitiesMessage, ProductRank } from '../../components/message';
 
 import { Analysis } from '../../PnApp/model';
-import ReportAPI from '../../PnApp/model/Report' ;
+import ReportAPI, { SimpleNode } from '../../PnApp/model/Report' ;
 import { Community, Node } from '../../PnApp/model/Report';
 
 interface ReportProps extends RouteComponentProps<{ id: string }> {
@@ -30,10 +30,12 @@ interface ReportState {
   content: string;
   communitiesInfo?: Community[];
   selectedCommunities?: Community[];
-  selectedProduct?: Node[];
-  searchItems?: DropdownProps['value'];
+  selectedProduct?: SimpleNode;
+  searchItems?: number[];
   modalOpen: boolean;
   visible: boolean;
+  title?: string;
+  note?: string;
 }
 
 const messageStyle: React.CSSProperties = {
@@ -65,6 +67,7 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
       modalOpen: false,
       visible: false,
     };
+
     this.onShowProductNetwork = this.onShowProductNetwork.bind(this);
     this.onShowCommunities = this.onShowCommunities.bind(this);
     this.onShowCharacter = this.onShowCharacter.bind(this);
@@ -78,6 +81,7 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
     this.onItemSearch = this.onItemSearch.bind(this);
     this.handleToggleSidebar = this.handleToggleSidebar.bind(this);
     this.clearSelected = this.clearSelected.bind(this);
+    this.updateFormAdd = this.updateFormAdd.bind(this);
   }
 
   public async componentDidMount() {
@@ -89,9 +93,12 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
   }
 
   public clearSelected() {
-    this.setState({content: ''});
-    this.setState({selectedCommunities: undefined});
-    this.setState({selectedProduct: undefined});
+    this.setState(
+      {
+        content: '',
+        selectedCommunities: undefined,
+        selectedProduct: undefined,
+      });
   }
 
   public onShowProductNetwork() {
@@ -121,18 +128,19 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
   }
 
   public updateCommunitiesGraph(communitiesList: Community[] | undefined) {
-    this.setState({selectedCommunities: communitiesList});
+    this.setState({
+      selectedCommunities: communitiesList,
+      selectedProduct: undefined,
+    });
   }
 
-  public updateProductGraph(product) {
-    if (product === undefined) {
-      this.setState({selectedProduct: undefined});
-    } else {
+  public updateProductGraph(product: SimpleNode | undefined) {
       if (this.state.report) {
-        const selectedProduct = this.state.report.nodes.filter((node) => node.name === product.name);
-        this.setState({selectedProduct});
+        this.setState({
+          selectedProduct: product,
+          selectedCommunities: undefined,
+        });
       }
-    }
   }
 
   public onSaveGraph() {
@@ -147,17 +155,30 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
     });
   }
 
-  public onConfirm() {
+  public async onConfirm() {
     this.setState({
       modalOpen: false,
+      loading: true,
     });
     if (this.state.report) {
-      Analysis.add({report: this.state.report.id, title: 'testtest1'});
+      const title = this.state.title;
+      const description = this.state.note;
+      Analysis.add({report: this.state.report.id, title, description})
+        .then(() => {
+          this.setState({loading: false});
+        });
     }
   }
 
+  public updateFormAdd(title, note) {
+    this.setState({title});
+    this.setState({note});
+  }
+
   public onItemSearch(event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) {
-    this.setState({searchItems: data.value});
+    this.setState({
+      searchItems: data.value as number[],
+    });
   }
 
   public handleToggleSidebar() {
@@ -204,19 +225,23 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
     let searchItemDropdown: React.ReactChild;
     const report = this.state.report as ReportAPI;
     const dropdownOptions = report.nodes.map((node) => {
-      return ({ key: node.name, value: node.name, text: node.name });
+      return ({
+        key: node.name,
+        value: node.id,
+        text: node.name,
+      });
     });
-    if (!this.state.showCommunity) {
-      searchItemDropdown = (
-        <DropdownSearchItem
-          options={dropdownOptions}
-          placeholder='搜尋商品：請輸入商品名稱'
-          onChange={this.onItemSearch}
-        />
-      );
-    } else {
-      return <React.Fragment />;
-    }
+    // if (!this.state.showCommunity) {
+    searchItemDropdown = (
+      <DropdownSearchItem
+        options={dropdownOptions}
+        placeholder='搜尋商品：請輸入商品名稱'
+        onChange={this.onItemSearch}
+      />
+    );
+    // } else {
+    //   return <React.Fragment />;
+    // }
     return searchItemDropdown;
   }
 
@@ -228,16 +253,18 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
         const message: React.ReactChild = this.getMessageComponent();
         const searchItemDropdown: React.ReactChild = this.getDropdownSearch();
         const conditionList = this.state.report.conditions.map((condition) => {
-          const values = condition.values.map((value) => {
-            return (<Label key={value} style={{margin: '.2rem'}}>{value}</Label>);
-          });
-          return (
-            <div key={condition.name} style={{margin: '1rem 0 1rem 0' }}>
-              <h5>{condition.name}: </h5>
-              {values}
-              <Divider />
-            </div>
-          );
+          if (condition.values.length !== 0) {
+            const values = condition.values.map((value) => {
+              return (<Label key={value} style={{margin: '.2rem'}}>{value}</Label>);
+            });
+            return (
+              <div key={condition.name} style={{margin: '1rem 0 1rem 0' }}>
+                <h5>{condition.name}: </h5>
+                {values}
+                <Divider />
+              </div>
+            );
+          }
         });
         return (
           <React.Fragment>
@@ -263,7 +290,7 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
                 {conditionList}
               </Sidebar>
             </Sidebar.Pushable>
-            <div style={{ position: 'absolute', top: 80, right: 120, minWidth: '12%', zIndex: 101 }}>
+            <div style={{ position: 'absolute', top: 80, right: 120, minWidth: '15%', zIndex: 101 }}>
               {searchItemDropdown}
             </div>
             <Button
@@ -274,10 +301,11 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
             </Button>
             <div style={{ position: 'absolute', bottom: 10, left: 10, zIndex: 100 }}>
               <ModalAddAnalysis
-                header='編輯圖片'
+                header='儲存圖片'
                 open={this.state.modalOpen}
                 onCancel={this.onCancel}
                 onConfirm={this.onConfirm}
+                updateFormAdd={this.updateFormAdd}
               >
                 <Button
                   color='blue'

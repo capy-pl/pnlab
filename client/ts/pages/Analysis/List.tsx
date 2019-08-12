@@ -5,6 +5,7 @@ import { Button, DropdownProps, Segment, Table } from 'semantic-ui-react';
 import { AnalysesList } from '../../components/list';
 import ModalAddCompare from '../../components/modal/ModalAddCompare';
 import Analysis from '../../PnApp/model/Analysis';
+import ReportAPI from '../../PnApp/model/Report';
 
 interface AnalysisListState {
   loading: boolean;
@@ -40,8 +41,10 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
   }
 
   public onLinkClick(path: string): () => void {
-    return () => {
-      this.props.history.push(`/analysis/${path}`);
+    return async () => {
+      const analysis = await Analysis.get(path);
+      const report = await ReportAPI.get(analysis.report);
+      this.props.history.push(`/report/${report.id}`);
     };
   }
 

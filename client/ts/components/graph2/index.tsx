@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { DataSet, EdgeOptions, Network, NodeOptions } from 'vis';
-import { Community, Edge, Node } from '../../PnApp/model/Report';
+import { Edge, Node } from '../../PnApp/model/Report';
 
 interface GraphNode extends Node, NodeOptions {
 }
@@ -10,31 +10,30 @@ interface GraphEdge extends Edge, EdgeOptions {
 
 const style = {
   height: '800px',
-  width: '900px',
+  width: '100%',
+  margin: '0 auto',
 };
 
 interface GraphProps {
   nodes: Node[];
   edges: Edge[];
   showCommunity: boolean;
-  selectedCommunities?: Community[];
-  selectedProduct?: Node[];
-  searchItems?: [];
+  selectedProduct?: string[];
+  shareNodes?: string[];
 }
 
-export default class GraphView2 extends PureComponent<GraphProps, {}> {
+export default class GraphViewCompare extends PureComponent<GraphProps, {}> {
   public graphRef: React.RefObject<HTMLDivElement>;
   public network?: Network;
   constructor(props: GraphProps) {
     super(props);
     this.graphRef = React.createRef();
-    this.updateNodes = this.updateNodes.bind(this);
   }
 
   public componentDidMount() {
-    // if (this.graphRef.current) {
-    //   this.graphRef.current.style.height = this.getHeight();
-    // }
+    if (this.graphRef.current) {
+      this.graphRef.current.style.height = this.getHeight();
+    }
     this.initializeGraph();
   }
 
@@ -64,7 +63,21 @@ export default class GraphView2 extends PureComponent<GraphProps, {}> {
       <p>連接節點數: ${copy.degree}</p>
     </div>
     `;
-    copy.color = '#8DC1FF';
+    if (this.props.shareNodes.includes(node.name)) {
+      copy.color = {
+        background: 'yellow',
+        border: '#3f83d4',
+        hover: '#ffdd00',
+        highlight: '#ffdd00',
+      };
+    } else {
+      copy.color = {
+        background: '#8DC1FF',
+        border: '#3f83d4',
+        hover: '#3692ff',
+        highlight: '#3692ff',
+      };
+    }
     return copy;
   }
 
@@ -79,127 +92,124 @@ export default class GraphView2 extends PureComponent<GraphProps, {}> {
     return copy;
   }
 
-  public updateNodes() {
-    const nodes = this.network.body.data.nodes;
-
-    if (this.props.selectedCommunities !== undefined) {
-      const communitiesIdList = this.props.selectedCommunities.map((community: Community) => {
-        return (community.id);
-      });
-      const selectedCommunities = [];
-      nodes.forEach((node) => {
-        selectedCommunities.push({id: node.id, hidden: !communitiesIdList.includes(node.community) ? true : false});
-      });
-      nodes.update(selectedCommunities);
-    } else if (this.props.showCommunity) {
-      const communities = nodes.map((node) => {
-        return ({
+  public resetGraphColor(nodes) {
+    const updateNodes = nodes.map((node) => {
+      let color;
+      if (this.props.shareNodes) {
+        this.props.shareNodes.includes(node.name) ?
+          color = {background: 'yellow', border: '#3f83d4', hover: '#ffdd00', highlight: '#ffdd00'} :
+          color = {background: '#8DC1FF', border: '#3f83d4', hover: '#3692ff', highlight: '#3692ff'};
+      } else {
+        color = {background: '#8DC1FF', border: '#3f83d4', hover: '#3692ff', highlight: '#3692ff'};
+      }
+      return (
+        {
           id: node.id,
           label: node.name,
-          group: node.community,
-          title: `
-            <div>
-              <p>${node.name}</p>
-              <p>community: ${node.community}</p>
-              <p>weight: ${Math.round(node.weight)}</p>
-              <p>連接節點數: ${node.degree}</p>
-            </div>
-          `,
-          borderWidth: node.core ? 5 : 1,
+          title: this.props.showCommunity ?
+            `
+              <div>
+                <p>${node.name}</p>
+                <p>community: ${node.community}</p>
+                <p>weight: ${Math.round(node.weight)}</p>
+                <p>連接節點數: ${node.degree}</p>
+              </div>
+            ` :
+            `
+              <div>
+                <p>${node.name}</p>
+                <p>weight: ${Math.round(node.weight)}</p>
+                <p>連接節點數: ${node.degree}</p>
+              </div>
+            `,
+          group: this.props.showCommunity ? node.community : undefined,
+          color,
+          borderWidth: (this.props.showCommunity && node.core) ? 5 : 1,
           hidden: false,
-        });
-      });
-      nodes.update(communities);
-    }
+        }
+      );
+    });
+    nodes.update(updateNodes);
+  }
 
-    const selectProduct = [];
-    if (this.props.selectedProduct.length !== 0) {
-      // highlight node & show connected products
-      let connectedNodes;
-      const connectedNodesList = [];
-      nodes.forEach((node) => {
-        if (this.props.selectedProduct[0].name === node.name) {
-          connectedNodesList.push(node.id);
-          selectProduct.push({id: node.id, color: {background: 'orange', border: '#8DC1FF', hover: 'orange', highlight: 'orange'}});
-          connectedNodes = this.network.getConnectedNodes(node.id);
-        } else {
-          selectProduct.push({id: node.id, color: {background: '#8DC1FF', border: '#8DC1FF', hover: '#8DC1FF', highlight: '#8DC1FF'}, label: node.name});
-        }
-      });
-      for (const c of connectedNodes) {
-        connectedNodesList.push(c);
+  public async updateNodes() {
+    const nodes = this.network.body.data.nodes;
+
+    if (this.props.showCommunity) {
+      if (this.props.selectedProduct.length !== 0) {
+        let group;
+        nodes.forEach((node) => {
+          if (this.props.selectedProduct[0] === node.name) {
+            group = node.community;
+          }
+        });
+        const updateSelectedCommunities = nodes.map((node) => {
+          return (
+            {
+              id: node.id,
+              label: node.name,
+              group: node.community,
+              title: `
+                <div>
+                  <p>${node.name}</p>
+                  <p>community: ${node.community}</p>
+                  <p>weight: ${Math.round(node.weight)}</p>
+                  <p>連接節點數: ${node.degree}</p>
+                </div>
+              `,
+              borderWidth: node.core ? 5 : 1,
+              hidden: node.community !== group ? true : false,
+            }
+          );
+        });
+        nodes.update(updateSelectedCommunities);
+      } else {
+        this.resetGraphColor(nodes);
       }
-      nodes.forEach((node) => {
-        if (!connectedNodesList.includes(node.id)) {
-          // lighten the colors of unselected nodes
-          selectProduct.push({id: node.id, color: {background: '#D3E7FF', border: '#D3E7FF'}, label: ' '});
-        }
-      });
-      nodes.update(selectProduct);
-    } else if (this.props.selectedProduct.length === 0) {
-      const productNetwork = nodes.map((node) => {
-        return (
-          {
-            id: node.id,
-            label: node.name,
-            title: `
-              <div>
-                <p>${node.name}</p>
-                <p>weight: ${Math.round(node.weight)}</p>
-                <p>連接節點數: ${node.degree}</p>
-              </div>
-            `,
-            group: undefined,
-            hidden: false,
-            color: '#8DC1FF',
-            borderWidth: 1,
-          }
-        );
-      });
-      nodes.update(productNetwork);
-    } else if (!this.props.showCommunity) {
-      const productNetwork = nodes.map((node) => {
-        return (
-          {
-            id: node.id,
-            label: node.name,
-            title: `
-              <div>
-                <p>${node.name}</p>
-                <p>weight: ${Math.round(node.weight)}</p>
-                <p>連接節點數: ${node.degree}</p>
-              </div>
-            `,
-            group: undefined,
-            hidden: false,
-            color: '#8DC1FF',
-            borderWidth: 1,
-          }
-        );
-      });
-      nodes.update(productNetwork);
-    }
-    if (this.props.searchItems.length !== 0) {
-      const searchItems = [];
-      nodes.forEach((node) => {
-        this.props.searchItems.forEach((item) => {
-          if (node.name === item) {
-            searchItems.push (
+    } else {
+      this.resetGraphColor(nodes);
+      const updateSelectGraph = [];
+      if (this.props.selectedProduct.length !== 0) {
+        // highlight node & show connected products
+        let highlightNodes: number[] = [];
+        nodes.forEach((node) => {
+          if (this.props.selectedProduct[0] === node.name) {
+            highlightNodes = this.network.getConnectedNodes(node.id);
+            highlightNodes.push(node.id);
+            updateSelectGraph.push(
               {
                 id: node.id,
                 color: {
-                  background: 'yellow',
-                  hover: {
-                    background: 'orange',
-                  },
-                  highlight: 'orange',
+                  background: 'black',
+                  border: '#3f83d4',
+                  hover: 'grey',
+                  highlight: 'black',
                 },
               },
             );
           }
         });
-      });
-      nodes.update(searchItems);
+        nodes.forEach((node) => {
+          let background;
+          if (!highlightNodes.includes(node.id)) {
+            // lighten the colors of unselected nodes
+            background = this.props.shareNodes.includes(node.name) ? '#ffffc9' : '#D3E7FF';
+            updateSelectGraph.push(
+              {
+                id: node.id,
+                color: {
+                  background,
+                  border: '#D3E7FF',
+                },
+                label: ' ',
+              },
+            );
+          }
+        });
+        nodes.update(updateSelectGraph);
+      } else if (this.props.selectedProduct.length === 0) {
+        this.resetGraphColor(nodes);
+      }
     }
   }
 
@@ -273,11 +283,11 @@ export default class GraphView2 extends PureComponent<GraphProps, {}> {
 
   public render() {
     return (
-      <div className='pn-graph2' style={style} ref={this.graphRef} />
+      <div className='pn-graph2' ref={this.graphRef} />
     );
   }
 }
 
 export {
-  GraphView2,
+  GraphViewCompare,
 };
