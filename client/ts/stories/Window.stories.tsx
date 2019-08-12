@@ -6,4 +6,12 @@ import 'semantic-ui-css/semantic.min.css';
 const stories = storiesOf('Window', module);
 
 stories
-  .add('window', () => (<Window />));
+  .add('window', () => (
+  <Window
+    show={true}
+    title='Test'
+  >
+    <p>
+      Test ContentTest ContentTest ContentTest ContentTest ContentTest ContentTest ContentTest ContentTest ContentTest ContentTest ContentTest ContentTest Content
+    </p>
+  </Window>));
