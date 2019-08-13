@@ -1,5 +1,5 @@
 import React from 'react';
-import Draggable from 'react-draggable';
+import { Rnd } from 'react-rnd';
 import {
   Card,
   Icon,
@@ -15,15 +15,6 @@ interface WindowProps {
 interface WindowState {
   focus: boolean;
 }
-
-const style: React.CSSProperties = {
-  resize: 'both',
-  overflowY: 'scroll',
-  overflowX: 'auto',
-  display: 'inline-block',
-  minWidth: '240px',
-  minHeight: '240px',
-};
 
 const closeIconStyle: React.CSSProperties = {
   float: 'right',
@@ -51,21 +42,24 @@ export default class Window extends React.PureComponent<WindowProps, WindowState
 
   public render() {
     return (
-      <Draggable
-        allowAnyClick={false}
-        handle='.draggable'
+      <Rnd
+        dragHandleClassName='draggable'
+        default={{x: 0, y: 0,  width: '240px', height: '240px'}}
+        minHeight={240}
+        minWidth={240}
       >
         <div
           ref={this.windowRef}
-          style={{ display: this.props.show ? 'inline-block' : 'none' }}
+          style={{ display: this.props.show ? 'inline-block' : 'none', height: '100%', width: '100%' }}
         >
         <Card
-          style={style}
-          raised={this.state.focus}
+          raised={true}
+          fluid
+          style={{ height: '100%' }}
         >
           <Card.Content
             className='draggable'
-            style={{ padding: '5px' }}
+            style={{ padding: '5px', flexGrow: 0 }}
           >
             <Card.Description
               textAlign='center'
@@ -78,12 +72,12 @@ export default class Window extends React.PureComponent<WindowProps, WindowState
               />
             </Card.Description>
           </Card.Content>
-          <Card.Content>
+            <Card.Content style={{ overflow: 'scroll' }}>
             {this.props.children}
           </Card.Content>
         </Card>
         </div>
-      </Draggable>
+      </Rnd>
     );
   }
 }

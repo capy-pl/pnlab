@@ -12,6 +12,18 @@ stories
     title='Test'
   >
     <p>
-      Test ContentTest ContentTest ContentTest ContentTest ContentTest ContentTest ContentTest ContentTest ContentTest ContentTest ContentTest ContentTest Content
+      ContentTest ContentTest ContentTest ContentTest
+      ContentTest ContentTest ContentTest Content apple is good
+      to eat
     </p>
-  </Window>));
+  </Window>))
+  .add('multiple window', () => (
+    <React.Fragment>
+      <Window show={true} title='Window1'>
+        Test
+      </Window>
+      <Window show={true} title='Window2'>
+        Test
+      </Window>
+    </React.Fragment>
+  ))
