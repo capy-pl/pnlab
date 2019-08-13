@@ -9,6 +9,10 @@ interface WindowProps {
   title: string;
   children?: React.ReactChild;
   show?: boolean;
+  defaultX?: number;
+  defaultY?: number;
+  defaultWidth?: number | string;
+  defaultHeight?: number | string;
   onClickX?: (e: React.SyntheticEvent<MouseEvent>) => void;
 }
 
@@ -58,13 +62,19 @@ export default class Window extends React.PureComponent<WindowProps, WindowState
   }
 
   public render() {
+    const rndDefaultStyle = {
+      x: this.props.defaultX || 0,
+      y: this.props.defaultY || 0,
+      width: this.props.defaultWidth || '240px',
+      height: this.props.defaultHeight || '240px',
+    };
     return (
       <Rnd
         dragHandleClassName='draggable'
-        default={{x: 0, y: 0,  width: '240px', height: '240px'}}
+        default={rndDefaultStyle}
         minHeight={240}
         minWidth={240}
-        style={{ zIndex: this.state.zIndex }}
+        style={{ zIndex: this.state.zIndex, display: this.props.show ? 'inline-block' : 'none' }}
       >
         <div
           ref={this.windowRef}

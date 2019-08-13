@@ -22,8 +22,13 @@ stories
       <Window show={true} title='Window1'>
         Test
       </Window>
-      <Window show={true} title='Window2'>
+      <Window
+        show={true}
+        defaultX={250}
+        title='Window2'
+      >
         Test
       </Window>
     </React.Fragment>
-  ))
+  ));
+  
