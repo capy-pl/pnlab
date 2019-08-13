@@ -14,6 +14,7 @@ interface WindowProps {
 
 interface WindowState {
   focus: boolean;
+  zIndex: number;
 }
 
 const closeIconStyle: React.CSSProperties = {
@@ -27,17 +28,33 @@ export default class Window extends React.PureComponent<WindowProps, WindowState
     super(props);
     this.state = {
       focus: true,
+      zIndex: 199,
     };
 
     this.windowRef = React.createRef();
+    this.isInsideCurrentWindow = this.isInsideCurrentWindow.bind(this);
   }
 
-  public captureClick(): void {
-
+  public isInsideCurrentWindow(e: MouseEvent): boolean {
+    const { top, left, right, bottom } = (this.windowRef.current as HTMLDivElement).getBoundingClientRect();
+    const { clientX, clientY } = e;
+    return (clientX <= right && clientX >= left) && (clientY >= top && clientY <= bottom);
   }
 
   public componentDidMount(): void {
-    
+    document.addEventListener('mousedown', (e) => {
+      if (this.isInsideCurrentWindow(e)) {
+        this.setState({
+          focus: true,
+          zIndex: 200,
+        });
+      } else {
+        this.setState({
+          focus: false,
+          zIndex: 199,
+        });
+      }
+    });
   }
 
   public render() {
@@ -47,13 +64,14 @@ export default class Window extends React.PureComponent<WindowProps, WindowState
         default={{x: 0, y: 0,  width: '240px', height: '240px'}}
         minHeight={240}
         minWidth={240}
+        style={{ zIndex: this.state.zIndex }}
       >
         <div
           ref={this.windowRef}
           style={{ display: this.props.show ? 'inline-block' : 'none', height: '100%', width: '100%' }}
         >
         <Card
-          raised={true}
+          raised={this.state.focus}
           fluid
           style={{ height: '100%' }}
         >
