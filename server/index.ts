@@ -8,22 +8,27 @@ import app from './App';
 import dbConnect from './core/db';
 import amqpConnect from './core/mq';
 import { startPythonWorker } from './core/process';
-import { Logger } from './core/util';
+import { command, Logger } from './core/util';
 import startSocketServer from './core/ws';
 
 // Inject environment variable from .env
 dotenv.config();
 
+command.parse(process.argv);
+
 const server = http.createServer(app);
 let pyConsumers: ChildProcess;
 
 server.listen(process.env.PORT, async () => {
-  try {
-    pyConsumers = await startPythonWorker();
-  } catch (error) {
-    Logger.error(error);
-    process.exit(1);
+  if (!command.disablePython) {
+    try {
+      pyConsumers = await startPythonWorker();
+    } catch (error) {
+      Logger.error(error);
+      process.exit(1);
+    }
   }
+
   await Promise.all([amqpConnect(), dbConnect()]);
   startSocketServer(server, () => {
     Logger.info('Websocket server is listening.');
@@ -36,5 +41,7 @@ server.on('error', (err) => {
 });
 
 server.on('close', () => {
-  pyConsumers.kill();
+  if (pyConsumers) {
+    pyConsumers.kill();
+  }
 });

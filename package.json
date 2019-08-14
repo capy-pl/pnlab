@@ -1,13 +1,13 @@
 {
 	"name": "pn-platform",
-	"version": "1.0.0",
-	"description": "A Starter Project for typescript.",
+	"version": "0.0.1-beta",
+	"description": "專案",
 	"scripts": {
 		"lint": "tslint",
 		"test": "jest",
 		"start": "nodemon",
 		"dev": "nodemon",
-		"fdev": "ts-node server/index.ts",
+		"fdev": "ts-node server/index.ts -d",
 		"storybook": "start-storybook"
 	},
 	"nodemonConfig": {
@@ -39,6 +39,7 @@
 		"amqplib": "^0.5.3",
 		"axios": "0.18.1",
 		"body-parser": "1.18.3",
+		"commander": "^3.0.0",
 		"compression": "1.7.3",
 		"dotenv": "7.0.0",
 		"express": "4.16.4",
