@@ -1,8 +1,7 @@
 import axios from 'axios';
-import Report from './Report';
 
 export interface Comment {
-  readonly user_id: string;
+  readonly userId: string;
   _id?: string;
   name?: string;
   content: string;
@@ -31,8 +30,8 @@ export default class Analysis {
   }
 
   // The function will return the newly added analysis's id for redirect.
-  public static async add(body: AnalysisModel): Promise<{id: string}> {
-    const response = await axios.post<{id: string}>(`/api/analysis`, body);
+  public static async add(body: AnalysisModel): Promise<{ id: string }> {
+    const response = await axios.post<{ id: string }>(`/api/analysis`, body);
     return response.data;
   }
 

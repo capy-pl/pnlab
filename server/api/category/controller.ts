@@ -13,12 +13,9 @@ export async function GetCategories(req: e.Request, res: e.Response): Promise<vo
   res.send(categories);
 }
 
-export interface AddCategoryRequestBody extends CategoryInterface {
-}
-
 export async function AddCategory(req: e.Request, res: e.Response): Promise<void> {
   const { body } = req;
-  const { name, items } = body as AddCategoryRequestBody;
+  const { name, items } = body as CategoryInterface;
   if (!(name && name.length) && (items && items.length)) {
     return res.status(422).end();
   }

@@ -33,32 +33,37 @@ nunjucks.configure('server/templates', {
 if (process.env.NODE_ENV === 'development') {
   const webpack = require('webpack');
   const devMiddleware = require('webpack-dev-middleware');
-  const {
-    clientConfig,
-  } = require('../config/webpack.dev');
+  const { clientConfig } = require('../config/webpack.dev');
   const compiler = webpack(clientConfig);
-  app.use(devMiddleware(compiler, {
-    logLevel: 'error',
-    publicPath: clientConfig.output.publicPath,
-    stats: {
-      colors: true,
-    },
-  }));
+  app.use(
+    devMiddleware(compiler, {
+      logLevel: 'error',
+      publicPath: clientConfig.output.publicPath,
+      stats: {
+        colors: true,
+      },
+    }),
+  );
 
   const hotModuleMiddleware = require('webpack-hot-middleware');
-  app.use(hotModuleMiddleware(compiler, {
+  app.use(
+    hotModuleMiddleware(compiler, {
       publicPath: clientConfig.output.publicPath,
-  }));
+    }),
+  );
 }
 
 // Serve static files.
 app.use('/static/', express.static(path.resolve(__dirname, '..', 'dist', 'client')));
 
 // // Serve media files.
-app.use('/', express.static('static', {
-  immutable: true,
-  maxAge: '0.5y',
-}));
+app.use(
+  '/',
+  express.static('static', {
+    immutable: true,
+    maxAge: '0.5y',
+  }),
+);
 
 // Register Router
 app.use('/api/auth', API.Auth);
@@ -72,14 +77,9 @@ app.get('/*', (req, res) => {
   res.render('index.html');
 });
 
-app.use((
-  err: Error,
-  req: express.Request,
-  res: express.Response,
-  next: express.NextFunction,
-) => {
-    Logger.error(err);
-    res.status(500);
-  });
+app.use((err: Error, req: express.Request, res: express.Response) => {
+  Logger.error(err);
+  res.status(500);
+});
 
 export default app;
