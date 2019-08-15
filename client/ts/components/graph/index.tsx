@@ -145,7 +145,6 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
 
   public paintSelectedProduct(): void {
     if (!_.isUndefined(this.props.selectedProduct)) {
-      let updateList: GraphNode[];
       const selectedNode: GraphNode = {
         id: this.props.selectedProduct,
         color: {
@@ -155,7 +154,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
         },
       } as any;
       const connectedNodes = (this.network as Network).getConnectedNodes(selectedNode.id);
-      updateList = this.nodes
+      const updateList = this.nodes
         .map<GraphNode>((node) => {
           if (!connectedNodes.includes(node.id as any) && node.id !== selectedNode.id) {
             return {

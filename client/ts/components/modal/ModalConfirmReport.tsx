@@ -14,14 +14,16 @@ const ModalConfirmReport = ({ header, content, onConfirm, onCancel, open, childr
   return (
     <React.Fragment>
       {children}
-      <Modal basic size='small'
+      <Modal basic
+size='small'
 open={open}>
         <Header content={header} />
         <Modal.Content>
           <p>{content}</p>
         </Modal.Content>
         <Modal.Actions>
-          <Button color='red' inverted
+          <Button color='red'
+inverted
 onClick={onCancel}>
             <Icon name='remove' />
             取消

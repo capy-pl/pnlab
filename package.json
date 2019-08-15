@@ -38,17 +38,18 @@
 		"trailingComma": "all",
 		"singleQuote": true,
 		"arrowParens": "always",
-		"printWidth": 120
+		"printWidth": 90
 	},
 	"license": "ISC",
 	"dependencies": {
-		"amqplib": "0.5.3",
 		"@typescript-eslint/parser": "^2.0.0",
+		"amqplib": "0.5.3",
 		"axios": "0.18.1",
 		"body-parser": "1.18.3",
 		"commander": "3.0.0",
 		"compression": "1.7.3",
 		"dotenv": "7.0.0",
+		"eslint-plugin-import": "^2.18.2",
 		"express": "4.16.4",
 		"express-session": "1.15.6",
 		"file-loader": "3.0.1",

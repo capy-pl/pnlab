@@ -11,12 +11,14 @@
     "@typescript-eslint/no-explicit-any": 0,
     "@typescript-eslint/triple-slash-reference": 0,
     "require-atomic-updates": 0,
-    "react/jsx-max-props-per-line": [1, { "maximum": 2, "when": "multiline" }]
+    "react/jsx-max-props-per-line": [1, { "maximum": 1, "when": "multiline" }],
+    "max-len": [1, 90]
   },
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
-    "plugin:react/recommended"
+    "plugin:react/recommended",
+    "plugin:import/typescript"
   ]
 }

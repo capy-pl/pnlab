@@ -69,7 +69,8 @@ stories
           startTime: new Date('2019-06-07T14:31:15.416Z'),
           endTime: new Date('2019-06-07T14:31:15.416Z'),
         }];
-      const items = data.map((report) => <SearchHistoryItem key={report._id} item={report}
+      const items = data.map((report) => <SearchHistoryItem key={report._id}
+item={report}
 onLinkClick={console.log}/>);
       return (
         <Table selectable>

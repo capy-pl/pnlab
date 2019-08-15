@@ -163,7 +163,8 @@ export default class ProductRank extends PureComponent<ProductRankProps, Message
 
     if (this.state.visible) {
       return (
-        <Message className='report-message' onDismiss={this.handleDismiss}
+        <Message className='report-message'
+onDismiss={this.handleDismiss}
 style={{ backgroundColor: 'white' }}>
           {message}
         </Message>

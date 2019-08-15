@@ -1,15 +1,6 @@
 import React, { PureComponent } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import {
-  Button,
-  Checkbox,
-  Divider,
-  Dropdown,
-  DropdownProps,
-  Label,
-  Menu,
-  Sidebar,
-} from 'semantic-ui-react';
+import { Button, Checkbox, Divider, Dropdown, DropdownProps, Label, Menu, Sidebar } from 'semantic-ui-react';
 
 import { DropdownSearchItem } from 'Component/dropdown';
 import { ModalAddAnalysis } from 'Component/modal';
@@ -23,8 +14,6 @@ import ProductRankWindow from './ProductRankWindow';
 import { Analysis } from '../../../PnApp/model';
 import ReportAPI, { SimpleNode } from '../../../PnApp/model/Report';
 import { Community, Node } from '../../../PnApp/model/Report';
-
-interface ReportProps extends RouteComponentProps<{ id: string }> {}
 
 interface ReportState {
   loading: boolean;
@@ -42,8 +31,8 @@ interface ReportState {
   sidebarVisible: boolean;
 }
 
-export default class Report extends PureComponent<ReportProps, ReportState> {
-  constructor(props: ReportProps) {
+export default class Report extends PureComponent<RouteComponentProps<{ id: string }>, ReportState> {
+  constructor(props: RouteComponentProps<{ id: string }>) {
     super(props);
     this.state = {
       loading: true,
@@ -69,16 +58,12 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
     this.toggleSidebar = this.toggleSidebar.bind(this);
 
     // bind window functions
-    this.openCommunityCharacterWindow = this.openCommunityCharacterWindow.bind(
-      this,
-    );
+    this.openCommunityCharacterWindow = this.openCommunityCharacterWindow.bind(this);
 
     this.openCommunityListWidow = this.openCommunityListWidow.bind(this);
     this.openProductRankWindow = this.openProductRankWindow.bind(this);
 
-    this.closeCommunityCharacterWindow = this.closeCommunityCharacterWindow.bind(
-      this,
-    );
+    this.closeCommunityCharacterWindow = this.closeCommunityCharacterWindow.bind(this);
     this.closeCommunityListWindow = this.closeCommunityListWindow.bind(this);
     this.closeProductRankWindow = this.closeProductRankWindow.bind(this);
   }
@@ -184,10 +169,7 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
     }
   }
 
-  public onItemSearch(
-    event: React.SyntheticEvent<HTMLElement, Event>,
-    data: DropdownProps,
-  ) {
+  public onItemSearch(event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) {
     this.setState({
       searchItems: data.value as number[],
     });
@@ -214,10 +196,7 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
               show={this.state.windowCommunityCharacter}
               close={this.closeCommunityCharacterWindow}
             />
-            <CommunityListWindow
-              show={this.state.windowCommunityList}
-              close={this.closeCommunityListWindow}
-            />
+            <CommunityListWindow show={this.state.windowCommunityList} close={this.closeCommunityListWindow} />
             <ProductRankWindow
               selectProduct={this.selectProduct}
               productList={this.state.report.rank}
@@ -244,32 +223,17 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
                     onChange={this.toggleShowCommunities}
                   />
                 </Menu.Item>
-                <Menu.Item
-                  as='a'
-                  onClick={this.openProductRankWindow}
-                >
-                    產品排名
+                <Menu.Item as='a' onClick={this.openProductRankWindow}>
+                  產品排名
                 </Menu.Item>
-                <Dropdown
-                  text='產品Community'
-                  item
-                  style={{ overflow: 'visible !important' }}
-                >
+                <Dropdown text='產品Community' item style={{ overflow: 'visible !important' }}>
                   <Dropdown.Menu>
                     <Dropdown.Item onClick={this.openCommunityListWidow}>Communities排名</Dropdown.Item>
                     <Dropdown.Item onClick={this.openCommunityCharacterWindow}>Communities角色</Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>
-                <Menu.Item
-                  as='a'
-                >
-                  清楚所選資料
-                </Menu.Item>
-                <Button
-                  fluid
-                  color='facebook'
-                  style={{ position: 'absolute', bottom: 0 }}
-                >
+                <Menu.Item as='a'>清楚所選資料</Menu.Item>
+                <Button fluid color='facebook' style={{ position: 'absolute', bottom: 0 }}>
                   另存圖片
                 </Button>
               </Sidebar>

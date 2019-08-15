@@ -1,4 +1,4 @@
-import { isNumber, isUndefined} from 'lodash';
+import { isNumber, isUndefined } from 'lodash';
 import React, { PureComponent } from 'react';
 import { Message, Table } from 'semantic-ui-react';
 
@@ -26,11 +26,14 @@ export default class ProductRankWindow extends PureComponent<Props, State> {
 
   public selectCell(id: number): () => void {
     return () => {
-      this.setState({
-        selectedIndex: id !== this.state.selectedIndex ? id : undefined,
-      }, () => {
-        this.props.selectProduct(this.state.selectedIndex);
-      });
+      this.setState(
+        {
+          selectedIndex: id !== this.state.selectedIndex ? id : undefined,
+        },
+        () => {
+          this.props.selectProduct(this.state.selectedIndex);
+        },
+      );
     };
   }
 
@@ -41,12 +44,8 @@ export default class ProductRankWindow extends PureComponent<Props, State> {
         positive={this.isSelected(product.id)}
         onClick={this.selectCell(product.id)}
       >
-        <Table.Cell>
-          {product.name}
-        </Table.Cell>
-        <Table.Cell>
-          {product.weight}
-        </Table.Cell>
+        <Table.Cell>{product.name}</Table.Cell>
+        <Table.Cell>{product.weight}</Table.Cell>
       </Table.Row>
     ));
   }
@@ -61,18 +60,14 @@ export default class ProductRankWindow extends PureComponent<Props, State> {
       >
         <React.Fragment>
           <Message info content='點擊產品列可顯示單一產品' />
-          <Table
-            selectable
-          >
+          <Table selectable>
             <Table.Header>
               <Table.Row>
                 <Table.HeaderCell textAlign='center'>產品名稱</Table.HeaderCell>
                 <Table.HeaderCell textAlign='center'>產品權重</Table.HeaderCell>
               </Table.Row>
             </Table.Header>
-            <Table.Body>
-              {this.getCells()}
-            </Table.Body>
+            <Table.Body>{this.getCells()}</Table.Body>
           </Table>
         </React.Fragment>
       </Window>
@@ -80,8 +75,6 @@ export default class ProductRankWindow extends PureComponent<Props, State> {
   }
 
   private isSelected(id: number): boolean {
-    return (!isUndefined(this.state.selectedIndex)
-      && (this.state.selectedIndex === id)
-    );
+    return !isUndefined(this.state.selectedIndex) && this.state.selectedIndex === id;
   }
 }

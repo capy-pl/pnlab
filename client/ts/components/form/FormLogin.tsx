@@ -59,16 +59,20 @@ class FormLogin extends PureComponent<{}, FormLoginState> {
       return <Redirect to='/' />;
     } else {
       return (
-        <Segment style={{ width: '35%' }} padded
+        <Segment style={{ width: '35%' }}
+padded
 raised>
-          <Grid textAlign='center' style={{ height: '100%' }}
+          <Grid textAlign='center'
+style={{ height: '100%' }}
 verticalAlign='middle'>
             <Grid.Column style={{ maxWidth: 450 }}>
-              <Header as='h2' color='teal'
+              <Header as='h2'
+color='teal'
 textAlign='center'>
                 Login
             </Header>
-              <Form size='large' loading={this.state.loading}
+              <Form size='large'
+loading={this.state.loading}
 error={this.state.error}>
                 <Segment stacked>
                   <Form.Input
@@ -88,8 +92,10 @@ error={this.state.error}>
                     // tslint:disable-next-line:jsx-no-lambda
                     onChange={(e, { value }) => { this.handleChange('password', value as string); }}
                   />
-                  <Button color='teal' fluid
-size='large' disabled={this.state.loading}
+                  <Button color='teal'
+fluid
+size='large'
+disabled={this.state.loading}
 onClick={this.onClick}>
                     Login
                   </Button>

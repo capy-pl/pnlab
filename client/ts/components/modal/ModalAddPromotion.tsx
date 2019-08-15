@@ -183,11 +183,14 @@ export default class ModalAddPromotion extends React.PureComponent<ModalAddPromo
   public render() {
     return (
       <React.Fragment>
-        <Button color='teal' onClick={this.show}
-floated='right' style={{ marginBottom: '5px' }}>
+        <Button color='teal'
+onClick={this.show}
+floated='right'
+style={{ marginBottom: '5px' }}>
           新增促銷
         </Button>
-        <Modal open={this.state.show} centered={false}
+        <Modal open={this.state.show}
+centered={false}
 closeOnDimmerClick={false}>
           <Modal.Header>新增促銷</Modal.Header>
           <Modal.Content>
@@ -207,7 +210,8 @@ closeOnDimmerClick={false}>
             </Message>
           </Modal.Content>
           <Modal.Actions>
-            <Button loading={this.state.loading} onClick={this.close}
+            <Button loading={this.state.loading}
+onClick={this.close}
 color='red'>
               取消
             </Button>

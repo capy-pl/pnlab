@@ -185,7 +185,8 @@ export default class ModalAddPromotion extends React.PureComponent<ModalEditProm
           style={{ marginBottom: '5px' }}
           content='編輯'
         />
-        <Modal open={this.state.show} centered={false}
+        <Modal open={this.state.show}
+centered={false}
 closeOnDimmerClick={false}>
           <Modal.Header>編輯促銷</Modal.Header>
           <Modal.Content>
@@ -206,7 +207,8 @@ closeOnDimmerClick={false}>
             </Message>
           </Modal.Content>
           <Modal.Actions>
-            <Button loading={this.state.loading} onClick={this.close}
+            <Button loading={this.state.loading}
+onClick={this.close}
 color='red'>
               取消
             </Button>

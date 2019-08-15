@@ -4,7 +4,8 @@ module.exports = function (grunt) {
   const eslintConfig = {
     options: {
       configuration: './.eslintrc',
-      fix: true
+      fix: true,
+      quiet: true,
     },
     client: {
       files: {

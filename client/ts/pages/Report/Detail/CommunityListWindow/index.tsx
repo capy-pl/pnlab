@@ -7,7 +7,7 @@ interface Props {
   show: boolean;
 }
 
-export default class CommunityListWindow extends PureComponent<Props>  {
+export default class CommunityListWindow extends PureComponent<Props> {
   public render() {
     return (
       <Window
