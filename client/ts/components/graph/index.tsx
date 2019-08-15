@@ -25,7 +25,7 @@ interface GraphProps {
   edges: Edge[];
   showCommunity: boolean;
   selectedCommunities?: Community[];
-  selectedProduct?: SimpleNode;
+  selectedProduct?: number;
   searchItems?: number[];
 }
 
@@ -150,7 +150,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
     if (this.props.selectedProduct) {
       let updateList: GraphNode[];
       const selectedNode: GraphNode = {
-        ...this.props.selectedProduct,
+        id: this.props.selectedProduct,
         color: {
           background: 'orange',
           hover: 'orange',
