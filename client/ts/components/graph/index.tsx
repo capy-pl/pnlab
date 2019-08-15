@@ -147,7 +147,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
   }
 
   public paintSelectedProduct(): void {
-    if (this.props.selectedProduct) {
+    if (!_.isUndefined(this.props.selectedProduct)) {
       let updateList: GraphNode[];
       const selectedNode: GraphNode = {
         id: this.props.selectedProduct,
