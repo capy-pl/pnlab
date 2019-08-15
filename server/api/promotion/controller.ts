@@ -2,18 +2,15 @@ import e from 'express';
 import { connection } from 'mongoose';
 
 import { Logger } from '../../core/util';
-import Promotion, {
-  PromotionInterface,
-  PromotionType,
-} from '../../models/Promotions';
-
-interface AddPromotionBody extends PromotionInterface {
-}
+import Promotion, { PromotionInterface, PromotionType } from '../../models/Promotions';
 
 export async function AddPromotion(req: e.Request, res: e.Response): Promise<void> {
-  const body = req.body as AddPromotionBody;
+  const body = req.body as PromotionInterface;
   if (!(body.name && body.groupOne && body.startTime && body.endTime)) {
-    return res.status(400).send({  message: 'Missing field.' }).end();
+    return res
+      .status(400)
+      .send({ message: 'Missing field.' })
+      .end();
   }
 
   try {
@@ -21,13 +18,19 @@ export async function AddPromotion(req: e.Request, res: e.Response): Promise<voi
     body.endTime = new Date(body.endTime);
   } catch (error) {
     Logger.error(error);
-    return res.status(400).send({ message: 'startTime or endTime is not correct or provided.' }).end();
+    return res
+      .status(400)
+      .send({ message: 'startTime or endTime is not correct or provided.' })
+      .end();
   }
 
   for (const item of body.groupOne) {
     const hasFound = await connection.db.collection('items').findOne({ 單品名稱: item });
     if (!hasFound) {
-      return res.status(404).send({ message: `Cannot not found item "${item}".` }).end();
+      return res
+        .status(404)
+        .send({ message: `Cannot not found item "${item}".` })
+        .end();
     }
   }
 
@@ -36,11 +39,17 @@ export async function AddPromotion(req: e.Request, res: e.Response): Promise<voi
       for (const item of body.groupTwo) {
         const hasFound = await connection.db.collection('items').findOne({ 單品名稱: item });
         if (!hasFound) {
-          return res.status(404).send({ message: `Cannot not found item "${item}".` }).end();
+          return res
+            .status(404)
+            .send({ message: `Cannot not found item "${item}".` })
+            .end();
         }
       }
     } else {
-      return res.status(400).send({ message: 'groupTwo is required when type equals to combinations.' }).end();
+      return res
+        .status(400)
+        .send({ message: 'groupTwo is required when type equals to combinations.' })
+        .end();
     }
   }
 
@@ -77,14 +86,14 @@ export async function GetPromotion(req: e.Request, res: e.Response): Promise<voi
   res.send(object);
 }
 
-interface UpdatePromotionBody extends PromotionInterface {
-}
-
 export async function UpdatePromotion(req: e.Request, res: e.Response): Promise<void> {
   const object = req.object as PromotionInterface;
-  const body = req.body as UpdatePromotionBody;
+  const body = req.body as PromotionInterface;
   if (!(body.name && body.groupOne && body.startTime && body.endTime)) {
-    return res.status(400).send({ message: 'Missing field.' }).end();
+    return res
+      .status(400)
+      .send({ message: 'Missing field.' })
+      .end();
   }
 
   try {
@@ -92,7 +101,10 @@ export async function UpdatePromotion(req: e.Request, res: e.Response): Promise<
     body.endTime = new Date(body.endTime);
   } catch (error) {
     Logger.error(error);
-    return res.status(400).send({ message: 'startTime or endTime is not correct or provided.' }).end();
+    return res
+      .status(400)
+      .send({ message: 'startTime or endTime is not correct or provided.' })
+      .end();
   }
   if (object) {
     for (const key in body) {

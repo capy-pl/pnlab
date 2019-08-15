@@ -1,5 +1,5 @@
- // tslint:disable-next-line: no-reference
- /// <reference path="./index.d.ts" /> #
+// tslint:disable-next-line: no-reference
+/// <reference path="./index.d.ts" /> #
 import dotenv from 'dotenv';
 import http from 'http';
 

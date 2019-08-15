@@ -1,7 +1,7 @@
 import React from 'react';
 import { AnimatedSwitch, spring } from 'react-router-transition';
 
-function mapStyles(styles) {
+function mapStyles(styles: { opacity: number; scale: any }) {
   // Please see https://github.com/maisano/react-router-transition/issues/3
   // to learn why need this function.
   if (styles.opacity > 1) {
@@ -16,7 +16,7 @@ function mapStyles(styles) {
 }
 
 // wrap the `spring` helper to use a bouncy config
-function bounce(val) {
+function bounce(val: any) {
   return spring(val, {
     stiffness: 330,
     damping: 22,
@@ -43,7 +43,11 @@ const fadeTransition = {
   },
 };
 
-const Switch = ({ children }) => (
+type Props = {
+  children: React.ReactNode;
+};
+
+const Switch = ({ children }: Props) => (
   <AnimatedSwitch
     atEnter={fadeTransition.atEnter}
     atLeave={fadeTransition.atLeave}

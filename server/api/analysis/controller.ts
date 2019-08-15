@@ -39,16 +39,24 @@ export async function GetAnalyses(req: Request, res: Response): Promise<void> {
   const { from, limit } = query;
   try {
     if (from && limit && isNumber(from) && isNumber(limit)) {
-      const collection = await Analysis.find({}, {
-        title: 1,
-        created: -1,
-      }).skip(from).limit(limit);
+      const collection = await Analysis.find(
+        {},
+        {
+          title: 1,
+          created: -1,
+        },
+      )
+        .skip(from)
+        .limit(limit);
       res.send(collection);
     } else {
-      const collection = await Analysis.find({}, {
-        title: 1,
-        created: -1,
-      });
+      const collection = await Analysis.find(
+        {},
+        {
+          title: 1,
+          created: -1,
+        },
+      );
       res.send(collection);
     }
   } catch (err) {
@@ -92,7 +100,7 @@ export async function AddAnalysisComment(req: Request, res: Response): Promise<v
   body.created = new Date();
   body.modified = new Date();
   body.name = user.name;
-  body.user_id = user._id;
+  body.userId = user._id;
   try {
     analysis.comments.push(body);
     await analysis.save();
@@ -125,7 +133,7 @@ export async function ModifyAnalysisComment(req: Request, res: Response): Promis
     res.status(404).end();
   }
 
-  if (comment.user_id.toString() !== req.user._id.toString()) {
+  if (comment.userId.toString() !== req.user._id.toString()) {
     return res.status(403).end();
   }
 
@@ -148,7 +156,7 @@ export async function DeleteAnalysisComment(req: Request, res: Response): Promis
     res.status(404).end();
   }
 
-  if (comment.user_id.toString() !== req.user._id.toString()) {
+  if (comment.userId.toString() !== req.user._id.toString()) {
     return res.status(403).end();
   }
 

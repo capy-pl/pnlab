@@ -3,11 +3,9 @@ import { DropdownProps } from 'semantic-ui-react';
 import { DataSet, EdgeOptions, Network, NodeOptions } from 'vis';
 import { Community, Edge, Node } from '../../PnApp/model/Report';
 
-interface GraphNode extends Node, NodeOptions {
-}
+interface GraphNode extends Node, NodeOptions {}
 
-interface GraphEdge extends Edge, EdgeOptions {
-}
+interface GraphEdge extends Edge, EdgeOptions {}
 
 const customScalingFunction = (min: number, max: number, total: number, value: number): number => {
   if (max === min) {
@@ -21,7 +19,7 @@ const customScalingFunction = (min: number, max: number, total: number, value: n
 interface GraphProps {
   nodes: Node[];
   edges: Edge[];
-  showCommunity: boolean;
+  showCommunity?: boolean;
   selectedCommunities?: Community[];
   selectedProduct?: Node[];
   searchItems?: DropdownProps['value'];
@@ -88,16 +86,16 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
     const nodes = this.network.body.data.nodes;
     if (this.props.selectedCommunities) {
       const communitiesIdList = this.props.selectedCommunities.map((community: Community) => {
-        return (community.id);
+        return community.id;
       });
       const selectedCommunities = [];
       nodes.forEach((node) => {
-        selectedCommunities.push({id: node.id, hidden: !communitiesIdList.includes(node.community) ? true : false});
+        selectedCommunities.push({ id: node.id, hidden: !communitiesIdList.includes(node.community) ? true : false });
       });
       nodes.update(selectedCommunities);
     } else if (this.props.showCommunity) {
       const communities = nodes.map((node) => {
-        return ({
+        return {
           id: node.id,
           label: node.name,
           group: node.community,
@@ -111,7 +109,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
           `,
           borderWidth: node.core ? 5 : 1,
           hidden: false,
-        });
+        };
       });
       nodes.update(communities);
     }
@@ -143,11 +141,10 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
           // lighten the colors of unselected nodes
           selectProduct.push({
             id: node.id,
-            color:
-              {
-                background: '#D3E7FF',
-                border: '#D3E7FF',
-              },
+            color: {
+              background: '#D3E7FF',
+              border: '#D3E7FF',
+            },
             label: ' ',
           } as any);
         }
@@ -155,23 +152,21 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
       nodes.update(selectProduct);
     } else if (!this.props.showCommunity) {
       const productNetwork = nodes.map((node) => {
-        return (
-          {
-            id: node.id,
-            label: node.name,
-            title: `
+        return {
+          id: node.id,
+          label: node.name,
+          title: `
               <div>
                 <p>${node.name}</p>
                 <p>weight: ${Math.round(node.weight)}</p>
                 <p>連接節點數: ${node.degree}</p>
               </div>
             `,
-            group: undefined,
-            hidden: false,
-            color: '#8DC1FF',
-            borderWidth: 1,
-          }
-        );
+          group: undefined,
+          hidden: false,
+          color: '#8DC1FF',
+          borderWidth: 1,
+        };
       });
       nodes.update(productNetwork);
     }
@@ -180,18 +175,16 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
       nodes.forEach((node) => {
         this.props.searchItems.forEach((item) => {
           if (node.name === item) {
-            searchItems.push (
-              {
-                id: node.id,
-                color: {
-                  background: 'yellow',
-                  hover: {
-                    background: 'orange',
-                  },
-                  highlight: 'orange',
+            searchItems.push({
+              id: node.id,
+              color: {
+                background: 'yellow',
+                hover: {
+                  background: 'orange',
                 },
+                highlight: 'orange',
               },
-            );
+            });
           }
         });
       });
@@ -211,10 +204,13 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
     }
 
     if (this.graphRef.current) {
-      this.network = new Network(this.graphRef.current, {
-        edges,
-        nodes,
-      }, {
+      this.network = new Network(
+        this.graphRef.current,
+        {
+          edges,
+          nodes,
+        },
+        {
           edges: {
             smooth: false,
             scaling: {
@@ -246,20 +242,18 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
             stabilization: true,
           },
           interaction: {
-              hover: true,
-              tooltipDelay: 100,
+            hover: true,
+            tooltipDelay: 100,
           },
-        });
+        },
+      );
     }
   }
 
   public render() {
-    return (
-      <div id='pn-graph' style={{ zIndex: -1 }} ref={this.graphRef} />
-    );
+    return <div id='pn-graph' style={{ zIndex: -1 }}
+ref={this.graphRef} />;
   }
 }
 
-export {
-  GraphView,
-};
+export { GraphView };
