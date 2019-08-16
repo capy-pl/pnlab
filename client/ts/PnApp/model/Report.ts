@@ -18,7 +18,7 @@ export interface Node {
   id: number;
   degree: number;
   weight: number;
-  core: boolean;
+  core: boolean | string;
 }
 
 export interface SimpleNode {
@@ -43,7 +43,7 @@ export interface Community {
 export interface Hook {
   name: string;
   weight: number;
-  connectTo: number[];  // The community ids to which the hook connect
+  connectTo: number[]; // The community ids to which the hook connect
 }
 
 export type ReportStatus = 'error' | 'pending' | 'success';
@@ -78,7 +78,9 @@ export default class Report {
   }
 
   public static async getConditions(): Promise<Condition[]> {
-    const conditions = await axios.get<{ conditions: Condition[] }>('/api/report/conditions');
+    const conditions = await axios.get<{ conditions: Condition[] }>(
+      '/api/report/conditions',
+    );
     return conditions.data.conditions;
   }
 
@@ -89,7 +91,7 @@ export default class Report {
 
   public static async getAll(limit?: number): Promise<ProjectedReport[]> {
     const url = limit && limit > 0 ? `/api/report?limit=${limit}` : '/api/report';
-    const reports = await axios.get<{ reports: ProjectedReport[]}>(url);
+    const reports = await axios.get<{ reports: ProjectedReport[] }>(url);
     reports.data.reports.forEach((report) => {
       // attributes below are type of string when returned from axios. need to
       // convert their type from string to Date.
@@ -125,7 +127,7 @@ export default class Report {
     edges,
     communities,
     hooks,
-     }: ReportModel) {
+  }: ReportModel) {
     this.id = _id;
     this.created = new Date(created);
     this.conditions = conditions;

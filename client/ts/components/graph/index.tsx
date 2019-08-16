@@ -9,7 +9,12 @@ interface GraphNode extends Node, NodeOptions {}
 
 interface GraphEdge extends Edge, EdgeOptions {}
 
-const customScalingFunction = (min: number, max: number, total: number, value: number): number => {
+const customScalingFunction = (
+  min: number,
+  max: number,
+  total: number,
+  value: number,
+): number => {
   if (max === min) {
     return 0.03;
   } else {
@@ -22,9 +27,9 @@ interface GraphProps {
   nodes: Node[];
   edges: Edge[];
   showCommunity?: boolean;
-  selectedCommunities?: Community[];
+  selectedCommunities?: number[];
   selectedProduct?: number;
-  searchItems?: number[];
+  focusElement?: number;
 }
 
 export default class GraphView extends PureComponent<GraphProps, {}> {
@@ -69,7 +74,20 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
     }
 
     if (!_.isEqual(this.props.selectedCommunities, prevProps.selectedCommunities)) {
+      this.repaint();
       this.paintSelectedCommunity();
+    }
+
+    if (!_.isEqual(this.props.focusElement, prevProps.focusElement)) {
+      this.focusNode();
+    }
+  }
+
+  public focusNode(): void {
+    if (this.network && _.isNumber(this.props.focusElement)) {
+      this.network.focus(this.props.focusElement, {
+        scale: 1,
+      });
     }
   }
 
@@ -179,14 +197,11 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
 
   public paintSelectedCommunity(): void {
     if (this.props.selectedCommunities && this.props.selectedCommunities.length) {
-      const communitiesIdList = this.props.selectedCommunities.map((community: Community) => {
-        return community.id;
-      });
       const selectedNodes: GraphNode[] = [];
       this.nodes.forEach((node) => {
         const update: any = {
           id: node.id,
-          hidden: !communitiesIdList.includes(node.community),
+          hidden: !(this.props.selectedCommunities as number[]).includes(node.community),
         };
         selectedNodes.push(update);
       });

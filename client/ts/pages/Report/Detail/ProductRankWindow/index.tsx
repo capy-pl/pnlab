@@ -1,4 +1,4 @@
-import { isNumber, isUndefined } from 'lodash';
+import { isUndefined } from 'lodash';
 import React, { PureComponent } from 'react';
 import { Message, Table } from 'semantic-ui-react';
 
@@ -10,30 +10,23 @@ interface Props {
   show: boolean;
   productList: SimpleNode[];
   selectProduct: (id?: number) => void;
+  selectedProduct?: number;
 }
 
-interface State {
-  selectedIndex?: number;
-}
-
-export default class ProductRankWindow extends PureComponent<Props, State> {
+export default class ProductRankWindow extends PureComponent<Props> {
   constructor(props: Props) {
     super(props);
-    this.state = {};
 
     this.selectCell = this.selectCell.bind(this);
   }
 
   public selectCell(id: number): () => void {
     return () => {
-      this.setState(
-        {
-          selectedIndex: id !== this.state.selectedIndex ? id : undefined,
-        },
-        () => {
-          this.props.selectProduct(this.state.selectedIndex);
-        },
-      );
+      if (id === this.props.selectedProduct) {
+        this.props.selectProduct(undefined);
+      } else {
+        this.props.selectProduct(id);
+      }
     };
   }
 
@@ -55,6 +48,8 @@ export default class ProductRankWindow extends PureComponent<Props, State> {
       <Window
         title='產品排名'
         defaultX={240}
+        defaultWidth={450}
+        defaultHeight={450}
         onClickX={this.props.close}
         show={this.props.show}
       >
@@ -75,6 +70,6 @@ export default class ProductRankWindow extends PureComponent<Props, State> {
   }
 
   private isSelected(id: number): boolean {
-    return !isUndefined(this.state.selectedIndex) && this.state.selectedIndex === id;
+    return !isUndefined(this.props.selectedProduct) && this.props.selectedProduct === id;
   }
 }

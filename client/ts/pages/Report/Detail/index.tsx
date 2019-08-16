@@ -1,19 +1,28 @@
 import React, { PureComponent } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { Button, Checkbox, Divider, Dropdown, DropdownProps, Label, Menu, Sidebar } from 'semantic-ui-react';
+import {
+  Button,
+  Checkbox,
+  Dropdown,
+  Header,
+  List,
+  Menu,
+  Search,
+  Sidebar,
+  SearchResultData,
+  SearchProps,
+} from 'semantic-ui-react';
+import { debounce } from 'lodash';
 
-import { DropdownSearchItem } from 'Component/dropdown';
 import { ModalAddAnalysis } from 'Component/modal';
 import Graph from '../../../components/graph';
 import Loader from '../../../components/Loader';
-import { DropdownMenu } from '../../../components/menu';
 import CommunityCharacterWindow from './CommunityCharacterWindow';
 import CommunityListWindow from './CommunityListWindow';
 import ProductRankWindow from './ProductRankWindow';
 
-import { Analysis } from '../../../PnApp/model';
-import ReportAPI, { SimpleNode } from '../../../PnApp/model/Report';
-import { Community, Node } from '../../../PnApp/model/Report';
+import ReportAPI, { Node } from '../../../PnApp/model/Report';
+import { simplifyDate } from '../../../PnApp/Helper';
 
 interface ReportState {
   loading: boolean;
@@ -22,16 +31,27 @@ interface ReportState {
   windowCommunityCharacter: boolean;
   report?: ReportAPI;
   showCommunity: boolean;
-  communitiesInfo?: Community[];
-  selectedCommunities?: Community[];
+  selectedCommunities: number[];
   selectedProduct?: number;
   searchItems?: number[];
   modalOpen: boolean;
+  addAnalysisModalOpen: boolean;
   visible: boolean;
   sidebarVisible: boolean;
+  searchValue: string;
+  searchResults: SearchResult[];
+  focusNode?: number;
 }
 
-export default class Report extends PureComponent<RouteComponentProps<{ id: string }>, ReportState> {
+interface SearchResult extends Node {
+  title: string;
+  core: string | boolean;
+}
+
+export default class Report extends PureComponent<
+  RouteComponentProps<{ id: string }>,
+  ReportState
+> {
   constructor(props: RouteComponentProps<{ id: string }>) {
     super(props);
     this.state = {
@@ -42,20 +62,18 @@ export default class Report extends PureComponent<RouteComponentProps<{ id: stri
       showCommunity: false,
       modalOpen: false,
       visible: false,
+      addAnalysisModalOpen: false,
       sidebarVisible: false,
+      selectedCommunities: [],
+      searchValue: '',
+      searchResults: [],
     };
 
-    this.onShowProductNetwork = this.onShowProductNetwork.bind(this);
     this.toggleShowCommunities = this.toggleShowCommunities.bind(this);
-    this.updateCommunitiesGraph = this.updateCommunitiesGraph.bind(this);
     this.selectProduct = this.selectProduct.bind(this);
-    this.onSaveGraph = this.onSaveGraph.bind(this);
-    this.onCancel = this.onCancel.bind(this);
-    this.onConfirm = this.onConfirm.bind(this);
-    this.onItemSearch = this.onItemSearch.bind(this);
     this.handleToggleSidebar = this.handleToggleSidebar.bind(this);
-    this.clearSelected = this.clearSelected.bind(this);
     this.toggleSidebar = this.toggleSidebar.bind(this);
+    this.selectCommunities = this.selectCommunities.bind(this);
 
     // bind window functions
     this.openCommunityCharacterWindow = this.openCommunityCharacterWindow.bind(this);
@@ -66,6 +84,13 @@ export default class Report extends PureComponent<RouteComponentProps<{ id: stri
     this.closeCommunityCharacterWindow = this.closeCommunityCharacterWindow.bind(this);
     this.closeCommunityListWindow = this.closeCommunityListWindow.bind(this);
     this.closeProductRankWindow = this.closeProductRankWindow.bind(this);
+
+    // bind search function
+    this.handleSearchChange = this.handleSearchChange.bind(this);
+    this.handleResultSelect = this.handleResultSelect.bind(this);
+
+    this.openAddAnalysisModal = this.openAddAnalysisModal.bind(this);
+    this.closeAddAnalysisModal = this.closeAddAnalysisModal.bind(this);
   }
 
   public async componentDidMount() {
@@ -76,24 +101,10 @@ export default class Report extends PureComponent<RouteComponentProps<{ id: stri
     });
   }
 
-  public clearSelected() {
-    this.setState({
-      selectedCommunities: undefined,
-      selectedProduct: undefined,
-      searchItems: undefined,
-    });
-  }
-
-  public onShowProductNetwork() {
-    this.setState({ showCommunity: false });
-    this.clearSelected();
-  }
-
   public toggleShowCommunities() {
     this.setState({
       showCommunity: !this.state.showCommunity,
     });
-    this.clearSelected();
   }
 
   public openCommunityCharacterWindow(): void {
@@ -117,6 +128,7 @@ export default class Report extends PureComponent<RouteComponentProps<{ id: stri
   public closeProductRankWindow(): void {
     this.setState({
       windowProductRank: false,
+      selectedProduct: undefined,
     });
   }
 
@@ -129,13 +141,7 @@ export default class Report extends PureComponent<RouteComponentProps<{ id: stri
   public closeCommunityListWindow(): void {
     this.setState({
       windowCommunityList: false,
-    });
-  }
-
-  public updateCommunitiesGraph(communitiesList: Community[] | undefined) {
-    this.setState({
-      selectedCommunities: communitiesList,
-      selectedProduct: undefined,
+      selectedCommunities: [],
     });
   }
 
@@ -143,45 +149,110 @@ export default class Report extends PureComponent<RouteComponentProps<{ id: stri
     if (this.state.report) {
       this.setState({
         selectedProduct: id,
-        selectedCommunities: undefined,
+        selectedCommunities: [],
       });
     }
   }
 
-  public onSaveGraph() {
-    this.setState({
-      modalOpen: true,
-    });
-  }
-
-  public onCancel() {
-    this.setState({
-      modalOpen: false,
-    });
-  }
-
-  public onConfirm() {
-    this.setState({
-      modalOpen: false,
-    });
-    if (this.state.report) {
-      Analysis.add({ report: this.state.report.id, title: 'testtest1' });
+  public selectCommunities(id: number): void {
+    if (this.state.selectedCommunities.includes(id)) {
+      this.setState({
+        selectedProduct: undefined,
+        selectedCommunities: this.state.selectedCommunities.filter((num) => num !== id),
+      });
+    } else {
+      this.setState({
+        selectedProduct: undefined,
+        selectedCommunities: [...this.state.selectedCommunities, id],
+      });
     }
   }
 
-  public onItemSearch(event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) {
+  public handleResultSelect(
+    event: React.MouseEvent<HTMLDivElement>,
+    data: SearchResultData,
+  ): void {
+    const { result } = data;
     this.setState({
-      searchItems: data.value as number[],
+      focusNode: result.id,
+      searchValue: result.name,
+      searchResults: [],
     });
   }
 
+  public handleSearchChange(
+    event: React.MouseEvent<HTMLElement>,
+    data: SearchProps,
+  ): void {
+    const { value } = data;
+    if (value) {
+      const filter: Node[] = (this.state.report as ReportAPI).nodes.filter(
+        (node) => node.name.indexOf(value) !== -1,
+      );
+      const results: SearchResult[] = filter.map((node) => {
+        return {
+          ...node,
+          title: node.name,
+          core: node.core.toString(),
+        };
+      });
+      this.setState({
+        searchValue: value as string,
+        searchResults: results,
+      });
+    }
+  }
+
   public handleToggleSidebar() {
-    this.setState((prevState) => ({ visible: !prevState.visible }));
+    this.setState((prevState) => ({
+      visible: !prevState.visible,
+    }));
+  }
+
+  public resultRenderer(node) {
+    return <Search.Result key={node.id} id={node.id} title={node.name} />;
   }
 
   public toggleSidebar() {
     this.setState({
       sidebarVisible: !this.state.sidebarVisible,
+    });
+  }
+
+  public getConditions() {
+    if (this.state.report) {
+      return this.state.report.conditions.map((condition) => {
+        if (condition.type === 'string' || condition.type === 'promotion') {
+          return (
+            <List.Item key={condition.name}>
+              <List.Header>{condition.name}</List.Header>
+              <List.Description>{condition.values.join(', ')}</List.Description>
+            </List.Item>
+          );
+        }
+        if (condition.type === 'date') {
+          return (
+            <List.Item key={condition.name}>
+              <List.Header>{condition.name}</List.Header>
+              <List.Description>
+                {simplifyDate(condition.values[0])} - {simplifyDate(condition.values[1])}
+              </List.Description>
+            </List.Item>
+          );
+        }
+      });
+    }
+  }
+
+  public openAddAnalysisModal(): void {
+    this.setState({
+      addAnalysisModalOpen: true,
+    });
+  }
+
+  public closeAddAnalysisModal(): void {
+    this.setState({
+      addAnalysisModalOpen: false,
     });
   }
 
@@ -193,11 +264,19 @@ export default class Report extends PureComponent<RouteComponentProps<{ id: stri
         return (
           <React.Fragment>
             <CommunityCharacterWindow
+              report={this.state.report}
               show={this.state.windowCommunityCharacter}
               close={this.closeCommunityCharacterWindow}
             />
-            <CommunityListWindow show={this.state.windowCommunityList} close={this.closeCommunityListWindow} />
+            <CommunityListWindow
+              communities={this.state.report.communities}
+              show={this.state.windowCommunityList}
+              close={this.closeCommunityListWindow}
+              selectCommunity={this.selectCommunities}
+              selectedCommunities={this.state.selectedCommunities}
+            />
             <ProductRankWindow
+              selectedProduct={this.state.selectedProduct}
               selectProduct={this.selectProduct}
               productList={this.state.report.rank}
               show={this.state.windowProductRank}
@@ -214,11 +293,27 @@ export default class Report extends PureComponent<RouteComponentProps<{ id: stri
                 style={{ overflow: 'visible' }}
               >
                 <Menu.Item>
-                  <h4>基本資訊</h4>
+                  <Header textAlign='center' block>
+                    基本資訊
+                  </Header>
+                  <List relaxed='very'>{this.getConditions()}</List>
+                </Menu.Item>
+                <Menu.Item>
+                  <Search
+                    size='small'
+                    placeholder='搜尋產品'
+                    noResultsMessage='無相關產品。'
+                    results={this.state.searchResults}
+                    onSearchChange={debounce(this.handleSearchChange, 300, {
+                      leading: true,
+                    })}
+                    onResultSelect={this.handleResultSelect}
+                    resultRenderer={this.resultRenderer}
+                  />
                 </Menu.Item>
                 <Menu.Item>
                   <Checkbox
-                    label={this.state.showCommunity ? '隱藏Community' : '顯示Community'}
+                    label={this.state.showCommunity ? '隱藏Community' : '標示Community'}
                     toggle
                     onChange={this.toggleShowCommunities}
                   />
@@ -226,14 +321,34 @@ export default class Report extends PureComponent<RouteComponentProps<{ id: stri
                 <Menu.Item as='a' onClick={this.openProductRankWindow}>
                   產品排名
                 </Menu.Item>
-                <Dropdown text='產品Community' item style={{ overflow: 'visible !important' }}>
+                <Dropdown
+                  text='產品Community列表'
+                  item
+                  style={{ overflow: 'visible !important' }}
+                >
                   <Dropdown.Menu>
-                    <Dropdown.Item onClick={this.openCommunityListWidow}>Communities排名</Dropdown.Item>
-                    <Dropdown.Item onClick={this.openCommunityCharacterWindow}>Communities角色</Dropdown.Item>
+                    <Dropdown.Item onClick={this.openCommunityListWidow}>
+                      Communities排名
+                    </Dropdown.Item>
+                    <Dropdown.Item onClick={this.openCommunityCharacterWindow}>
+                      Communities角色
+                    </Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>
-                <Menu.Item as='a'>清楚所選資料</Menu.Item>
-                <Button fluid color='facebook' style={{ position: 'absolute', bottom: 0 }}>
+                <ModalAddAnalysis
+                  report={this.state.report}
+                  close={this.closeAddAnalysisModal}
+                  show={this.state.addAnalysisModalOpen}
+                />
+                <Button
+                  fluid
+                  color='facebook'
+                  onClick={this.openAddAnalysisModal}
+                  style={{
+                    position: 'absolute',
+                    bottom: 0,
+                  }}
+                >
                   另存圖片
                 </Button>
               </Sidebar>
@@ -244,7 +359,7 @@ export default class Report extends PureComponent<RouteComponentProps<{ id: stri
                   showCommunity={this.state.showCommunity}
                   selectedCommunities={this.state.selectedCommunities}
                   selectedProduct={this.state.selectedProduct}
-                  searchItems={this.state.searchItems}
+                  focusElement={this.state.focusNode}
                 />
               </Sidebar.Pusher>
             </Sidebar.Pushable>
