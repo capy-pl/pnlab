@@ -64,10 +64,6 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
       this.paintCommunity();
     }
 
-    if (!_.isEqual(this.props.searchItems, prevProps.searchItems)) {
-      this.paintSearchItems();
-    }
-
     if (!_.isEqual(this.props.selectedProduct, prevProps.selectedProduct)) {
       this.repaint();
       this.paintSelectedProduct();
@@ -214,18 +210,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
       const nodes: GraphNode[] = this.nodes.map((node) => {
         return {
           id: node.id,
-          label: node.name,
           group: node.community,
-          title: `
-            <div>
-              <p>${node.name}</p>
-              <p>community: ${node.community}</p>
-              <p>weight: ${Math.round(node.weight)}</p>
-              <p>連接節點數: ${node.degree}</p>
-            </div>
-          `,
-          borderWidth: node.core ? 5 : 1,
-          hidden: false,
         } as any;
       });
       this.nodes.update(nodes);
@@ -233,16 +218,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
       const nodes: GraphNode[] = this.nodes.map((node) => {
         return {
           id: node.id,
-          label: node.name,
-          title: `
-              <div>
-                <p>${node.name}</p>
-                <p>weight: ${Math.round(node.weight)}</p>
-                <p>連接節點數: ${node.degree}</p>
-              </div>
-            `,
           group: undefined,
-          hidden: false,
           color: '#8DC1FF',
           borderWidth: 1,
         } as any;
