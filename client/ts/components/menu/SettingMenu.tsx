@@ -20,7 +20,8 @@ export default class SettingMenu extends PureComponent<{}, SettingMenuState> {
 
     public render() {
       return (
-        <Menu vertical tabular
+        <Menu vertical
+tabular
 fluid>
           <Menu.Item
             name='Setting'

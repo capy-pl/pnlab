@@ -11,6 +11,7 @@ export interface Node {
 }
 
 interface SimpleNode {
+  id: number;
   name: string;
   weight: number;
 }
@@ -92,6 +93,7 @@ const NodeSchema = new Schema<Node>({
 });
 
 const SimpleNodeSchema = new Schema<SimpleNode>({
+  id: Number,
   name: String,
   weight: Number,
 });

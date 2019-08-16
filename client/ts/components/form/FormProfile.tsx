@@ -43,7 +43,8 @@ export default class FormProfile extends PureComponent<FormProfileProps, FormPro
       <Form error={this.state.isError}>
         <Form.Field width={10}>
           <label>Email</label>
-          <input placeholder='Email' value={this.state.email}
+          <input placeholder='Email'
+value={this.state.email}
 onChange={this.onChange}/>
         </Form.Field>
         <Message

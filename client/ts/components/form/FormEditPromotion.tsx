@@ -102,7 +102,8 @@ class FormEditPromotion extends React.PureComponent<FormEditPromotionProps, Form
       <Form>
         <Form.Field>
           <label>名稱</label>
-          <Form.Input placeholder='名稱' defaultValue={this.props.model.name}
+          <Form.Input placeholder='名稱'
+defaultValue={this.props.model.name}
 onChange={this.props.nameChange} />
         </Form.Field>
         <Form.Field>

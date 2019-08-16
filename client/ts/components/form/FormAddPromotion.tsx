@@ -39,7 +39,10 @@ const TYPE_OPTIONS = [
   },
 ];
 
-class FormAddPromotion extends React.PureComponent<FormAddPromotionProps, AddPromotionState> {
+class FormAddPromotion extends React.PureComponent<
+  FormAddPromotionProps,
+  AddPromotionState
+> {
   private prodcutPool: Set<string>;
   constructor(props: FormAddPromotionProps) {
     super(props);
