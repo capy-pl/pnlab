@@ -1,6 +1,6 @@
 const {
   clientConfig
-} = require('../webpack.config');
+} = require('../config/webpack.dev');
 
 module.exports = ({
   config,

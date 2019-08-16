@@ -3,7 +3,7 @@ import { Dropdown, DropdownProps } from 'semantic-ui-react';
 
 interface Option {
   key: string;
-  value: string;
+  value: number;
   text: string;
 }
 

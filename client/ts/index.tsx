@@ -4,6 +4,7 @@
 import 'semantic-ui-css/semantic.min.css';
 import 'vis/dist/vis-network.min.css';
 import '../scss/main';
+import '../scss/semanticui.override.scss';
 
 import React from 'react';
 import { render } from 'react-dom';
