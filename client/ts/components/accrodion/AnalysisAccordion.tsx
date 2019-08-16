@@ -40,6 +40,7 @@ interface AnalysisAccordionProps {
   onShowProductRank: (event) => void;
   onShowCommunitiesRank: (event) => void;
   onShowCharacter: (event) => void;
+  getDropdownSearch: () => void;
 
 }
 
@@ -48,7 +49,7 @@ const sidebarStyle: React.CSSProperties = {
   height: '100%',
   width: '15%',
   position: 'absolute',
-  top: '20%',
+  top: '15%',
   right: 0,
 };
 
@@ -57,7 +58,7 @@ const sidebarStyle2: React.CSSProperties = {
   height: '100%',
   width: '17%',
   position: 'absolute',
-  top: '20%',
+  top: '15%',
   right: '15%',
 };
 
@@ -91,7 +92,7 @@ export default class AnalysisAccordion extends PureComponent<AnalysisAccordionPr
   }
 
   public oncommentsClick() {
-    this.setState((prevState) => ({ commentListVisible: !prevState.commentListVisible }));
+    this.setState((prevState) => ({ commentListVisible: !prevState.commentListVisible}));
   }
 
   public onAddComment(): void {
@@ -121,6 +122,12 @@ export default class AnalysisAccordion extends PureComponent<AnalysisAccordionPr
 
   public commentHandle() {
     this.setState((prevState) => ({ commentVisible: !prevState.commentVisible }));
+    if (this.state.conditionsVisible === true) {
+      this.setState({
+        conditionsVisible: false,
+        commentVisible: true,
+      });
+    }
   }
 
   public productRankHandle() {
@@ -172,6 +179,8 @@ export default class AnalysisAccordion extends PureComponent<AnalysisAccordionPr
         );
       }
     });
+    const searchItemDropdown: React.ReactChild = this.props.getDropdownSearch();
+
     return (
       <React.Fragment>
         <Sidebar.Pushable
@@ -236,13 +245,16 @@ export default class AnalysisAccordion extends PureComponent<AnalysisAccordionPr
                 </Accordion.Content>
               </Accordion>
             </Menu.Item>
+            <Menu.Item>
+              {searchItemDropdown}
+            </Menu.Item>
           </Sidebar>
         </Sidebar.Pushable>
 
-        {/* Comment Sidebar */}
         <Sidebar.Pushable
           style={sidebarStyle2}
         >
+          {/* Comment Sidebar */}
           <Sidebar
             visible={this.state.commentVisible && this.props.visible}
             as={Menu}
@@ -283,6 +295,8 @@ export default class AnalysisAccordion extends PureComponent<AnalysisAccordionPr
               </Accordion.Content>
             </Accordion>
           </Sidebar>
+
+          {/* Conditions Sidebar */}
           <Sidebar
             visible={this.state.conditionsVisible && this.props.visible}
             as={Menu}

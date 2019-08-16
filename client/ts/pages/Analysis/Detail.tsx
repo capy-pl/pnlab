@@ -28,6 +28,13 @@ interface AnalysisState {
   searchItems?: number[];
 }
 
+const buttonStyle: React.CSSProperties = {
+  position: 'absolute',
+  top: '10%',
+  right: '2%',
+  zIndex: 101,
+};
+
 export default class Analysis extends PureComponent<AnalysisProps, AnalysisState> {
   constructor(props: AnalysisProps) {
     super(props);
@@ -193,12 +200,12 @@ export default class Analysis extends PureComponent<AnalysisProps, AnalysisState
     } else {
       if (this.state.report) {
         const message: React.ReactChild = this.getMessageComponent();
-        const searchItemDropdown: React.ReactChild = this.getDropdownSearch();
         return (
           <React.Fragment>
             <Button
               onClick={this.handleToggleSidebar}
-              icon='chevron circle left'
+              icon={'bars'}
+              style={buttonStyle}
             />
             {message}
               <AnalysisAccordion
@@ -212,6 +219,7 @@ export default class Analysis extends PureComponent<AnalysisProps, AnalysisState
                 onShowProductRank={this.onShowProductRank}
                 onShowCommunitiesRank={this.onShowCommunitiesRank}
                 onShowCharacter={this.onShowCharacter}
+                getDropdownSearch={this.getDropdownSearch}
               />
             <Graph
               nodes={this.state.report.nodes}
