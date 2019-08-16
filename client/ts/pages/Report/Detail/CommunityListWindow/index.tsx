@@ -97,12 +97,14 @@ export default class CommunityListWindow extends PureComponent<Props, State> {
   }
 
   public render() {
+    if (!this.props.show) {
+      return <React.Fragment />;
+    }
     return (
       <Window
         title='產品Community列表'
         defaultX={250}
         onClickX={this.props.close}
-        show={this.props.show}
         defaultHeight={450}
         defaultWidth={500}
       >

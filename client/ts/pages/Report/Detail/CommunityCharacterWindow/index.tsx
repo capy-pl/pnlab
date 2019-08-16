@@ -57,6 +57,9 @@ export default class CommunityCharacterWindow extends PureComponent<Props, State
   }
 
   public render() {
+    if (!this.props.show) {
+      return <React.Fragment />;
+    }
     const coreList = this.getCoreList();
     const hookList = this.getHookList();
     return (
@@ -64,7 +67,6 @@ export default class CommunityCharacterWindow extends PureComponent<Props, State
         title='Community角色列表'
         defaultX={260}
         onClickX={this.props.close}
-        show={this.props.show}
         defaultHeight={400}
         defaultWidth={400}
       >

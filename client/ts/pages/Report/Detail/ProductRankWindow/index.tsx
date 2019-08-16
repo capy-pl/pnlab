@@ -44,6 +44,9 @@ export default class ProductRankWindow extends PureComponent<Props> {
   }
 
   public render() {
+    if (!this.props.show) {
+      return <React.Fragment />;
+    }
     return (
       <Window
         title='產品排名'
@@ -51,7 +54,6 @@ export default class ProductRankWindow extends PureComponent<Props> {
         defaultWidth={450}
         defaultHeight={450}
         onClickX={this.props.close}
-        show={this.props.show}
       >
         <React.Fragment>
           <Message info content='點擊產品列可顯示單一產品' />
