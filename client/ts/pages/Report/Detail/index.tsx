@@ -5,6 +5,7 @@ import {
   Checkbox,
   Dropdown,
   Header,
+  Icon,
   List,
   Menu,
   Search,
@@ -282,7 +283,6 @@ export default class Report extends PureComponent<
               show={this.state.windowProductRank}
               close={this.closeProductRankWindow}
             />
-            <Button onClick={this.toggleSidebar}>Push</Button>
             <Sidebar.Pushable>
               <Sidebar
                 as={Menu}
@@ -293,9 +293,12 @@ export default class Report extends PureComponent<
                 style={{ overflow: 'visible' }}
               >
                 <Menu.Item>
-                  <Header textAlign='center' block>
-                    基本資訊
-                  </Header>
+                  <div style={{ textAlign: 'right' }}>
+                    <Icon link name='x' onClick={this.toggleSidebar} />
+                  </div>
+                </Menu.Item>
+                <Menu.Item>
+                  <Header textAlign='center'>基本資訊</Header>
                   <List relaxed='very'>{this.getConditions()}</List>
                 </Menu.Item>
                 <Menu.Item>
@@ -313,6 +316,7 @@ export default class Report extends PureComponent<
                 </Menu.Item>
                 <Menu.Item>
                   <Checkbox
+                    style={{ color: 'white' }}
                     label={this.state.showCommunity ? '隱藏Community' : '標示Community'}
                     toggle
                     onChange={this.toggleShowCommunities}
@@ -353,6 +357,13 @@ export default class Report extends PureComponent<
                 </Button>
               </Sidebar>
               <Sidebar.Pusher>
+                <Button
+                  attached='right'
+                  color='grey'
+                  icon='bars'
+                  style={{ display: this.state.sidebarVisible ? 'none' : 'inline-block' }}
+                  onClick={this.toggleSidebar}
+                />
                 <Graph
                   nodes={this.state.report.nodes}
                   edges={this.state.report.edges}
