@@ -1,6 +1,5 @@
 import mongoose, { Document, Schema } from 'mongoose';
 import { FieldSchemaInterface } from './ImportSchema';
-import { number } from 'prop-types';
 
 export interface Node {
   name: string;
