@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Button, Checkbox, Dropdown, DropdownProps, Grid, Header, Menu } from 'semantic-ui-react';
+import { Button, Checkbox, Dropdown, DropdownProps, Grid, Header, Menu, Popup } from 'semantic-ui-react';
 
 import { SearchSingleItemDropdown } from '../../components/dropdown';
 import { GraphViewCompare } from '../../components/graph2/index';
@@ -142,13 +142,10 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
             </Button>
           ) :
           (
-            <Button
-              color='teal'
-              onClick={this.handleOpenSingleCompare}
-              disabled
-            >
-              單一產品比較
-            </Button>
+            <Popup
+              content='請先從右方框選擇產品'
+              trigger={<span><Button color='teal' onClick={this.handleOpenSingleCompare} disabled>單一產品比較</Button></span>}
+            />
           );
         return (
           <React.Fragment>

@@ -15,6 +15,7 @@ import Graph from '../../components/graph';
 import Loader from '../../components/Loader';
 import { DropdownMenu } from '../../components/menu';
 import { CharacterMessage, CommunitiesMessage, ProductRank } from '../../components/message';
+import MessageSuccessSaveReport from '../../components/modal/Success';
 
 import { Analysis } from '../../PnApp/model';
 import ReportAPI, { SimpleNode } from '../../PnApp/model/Report' ;
@@ -83,6 +84,7 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
     this.clearSelected = this.clearSelected.bind(this);
     this.updateFormAdd = this.updateFormAdd.bind(this);
     this.getCurrentContent = this.getCurrentContent.bind(this);
+    this.showSuccessMessage = this.showSuccessMessage.bind(this);
   }
 
   public async componentDidMount() {
@@ -169,8 +171,15 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
       Analysis.add({report: this.state.report.id, title, description})
         .then(() => {
           this.setState({loading: false});
+        })
+        .then(() => {
+          this.showSuccessMessage();
         });
     }
+  }
+
+  public showSuccessMessage() {
+    return <MessageSuccessSaveReport />;
   }
 
   public updateFormAdd(title, note) {
@@ -300,14 +309,14 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
                 {conditionList}
               </Sidebar>
             </Sidebar.Pushable>
-            <div style={{ position: 'absolute', top: 80, right: 120, minWidth: '15%', zIndex: 101 }}>
+            <div style={{ position: 'absolute', top: 80, right: 160, minWidth: '15%', zIndex: 101 }}>
               {searchItemDropdown}
             </div>
             <Button
               onClick={this.handleToggleSidebar}
-              style={{ position: 'absolute', top: 80, right: 20, zIndex: 101 }}
+              style={{ position: 'absolute', top: 80, right: 10, zIndex: 101 }}
             >
-              條件
+              顯示篩選條件
             </Button>
             <div style={{ position: 'absolute', bottom: 10, left: 10, zIndex: 100 }}>
               <ModalAddAnalysis
