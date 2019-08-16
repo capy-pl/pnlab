@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Button, Grid, Header, Portal, Segment, Tab, Table } from 'semantic-ui-react';
+import { Button, Grid, Header, Icon, Portal, Segment, Tab, Table } from 'semantic-ui-react';
 import AnalysisAPI from '../../PnApp/model/Analysis' ;
 import Report, { Condition, Node } from '../../PnApp/model/Report';
 
@@ -37,15 +37,53 @@ export default class ComparePortal extends PureComponent<ComparePortalProps, Com
     const conditions = await Report.getConditions();
     this.setState({conditions});
   }
-  public getTableRow = (nodes: Node[]) => {
+  public getTableRow = (nodes: Node[], leftNodes: Node[] = []) => {
     const tableRow = nodes.map((node, index) => {
       let style;
+      let variation;
+      let arrow;
       if (this.props.shareNodes.includes(node.name)) {
         style = {backgroundColor: '#e8f7ff'};
       }
+      if (leftNodes.length !== 0) {
+        const nodeNames = nodes.map((node) => {
+          return node.name;
+        });
+        const leftNodeNames = leftNodes.map((node) => {
+          return node.name;
+        });
+        if (!(leftNodeNames.indexOf(node.name) < 0)) {
+          variation = leftNodeNames.indexOf(node.name) - nodeNames.indexOf(node.name);
+        }
+        if (variation < 0) {
+          arrow =
+            (
+              <React.Fragment>
+                <Icon color='red' name='long arrow alternate down' />
+                <span style={{color: 'red'}}>{Math.abs(variation)}</span>
+              </React.Fragment>
+            );
+        } else if (variation > 0) {
+          arrow =
+            (
+              <React.Fragment>
+                <Icon color='green' name='long arrow alternate up' />
+                <span style={{color: 'green'}}>{Math.abs(variation)}</span>
+              </React.Fragment>
+            );
+        } else if (variation === 0) {
+          arrow =
+            (
+              <React.Fragment>
+                <Icon color='blue' name='minus' />
+                <span style={{color: 'blue'}} />
+              </React.Fragment>
+            );
+        }
+      }
       return (
         <Table.Row key={node.id} style={style}>
-          <Table.Cell>{index + 1}</Table.Cell>
+          <Table.Cell>{index + 1} {arrow}</Table.Cell>
           <Table.Cell>{node.name}</Table.Cell>
           <Table.Cell>{Math.round(node.weight)}</Table.Cell>
         </Table.Row>
@@ -74,9 +112,9 @@ export default class ComparePortal extends PureComponent<ComparePortalProps, Com
     const nodesA = this.props.reportA.nodes.sort((a, b) => b.weight - a.weight);
     const nodesB = this.props.reportB.nodes.sort((a, b) => b.weight - a.weight);
     const tableRowA = this.getTableRow(nodesA);
-    const tableRowB = this.getTableRow(nodesB);
-    const tableA = this.getTable('A', tableRowA);
-    const tableB = this.getTable('B', tableRowB);
+    const tableRowB = this.getTableRow(nodesB, nodesA);
+    const tableA = this.getTable('左', tableRowA);
+    const tableB = this.getTable('右', tableRowB);
 
     const share = this.props.shareNodes.map((node) => {
       return (
@@ -146,7 +184,7 @@ export default class ComparePortal extends PureComponent<ComparePortalProps, Com
               <Grid>
                 <Grid.Row>
                   <Grid.Column width={6}>
-                    <p>圖A產品數： {this.props.reportA.nodes.length}</p>
+                    <p>圖左產品數： {this.props.reportA.nodes.length}</p>
                     {tableA}
                   </Grid.Column>
 
@@ -166,7 +204,7 @@ export default class ComparePortal extends PureComponent<ComparePortalProps, Com
                   </Grid.Column>
 
                   <Grid.Column width={6}>
-                    <p>圖B產品數： {this.props.reportB.nodes.length}</p>
+                    <p>圖右產品數： {this.props.reportB.nodes.length}</p>
                     {tableB}
                   </Grid.Column>
                 </Grid.Row>

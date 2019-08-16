@@ -85,7 +85,7 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
     this.setState({ openSingleCompare: true });
   }
 
-  public getAllProducts() {
+  public getAllProducts(): string[] {
     if (this.state.reportA && this.state.reportB) {
       const reportANodesNames = this.state.reportA.nodes.map((node) => {
         return node.name;
@@ -93,7 +93,7 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
       const reportBNodesNames = this.state.reportB.nodes.map((node) => {
         return node.name;
       });
-      const allProducts = reportANodesNames.concat(reportBNodesNames.filter((node) => {
+      const allProducts: string[] = reportANodesNames.concat(reportBNodesNames.filter((node) => {
         return reportANodesNames.indexOf(node) < 0;
       }));
       return allProducts;
@@ -123,15 +123,33 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
     } else {
       if (this.state.reportA && this.state.reportB && this.state.analysisA && this.state.analysisB) {
         const allProducts = this.getAllProducts();
-        const dropdownOption = allProducts.map((node) => {
+        const dropdownOption = allProducts.map((productName) => {
           return (
             {
-              key: node,
-              value: node,
-              text: node,
+              key: productName,
+              value: productName,
+              text: productName,
             }
           );
         });
+        const singleItemCompareButton = this.state.selectedProduct.length !== 0 ?
+          (
+            <Button
+              color='teal'
+              onClick={this.handleOpenSingleCompare}
+            >
+              單一產品比較
+            </Button>
+          ) :
+          (
+            <Button
+              color='teal'
+              onClick={this.handleOpenSingleCompare}
+              disabled
+            >
+              單一產品比較
+            </Button>
+          );
         return (
           <React.Fragment>
             <Button
@@ -153,16 +171,13 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
                 </Dropdown.Item>
               </Menu>
             </div>
-            <Button
-              color='teal'
-              onClick={this.handleOpenSingleCompare}
-            >
-              比較
-            </Button>
+            <div style={{position: 'fixed', right: 260, zIndex: 1001, display: 'inline'}}>
+              {singleItemCompareButton}
+            </div>
             <div style={{position: 'fixed', minWidth: '15%', right: 0, zIndex: 1001, display: 'inline'}}>
               <SearchSingleItemDropdown
                 options={dropdownOption}
-                placeholder='搜尋商品連結'
+                placeholder='搜尋單一產品連結'
                 onChange={this.onSingleItemSearch}
               />
             </div>

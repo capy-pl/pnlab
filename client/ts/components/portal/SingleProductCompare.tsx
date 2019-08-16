@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
-import { Button, Grid, Header, Portal, Segment, Tab, Table } from 'semantic-ui-react';
-import AnalysisAPI from '../../PnApp/model/Analysis' ;
-import Report, { Condition, Node } from '../../PnApp/model/Report';
+import { Button, Grid, Header, Portal, Segment, Table } from 'semantic-ui-react';
+import Report, { Node } from '../../PnApp/model/Report';
 
 interface ConnectedNode {
   name: string;
@@ -38,10 +37,16 @@ extends PureComponent<SingleProductComparePortalProps, SingleProductComparePorta
     super(props);
   }
 
-  public getTableRow = (connectedNodes: ConnectedNode[]) => {
+  public getTableRow = (connectedNodes: ConnectedNode[], shareProducts: ConnectedNode[]) => {
     const tableRow = connectedNodes.map((node, index) => {
+      let style;
+      for (const product of shareProducts) {
+        if (product.name === node.name) {
+          style = {backgroundColor: '#e8f7ff'};
+        }
+      }
       return (
-        <Table.Row key={node.id}>
+        <Table.Row key={node.id} style={style}>
           <Table.Cell>{index + 1}</Table.Cell>
           <Table.Cell>{node.name}</Table.Cell>
           <Table.Cell>{Math.round(node.edgeWeight)}</Table.Cell>
@@ -57,7 +62,7 @@ extends PureComponent<SingleProductComparePortalProps, SingleProductComparePorta
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell>名次</Table.HeaderCell>
-            <Table.HeaderCell>圖{name}產品</Table.HeaderCell>
+            <Table.HeaderCell>圖{name}連結產品</Table.HeaderCell>
             <Table.HeaderCell>權重</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
@@ -68,6 +73,8 @@ extends PureComponent<SingleProductComparePortalProps, SingleProductComparePorta
       </Table>
     );
   }
+
+  public getConnected
 
   public getConnectedProduct(selectedProduct: string) {
     let selectedNodeA: Node;
@@ -144,60 +151,62 @@ extends PureComponent<SingleProductComparePortalProps, SingleProductComparePorta
   }
 
   public render() {
-    const selectedProductName = <span>{this.props.selectedProduct ? this.props.selectedProduct : ''}</span>;
-    const {connectedNodesA, connectedNodesB, shareProducts} = this.getConnectedProduct(this.props.selectedProduct[0]);
-    const tableRowA = this.getTableRow(connectedNodesA);
-    const tableRowB = this.getTableRow(connectedNodesB);
-    const tableA = this.getTable('A', tableRowA);
-    const tableB = this.getTable('B', tableRowB);
-    const share = shareProducts.map((node) => {
+    if (this.props.selectedProduct) {
+      const selectedProductName = <span>{this.props.selectedProduct}</span>;
+      const {connectedNodesA, connectedNodesB, shareProducts} = this.getConnectedProduct(this.props.selectedProduct[0]);
+      const tableRowA = this.getTableRow(connectedNodesA, shareProducts);
+      const tableRowB = this.getTableRow(connectedNodesB, shareProducts);
+      const tableA = this.getTable('左', tableRowA);
+      const tableB = this.getTable('右', tableRowB);
+      const share = shareProducts.map((node) => {
+        return (
+          <Table.Row key={node.name} >
+            <Table.Cell>{node.name}</Table.Cell>
+          </Table.Row>
+        );
+      });
       return (
-        <Table.Row key={node.name} >
-          <Table.Cell>{node.name}</Table.Cell>
-        </Table.Row>
+        <Portal onClose={this.props.onClose} open={this.props.open}>
+          <Segment
+            style={segmentStyle}
+          >
+            <Header style={{display: 'inline'}}>【{selectedProductName}】連結產品比較</Header>
+            <Button
+              content='關閉'
+              negative
+              onClick={this.props.onClose}
+              style={{position: 'absolute', right: '10px'}}
+            />
+            <Grid>
+              <Grid.Row>
+                <Grid.Column width={6}>
+                  <p>圖左連結產品數： {connectedNodesA.length}</p>
+                  {tableA}
+                </Grid.Column>
+
+                <Grid.Column width={4}>
+                  <p>共同連結數： {shareProducts.length}</p>
+                  <Table celled padded color='yellow'>
+                    <Table.Header>
+                      <Table.Row>
+                        <Table.HeaderCell>共同產品</Table.HeaderCell>
+                      </Table.Row>
+                    </Table.Header>
+                    <Table.Body>
+                      {share}
+                    </Table.Body>
+                  </Table>
+                </Grid.Column>
+
+                <Grid.Column width={6}>
+                  <p>圖右連結產品數： {connectedNodesB.length}</p>
+                  {tableB}
+                </Grid.Column>
+              </Grid.Row>
+            </Grid>
+          </Segment>
+        </Portal>
       );
-    });
-    return (
-      <Portal onClose={this.props.onClose} open={this.props.open}>
-        <Segment
-          style={segmentStyle}
-        >
-          <Header style={{display: 'inline'}}>【{selectedProductName}】連結產品比較</Header>
-          <Button
-            content='關閉'
-            negative
-            onClick={this.props.onClose}
-            style={{position: 'absolute', right: '10px'}}
-          />
-          <Grid>
-            <Grid.Row>
-              <Grid.Column width={6}>
-                <p>圖A連結數： {connectedNodesA.length}</p>
-                {tableA}
-              </Grid.Column>
-
-              <Grid.Column width={4}>
-                <p>共同連結數： {shareProducts.length}</p>
-                <Table celled padded color='yellow'>
-                  <Table.Header>
-                    <Table.Row>
-                      <Table.HeaderCell>共同產品</Table.HeaderCell>
-                    </Table.Row>
-                  </Table.Header>
-                  <Table.Body>
-                    {share}
-                  </Table.Body>
-                </Table>
-              </Grid.Column>
-
-              <Grid.Column width={6}>
-                <p>圖B連結數： {connectedNodesB.length}</p>
-                {tableB}
-              </Grid.Column>
-            </Grid.Row>
-          </Grid>
-        </Segment>
-      </Portal>
-    );
+    }
   }
 }
