@@ -11,7 +11,7 @@ const INFO = 20;
 const DEBUG = 10;
 const DEFAULT = 0;
 
-const levelMap: {[key: string]: number} = {
+const levelMap: { [key: string]: number } = {
   critical: CRITICAL,
   error: ERROR,
   warning: WARNING,

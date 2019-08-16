@@ -14,35 +14,26 @@ const ModalConfirmReport = ({ header, content, onConfirm, onCancel, open, childr
   return (
     <React.Fragment>
       {children}
-      <Modal
-        basic
-        size='small'
-        open={open}
-      >
+      <Modal basic size='small'
+open={open}>
         <Header content={header} />
         <Modal.Content>
-          <p>
-            {content}
-          </p>
+          <p>{content}</p>
         </Modal.Content>
         <Modal.Actions>
-          <Button
-            color='red'
-            inverted
-            onClick={onCancel}
-          >
-            <Icon name='remove' /> 取消
+          <Button color='red' inverted
+onClick={onCancel}>
+            <Icon name='remove' />
+            取消
           </Button>
-          <Button
-            color='green'
-            inverted
-            onClick={onConfirm}
-          >
-            <Icon name='checkmark' /> 確認
+          <Button inverted onClick={onConfirm}>
+            <Icon name='checkmark' />
+            確認
           </Button>
         </Modal.Actions>
       </Modal>
-    </React.Fragment>);
+    </React.Fragment>
+  );
 };
 
 export default ModalConfirmReport;

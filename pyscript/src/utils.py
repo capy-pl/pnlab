@@ -26,10 +26,8 @@ def to_query(conditions):
         if condition['type'] == 'date':
             if len(condition['values']) > 0:
                 if len(condition['values']) == 2:
-                    a = to_datetime(condition['values'])
-                    b = to_datetime(condition['values'])
-                    max_time = a if a > b else b
-                    min_time = b if a > b else a
+                    min_time = to_datetime(condition['values'][0])
+                    max_time = to_datetime(condition['values'][1])
                     default_query[condition['name']] = {
                         '$lte': max_time,
                         '$gte': min_time

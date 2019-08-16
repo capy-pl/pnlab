@@ -5,7 +5,7 @@ import Switch from '../../components/route/Switch';
 import Detail from './Detail';
 import AnalysisList from './List';
 
-const AnalysisRouter = (props) => {
+const AnalysisRouter = () => {
   return (
     <Switch>
       <Route path='/analysis/:id' component={Detail} />
@@ -14,8 +14,4 @@ const AnalysisRouter = (props) => {
   );
 };
 
-export {
-  AnalysisRouter as default,
-  Detail,
-  AnalysisList,
-};
+export { AnalysisRouter as default, Detail, AnalysisList };

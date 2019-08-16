@@ -12,4 +12,11 @@
     "[typescriptreact]": {
         "editor.tabSize": 2
     },
+    "editor.formatOnSave": true,
+    "eslint.validate": [
+        "javascript",
+        "javascriptreact",
+        "typescript",
+        "typescriptreact"
+    ]
 }

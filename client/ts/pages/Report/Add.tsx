@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { Button, Container, DropdownProps, Segment } from 'semantic-ui-react';
+import { Container, DropdownProps, Segment } from 'semantic-ui-react';
 
 import FormAddReport from 'Component/form/FormAddReport';
 import Loader from 'Component/Loader';
@@ -12,7 +12,7 @@ interface AddState {
   loading: boolean;
   buttonLoading: boolean;
   conditions: Condition[];
-  conditionArgs: { [key: string]: string[]};
+  conditionArgs: { [key: string]: string[] };
   modalOpen: boolean;
 }
 
@@ -31,6 +31,7 @@ export default class Add extends PureComponent<RouteComponentProps, AddState> {
     this.onAdd = this.onAdd.bind(this);
     this.onConfirm = this.onConfirm.bind(this);
     this.onCancel = this.onCancel.bind(this);
+    this.validate = this.validate.bind(this);
   }
 
   public async componentDidMount() {
@@ -41,8 +42,7 @@ export default class Add extends PureComponent<RouteComponentProps, AddState> {
     });
   }
 
-  public onChange(name: string):
-  (event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => void {
+  public onChange(name: string): (event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => void {
     return (event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps): void => {
       const values = data.value as string[];
       this.setState({
@@ -75,14 +75,32 @@ export default class Add extends PureComponent<RouteComponentProps, AddState> {
     return conditionList;
   }
 
+  public validate(): string[] {
+    const conditions: Condition[] = this.transformArgsToCondition();
+    const errorMessages: string[] = [];
+    conditions.forEach((condition) => {
+      if (condition.type === 'date') {
+        const start = new Date(condition.values[0]);
+        const end = new Date(condition.values[1]);
+        if (start > end) {
+          errorMessages.push('開始時間不能大於結束時間。');
+        }
+      }
+    });
+    return errorMessages;
+  }
+
   public async onConfirm() {
-    this.setState({
-      modalOpen: false,
-      loading: true,
-    }, async () => {
+    this.setState(
+      {
+        modalOpen: false,
+        loading: true,
+      },
+      async () => {
         await Report.add(this.transformArgsToCondition());
         this.props.history.push('/');
-    });
+      },
+    );
   }
 
   public onCancel() {
@@ -107,9 +125,11 @@ export default class Add extends PureComponent<RouteComponentProps, AddState> {
       <Container>
         <Segment.Group>
           <FormAddReport
+            onAdd={this.onAdd}
             defaultValues={this.state.conditionArgs}
             onChange={this.onChange}
             conditions={this.state.conditions}
+            validate={this.validate}
           />
           <ModalConfirmReport
             header='新增一個Report'
@@ -117,14 +137,7 @@ export default class Add extends PureComponent<RouteComponentProps, AddState> {
             open={this.state.modalOpen}
             onCancel={this.onCancel}
             onConfirm={this.onConfirm}
-          >
-            <Button
-              color='blue'
-              fluid
-              onClick={this.onAdd}
-            >新增
-            </Button>
-          </ModalConfirmReport>
+          />
         </Segment.Group>
       </Container>
     );

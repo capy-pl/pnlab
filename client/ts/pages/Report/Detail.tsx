@@ -1,13 +1,6 @@
 import React, { PureComponent } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import {
-  Button,
-  Divider,
-  DropdownProps,
-  Label,
-  Menu,
-  Sidebar,
-} from 'semantic-ui-react';
+import { Button, Divider, DropdownProps, Label, Menu, Sidebar } from 'semantic-ui-react';
 
 import { DropdownSearchItem } from 'Component/dropdown';
 import { ModalAddAnalysis } from 'Component/modal';
@@ -17,11 +10,8 @@ import { DropdownMenu } from '../../components/menu';
 import { CharacterMessage, CommunitiesMessage, ProductRank } from '../../components/message';
 
 import { Analysis } from '../../PnApp/model';
-import ReportAPI from '../../PnApp/model/Report' ;
+import ReportAPI from '../../PnApp/model/Report';
 import { Community, Node } from '../../PnApp/model/Report';
-
-interface ReportProps extends RouteComponentProps<{ id: string }> {
-}
 
 interface ReportState {
   loading: boolean;
@@ -37,16 +27,6 @@ interface ReportState {
   title?: string;
 }
 
-const messageStyle: React.CSSProperties = {
-  top: '18%',
-  left: '3%',
-  width: '23%',
-  overflow: 'auto',
-  maxHeight: 550,
-  position: 'absolute',
-  zIndex: 101,
-};
-
 const sidebarStyle: React.CSSProperties = {
   zIndex: 100,
   height: '80%',
@@ -56,8 +36,8 @@ const sidebarStyle: React.CSSProperties = {
   right: 0,
 };
 
-export default class Report extends PureComponent<ReportProps, ReportState> {
-  constructor(props: ReportProps) {
+export default class Report extends PureComponent<RouteComponentProps<{ id: string }>, ReportState> {
+  constructor(props: RouteComponentProps<{ id: string }>) {
     super(props);
     this.state = {
       loading: true,
@@ -91,48 +71,48 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
   }
 
   public clearSelected() {
-    this.setState({content: ''});
-    this.setState({selectedCommunities: undefined});
-    this.setState({selectedProduct: undefined});
+    this.setState({ content: '' });
+    this.setState({ selectedCommunities: undefined });
+    this.setState({ selectedProduct: undefined });
   }
 
   public onShowProductNetwork() {
-    this.setState({showCommunity: false});
+    this.setState({ showCommunity: false });
     this.clearSelected();
   }
 
   public onShowCommunities() {
-    this.setState({showCommunity: true});
+    this.setState({ showCommunity: true });
     this.clearSelected();
-    this.setState({searchItems: undefined});
+    this.setState({ searchItems: undefined });
   }
 
   public onShowCharacter(event) {
     event.stopPropagation();
-    this.setState({content: 'character'});
+    this.setState({ content: 'character' });
   }
 
   public onShowProductRank(event) {
     event.stopPropagation();
-    this.setState({content: 'productRank'});
+    this.setState({ content: 'productRank' });
   }
 
   public onShowCommunitiesRank(event) {
     event.stopPropagation();
-    this.setState({content: 'communitiesRank'});
+    this.setState({ content: 'communitiesRank' });
   }
 
   public updateCommunitiesGraph(communitiesList: Community[] | undefined) {
-    this.setState({selectedCommunities: communitiesList});
+    this.setState({ selectedCommunities: communitiesList });
   }
 
   public updateProductGraph(product) {
     if (product === undefined) {
-      this.setState({selectedProduct: undefined});
+      this.setState({ selectedProduct: undefined });
     } else {
       if (this.state.report) {
         const selectedProduct = this.state.report.nodes.filter((node) => node.name === product.name);
-        this.setState({selectedProduct});
+        this.setState({ selectedProduct });
       }
     }
   }
@@ -155,11 +135,15 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
       loading: true,
     });
     if (this.state.report) {
+<<<<<<< HEAD
       const title = this.state.title;
       Analysis.add({report: this.state.report.id, title})
         .then(() => {
           this.setState({loading: false});
         });
+=======
+      Analysis.add({ report: this.state.report.id, title: 'testtest1' });
+>>>>>>> a1396ee371266121f53a3b17d399ac7326d66fe7
     }
   }
 
@@ -168,7 +152,7 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
   }
 
   public onItemSearch(event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) {
-    this.setState({searchItems: data.value});
+    this.setState({ searchItems: data.value });
   }
 
   public handleToggleSidebar() {
@@ -180,12 +164,7 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
     const report = this.state.report as ReportAPI;
     switch (this.state.content) {
       case 'character':
-        message = (
-          <CharacterMessage
-            communitiesInfo={report.communities}
-            hookInfo={report.hooks}
-          />
-        );
+        message = <CharacterMessage communitiesInfo={report.communities} hookInfo={report.hooks} />;
         break;
       case 'productRank':
         message = (
@@ -215,7 +194,7 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
     let searchItemDropdown: React.ReactChild;
     const report = this.state.report as ReportAPI;
     const dropdownOptions = report.nodes.map((node) => {
-      return ({ key: node.name, value: node.name, text: node.name });
+      return { key: node.name, value: node.name, text: node.name };
     });
     if (!this.state.showCommunity) {
       searchItemDropdown = (
@@ -240,10 +219,14 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
         const searchItemDropdown: React.ReactChild = this.getDropdownSearch();
         const conditionList = this.state.report.conditions.map((condition) => {
           const values = condition.values.map((value) => {
-            return (<Label key={value} style={{margin: '.2rem'}}>{value}</Label>);
+            return (
+              <Label key={value} style={{ margin: '.2rem' }}>
+                {value}
+              </Label>
+            );
           });
           return (
-            <div key={condition.name} style={{margin: '1rem 0 1rem 0' }}>
+            <div key={condition.name} style={{ margin: '1rem 0 1rem 0' }}>
               <h5>{condition.name}: </h5>
               {values}
               <Divider />
@@ -274,7 +257,15 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
                 {conditionList}
               </Sidebar>
             </Sidebar.Pushable>
-            <div style={{ position: 'absolute', top: 80, right: 120, minWidth: '12%', zIndex: 101 }}>
+            <div
+              style={{
+                position: 'absolute',
+                top: 80,
+                right: 120,
+                minWidth: '12%',
+                zIndex: 101,
+              }}
+            >
               {searchItemDropdown}
             </div>
             <Button
@@ -291,10 +282,7 @@ export default class Report extends PureComponent<ReportProps, ReportState> {
                 onConfirm={this.onConfirm}
                 updateFormAdd={this.updateFormAdd}
               >
-                <Button
-                  color='blue'
-                  onClick={this.onSaveGraph}
-                >
+                <Button color='blue' onClick={this.onSaveGraph}>
                   儲存圖片
                 </Button>
               </ModalAddAnalysis>

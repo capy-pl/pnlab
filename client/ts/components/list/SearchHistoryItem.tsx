@@ -1,6 +1,13 @@
 import React from 'react';
 import { Button, Icon, Label, SemanticCOLORS, Table } from 'semantic-ui-react';
-import { ProjectedReport } from '../../PnApp/model/Report';
+import {
+  dateToString,
+  stringToDate,
+} from '../../PnApp/Helper';
+import {
+  Condition,
+  ProjectedReport,
+} from '../../PnApp/model/Report';
 
 interface ItemProps {
   item: ProjectedReport;
@@ -51,6 +58,13 @@ const COLORS = [
   'black',
 ];
 
+function extractDate(conditions: Condition[]): string[] | undefined {
+  const time = conditions.filter((condition) => condition.type === 'date');
+  if (time.length > 0) {
+    return time[0].values;
+  }
+}
+
 const Item = ({ item, onLinkClick }: ItemProps) => {
   const tagList = item.conditions
   // flatten all string condition values into single array.
@@ -71,7 +85,7 @@ const Item = ({ item, onLinkClick }: ItemProps) => {
       </Label>
     );
   });
-
+  const dateCondition = extractDate(item.conditions);
   return (
     <Table.Row
       style={{ clear: 'both' }}
@@ -81,10 +95,10 @@ const Item = ({ item, onLinkClick }: ItemProps) => {
         <StatusIcon status={item.status}/>
       </Table.Cell>
       <Table.Cell textAlign='center'>
-        {item.startTime.toLocaleString() === 'Invalid Date' ? 'All' : item.startTime.toLocaleString()}
+        {dateCondition ? dateToString(stringToDate(dateCondition[0])) : 'All'}
       </Table.Cell>
       <Table.Cell textAlign='center'>
-        {item.endTime.toLocaleString() === 'Invalid Date' ? 'All' : item.endTime.toLocaleString()}
+        {dateCondition ? dateToString(stringToDate(dateCondition[1])) : 'All'}
       </Table.Cell>
       <Table.Cell>{tagList}</Table.Cell>
       <Table.Cell>
