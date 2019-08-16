@@ -135,20 +135,12 @@ export default class Report extends PureComponent<RouteComponentProps<{ id: stri
       loading: true,
     });
     if (this.state.report) {
-<<<<<<< HEAD
-      const title = this.state.title;
-      Analysis.add({report: this.state.report.id, title})
-        .then(() => {
-          this.setState({loading: false});
-        });
-=======
       Analysis.add({ report: this.state.report.id, title: 'testtest1' });
->>>>>>> a1396ee371266121f53a3b17d399ac7326d66fe7
     }
   }
 
   public updateFormAdd(title) {
-    this.setState({title});
+    this.setState({ title });
   }
 
   public onItemSearch(event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) {
