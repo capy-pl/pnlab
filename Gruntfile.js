@@ -3,7 +3,7 @@ module.exports = function (grunt) {
   const prodConfig = require('./config/webpack.prod');
   const eslintConfig = {
     options: {
-      configuration: './.eslintrc',
+      configFile: './package.json',
       fix: true,
       quiet: true,
     },

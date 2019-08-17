@@ -361,7 +361,9 @@ export default class Report extends PureComponent<
                   attached='right'
                   color='grey'
                   icon='bars'
-                  style={{ display: this.state.sidebarVisible ? 'none' : 'inline-block' }}
+                  style={{
+                    display: this.state.sidebarVisible ? 'none' : 'inline-block',
+                  }}
                   onClick={this.toggleSidebar}
                 />
                 <Graph
