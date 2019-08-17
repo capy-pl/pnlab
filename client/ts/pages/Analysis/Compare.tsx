@@ -178,51 +178,53 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
                 onChange={this.onSingleItemSearch}
               />
             </div>
-            <Grid columns='two' divided>
-              <Grid.Row>
-                <Grid.Column>
-                  <Header as='h3' dividing textAlign='left'>
-                    {this.state.analysisA.title}
-                  </Header>
-                  <GraphViewCompare
-                    nodes={this.state.reportA.nodes}
-                    edges={this.state.reportA.edges}
-                    selectedProduct={this.state.selectedProduct}
-                    showCommunity={this.state.showCommunity}
-                    shareNodes={this.state.shareNodes}
-                  />
-                </Grid.Column>
-                <Grid.Column>
-                  <Header as='h3' dividing textAlign='left'>
-                    {this.state.analysisB.title}
-                  </Header>
-                  <GraphViewCompare
-                    nodes={this.state.reportB.nodes}
-                    edges={this.state.reportB.edges}
-                    selectedProduct={this.state.selectedProduct}
-                    showCommunity={this.state.showCommunity}
-                    shareNodes={this.state.shareNodes}
-                  />
-                </Grid.Column>
-              </Grid.Row>
-            </Grid>
+            <div style={{padding: '1rem'}}>
+              <Grid columns='two' divided>
+                <Grid.Row>
+                  <Grid.Column>
+                    <Header as='h3' dividing textAlign='left'>
+                      {this.state.analysisA.title}
+                    </Header>
+                    <GraphViewCompare
+                      nodes={this.state.reportA.nodes}
+                      edges={this.state.reportA.edges}
+                      selectedProduct={this.state.selectedProduct}
+                      showCommunity={this.state.showCommunity}
+                      shareNodes={this.state.shareNodes}
+                    />
+                  </Grid.Column>
+                  <Grid.Column>
+                    <Header as='h3' dividing textAlign='left'>
+                      {this.state.analysisB.title}
+                    </Header>
+                    <GraphViewCompare
+                      nodes={this.state.reportB.nodes}
+                      edges={this.state.reportB.edges}
+                      selectedProduct={this.state.selectedProduct}
+                      showCommunity={this.state.showCommunity}
+                      shareNodes={this.state.shareNodes}
+                    />
+                  </Grid.Column>
+                </Grid.Row>
+              </Grid>
 
-            <ComparePortal
-              open={this.state.openCompare}
-              reportA={this.state.reportA}
-              reportB={this.state.reportB}
-              shareNodes={this.state.shareNodes}
-              onClose={this.handleCloseCompare}
-              analysisA={this.state.analysisA}
-              analysisB={this.state.analysisB}
-            />
-            <SingleProductComparePortal
-              open={this.state.openSingleCompare}
-              reportA={this.state.reportA}
-              reportB={this.state.reportB}
-              onClose={this.handleCloseSingleCompare}
-              selectedProduct={this.state.selectedProduct}
-            />
+              <ComparePortal
+                open={this.state.openCompare}
+                reportA={this.state.reportA}
+                reportB={this.state.reportB}
+                shareNodes={this.state.shareNodes}
+                onClose={this.handleCloseCompare}
+                analysisA={this.state.analysisA}
+                analysisB={this.state.analysisB}
+              />
+              <SingleProductComparePortal
+                open={this.state.openSingleCompare}
+                reportA={this.state.reportA}
+                reportB={this.state.reportB}
+                onClose={this.handleCloseSingleCompare}
+                selectedProduct={this.state.selectedProduct}
+              />
+            </div>
           </React.Fragment>
         );
       }

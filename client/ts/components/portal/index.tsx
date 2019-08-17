@@ -89,7 +89,7 @@ export default class ComparePortal extends PureComponent<ComparePortalProps, Com
       }
       return (
         <Table.Row key={node.id} style={style}>
-          <Table.Cell>{index + 1} {arrow}</Table.Cell>
+          <Table.Cell>{index + 1}&nbsp;&nbsp;&nbsp;{arrow}</Table.Cell>
           <Table.Cell>{node.name}</Table.Cell>
           <Table.Cell>{Math.round(node.weight)}</Table.Cell>
         </Table.Row>
