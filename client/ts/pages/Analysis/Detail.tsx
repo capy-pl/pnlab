@@ -12,9 +12,6 @@ import ReportAPI, {SimpleNode} from '../../PnApp/model/Report';
 import { Community } from '../../PnApp/model/Report';
 
 
-interface AnalysisProps extends RouteComponentProps<{ id: string }> {
-}
-
 interface AnalysisState {
   loading: boolean;
   analysis?: AnalysisAPI;
@@ -35,8 +32,9 @@ const buttonStyle: React.CSSProperties = {
   zIndex: 101,
 };
 
-export default class Analysis extends PureComponent<AnalysisProps, AnalysisState> {
-  constructor(props: AnalysisProps) {
+
+export default class Analysis extends PureComponent<RouteComponentProps<{ id: string }>, AnalysisState> {
+  constructor(props: RouteComponentProps<{ id: string }>) {
     super(props);
     this.state = {
       loading: true,
@@ -64,7 +62,7 @@ export default class Analysis extends PureComponent<AnalysisProps, AnalysisState
   }
 
   public async load() {
-    const analysis = await AnalysisAPI.get(this.props.match.params.id);
+    const analysis = await AnalysisAPI.get(this.props.match.params.id as string);
     const report = await ReportAPI.get(analysis.report);
     this.setState({
       analysis,
@@ -199,6 +197,7 @@ export default class Analysis extends PureComponent<AnalysisProps, AnalysisState
       return <Loader size='huge' />;
     } else {
       if (this.state.report) {
+<<<<<<< HEAD
         const message: React.ReactChild = this.getMessageComponent();
         return (
           <React.Fragment>
@@ -231,6 +230,9 @@ export default class Analysis extends PureComponent<AnalysisProps, AnalysisState
             />
           </React.Fragment>
         );
+=======
+        return <Graph nodes={this.state.report.nodes} edges={this.state.report.edges} />;
+>>>>>>> 5811d3ede370e6be771ddfcdb2e3b2667244d9ba
       }
     }
   }

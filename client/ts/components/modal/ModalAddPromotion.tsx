@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-  Button,
-  Message,
-  Modal,
-} from 'semantic-ui-react';
+import { Button, Message, Modal } from 'semantic-ui-react';
 
 import Promotion, { PromotionModel, PromotionType } from '../../PnApp/model/Promotion';
 import FormAddPromotion from '../form/FormAddPromotion';
@@ -82,7 +78,7 @@ export default class ModalAddPromotion extends React.PureComponent<ModalAddPromo
       endTime: '結束時間',
     };
     for (const key in keys) {
-      if (!(this.state[key])) {
+      if (!this.state[key]) {
         this.setState({
           error: true,
           errorMessage: `${keys[key]}尚未填寫。`,
@@ -118,7 +114,7 @@ export default class ModalAddPromotion extends React.PureComponent<ModalAddPromo
     return true;
   }
 
-  public typeChange(e, data: {[key: string]: any}): void {
+  public typeChange(e, data: { [key: string]: any }): void {
     this.setState({
       type: data.value,
       groupTwo: [],
@@ -187,19 +183,15 @@ export default class ModalAddPromotion extends React.PureComponent<ModalAddPromo
   public render() {
     return (
       <React.Fragment>
-        <Button
-          color='teal'
-          onClick={this.show}
-          floated='right'
-          style={{ marginBottom: '5px' }}
-        >
+        <Button color='teal'
+onClick={this.show}
+floated='right'
+style={{ marginBottom: '5px' }}>
           新增促銷
         </Button>
-        <Modal
-          open={this.state.show}
-          centered={false}
-          closeOnDimmerClick={false}
-        >
+        <Modal open={this.state.show}
+centered={false}
+closeOnDimmerClick={false}>
           <Modal.Header>新增促銷</Modal.Header>
           <Modal.Content>
             <FormAddPromotion
@@ -213,16 +205,19 @@ export default class ModalAddPromotion extends React.PureComponent<ModalAddPromo
               startTimeChange={this.startTimeChange}
               endTimeChange={this.endTimeChange}
             />
-          <Message
-            hidden={!this.state.error}
-            error
-          >
-            {this.state.errorMessage}
-          </Message>
+            <Message hidden={!this.state.error} error>
+              {this.state.errorMessage}
+            </Message>
           </Modal.Content>
           <Modal.Actions>
-            <Button loading={this.state.loading} onClick={this.close} color='red'>取消</Button>
-            <Button loading={this.state.loading} onClick={this.add}>新增</Button>
+            <Button loading={this.state.loading}
+onClick={this.close}
+color='red'>
+              取消
+            </Button>
+            <Button loading={this.state.loading} onClick={this.add}>
+              新增
+            </Button>
           </Modal.Actions>
         </Modal>
       </React.Fragment>

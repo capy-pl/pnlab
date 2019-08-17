@@ -10,15 +10,15 @@ export interface AnalysisInterface extends Document {
 }
 
 export interface Comment extends Document {
-  user_id: string;
+  userId: string;
   name: string;
   content: string;
   created: Date;
   modified: Date;
 }
 
-const CommentSchema = new Schema <Comment>({
-  user_id: {
+const CommentSchema = new Schema<Comment>({
+  userId: {
     type: Schema.Types.ObjectId,
     required: true,
     ref: 'user',

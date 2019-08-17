@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-  Button,
-  Message,
-  Modal,
-} from 'semantic-ui-react';
+import { Button, Message, Modal } from 'semantic-ui-react';
 
 import Promotion, { PromotionModel, PromotionType } from '../../PnApp/model/Promotion';
 import { FormEditPromotion } from '../form';
@@ -76,7 +72,7 @@ export default class ModalAddPromotion extends React.PureComponent<ModalEditProm
       endTime: '結束時間',
     };
     for (const key in keys) {
-      if (!(this.state[key])) {
+      if (!this.state[key]) {
         this.setState({
           error: true,
           errorMessage: `${keys[key]}尚未填寫。`,
@@ -189,11 +185,9 @@ export default class ModalAddPromotion extends React.PureComponent<ModalEditProm
           style={{ marginBottom: '5px' }}
           content='編輯'
         />
-        <Modal
-          open={this.state.show}
-          centered={false}
-          closeOnDimmerClick={false}
-        >
+        <Modal open={this.state.show}
+centered={false}
+closeOnDimmerClick={false}>
           <Modal.Header>編輯促銷</Modal.Header>
           <Modal.Content>
             <FormEditPromotion
@@ -208,16 +202,19 @@ export default class ModalAddPromotion extends React.PureComponent<ModalEditProm
               startTimeChange={this.startTimeChange}
               endTimeChange={this.endTimeChange}
             />
-            <Message
-              hidden={!this.state.error}
-              error
-            >
+            <Message hidden={!this.state.error} error>
               {this.state.errorMessage}
             </Message>
           </Modal.Content>
           <Modal.Actions>
-            <Button loading={this.state.loading} onClick={this.close} color='red'>取消</Button>
-            <Button loading={this.state.loading} onClick={this.save}>儲存</Button>
+            <Button loading={this.state.loading}
+onClick={this.close}
+color='red'>
+              取消
+            </Button>
+            <Button loading={this.state.loading} onClick={this.save}>
+              儲存
+            </Button>
           </Modal.Actions>
         </Modal>
       </React.Fragment>
