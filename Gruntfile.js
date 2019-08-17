@@ -1,10 +1,11 @@
-module.exports = function(grunt) {
+module.exports = function (grunt) {
   const devConfig = require('./config/webpack.dev');
   const prodConfig = require('./config/webpack.prod');
-  const tslintConfig = {
+  const eslintConfig = {
     options: {
-      configuration: './tslint.json',
-      fix: true
+      configFile: './package.json',
+      fix: true,
+      quiet: true,
     },
     client: {
       files: {
@@ -26,17 +27,17 @@ module.exports = function(grunt) {
   };
 
   const webpackConfig = {
-      serverWatch: Object.assign({
-        watch: true
-      }, devConfig.serverConfig),
-      clientWatch: Object.assign({
-        watch: true
-      }, devConfig.clientConfig),
-      server: devConfig.serverConfig,
-      client: devConfig.clientConfig,
-      prodServer: prodConfig.serverConfig,
-      prodClient: prodConfig.clientConfig,
-    };
+    serverWatch: Object.assign({
+      watch: true
+    }, devConfig.serverConfig),
+    clientWatch: Object.assign({
+      watch: true
+    }, devConfig.clientConfig),
+    server: devConfig.serverConfig,
+    client: devConfig.clientConfig,
+    prodServer: prodConfig.serverConfig,
+    prodClient: prodConfig.clientConfig,
+  };
 
   const execConfig = {
     test: {
@@ -68,7 +69,7 @@ module.exports = function(grunt) {
   };
 
   grunt.initConfig({
-    tslint: tslintConfig,
+    eslint: eslintConfig,
     webpack: webpackConfig,
     exec: execConfig,
   });
@@ -78,14 +79,14 @@ module.exports = function(grunt) {
   grunt.task.registerTask('build:server', ['webpack:server']);
   grunt.task.registerTask('build:prodServer', ['webpack:prodServer']);
   grunt.task.registerTask('build:prodClient', ['webpack:prodClient']);
-  grunt.task.registerTask('build', ['tslint', 'webpack:client', 'webpack:server']);
-  grunt.task.registerTask('test', ['tslint', 'exec:test']);
-  grunt.task.registerTask('test:client', ['tslint:client', 'exec:testClient']);
-  grunt.task.registerTask('test:server', ['tslint:server', 'exec:testServer']);
+  grunt.task.registerTask('build', ['eslint', 'webpack:client', 'webpack:server']);
+  grunt.task.registerTask('test', ['eslint', 'exec:test']);
+  grunt.task.registerTask('test:client', ['eslint:client', 'exec:testClient']);
+  grunt.task.registerTask('test:server', ['eslint:server', 'exec:testServer']);
   grunt.task.registerTask('initdb', ['exec:initdb']);
   grunt.task.registerTask('run', ['build:client', 'exec:run']);
   grunt.task.registerTask('prodRun', ['build', 'exec:prodRun']);
-  grunt.loadNpmTasks('grunt-tslint');
+  grunt.loadNpmTasks('grunt-eslint');
   grunt.loadNpmTasks('grunt-webpack');
   grunt.loadNpmTasks('grunt-exec');
 }

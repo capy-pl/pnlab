@@ -1,8 +1,5 @@
 import React from 'react';
-import {
-  Dropdown,
-  Form,
-} from 'semantic-ui-react';
+import { Dropdown, Form } from 'semantic-ui-react';
 import { searchItem } from '../../PnApp/Helper';
 
 import { DatetimeInput } from 'Component/';
@@ -50,7 +47,7 @@ class FormEditPromotion extends React.PureComponent<FormEditPromotionProps, Form
     super(props);
     this.prodcutPool = new Set<string>();
     this.productSearchChange = this.productSearchChange.bind(this);
-    const options: Option[]  = new Array<string>()
+    const options: Option[] = new Array<string>()
       .concat(this.props.model.groupOne)
       .concat(this.props.model.groupTwo)
       .map((value) => {
@@ -66,7 +63,7 @@ class FormEditPromotion extends React.PureComponent<FormEditPromotionProps, Form
     };
   }
 
-  public componentWillReceiveProps(nextProps: FormEditPromotionProps) {
+  public UNSAFE_componentWillReceiveProps(nextProps: FormEditPromotionProps) {
     if (nextProps.groupOne) {
       for (const product of nextProps.groupOne) {
         if (!this.prodcutPool.has(product)) {
@@ -87,7 +84,7 @@ class FormEditPromotion extends React.PureComponent<FormEditPromotionProps, Form
     const searchString = data.searchQuery as string;
     const { items } = await searchItem(searchString);
     const options = items
-      .filter((item) => (!this.prodcutPool.has(item)))
+      .filter((item) => !this.prodcutPool.has(item))
       .concat(this.props.groupOne || [])
       .concat(this.props.groupTwo || [])
       .map((item) => ({
@@ -101,16 +98,13 @@ class FormEditPromotion extends React.PureComponent<FormEditPromotionProps, Form
   }
 
   public render() {
-
     return (
       <Form>
         <Form.Field>
           <label>名稱</label>
-          <Form.Input
-            placeholder='名稱'
-            defaultValue={this.props.model.name}
-            onChange={this.props.nameChange}
-          />
+          <Form.Input placeholder='名稱'
+defaultValue={this.props.model.name}
+onChange={this.props.nameChange} />
         </Form.Field>
         <Form.Field>
           <label>種類</label>
@@ -163,10 +157,7 @@ class FormEditPromotion extends React.PureComponent<FormEditPromotionProps, Form
             onChange={this.props.startTimeChange}
           />
           <label>結束時間</label>
-          <DatetimeInput
-            defaultValue={this.props.model.endTime.toUTCString()}
-            onChange={this.props.endTimeChange}
-          />
+          <DatetimeInput defaultValue={this.props.model.endTime.toUTCString()} onChange={this.props.endTimeChange} />
         </Form.Field>
       </Form>
     );

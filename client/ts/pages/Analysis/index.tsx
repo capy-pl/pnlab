@@ -6,7 +6,7 @@ import AnalysisCompare from './Compare';
 import AnalysisDetail from './Detail';
 import AnalysisList from './List';
 
-const AnalysisRouter = (props) => {
+const AnalysisRouter = () => {
   return (
     <Switch>
       <Route path='/analysis/compare' component={AnalysisCompare} />
@@ -16,9 +16,4 @@ const AnalysisRouter = (props) => {
   );
 };
 
-export {
-  AnalysisRouter as default,
-  AnalysisCompare,
-  AnalysisDetail,
-  AnalysisList,
-};
+export { AnalysisRouter as default, Detail, AnalysisList };

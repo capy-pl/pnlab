@@ -11,7 +11,9 @@ const ReportRouter = (props) => {
     <Switch>
       <Route path='/report/add' component={ReportAdd} />
       <Route path='/report/:id' component={ReportDetail} />
-      <Route exact path='/report' component={ReportList} />
+      <Route exact
+path='/report'
+component={ReportList} />
     </Switch>
   );
 };

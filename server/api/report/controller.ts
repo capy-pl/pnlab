@@ -2,15 +2,9 @@ import e from 'express';
 import { connection } from 'mongoose';
 import { getChannel } from '../../core/mq';
 import { Logger } from '../../core/util';
-import {
-  Promotion,
-  Report,
-} from '../../models';
+import { Promotion, Report } from '../../models';
 import { FieldSchemaInterface } from '../../models/ImportSchema';
-import {
-  Condition,
-  ReportInterface,
-} from '../../models/Report';
+import { Condition } from '../../models/Report';
 import { UserSchemaInterface } from '../../models/User';
 
 interface SearchItemQuery {
@@ -32,17 +26,17 @@ export interface SearchItemResponseBody {
 export async function SearchItem(req: e.Request, res: e.Response, next: e.NextFunction): Promise<void> {
   const { query } = req.query as SearchItemQuery;
   try {
-    const items = await connection.db.collection('items')
-    .find({
-      單品名稱:
-      { $regex: query },
-    })
-    .project({
-      _id: 0,
-      單品名稱: 1,
-    })
-    .limit(10)
-    .toArray();
+    const items = await connection.db
+      .collection('items')
+      .find({
+        單品名稱: { $regex: query },
+      })
+      .project({
+        _id: 0,
+        單品名稱: 1,
+      })
+      .limit(10)
+      .toArray();
     res.send({
       items: items.map((item) => item.單品名稱),
     });
@@ -70,7 +64,7 @@ export async function GetConditions(req: e.Request, res: e.Response): Promise<vo
     const { transactionFields, itemFields } = org.importSchema;
     const promotions = await Promotion.find({}, { name: 1 });
     const conditions: FieldSchemaInterface[] = transactionFields.concat(itemFields);
-    const promotionField: FieldSchemaInterface  = {
+    const promotionField: FieldSchemaInterface = {
       name: '促銷',
       type: 'promotion',
       belong: 'promotion',
@@ -100,7 +94,7 @@ export async function AddReport(req: e.Request, res: e.Response): Promise<void> 
   const { org } = user as UserSchemaInterface;
   try {
     const { conditions } = req.body as AddReportRequestBody;
-    const mapping: { [key: string]: FieldSchemaInterface  } = {};
+    const mapping: { [key: string]: FieldSchemaInterface } = {};
     const report = new Report({
       conditions: [],
       created: new Date(),
@@ -138,10 +132,7 @@ export async function AddReport(req: e.Request, res: e.Response): Promise<void> 
   }
 }
 
-export interface GetReportResponseBody extends ReportInterface {
-}
-
-export async function GetReport(req: e.Request, res: e.Response, next: e.NextFunction): Promise<void> {
+export async function GetReport(req: e.Request, res: e.Response): Promise<void> {
   const id = req.params.id as string;
   try {
     const report = await Report.findOne({ _id: id }).exec();
@@ -172,7 +163,7 @@ export interface GetReportsResponseBody {
   reports: ProjectedReport[];
 }
 
-export async function GetReports(req: e.Request, res: e.Response, next: e.NextFunction): Promise<void> {
+export async function GetReports(req: e.Request, res: e.Response): Promise<void> {
   const { limit } = req.query as GetReportsRequestQuery;
   const projection = {
     conditions: 1,
@@ -186,7 +177,9 @@ export async function GetReports(req: e.Request, res: e.Response, next: e.NextFu
   try {
     let reports: ProjectedReport[];
     if (limit) {
-      reports = await Report.find({}, projection).limit(limit).sort({ created: -1 });
+      reports = await Report.find({}, projection)
+        .limit(limit)
+        .sort({ created: -1 });
     } else {
       reports = await Report.find({}, projection).sort({ created: -1 });
     }

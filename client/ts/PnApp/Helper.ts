@@ -18,8 +18,10 @@ export function isLoggedIn(): boolean {
   return !(Store.user === undefined);
 }
 
-export async function searchItem(name: string): Promise<{ items: string[]}> {
-  const response = await axios.get<{ items: string[] }>(`/api/report/searchItem?query=${name}`);
+export async function searchItem(name: string): Promise<{ items: string[] }> {
+  const response = await axios.get<{ items: string[] }>(
+    `/api/report/searchItem?query=${name}`,
+  );
   return response.data;
 }
 
@@ -31,6 +33,10 @@ export function stringToDate(str: string): Date {
 
 export function dateToString(date: Date): string {
   return `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
+}
+
+export function simplifyDate(str: string): string {
+  return dateToString(stringToDate(str));
 }
 
 export default {

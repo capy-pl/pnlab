@@ -11,12 +11,8 @@ interface Edge {
   weight: number;
 }
 
-interface AdjencyList {
-
-}
-
 export default class Jgraph {
-  public adjacencyList: {[key: number]: number[] };
+  public adjacencyList: { [key: number]: number[] };
   constructor(nodes: DataSet<Node>, edges: DataSet<Edge>) {
     this.adjacencyList = {};
     nodes.forEach((item, id) => {
@@ -30,8 +26,5 @@ export default class Jgraph {
 
   public getConnectedNodes(id: number): number[] {
     return this.adjacencyList[id];
-  }
-
-  public paintConnectedNodes(id: number): void {
   }
 }
