@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dropdown, DropdownProps } from 'semantic-ui-react';
+import { Dropdown, DropdownProps, Icon } from 'semantic-ui-react';
 
 interface Option {
   key: string;
@@ -21,8 +21,9 @@ const SearchSingleItemDropdown = ({ placeholder, options, onChange }: SearchDrop
     selection
     onChange={onChange}
     options={options}
+    icon={<Icon name='search' style={{padding: '10px'}} />}
     // style={{minWidth: '18%'}}
-    style={{width: '100%'}}
+    style={{width: '100%', height: '100%'}}
   />
 );
 
