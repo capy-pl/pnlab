@@ -1,4 +1,5 @@
 import axios from 'axios';
+import Jgraph from '../Jgraph';
 
 export type ConditionType = 'string' | 'int' | 'date' | 'float' | 'promotion';
 export type ConditionAction = 'reserve' | 'delete' | 'promotion';
@@ -78,9 +79,9 @@ export default class Report {
   }
 
   public static async getConditions(): Promise<Condition[]> {
-    const conditions = await axios.get<{ conditions: Condition[] }>(
-      '/api/report/conditions',
-    );
+    const conditions = await axios.get<{
+      conditions: Condition[];
+    }>('/api/report/conditions');
     return conditions.data.conditions;
   }
 
@@ -91,14 +92,14 @@ export default class Report {
 
   public static async getAll(limit?: number): Promise<ProjectedReport[]> {
     const url = limit && limit > 0 ? `/api/report?limit=${limit}` : '/api/report';
-    const reports = await axios.get<{ reports: ProjectedReport[] }>(url);
+    const reports = await axios.get<{
+      reports: ProjectedReport[];
+    }>(url);
     reports.data.reports.forEach((report) => {
       // attributes below are type of string when returned from axios. need to
       // convert their type from string to Date.
       report.created = new Date(report.created);
       report.modified = new Date(report.modified);
-      report.startTime = new Date(report.startTime);
-      report.endTime = new Date(report.endTime);
     });
     return reports.data.reports;
   }
@@ -114,6 +115,7 @@ export default class Report {
   public communities: Community[];
   public hooks: Hook[];
   public rank: SimpleNode[];
+  public graph: Jgraph;
 
   constructor({
     _id,
@@ -139,5 +141,6 @@ export default class Report {
     this.communities = communities;
     this.hooks = hooks;
     this.rank = rank;
+    this.graph = new Jgraph(nodes, edges);
   }
 }
