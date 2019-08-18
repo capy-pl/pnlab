@@ -66,7 +66,7 @@ export default class Jgraph {
 
   /**
    * The function implement Dijkstra shortest path algorithm.
-   * Instead of return the path, we return all edge that is
+   * Instead of return the path, we return all edges
    * on the path of the graph.
    *
    * @param {number} id: the start node's id number.
