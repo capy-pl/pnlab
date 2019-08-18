@@ -16,14 +16,15 @@ interface SearchDropDownProps {
 const SearchSingleItemDropdown = ({ placeholder, options, onChange }: SearchDropDownProps) => (
   <Dropdown
     clearable
+    fluid
     placeholder={placeholder}
     search
     selection
     onChange={onChange}
     options={options}
-    icon={<Icon name='search' style={{padding: '10px'}} />}
-    // style={{minWidth: '18%'}}
-    style={{width: '100%', height: '100%'}}
+    icon={<Icon name='search' style={{ padding: '10px' }} />}
+  // style={{minWidth: '18%'}}
+  // style={{ width: '100%' }}
   />
 );
 

@@ -1,17 +1,26 @@
+import _ from 'lodash';
 import React, { PureComponent } from 'react';
 import { DataSet, EdgeOptions, Network, NodeOptions } from 'vis';
-import { Edge, Node } from '../../PnApp/model/Report';
 
-interface GraphNode extends Node, NodeOptions {
-}
+import Jgraph from '../../PnApp/Jgraph';
+import { Community, Edge, Node } from '../../PnApp/model/Report';
 
-interface GraphEdge extends Edge, EdgeOptions {
-}
+interface GraphNode extends Node, NodeOptions {}
 
-const style = {
-  height: '800px',
-  width: '100%',
-  margin: '0 auto',
+interface GraphEdge extends Edge, EdgeOptions {}
+
+const customScalingFunction = (
+  min: number,
+  max: number,
+  total: number,
+  value: number,
+): number => {
+  if (max === min) {
+    return 0.03;
+  } else {
+    const scale = 1 / (max - min);
+    return Math.max(0, (value - min) * scale);
+  }
 };
 
 interface GraphProps {
@@ -25,9 +34,20 @@ interface GraphProps {
 export default class GraphViewCompare extends PureComponent<GraphProps, {}> {
   public graphRef: React.RefObject<HTMLDivElement>;
   public network?: Network;
+  public jgraph?: Jgraph;
+  public nodes: DataSet<GraphNode>;
+  public edges: DataSet<GraphEdge>;
   constructor(props: GraphProps) {
     super(props);
     this.graphRef = React.createRef();
+    this.nodes = new DataSet();
+    this.edges = new DataSet();
+
+    this.paintCommunity = this.paintCommunity.bind(this);
+    // this.paintSearchItems = this.paintSearchItems.bind(this);
+    // this.paintSelectedCommunity = this.paintSelectedCommunity.bind(this);
+    this.paintSelectedProduct = this.paintSelectedProduct.bind(this);
+    this.repaint = this.repaint.bind(this);
   }
 
   public componentDidMount() {
@@ -37,8 +57,33 @@ export default class GraphViewCompare extends PureComponent<GraphProps, {}> {
     this.initializeGraph();
   }
 
-  public componentDidUpdate() {
-    this.updateNodes();
+  public componentDidUpdate(prevProps: GraphProps) {
+    // Do not call repaint if correspondent props don't change.
+    if (!_.isEqual(this.props.showCommunity, prevProps.showCommunity)) {
+      this.repaint();
+    }
+
+    if (!_.isEqual(this.props.selectedProduct, prevProps.selectedProduct)) {
+      this.repaint();
+      this.paintSelectedProduct();
+    }
+
+    // if (!_.isEqual(this.props.selectedCommunities, prevProps.selectedCommunities)) {
+    //   this.repaint();
+    //   this.paintSelectedCommunity();
+    // }
+
+    if (!_.isEqual(this.props.focusElement, prevProps.focusElement)) {
+      this.focusNode();
+    }
+  }
+
+  public focusNode(): void {
+    if (this.network && _.isNumber(this.props.focusElement)) {
+      this.network.focus(this.props.focusElement, {
+        scale: 1,
+      });
+    }
   }
 
   public getHeight(): string {
@@ -92,154 +137,225 @@ export default class GraphViewCompare extends PureComponent<GraphProps, {}> {
     return copy;
   }
 
-  public resetGraphColor(nodes) {
-    const updateNodes = nodes.map((node) => {
+  public repaint(): void {
+    const updateList: GraphNode[] = this.nodes.map((node) => {
       let color;
       if (this.props.shareNodes) {
-        this.props.shareNodes.includes(node.name) ?
-          color = {background: 'yellow', border: '#3f83d4', hover: '#ffdd00', highlight: '#ffdd00'} :
-          color = {background: '#8DC1FF', border: '#3f83d4', hover: '#3692ff', highlight: '#3692ff'};
+        this.props.shareNodes.includes(node.name)
+          ? (color = {
+              background: 'yellow',
+              border: '#3f83d4',
+              hover: '#ffdd00',
+              highlight: '#ffdd00',
+            })
+          : (color = {
+              background: '#8DC1FF',
+              border: '#3f83d4',
+              hover: '#3692ff',
+              highlight: '#3692ff',
+            });
       } else {
-        color = {background: '#8DC1FF', border: '#3f83d4', hover: '#3692ff', highlight: '#3692ff'};
+        color = {
+          background: '#8DC1FF',
+          border: '#3f83d4',
+          hover: '#3692ff',
+          highlight: '#3692ff',
+        };
       }
-      return (
-        {
-          id: node.id,
-          label: node.name,
-          title: this.props.showCommunity ?
-            `
-              <div>
-                <p>${node.name}</p>
-                <p>community: ${node.community}</p>
-                <p>weight: ${Math.round(node.weight)}</p>
-                <p>連接節點數: ${node.degree}</p>
-              </div>
-            ` :
-            `
-              <div>
-                <p>${node.name}</p>
-                <p>weight: ${Math.round(node.weight)}</p>
-                <p>連接節點數: ${node.degree}</p>
-              </div>
-            `,
-          group: this.props.showCommunity ? node.community : undefined,
-          color,
-          borderWidth: (this.props.showCommunity && node.core) ? 5 : 1,
-          hidden: false,
-        }
-      );
-    });
-    nodes.update(updateNodes);
-  }
-
-  public async updateNodes() {
-    const nodes = this.network.body.data.nodes;
-
-    if (this.props.showCommunity) {
-      if (this.props.selectedProduct.length !== 0) {
-        let group;
-        nodes.forEach((node) => {
-          if (this.props.selectedProduct[0] === node.name) {
-            group = node.community;
-          }
-        });
-        const updateSelectedCommunities = nodes.map((node) => {
-          return (
-            {
-              id: node.id,
-              label: node.name,
-              group: node.community,
-              title: `
+      return {
+        id: node.id,
+        label: node.name,
+        title: this.props.showCommunity
+          ? `
                 <div>
                   <p>${node.name}</p>
                   <p>community: ${node.community}</p>
                   <p>weight: ${Math.round(node.weight)}</p>
                   <p>連接節點數: ${node.degree}</p>
                 </div>
+              `
+          : `
+                <div>
+                  <p>${node.name}</p>
+                  <p>weight: ${Math.round(node.weight)}</p>
+                  <p>連接節點數: ${node.degree}</p>
+                </div>
               `,
-              borderWidth: node.core ? 5 : 1,
-              hidden: node.community !== group ? true : false,
-            }
-          );
-        });
-        nodes.update(updateSelectedCommunities);
-      } else {
-        this.resetGraphColor(nodes);
-      }
-    } else {
-      this.resetGraphColor(nodes);
-      const updateSelectGraph = [];
-      if (this.props.selectedProduct.length !== 0) {
-        // highlight node & show connected products
-        let highlightNodes: number[] = [];
-        nodes.forEach((node) => {
-          if (this.props.selectedProduct[0] === node.name) {
-            highlightNodes = this.network.getConnectedNodes(node.id);
-            highlightNodes.push(node.id);
-            updateSelectGraph.push(
-              {
-                id: node.id,
-                color: {
-                  background: 'black',
-                  border: '#3f83d4',
-                  hover: 'grey',
-                  highlight: 'black',
-                },
-              },
-            );
-          }
-        });
-        nodes.forEach((node) => {
-          let background;
-          if (!highlightNodes.includes(node.id)) {
-            // lighten the colors of unselected nodes
-            background = this.props.shareNodes.includes(node.name) ? '#ffffc9' : '#D3E7FF';
-            updateSelectGraph.push(
-              {
+        group: this.props.showCommunity ? node.community : undefined,
+        color,
+        borderWidth: this.props.showCommunity && node.core ? 5 : 1,
+        hidden: false,
+      } as any;
+    });
+    this.nodes.update(updateList);
+    (this.network as Network).fit({
+      nodes: this.nodes.map((node) => {
+        return node.id.toString();
+      }),
+      animation: false,
+    });
+  }
+
+  // public paintSearchItems(): void {
+  //   if (this.props.searchItems && this.props.searchItems.length) {
+  //     const searchItems = this.nodes.get(this.props.searchItems).map((node) => {
+  //       console.log(node);
+  //       return {
+  //         id: node.id,
+  //         color: {
+  //           background: 'yellow',
+  //           hover: {
+  //             background: 'orange',
+  //           },
+  //           highlight: 'orange',
+  //         },
+  //       } as any;
+  //     });
+  //     this.nodes.update(searchItems);
+  //   }
+  // }
+
+  public paintSelectedProduct(): void {
+    if (!_.isUndefined(this.props.selectedProduct)) {
+      let id;
+      this.props.nodes.forEach((node) => {
+        if (node.name === this.props.selectedProduct[0]) {
+          return (id = node.id);
+        }
+      });
+      if (id !== undefined) {
+        const selectedNode: GraphNode = {
+          id,
+          color: {
+            background: 'black',
+            border: '#3f83d4',
+            hover: 'grey',
+            highlight: 'black',
+          },
+        } as any;
+        const connectedNodes = (this.network as Network).getConnectedNodes(
+          selectedNode.id,
+        );
+        const updateList = this.nodes
+          .map<GraphNode>((node) => {
+            if (!connectedNodes.includes(node.id as any) && node.id !== selectedNode.id) {
+              const background = this.props.shareNodes.includes(node.name)
+                ? '#ffffc9'
+                : '#D3E7FF';
+              return {
                 id: node.id,
                 color: {
                   background,
                   border: '#D3E7FF',
                 },
+                group: undefined,
                 label: ' ',
-              },
-            );
-          }
+              } as any;
+            }
+          })
+          .filter((node) => node);
+        updateList.push(selectedNode);
+        this.nodes.update(updateList);
+        (this.network as Network).focus(selectedNode.id, {
+          scale: 0.6,
         });
-        nodes.update(updateSelectGraph);
-      } else if (this.props.selectedProduct.length === 0) {
-        this.resetGraphColor(nodes);
+      } else {
+        const updateList = this.nodes
+          .map<GraphNode>((node) => {
+            const background = this.props.shareNodes.includes(node.name)
+              ? '#ffffc9'
+              : '#D3E7FF';
+            return {
+              id: node.id,
+              color: {
+                background,
+                border: '#D3E7FF',
+              },
+              group: undefined,
+              label: ' ',
+            } as any;
+          })
+          .filter((node) => node);
+        this.nodes.update(updateList);
       }
     }
   }
 
+  // public paintSelectedCommunity(): void {
+  //   if (this.props.selectedCommunities && this.props.selectedCommunities.length) {
+  //     const selectedNodes: GraphNode[] = [];
+  //     this.nodes.forEach((node) => {
+  //       const update: any = {
+  //         id: node.id,
+  //         hidden: !(this.props.selectedCommunities as number[]).includes(node.community),
+  //       };
+  //       selectedNodes.push(update);
+  //     });
+  //     this.nodes.update(selectedNodes);
+  //   } else {
+  //     this.repaint();
+  //   }
+  // }
+
+  public paintCommunity(): void {
+    if (this.props.showCommunity) {
+      const nodes: GraphNode[] = this.nodes.map((node) => {
+        return {
+          id: node.id,
+          group: node.community,
+          title: `
+            <div>
+              <p>${node.name}</p>
+              <p>community: ${node.community}</p>
+              <p>weight: ${Math.round(node.weight)}</p>
+              <p>連接節點數: ${node.degree}</p>
+            </div>
+          `,
+          borderWidth: node.core ? 5 : 1,
+        } as any;
+      });
+      this.nodes.update(nodes);
+    } else {
+      const nodes: GraphNode[] = this.nodes.map((node) => {
+        return {
+          id: node.id,
+          group: undefined,
+          title: `
+            <div>
+              <p>${node.name}</p>
+              <p>weight: ${Math.round(node.weight)}</p>
+              <p>連接節點數: ${node.degree}</p>
+            </div>
+          `,
+          color: '#8DC1FF',
+          borderWidth: 1,
+        } as any;
+      });
+      this.nodes.update(nodes);
+    }
+  }
+
   public initializeGraph(): void {
-    const nodes = new DataSet<GraphNode>();
-    const edges = new DataSet<GraphEdge>();
     for (const node of this.props.nodes) {
-      nodes.add(this.toNode(node));
+      this.nodes.add(this.toNode(node));
     }
 
     for (const edge of this.props.edges) {
-      edges.add(this.toEdge(edge));
+      this.edges.add(this.toEdge(edge));
     }
 
     if (this.graphRef.current) {
-      this.network = new Network(this.graphRef.current, {
-        edges,
-        nodes,
-      }, {
+      this.network = new Network(
+        this.graphRef.current,
+        {
+          nodes: this.nodes,
+          edges: this.edges,
+        },
+        {
           edges: {
             smooth: false,
             scaling: {
-              customScalingFunction: (min, max, total, value) => {
-                if (max === min) {
-                  return 0.03;
-                } else {
-                  const scale = 1 / (max - min);
-                  return Math.max(0, (value - min) * scale);
-                }
-              },
+              customScalingFunction,
               max: 30,
               min: 1,
             },
@@ -250,14 +366,7 @@ export default class GraphViewCompare extends PureComponent<GraphProps, {}> {
           },
           nodes: {
             scaling: {
-              customScalingFunction: (min, max, total, value) => {
-                if (max === min) {
-                  return 0.03;
-                } else {
-                  const scale = 1 / (max - min);
-                  return Math.max(0, (value - min) * scale);
-                }
-              },
+              customScalingFunction,
               label: {
                 enabled: true,
               },
@@ -274,20 +383,17 @@ export default class GraphViewCompare extends PureComponent<GraphProps, {}> {
             stabilization: true,
           },
           interaction: {
-              hover: true,
-              tooltipDelay: 100,
+            hover: true,
+            tooltipDelay: 100,
           },
-        });
+        },
+      );
     }
   }
 
   public render() {
-    return (
-      <div className='pn-graph2' ref={this.graphRef} />
-    );
+    return <div id='pn-graph' style={{ zIndex: -1 }} ref={this.graphRef} />;
   }
 }
 
-export {
-  GraphViewCompare,
-};
+export { GraphViewCompare };

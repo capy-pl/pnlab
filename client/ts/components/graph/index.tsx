@@ -5,9 +5,9 @@ import { DataSet, EdgeOptions, Network, NodeOptions } from 'vis';
 import Jgraph from '../../PnApp/Jgraph';
 import { Community, Edge, Node } from '../../PnApp/model/Report';
 
-interface GraphNode extends Node, NodeOptions { }
+interface GraphNode extends Node, NodeOptions {}
 
-interface GraphEdge extends Edge, EdgeOptions { }
+interface GraphEdge extends Edge, EdgeOptions {}
 
 const customScalingFunction = (
   min: number,
@@ -136,6 +136,12 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
         } as any),
     );
     this.nodes.update(updateList);
+    (this.network as Network).fit({
+      nodes: this.nodes.map((node) => {
+        return node.id.toString();
+      }),
+      animation: false,
+    });
   }
 
   public paintSearchItems(): void {
@@ -178,7 +184,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
                 border: '#D3E7FF',
               },
               group: undefined,
-              label: '',
+              label: ' ',
             } as any;
           }
         })
@@ -213,6 +219,15 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
         return {
           id: node.id,
           group: node.community,
+          title: `
+            <div>
+              <p>${node.name}</p>
+              <p>community: ${node.community}</p>
+              <p>weight: ${Math.round(node.weight)}</p>
+              <p>連接節點數: ${node.degree}</p>
+            </div>
+          `,
+          borderWidth: node.core ? 5 : 1,
         } as any;
       });
       this.nodes.update(nodes);
@@ -221,6 +236,13 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
         return {
           id: node.id,
           group: undefined,
+          title: `
+            <div>
+              <p>${node.name}</p>
+              <p>weight: ${Math.round(node.weight)}</p>
+              <p>連接節點數: ${node.degree}</p>
+            </div>
+          `,
           color: '#8DC1FF',
           borderWidth: 1,
         } as any;

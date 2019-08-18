@@ -8,6 +8,7 @@ import {
   Icon,
   List,
   Menu,
+  Popup,
   Search,
   Sidebar,
   SearchResultData,
@@ -325,20 +326,29 @@ export default class Report extends PureComponent<
                 <Menu.Item as='a' onClick={this.openProductRankWindow}>
                   產品排名
                 </Menu.Item>
-                <Dropdown
-                  text='產品Community列表'
-                  item
-                  style={{ overflow: 'visible !important' }}
-                >
-                  <Dropdown.Menu>
-                    <Dropdown.Item onClick={this.openCommunityListWidow}>
-                      Communities排名
-                    </Dropdown.Item>
-                    <Dropdown.Item onClick={this.openCommunityCharacterWindow}>
-                      Communities角色
-                    </Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
+                <Popup
+                  content='點選上方"標示community"後即可查看'
+                  disabled={this.state.showCommunity}
+                  trigger={
+                    <span>
+                      <Dropdown
+                        text='產品Community列表'
+                        item
+                        style={{ overflow: 'visible !important' }}
+                        disabled={!this.state.showCommunity}
+                      >
+                        <Dropdown.Menu>
+                          <Dropdown.Item onClick={this.openCommunityListWidow}>
+                            Communities排名
+                          </Dropdown.Item>
+                          <Dropdown.Item onClick={this.openCommunityCharacterWindow}>
+                            Communities角色
+                          </Dropdown.Item>
+                        </Dropdown.Menu>
+                      </Dropdown>
+                    </span>
+                  }
+                />
                 <ModalAddAnalysis
                   report={this.state.report}
                   close={this.closeAddAnalysisModal}

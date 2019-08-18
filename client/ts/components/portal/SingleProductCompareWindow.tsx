@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Button, Grid, Header, Portal, Segment, Table } from 'semantic-ui-react';
+import { Window } from 'Component/';
 import Report, { Node } from '../../PnApp/model/Report';
 
 interface ConnectedNode {
@@ -9,7 +10,7 @@ interface ConnectedNode {
 }
 
 interface SingleProductComparePortalProps {
-  open: boolean;
+  show: boolean;
   reportA?: Report;
   reportB?: Report;
   onClose: () => void;
@@ -20,21 +21,11 @@ interface SingleProductComparePortalState {
   selectedProduct?: string;
 }
 
-const segmentStyle = {
-  position: 'fixed',
-  left: '15%',
-  top: '18%',
-  zIndex: 1002,
-  overflow: 'auto',
-  maxHeight: '75%',
-  width: '70%',
-  textAlign: 'center',
-};
 
-export default class SingleProductComparePortal extends PureComponent<
+export default class SingleProductCompareWindow extends PureComponent<
   SingleProductComparePortalProps,
   SingleProductComparePortalState
-> {
+  > {
   constructor(props: SingleProductComparePortalProps) {
     super(props);
   }
@@ -150,36 +141,35 @@ export default class SingleProductComparePortal extends PureComponent<
   }
 
   public render() {
-    if (this.props.selectedProduct) {
-      const selectedProductName = <span>{this.props.selectedProduct}</span>;
-      const {
-        connectedNodesA,
-        connectedNodesB,
-        shareProducts,
-      } = this.getConnectedProduct(this.props.selectedProduct[0]);
-      const tableRowA = this.getTableRow(connectedNodesA, shareProducts);
-      const tableRowB = this.getTableRow(connectedNodesB, shareProducts);
-      const tableA = this.getTable('左', tableRowA);
-      const tableB = this.getTable('右', tableRowB);
-      const share = shareProducts.map((node) => {
+    if (!this.props.show) {
+      return <React.Fragment />;
+    } else {
+      if (this.props.selectedProduct) {
+        const selectedProductName = this.props.selectedProduct[0];
+        const {
+          connectedNodesA,
+          connectedNodesB,
+          shareProducts,
+        } = this.getConnectedProduct(this.props.selectedProduct[0]);
+        const tableRowA = this.getTableRow(connectedNodesA, shareProducts);
+        const tableRowB = this.getTableRow(connectedNodesB, shareProducts);
+        const tableA = this.getTable('左', tableRowA);
+        const tableB = this.getTable('右', tableRowB);
+        const share = shareProducts.map((node) => {
+          return (
+            <Table.Row key={node.name}>
+              <Table.Cell>{node.name}</Table.Cell>
+            </Table.Row>
+          );
+        });
         return (
-          <Table.Row key={node.name}>
-            <Table.Cell>{node.name}</Table.Cell>
-          </Table.Row>
-        );
-      });
-      return (
-        <Portal onClose={this.props.onClose} open={this.props.open}>
-          <Segment style={segmentStyle}>
-            <Header style={{ display: 'inline' }}>
-              【{selectedProductName}】連結產品比較
-            </Header>
-            <Button
-              content='關閉'
-              negative
-              onClick={this.props.onClose}
-              style={{ position: 'absolute', right: '10px', zIndex: 1002 }}
-            />
+          <Window
+            title={`【${selectedProductName}】連結產品比較`}
+            defaultX={260}
+            onClickX={this.props.onClose}
+            defaultHeight={600}
+            defaultWidth={1200}
+          >
             <Grid>
               <Grid.Row>
                 <Grid.Column width={6}>
@@ -205,11 +195,9 @@ export default class SingleProductComparePortal extends PureComponent<
                 </Grid.Column>
               </Grid.Row>
             </Grid>
-          </Segment>
-        </Portal>
-      );
-    } else {
-      return <React.Fragment />;
+          </Window>
+        );
+      }
     }
   }
 }
