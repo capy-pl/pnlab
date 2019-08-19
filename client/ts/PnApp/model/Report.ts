@@ -1,14 +1,16 @@
 import axios from 'axios';
 import Jgraph from '../Jgraph';
 
-export type ConditionType = 'string' | 'int' | 'date' | 'float' | 'promotion';
+type MethodType = 'frequency' | 'adjust-frequency' | 'adjust-price';
+
+export type ConditionType = 'string' | 'int' | 'date' | 'float' | 'promotion' | 'method';
 export type ConditionAction = 'reserve' | 'delete' | 'promotion';
-export type ConditionBelong = 'transaction' | 'item' | 'promotion';
+export type ConditionBelong = 'transaction' | 'item' | 'promotion' | 'method';
 
 export interface Condition {
   name: string;
   type: ConditionType;
-  values: string[];
+  values: string[] | string | MethodType;
   actions: ConditionAction[];
   belong: ConditionBelong;
 }
@@ -142,5 +144,14 @@ export default class Report {
     this.hooks = hooks;
     this.rank = rank;
     this.graph = new Jgraph(nodes, edges);
+  }
+
+  public getMethod(): MethodType {
+    for (const condition of this.conditions) {
+      if (condition.type === 'method') {
+        return condition.values as MethodType;
+      }
+    }
+    return 'frequency';
   }
 }

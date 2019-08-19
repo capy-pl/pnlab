@@ -2,9 +2,10 @@ import React, { PureComponent } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { Container, DropdownProps, Segment } from 'semantic-ui-react';
 
-import FormAddReport from 'Component/form/FormAddReport';
+import FormAddReport from './FormAddReport';
 import Loader from 'Component/Loader';
 import { ModalConfirmReport } from 'Component/modal';
+
 import { Report } from '../../../PnApp/model';
 import { Condition } from '../../../PnApp/model/Report';
 
@@ -12,7 +13,7 @@ interface AddState {
   loading: boolean;
   buttonLoading: boolean;
   conditions: Condition[];
-  conditionArgs: { [key: string]: string[] };
+  conditionArgs: { [key: string]: string[] | string };
   modalOpen: boolean;
 }
 

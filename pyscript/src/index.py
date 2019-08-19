@@ -6,7 +6,7 @@ from datetime import datetime
 from dotenv import load_dotenv
 
 from .preprocessor import NetworkConverter
-from .utils import to_query, to_datetime
+from .utils import to_query, to_datetime, extract_promotion, extract_method
 from .error import ZeroTransactionError, ZeroNodeError
 
 load_dotenv()
@@ -17,17 +17,21 @@ MONGO_DB_NAME = getenv('MONGO_DB_NAME')
 client = MongoClient('localhost', MONGO_PORT)
 db = client[MONGO_DB_NAME]
 
+
 def network_analysis(report_id):
-    report = db['reports'].find_one({ '_id': ObjectId(report_id) })
+    report = db['reports'].find_one({'_id': ObjectId(report_id)})
     if not report:
         return
     try:
-        query, promotions = to_query(report['conditions'])
-        purchase_list = list(db['transactions'].find(query, projection=['items', '資料日期與時間']))
-        promotions = list(db['promotions'].find({ 'name': { '$in': promotions }}))
+        query = to_query(report['conditions'])
+        method = extract_method(report['conditions'])
+        promotions = extract_promotion(report['conditions'])
+        purchase_list = list(db['transactions'].find(
+            query, projection=['items', '資料日期與時間']))
+        promotions = list(db['promotions'].find({'name': {'$in': promotions}}))
         if len(purchase_list) <= 0:
             raise ZeroTransactionError('No transactions match the conditions.')
-        converter = NetworkConverter(purchase_list)
+        converter = NetworkConverter(purchase_list, method=method)
         converter.add_promotion_filters(promotions)
         converter.done()
         product_network = converter.transform()
@@ -42,7 +46,7 @@ def network_analysis(report_id):
             'modified': datetime.utcnow(),
             'errMessage': '',
         }
-        db['reports'].update_one({ '_id': ObjectId(report_id)}, {
+        db['reports'].update_one({'_id': ObjectId(report_id)}, {
             '$set': update_expr
         })
         return
