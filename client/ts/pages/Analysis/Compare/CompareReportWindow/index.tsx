@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react';
 import { Button, Grid, Header, Icon, Segment, Tab, Table } from 'semantic-ui-react';
 import { Window } from 'Component/';
-import AnalysisAPI from '../../PnApp/model/Analysis';
-import Report, { Condition, Node } from '../../PnApp/model/Report';
+import AnalysisAPI from '../../../../PnApp/model/Analysis';
+import Report, { Condition, Node } from '../../../../PnApp/model/Report';
 
 interface ComparePortalProps {
   show: boolean;

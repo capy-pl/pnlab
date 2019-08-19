@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
-import { Button, Grid, Header, Portal, Segment, Table } from 'semantic-ui-react';
+import { Grid, Icon, Table } from 'semantic-ui-react';
 import { Window } from 'Component/';
-import Report, { Node } from '../../PnApp/model/Report';
+import Report, { Node } from '../../../../PnApp/model/Report';
 
 interface ConnectedNode {
   name: string;
@@ -33,17 +33,59 @@ export default class SingleProductCompareWindow extends PureComponent<
   public getTableRow = (
     connectedNodes: ConnectedNode[],
     shareProducts: ConnectedNode[],
+    leftNodes: ConnectedNode[] = [],
   ) => {
     const tableRow = connectedNodes.map((node, index) => {
       let style;
+      let variation;
+      let arrow;
       for (const product of shareProducts) {
         if (product.name === node.name) {
           style = { backgroundColor: '#e8f7ff' };
         }
       }
+      if (leftNodes.length !== 0) {
+        const nodeNames = connectedNodes.map((node) => {
+          return node.name;
+        });
+        const leftNodeNames = leftNodes.map((node) => {
+          return node.name;
+        });
+        if (!(leftNodeNames.indexOf(node.name) < 0)) {
+          variation = leftNodeNames.indexOf(node.name) - nodeNames.indexOf(node.name);
+        }
+        switch (variation !== '') {
+          case variation < 0:
+            arrow = (
+              <React.Fragment>
+                <Icon color='red' name='long arrow alternate down' />
+                <span style={{ color: 'red' }}>{Math.abs(variation)}</span>
+              </React.Fragment>
+            );
+            break;
+          case variation > 0:
+            arrow = (
+              <React.Fragment>
+                <Icon color='green' name='long arrow alternate up' />
+                <span style={{ color: 'green' }}>{Math.abs(variation)}</span>
+              </React.Fragment>
+            );
+            break;
+          case variation === 0:
+            arrow = (
+              <React.Fragment>
+                <Icon color='blue' name='minus' />
+                <span style={{ color: 'blue' }} />
+              </React.Fragment>
+            );
+            break;
+          default:
+            arrow = <React.Fragment />;
+        }
+      }
       return (
         <Table.Row key={node.id} style={style}>
-          <Table.Cell>{index + 1}</Table.Cell>
+          <Table.Cell>{index + 1}&nbsp;&nbsp;&nbsp;{arrow}</Table.Cell>
           <Table.Cell>{node.name}</Table.Cell>
           <Table.Cell>{Math.round(node.edgeWeight)}</Table.Cell>
         </Table.Row>
@@ -152,7 +194,7 @@ export default class SingleProductCompareWindow extends PureComponent<
           shareProducts,
         } = this.getConnectedProduct(this.props.selectedProduct[0]);
         const tableRowA = this.getTableRow(connectedNodesA, shareProducts);
-        const tableRowB = this.getTableRow(connectedNodesB, shareProducts);
+        const tableRowB = this.getTableRow(connectedNodesB, shareProducts, connectedNodesA);
         const tableA = this.getTable('左', tableRowA);
         const tableB = this.getTable('右', tableRowB);
         const share = shareProducts.map((node) => {
@@ -197,6 +239,8 @@ export default class SingleProductCompareWindow extends PureComponent<
             </Grid>
           </Window>
         );
+      } else {
+        return <React.Fragment />
       }
     }
   }

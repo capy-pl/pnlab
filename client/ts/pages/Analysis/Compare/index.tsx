@@ -1,8 +1,6 @@
 import React, { PureComponent } from 'react';
 import {
   Button,
-  Checkbox,
-  Dropdown,
   DropdownProps,
   Grid,
   Header,
@@ -10,15 +8,13 @@ import {
   Popup,
 } from 'semantic-ui-react';
 
-import { SearchSingleItemDropdown } from '../../components/dropdown';
-import { GraphViewCompare } from '../../components/graph2/index';
-import Loader from '../../components/Loader';
-import ComparePortal from '../../components/portal/index';
-import CompareReportWindow from '../../components/portal/CompareReportWindow';
-import SingleProductCompareWindow from '../../components/portal/SingleProductCompareWindow';
-import SingleProductComparePortal from '../../components/portal/SingleProductCompare';
-import AnalysisAPI from '../../PnApp/model/Analysis';
-import ReportAPI, { Condition } from '../../PnApp/model/Report';
+import { SearchSingleItemDropdown } from '../../../components/dropdown';
+import { GraphViewCompare } from '../../../components/graph2/index';
+import Loader from '../../../components/Loader';
+import CompareReportWindow from './CompareReportWindow';
+import CompareSingleProductWindow from './CompareSingleProductWindow';
+import AnalysisAPI from '../../../PnApp/model/Analysis';
+import ReportAPI, { Condition } from '../../../PnApp/model/Report';
 
 interface AnalysisProps {
   analysisA: string;
@@ -207,16 +203,11 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
                 display: 'inline',
               }}
             > */}
-            <Menu style={{ marginBottom: '1rem' }}>
-              <Menu.Item>
-                <Checkbox
-                  toggle
-                  label={this.state.showCommunity ? '隱藏Community' : '顯示Community'}
-                  onChange={this.toggleShowCommunity}
-                />
-              </Menu.Item>
+            <Menu style={{ marginBottom: '1rem' }} secondary>
               <Menu.Item onClick={this.openCompareReportWindow}>
-                比較兩張網路圖
+                <Button color='facebook'>
+                  比較兩張網路圖
+                </Button>
               </Menu.Item>
               <Menu.Item position='right' style={{ paddingTop: '0.1em', paddingBottom: '0.1em' }}>
                 <span style={{ minWidth: '280px' }}>
@@ -291,7 +282,7 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
                 analysisB={this.state.analysisB}
                 conditions={this.state.conditions}
               />
-              <SingleProductCompareWindow
+              <CompareSingleProductWindow
                 show={this.state.windowSingleProductCompare}
                 reportA={this.state.reportA}
                 reportB={this.state.reportB}
