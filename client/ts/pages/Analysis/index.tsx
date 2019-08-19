@@ -16,4 +16,4 @@ const AnalysisRouter = () => {
   );
 };
 
-export { AnalysisRouter as default, Detail, Compare, AnalysisList };
+export { AnalysisRouter as default, Compare, Detail, AnalysisList };

@@ -42,9 +42,7 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
 
   public onLinkClick(path: string): () => void {
     return async () => {
-      const analysis = await Analysis.get(path);
-      const report = await ReportAPI.get(analysis.report);
-      this.props.history.push(`/report/${report.id}`);
+      this.props.history.push(`/analysis/${path}`);
     };
   }
 
@@ -121,12 +119,10 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
           </Button>
           <Table selectable color='blue'>
             <Table.Header>
-              <Table.Row textAlign='center'>
-                <Table.HeaderCell width='1'>Title</Table.HeaderCell>
-                <Table.HeaderCell width='2'>Description</Table.HeaderCell>
-                <Table.HeaderCell width='2'>Comments</Table.HeaderCell>
-                <Table.HeaderCell width='5'>Created Time</Table.HeaderCell>
-                <Table.HeaderCell width='2'>Link</Table.HeaderCell>
+              <Table.Row>
+                <Table.HeaderCell width='1' textAlign='center'>Title</Table.HeaderCell>
+                <Table.HeaderCell width='5' textAlign='center'>Created Time</Table.HeaderCell>
+                <Table.HeaderCell width='2' textAlign='center'>Link</Table.HeaderCell>
               </Table.Row>
             </Table.Header>
             <Table.Body>
