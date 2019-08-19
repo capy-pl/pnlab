@@ -5,8 +5,8 @@ import { Container, DropdownProps, Segment } from 'semantic-ui-react';
 import FormAddReport from 'Component/form/FormAddReport';
 import Loader from 'Component/Loader';
 import { ModalConfirmReport } from 'Component/modal';
-import { Report } from '../../PnApp/model';
-import { Condition } from '../../PnApp/model/Report';
+import { Report } from '../../../PnApp/model';
+import { Condition } from '../../../PnApp/model/Report';
 
 interface AddState {
   loading: boolean;
@@ -42,8 +42,13 @@ export default class Add extends PureComponent<RouteComponentProps, AddState> {
     });
   }
 
-  public onChange(name: string): (event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => void {
-    return (event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps): void => {
+  public onChange(
+    name: string,
+  ): (event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => void {
+    return (
+      event: React.SyntheticEvent<HTMLElement, Event>,
+      data: DropdownProps,
+    ): void => {
       const values = data.value as string[];
       this.setState({
         conditionArgs: {
