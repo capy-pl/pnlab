@@ -6,6 +6,7 @@ from .product_network import ProductNerwork
 from .promotion import Promotion
 from .error import ZeroNodeError
 
+
 def all_pass(promotion_list, arg):
     for promotion in promotion_list:
         if not promotion.is_in(arg):
@@ -41,7 +42,8 @@ class NetworkConverter:
                                     promotion]
                             # Add a reverse entry.
                             if item2 not in self.promotion_filter['combination']:
-                                self.promotion_filter['combination'][item2] = {}
+                                self.promotion_filter['combination'][item2] = {
+                                }
                             if item not in self.promotion_filter['combination'][item2]:
                                 self.promotion_filter['combination'][item2][item] = [
                                     promotion]
@@ -95,7 +97,7 @@ class NetworkConverter:
         return edges
 
     def weight(self, edge, transaction, nums):
-        if self.method == 'adjust-degree':
+        if self.method == 'adjust-frequency':
             return 1 / nums
         if self.method == 'adjust-price':
             return sum([item['amount'] for item in edge]) / (len(transaction['items']) - 1)

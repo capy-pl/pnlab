@@ -1,7 +1,13 @@
 import { Schema } from 'mongoose';
 
-export type FieldSchemaType = 'string' | 'int' | 'date' | 'float' | 'promotion';
-export type FieldSchemaBelong = 'transaction' | 'item' | 'promotion';
+export type FieldSchemaType =
+  | 'string'
+  | 'int'
+  | 'date'
+  | 'float'
+  | 'promotion'
+  | 'method';
+export type FieldSchemaBelong = 'transaction' | 'item' | 'promotion' | 'method';
 export type FieldSchemaAction = 'delete' | 'reserve';
 
 export interface FieldSchemaInterface {
