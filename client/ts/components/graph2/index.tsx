@@ -5,9 +5,9 @@ import { DataSet, EdgeOptions, Network, NodeOptions } from 'vis';
 import Jgraph from '../../PnApp/Jgraph';
 import { Community, Edge, Node } from '../../PnApp/model/Report';
 
-interface GraphNode extends Node, NodeOptions {}
+interface GraphNode extends Node, NodeOptions { }
 
-interface GraphEdge extends Edge, EdgeOptions {}
+interface GraphEdge extends Edge, EdgeOptions { }
 
 const customScalingFunction = (
   min: number,
@@ -143,17 +143,17 @@ export default class GraphViewCompare extends PureComponent<GraphProps, {}> {
       if (this.props.shareNodes) {
         this.props.shareNodes.includes(node.name)
           ? (color = {
-              background: 'yellow',
-              border: '#3f83d4',
-              hover: '#ffdd00',
-              highlight: '#ffdd00',
-            })
+            background: 'yellow',
+            border: '#3f83d4',
+            hover: '#ffdd00',
+            highlight: '#ffdd00',
+          })
           : (color = {
-              background: '#8DC1FF',
-              border: '#3f83d4',
-              hover: '#3692ff',
-              highlight: '#3692ff',
-            });
+            background: '#8DC1FF',
+            border: '#3f83d4',
+            hover: '#3692ff',
+            highlight: '#3692ff',
+          });
       } else {
         color = {
           background: '#8DC1FF',
