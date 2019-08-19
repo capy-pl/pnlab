@@ -166,11 +166,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
           if (!connectedNodes.includes(node.id as any) && node.id !== selectedNode.id) {
             return {
               id: node.id,
-              color: {
-                background: '#D3E7FF',
-                border: '#D3E7FF',
-              },
-              group: undefined,
+              hidden: true,
               label: '',
             } as any;
           }
@@ -179,7 +175,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
       updateList.push(selectedNode);
       this.nodes.update(updateList);
       (this.network as Network).focus(selectedNode.id, {
-        scale: 0.6,
+        scale: 0.9,
       });
     }
   }

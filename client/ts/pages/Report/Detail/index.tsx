@@ -1,6 +1,8 @@
 import React, { PureComponent } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import {
+  Accordion,
+  AccordionTitleProps,
   Button,
   Checkbox,
   Header,
@@ -41,6 +43,8 @@ interface ReportState {
   searchValue: string;
   searchResults: SearchResult[];
   focusNode?: number;
+  activeIndex: number;
+  infoOpen: boolean;
 }
 
 interface SearchResult extends Node {
@@ -67,8 +71,12 @@ export default class Report extends PureComponent<
       selectedCommunities: [],
       searchValue: '',
       searchResults: [],
+      activeIndex: -1,
+      infoOpen: true,
     };
 
+    this.handleAccordionIndexChange = this.handleAccordionIndexChange.bind(this);
+    this.handleInfoIndexChange = this.handleInfoIndexChange.bind(this);
     this.toggleShowCommunities = this.toggleShowCommunities.bind(this);
     this.selectProduct = this.selectProduct.bind(this);
     this.handleToggleSidebar = this.handleToggleSidebar.bind(this);
@@ -98,6 +106,19 @@ export default class Report extends PureComponent<
     this.setState({
       report,
       loading: false,
+    });
+  }
+
+  public handleAccordionIndexChange(e: any, data: AccordionTitleProps): void {
+    const { index } = data;
+    this.setState({
+      activeIndex: this.state.activeIndex === index ? -1 : (index as number),
+    });
+  }
+
+  public handleInfoIndexChange(): void {
+    this.setState({
+      infoOpen: !this.state.infoOpen,
     });
   }
 
@@ -145,7 +166,6 @@ export default class Report extends PureComponent<
 
   public selectProduct(id?: number): void {
     if (this.state.report) {
-      console.log('here');
       this.setState({
         selectedProduct: id,
         selectedCommunities: [],
@@ -283,72 +303,95 @@ export default class Report extends PureComponent<
             />
             <Sidebar.Pushable>
               <Sidebar
-                as={Menu}
                 animation='push'
                 direction='left'
                 visible={this.state.sidebarVisible}
-                vertical
               >
-                <Menu.Item>
-                  <div style={{ textAlign: 'right' }}>
-                    <Icon link name='x' onClick={this.toggleSidebar} />
-                  </div>
-                </Menu.Item>
-                <Menu.Item>
-                  <Header textAlign='center'>基本資訊</Header>
-                  <List relaxed='very'>{this.getConditions()}</List>
-                </Menu.Item>
-                <Menu.Item>
-                  <Search
-                    size='small'
-                    placeholder='搜尋產品'
-                    noResultsMessage='無相關產品。'
-                    results={this.state.searchResults}
-                    onSearchChange={debounce(this.handleSearchChange, 300, {
-                      leading: true,
-                    })}
-                    onResultSelect={this.handleResultSelect}
-                    resultRenderer={this.resultRenderer}
-                  />
-                </Menu.Item>
-                <Menu.Item>
-                  <Checkbox
-                    style={{ color: 'white' }}
-                    label={this.state.showCommunity ? '隱藏Community' : '標示Community'}
-                    toggle
-                    onChange={this.toggleShowCommunities}
-                  />
-                </Menu.Item>
-                <Menu.Item as='a' onClick={this.openProductRankWindow}>
-                  產品排名
-                </Menu.Item>
-                <Menu.Item>
-                  <Menu.Header>產品Community列表</Menu.Header>
-                  <Menu.Menu>
-                    <Menu.Item onClick={this.openCommunityListWidow}>
-                      Communities排名
-                    </Menu.Item>
-                    <Menu.Item onClick={this.openCommunityCharacterWindow}>
-                      Communities角色
-                    </Menu.Item>
-                  </Menu.Menu>
-                </Menu.Item>
-                <ModalAddAnalysis
-                  report={this.state.report}
-                  close={this.closeAddAnalysisModal}
-                  show={this.state.addAnalysisModalOpen}
-                />
-                <Button
+                <Accordion
+                  vertical
+                  as={Menu}
                   fluid
-                  color='facebook'
-                  onClick={this.openAddAnalysisModal}
-                  style={{
-                    position: 'absolute',
-                    bottom: 0,
-                  }}
+                  style={{ height: '100%', overflowY: 'scroll' }}
                 >
-                  另存圖片
-                </Button>
+                  <Menu.Item>
+                    <div style={{ textAlign: 'right' }}>
+                      <Icon link name='x' onClick={this.toggleSidebar} />
+                    </div>
+                  </Menu.Item>
+                  <Menu.Item>
+                    <Accordion.Title
+                      active={this.state.infoOpen}
+                      onClick={this.handleInfoIndexChange}
+                    >
+                      <Header block textAlign='center'>
+                        基本資訊
+                      </Header>
+                    </Accordion.Title>
+                    <Accordion.Content active={this.state.infoOpen}>
+                      <List textAlign relaxed='very'>
+                        {this.getConditions()}
+                      </List>
+                    </Accordion.Content>
+                  </Menu.Item>
+                  <Menu.Item>
+                    <Search
+                      size='small'
+                      placeholder='搜尋產品'
+                      noResultsMessage='無相關產品。'
+                      results={this.state.searchResults}
+                      onSearchChange={debounce(this.handleSearchChange, 300, {
+                        leading: true,
+                      })}
+                      onResultSelect={this.handleResultSelect}
+                      resultRenderer={this.resultRenderer}
+                    />
+                  </Menu.Item>
+                  <Menu.Item>
+                    <Checkbox
+                      style={{ color: 'white' }}
+                      label={this.state.showCommunity ? '隱藏Community' : '標示Community'}
+                      toggle
+                      onChange={this.toggleShowCommunities}
+                    />
+                  </Menu.Item>
+                  <Menu.Item as='a' onClick={this.openProductRankWindow}>
+                    產品排名
+                  </Menu.Item>
+                  <Menu.Item>
+                    <Accordion.Title
+                      onClick={this.handleAccordionIndexChange}
+                      index={2}
+                      active={this.state.activeIndex === 2}
+                    >
+                      產品Community列表
+                      <Icon name='dropdown' />
+                    </Accordion.Title>
+                    <Accordion.Content active={this.state.activeIndex === 2}>
+                      <Menu.Item onClick={this.openCommunityListWidow}>
+                        Communities排名
+                      </Menu.Item>
+                      <Menu.Item onClick={this.openCommunityCharacterWindow}>
+                        Communities角色
+                      </Menu.Item>
+                    </Accordion.Content>
+                  </Menu.Item>
+                  <ModalAddAnalysis
+                    report={this.state.report}
+                    close={this.closeAddAnalysisModal}
+                    show={this.state.addAnalysisModalOpen}
+                  />
+                  <Button
+                    fluid
+                    color='facebook'
+                    onClick={this.openAddAnalysisModal}
+                    style={{
+                      position: 'absolute',
+                      bottom: 0,
+                    }}
+                  >
+                    另存圖片
+                  </Button>
+                </Accordion>
               </Sidebar>
               <Sidebar.Pusher>
                 <Button
