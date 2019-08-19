@@ -1,9 +1,9 @@
-import _ from 'lodash';
+import { isEqual, isNumber, isUndefined } from 'lodash';
 import React, { PureComponent } from 'react';
 import { DataSet, EdgeOptions, Network, NodeOptions } from 'vis';
 
 import Jgraph from '../../PnApp/Jgraph';
-import { Community, Edge, Node } from '../../PnApp/model/Report';
+import { Edge, Node } from '../../PnApp/model/Report';
 
 interface GraphNode extends Node, NodeOptions {}
 
@@ -45,7 +45,6 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
     this.edges = new DataSet();
 
     this.paintCommunity = this.paintCommunity.bind(this);
-    this.paintSearchItems = this.paintSearchItems.bind(this);
     this.paintSelectedCommunity = this.paintSelectedCommunity.bind(this);
     this.paintSelectedProduct = this.paintSelectedProduct.bind(this);
     this.repaint = this.repaint.bind(this);
@@ -60,27 +59,32 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
 
   public componentDidUpdate(prevProps: GraphProps) {
     // Do not call repaint if correspondent props don't change.
-    if (!_.isEqual(this.props.showCommunity, prevProps.showCommunity)) {
+    if (!isEqual(this.props.showCommunity, prevProps.showCommunity)) {
       this.paintCommunity();
     }
 
-    if (!_.isEqual(this.props.selectedProduct, prevProps.selectedProduct)) {
+    if (
+      !isEqual(this.props.selectedProduct, prevProps.selectedProduct) ||
+      !isEqual(this.props.selectedCommunities, prevProps.selectedCommunities)
+    ) {
       this.repaint();
+    }
+
+    if (!isEqual(this.props.selectedProduct, prevProps.selectedProduct)) {
       this.paintSelectedProduct();
     }
 
-    if (!_.isEqual(this.props.selectedCommunities, prevProps.selectedCommunities)) {
-      this.repaint();
+    if (!isEqual(this.props.selectedCommunities, prevProps.selectedCommunities)) {
       this.paintSelectedCommunity();
     }
 
-    if (!_.isEqual(this.props.focusElement, prevProps.focusElement)) {
+    if (!isEqual(this.props.focusElement, prevProps.focusElement)) {
       this.focusNode();
     }
   }
 
   public focusNode(): void {
-    if (this.network && _.isNumber(this.props.focusElement)) {
+    if (this.network && isNumber(this.props.focusElement)) {
       this.network.focus(this.props.focusElement, {
         scale: 1,
       });
@@ -138,27 +142,8 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
     this.nodes.update(updateList);
   }
 
-  public paintSearchItems(): void {
-    if (this.props.searchItems && this.props.searchItems.length) {
-      const searchItems = this.nodes.get(this.props.searchItems).map((node) => {
-        console.log(node);
-        return {
-          id: node.id,
-          color: {
-            background: 'yellow',
-            hover: {
-              background: 'orange',
-            },
-            highlight: 'orange',
-          },
-        } as any;
-      });
-      this.nodes.update(searchItems);
-    }
-  }
-
   public paintSelectedProduct(): void {
-    if (!_.isUndefined(this.props.selectedProduct)) {
+    if (!isUndefined(this.props.selectedProduct)) {
       const selectedNode: GraphNode = {
         id: this.props.selectedProduct,
         color: {

@@ -129,7 +129,6 @@ export default class Report extends PureComponent<
   public closeProductRankWindow(): void {
     this.setState({
       windowProductRank: false,
-      selectedProduct: undefined,
     });
   }
 
@@ -142,12 +141,12 @@ export default class Report extends PureComponent<
   public closeCommunityListWindow(): void {
     this.setState({
       windowCommunityList: false,
-      selectedCommunities: [],
     });
   }
 
   public selectProduct(id?: number): void {
     if (this.state.report) {
+      console.log('here');
       this.setState({
         selectedProduct: id,
         selectedCommunities: [],
@@ -290,7 +289,6 @@ export default class Report extends PureComponent<
                 direction='left'
                 visible={this.state.sidebarVisible}
                 vertical
-                style={{ overflow: 'visible' }}
               >
                 <Menu.Item>
                   <div style={{ textAlign: 'right' }}>
@@ -325,20 +323,17 @@ export default class Report extends PureComponent<
                 <Menu.Item as='a' onClick={this.openProductRankWindow}>
                   產品排名
                 </Menu.Item>
-                <Dropdown
-                  text='產品Community列表'
-                  item
-                  style={{ overflow: 'visible !important' }}
-                >
-                  <Dropdown.Menu>
-                    <Dropdown.Item onClick={this.openCommunityListWidow}>
+                <Menu.Item>
+                  <Menu.Header>產品Community列表</Menu.Header>
+                  <Menu.Menu>
+                    <Menu.Item onClick={this.openCommunityListWidow}>
                       Communities排名
-                    </Dropdown.Item>
-                    <Dropdown.Item onClick={this.openCommunityCharacterWindow}>
+                    </Menu.Item>
+                    <Menu.Item onClick={this.openCommunityCharacterWindow}>
                       Communities角色
-                    </Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
+                    </Menu.Item>
+                  </Menu.Menu>
+                </Menu.Item>
                 <ModalAddAnalysis
                   report={this.state.report}
                   close={this.closeAddAnalysisModal}
