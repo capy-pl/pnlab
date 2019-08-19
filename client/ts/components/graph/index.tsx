@@ -38,6 +38,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
   public jgraph?: Jgraph;
   public nodes: DataSet<GraphNode>;
   public edges: DataSet<GraphEdge>;
+
   constructor(props: GraphProps) {
     super(props);
     this.graphRef = React.createRef();
@@ -63,18 +64,25 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
       this.paintCommunity();
     }
 
-    if (
-      !isEqual(this.props.selectedProduct, prevProps.selectedProduct) ||
-      !isEqual(this.props.selectedCommunities, prevProps.selectedCommunities)
-    ) {
+    const isSelectedProductEqual = isEqual(
+      this.props.selectedProduct,
+      prevProps.selectedProduct,
+    );
+
+    const isSelectedCommunitiesEqual = isEqual(
+      this.props.selectedCommunities,
+      prevProps.selectedCommunities,
+    );
+
+    if (!isSelectedProductEqual || !isSelectedCommunitiesEqual) {
       this.repaint();
     }
 
-    if (!isEqual(this.props.selectedProduct, prevProps.selectedProduct)) {
+    if (!isSelectedProductEqual) {
       this.paintSelectedProduct();
     }
 
-    if (!isEqual(this.props.selectedCommunities, prevProps.selectedCommunities)) {
+    if (!isSelectedCommunitiesEqual) {
       this.paintSelectedCommunity();
     }
 

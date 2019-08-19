@@ -3,7 +3,6 @@ import { RouteComponentProps } from 'react-router-dom';
 import {
   Button,
   Checkbox,
-  Dropdown,
   Header,
   Icon,
   List,

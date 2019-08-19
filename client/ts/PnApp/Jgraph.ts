@@ -38,9 +38,9 @@ class JgraphEdge {
   }
 }
 
-interface SimpleEdge {
-  from: number;
-  to: number;
+interface ShortestPathReturnedValue {
+  previous: Map<number, number>;
+  distance?: Map<number, number>;
 }
 
 export default class Jgraph {
@@ -70,22 +70,18 @@ export default class Jgraph {
    * on the path of the graph.
    *
    * @param {number} id: the start node's id number.
-   * @returns {Edge[]}
+   * @returns {ShortestPathReturnedValue}
    */
   public shortestPathTree(
     id: number,
     returnDistance?: boolean,
-  ): {
-    edges: Edge[];
-    distance?: Map<number, number>;
-  } {
+  ): ShortestPathReturnedValue {
     if (!(id in this.adjacencyList)) {
       throw new Error('id cannot be found in the list.');
     }
     const inGraph: Set<number> = new Set();
     const distance: Map<number, number> = new Map();
     const previous: Map<number, number> = new Map();
-    const edges: SimpleEdge[] = [];
     for (const id in this.adjacencyList) {
       distance.set(parseInt(id), Number.MAX_VALUE);
     }
@@ -111,13 +107,7 @@ export default class Jgraph {
       });
     }
 
-    previous.forEach((to, from) => {
-      edges.push({
-        to,
-        from,
-      });
-    });
-    if (returnDistance) return { edges, distance };
-    else return { edges };
+    if (returnDistance) return { previous, distance };
+    else return { previous };
   }
 }

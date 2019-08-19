@@ -17,3 +17,7 @@ export function checkExist<T extends Document>(model: Model<T>): e.Handler {
     }
   };
 }
+
+export function httpMethodNotSupport(req: e.Request, res: e.Response): void {
+  res.status(405).end();
+}
