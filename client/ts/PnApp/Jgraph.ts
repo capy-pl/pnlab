@@ -1,30 +1,123 @@
-import { DataSet } from 'vis';
-
 interface Node {
   id: number;
+  name?: string;
 }
 
 interface Edge {
-  id: string;
   from: number;
   to: number;
-  weight: number;
+  weight?: number;
+}
+
+class JgraphNode {
+  public id: number;
+  public name?: string;
+  public edges: JgraphEdge[];
+  constructor(id: number, name?: string) {
+    this.id = id;
+    if (name) {
+      this.name = this.name;
+    }
+    this.edges = [];
+  }
+
+  public getConnectedNodes(): number[] {
+    return this.edges.map((edge) => edge.to);
+  }
+}
+
+class JgraphEdge {
+  public from: number;
+  public to: number;
+  public weight: number;
+
+  constructor(from: number, to: number, weight: number) {
+    this.from = from;
+    this.to = to;
+    this.weight = weight;
+  }
+}
+
+interface SimpleEdge {
+  from: number;
+  to: number;
 }
 
 export default class Jgraph {
-  public adjacencyList: { [key: number]: number[] };
-  constructor(nodes: DataSet<Node>, edges: DataSet<Edge>) {
+  public adjacencyList: { [key: number]: JgraphNode };
+  public edgeList: JgraphEdge[];
+  constructor(nodes: Node[], edges: Edge[]) {
     this.adjacencyList = {};
-    nodes.forEach((item, id) => {
-      this.adjacencyList[id] = [];
-    });
-    edges.forEach((item) => {
-      this.adjacencyList[item.from].push(item.to);
-      this.adjacencyList[item.to].push(item.from);
+    for (const node of nodes) {
+      const newNode = new JgraphNode(node.id);
+      this.adjacencyList[node.id] = newNode;
+    }
+    this.edgeList = [];
+    edges.forEach((edge) => {
+      const { from, to, weight } = edge;
+      const fromEdge = new JgraphEdge(from, to, weight || 1);
+      const toEdge = new JgraphEdge(to, from, weight || 1);
+      this.adjacencyList[from].edges.push(fromEdge);
+      this.adjacencyList[to].edges.push(toEdge);
+      this.edgeList.push(fromEdge);
+      this.edgeList.push(toEdge);
     });
   }
 
-  public getConnectedNodes(id: number): number[] {
-    return this.adjacencyList[id];
+  /**
+   * The function implement Dijkstra shortest path algorithm.
+   * Instead of return the path, we return all edges
+   * on the path of the graph.
+   *
+   * @param {number} id: the start node's id number.
+   * @returns {Edge[]}
+   */
+  public shortestPathTree(
+    id: number,
+    returnDistance?: boolean,
+  ): {
+    edges: Edge[];
+    distance?: Map<number, number>;
+  } {
+    if (!(id in this.adjacencyList)) {
+      throw new Error('id cannot be found in the list.');
+    }
+    const inGraph: Set<number> = new Set();
+    const distance: Map<number, number> = new Map();
+    const previous: Map<number, number> = new Map();
+    const edges: SimpleEdge[] = [];
+    for (const id in this.adjacencyList) {
+      distance.set(parseInt(id), Number.MAX_VALUE);
+    }
+    distance.set(id, 0);
+    let startVertex: JgraphNode | undefined = this.adjacencyList[id];
+    while (startVertex !== undefined) {
+      inGraph.add(startVertex.id);
+      for (const edge of startVertex.edges) {
+        const currentDistance = (distance.get(startVertex.id) as number) + edge.weight;
+        if (currentDistance < (distance.get(edge.to) as number)) {
+          distance.set(edge.to, currentDistance);
+          previous.set(edge.to, startVertex.id);
+        }
+      }
+
+      startVertex = undefined;
+      let minimum = Number.MAX_VALUE;
+      distance.forEach((distance, id) => {
+        if (!inGraph.has(id) && minimum > distance) {
+          minimum = distance;
+          startVertex = this.adjacencyList[id];
+        }
+      });
+    }
+
+    previous.forEach((to, from) => {
+      edges.push({
+        to,
+        from,
+      });
+    });
+    if (returnDistance) return { edges, distance };
+    else return { edges };
   }
 }
