@@ -8,18 +8,10 @@ interface AnalysisItemProps {
 }
 
 const Analyses = ({ item, onButtonClick }: AnalysisItemProps) => {
-
   return (
-    <Table.Row
-      style={{ clear: 'both' }}
-      textAlign='center'
-    >
-      <Table.Cell>
-        {item.title}
-      </Table.Cell>
-      <Table.Cell>
-        {item.created}
-      </Table.Cell>
+    <Table.Row style={{ clear: 'both' }} textAlign='center'>
+      <Table.Cell>{item.title}</Table.Cell>
+      <Table.Cell>{item.created}</Table.Cell>
       <Table.Cell>
         <Button onClick={onButtonClick}>Detail</Button>
       </Table.Cell>

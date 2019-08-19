@@ -286,13 +286,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
   }
 
   public render() {
-<<<<<<< HEAD
-    return (
-      <div id='pn-graph' style={{height: '800px', zIndex: -1}} ref={this.graphRef} />
-    );
-=======
     return <div id='pn-graph' style={{ zIndex: -1 }} ref={this.graphRef} />;
->>>>>>> 5811d3ede370e6be771ddfcdb2e3b2667244d9ba
   }
 }
 

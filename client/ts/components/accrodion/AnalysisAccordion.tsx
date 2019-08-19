@@ -10,10 +10,11 @@ import {
   Form,
   Label,
   Menu,
-  Sidebar} from 'semantic-ui-react';
+  Sidebar,
+} from 'semantic-ui-react';
 
 import ModalDeleteComment from 'Component/modal/ModalDeleteComment';
-import Analysis from '../../PnApp/model/Analysis' ;
+import Analysis from '../../PnApp/model/Analysis';
 import Report from '../../PnApp/model/Report';
 
 interface AnalysisAccordionState {
@@ -41,7 +42,6 @@ interface AnalysisAccordionProps {
   onShowCommunitiesRank: (event) => void;
   onShowCharacter: (event) => void;
   getDropdownSearch: () => void;
-
 }
 
 const sidebarStyle: React.CSSProperties = {
@@ -62,7 +62,10 @@ const sidebarStyle2: React.CSSProperties = {
   right: '15%',
 };
 
-export default class AnalysisAccordion extends PureComponent<AnalysisAccordionProps, AnalysisAccordionState> {
+export default class AnalysisAccordion extends PureComponent<
+  AnalysisAccordionProps,
+  AnalysisAccordionState
+> {
   constructor(props) {
     super(props);
     this.state = {
@@ -92,7 +95,7 @@ export default class AnalysisAccordion extends PureComponent<AnalysisAccordionPr
   }
 
   public oncommentsClick() {
-    this.setState((prevState) => ({ commentListVisible: !prevState.commentListVisible}));
+    this.setState((prevState) => ({ commentListVisible: !prevState.commentListVisible }));
   }
 
   public onAddComment(): void {
@@ -108,7 +111,7 @@ export default class AnalysisAccordion extends PureComponent<AnalysisAccordionPr
       } catch (error) {
         this.setState({
           error: true,
-            errorMessage: 'Bad Request',
+          errorMessage: 'Bad Request',
         });
       }
     }
@@ -135,7 +138,9 @@ export default class AnalysisAccordion extends PureComponent<AnalysisAccordionPr
   }
 
   public communityRankHandle() {
-    this.setState((prevState) => ({ communityRankVisible: !prevState.communityRankVisible }));
+    this.setState((prevState) => ({
+      communityRankVisible: !prevState.communityRankVisible,
+    }));
   }
 
   public conditionsHandle() {
@@ -147,12 +152,8 @@ export default class AnalysisAccordion extends PureComponent<AnalysisAccordionPr
       return (
         <Comment key={comment._id}>
           <Comment.Content>
-            <Comment.Author>
-              {comment.user_id}
-            </Comment.Author>
-            <Comment.Text>
-              {comment.content}
-            </Comment.Text>
+            <Comment.Author>{comment.user_id}</Comment.Author>
+            <Comment.Text>{comment.content}</Comment.Text>
             <Comment.Actions>
               <ModalDeleteComment
                 model={this.props.analysis}
@@ -168,10 +169,14 @@ export default class AnalysisAccordion extends PureComponent<AnalysisAccordionPr
     const conditionList = this.props.report.conditions.map((condition) => {
       if (condition.values.length !== 0) {
         const values = condition.values.map((value) => {
-          return (<Label key={value} style={{margin: '.2rem'}}>{value}</Label>);
+          return (
+            <Label key={value} style={{ margin: '.2rem' }}>
+              {value}
+            </Label>
+          );
         });
         return (
-          <div key={condition.name} style={{margin: '1rem 0 1rem 0' }}>
+          <div key={condition.name} style={{ margin: '1rem 0 1rem 0' }}>
             <h5>{condition.name}: </h5>
             {values}
             <Divider />
@@ -183,33 +188,29 @@ export default class AnalysisAccordion extends PureComponent<AnalysisAccordionPr
 
     return (
       <React.Fragment>
-        <Sidebar.Pushable
-          style={sidebarStyle}
-        >
+        <Sidebar.Pushable style={sidebarStyle}>
           <Sidebar
             visible={this.props.visible}
             as={Menu}
             animation='overlay'
             vertical
             direction='right'
-            style={{width: '100%'}}
+            style={{ width: '100%' }}
           >
             <Menu.Item>
-              <h5>
-                {this.props.analysis.title}
-              </h5>
+              <h5>{this.props.analysis.title}</h5>
             </Menu.Item>
-            <Menu.Item onClick={this.conditionsHandle}>
-              條件
-            </Menu.Item>
-            <Menu.Item onClick={this.commentHandle}>
-              註解
-            </Menu.Item>
-            <Menu.Item >
+            <Menu.Item onClick={this.conditionsHandle}>條件</Menu.Item>
+            <Menu.Item onClick={this.commentHandle}>註解</Menu.Item>
+            <Menu.Item>
               <Checkbox
                 toggle
                 label={this.props.showCommunity ? '隱藏Community' : '顯示Community'}
-                onChange={this.props.showCommunity ? this.props.onShowProductNetwork : this.props.onShowCommunities}
+                onChange={
+                  this.props.showCommunity
+                    ? this.props.onShowProductNetwork
+                    : this.props.onShowCommunities
+                }
               />
             </Menu.Item>
             <Menu.Item>
@@ -220,7 +221,7 @@ export default class AnalysisAccordion extends PureComponent<AnalysisAccordionPr
                   onClick={this.productRankHandle}
                 />
                 <Accordion.Content as='a' active={this.state.rankVisible}>
-                  <div style={{width: '100%'}}  onClick={this.props.onShowProductRank}>
+                  <div style={{ width: '100%' }} onClick={this.props.onShowProductRank}>
                     產品排名
                   </div>
                 </Accordion.Content>
@@ -234,26 +235,25 @@ export default class AnalysisAccordion extends PureComponent<AnalysisAccordionPr
                   onClick={this.communityRankHandle}
                 />
                 <Accordion.Content as='a' active={this.state.communityRankVisible}>
-                  <div style={{width: '100%'}}  onClick={this.props.onShowCommunitiesRank}>
+                  <div
+                    style={{ width: '100%' }}
+                    onClick={this.props.onShowCommunitiesRank}
+                  >
                     Communities排名
                   </div>
                 </Accordion.Content>
                 <Accordion.Content as='a' active={this.state.communityRankVisible}>
-                  <div style={{width: '100%'}}  onClick={this.props.onShowCharacter}>
+                  <div style={{ width: '100%' }} onClick={this.props.onShowCharacter}>
                     Communities角色
                   </div>
                 </Accordion.Content>
               </Accordion>
             </Menu.Item>
-            <Menu.Item>
-              {searchItemDropdown}
-            </Menu.Item>
+            <Menu.Item>{searchItemDropdown}</Menu.Item>
           </Sidebar>
         </Sidebar.Pushable>
 
-        <Sidebar.Pushable
-          style={sidebarStyle2}
-        >
+        <Sidebar.Pushable style={sidebarStyle2}>
           {/* Comment Sidebar */}
           <Sidebar
             visible={this.state.commentVisible && this.props.visible}
@@ -261,7 +261,7 @@ export default class AnalysisAccordion extends PureComponent<AnalysisAccordionPr
             vertical
             direction='right'
             animation='overlay'
-            style={{width: '100%'}}
+            style={{ width: '100%' }}
           >
             <Accordion styled>
               <Accordion.Title
@@ -269,7 +269,7 @@ export default class AnalysisAccordion extends PureComponent<AnalysisAccordionPr
                 content='Description'
                 onClick={this.ondescriptionClick}
               />
-              <Accordion.Content active={this.state.descriptionVisible} >
+              <Accordion.Content active={this.state.descriptionVisible}>
                 {this.props.analysis.description}
               </Accordion.Content>
 
@@ -278,17 +278,19 @@ export default class AnalysisAccordion extends PureComponent<AnalysisAccordionPr
                 content='Comments'
                 onClick={this.oncommentsClick}
               />
-              <Accordion.Content
-                active={this.state.commentListVisible}
-              >
-                <div style={{width: '100%'}}>
+              <Accordion.Content active={this.state.commentListVisible}>
+                <div style={{ width: '100%' }}>
                   <Comment.Group>
                     {commentDetail}
                     <Form reply>
-                      <Form.TextArea
-                        onChange={this.onChange}
+                      <Form.TextArea onChange={this.onChange} />
+                      <Button
+                        content='新增'
+                        labelPosition='left'
+                        icon='edit'
+                        primary
+                        onClick={this.onAddComment}
                       />
-                      <Button content='新增' labelPosition='left' icon='edit' primary onClick={this.onAddComment}/>
                     </Form>
                   </Comment.Group>
                 </div>
@@ -304,12 +306,12 @@ export default class AnalysisAccordion extends PureComponent<AnalysisAccordionPr
             direction='right'
             animation='overlay'
             icon='labeled'
-            style={{width: '100%'}}
+            style={{ width: '100%' }}
           >
             {conditionList}
           </Sidebar>
         </Sidebar.Pushable>
-    </React.Fragment>
+      </React.Fragment>
     );
   }
 }

@@ -1,13 +1,8 @@
 import React from 'react';
-import {
-  Button,
-  Header,
-  Icon,
-  Modal,
-} from 'semantic-ui-react';
+import { Button, Header, Modal } from 'semantic-ui-react';
 
 import Analysis from '../../PnApp/model/Analysis';
-import {Comments} from '../../PnApp/model/Analysis';
+import { Comments } from '../../PnApp/model/Analysis';
 
 interface ModalDeleteCommentState {
   show: boolean;
@@ -21,8 +16,10 @@ interface ModalDeleteCommentProps {
   comment: Comments;
 }
 
-export default class ModalDeleteComment
-  extends React.PureComponent<ModalDeleteCommentProps, ModalDeleteCommentState> {
+export default class ModalDeleteComment extends React.PureComponent<
+  ModalDeleteCommentProps,
+  ModalDeleteCommentState
+> {
   constructor(props: any) {
     super(props);
     this.state = {
@@ -50,13 +47,17 @@ export default class ModalDeleteComment
   }
 
   public async delete(): Promise<void> {
-    this.setState({
-      loading: true,
-    }, async () => {
-      await this.props.model.deleteComment(this.props.comment._id);
-      await this.props.onSave();
-      this.close();
-    });
+    const commentId = this.props.comment._id as string;
+    this.setState(
+      {
+        loading: true,
+      },
+      async () => {
+        await this.props.model.deleteComment(commentId);
+        await this.props.onSave();
+        this.close();
+      },
+    );
   }
 
   public render() {
@@ -69,12 +70,8 @@ export default class ModalDeleteComment
           content='刪除'
           size='mini'
         />
-        <Modal
-          open={this.state.show}
-          closeOnDimmerClick={false}
-          basic
-        >
-          <Header content={`刪除留言`}/>
+        <Modal open={this.state.show} closeOnDimmerClick={false} basic>
+          <Header content={`刪除留言`} />
           <Modal.Content>
             <h3>確認是否要刪除留言「{this.props.comment.content}」?</h3>
           </Modal.Content>
