@@ -1,10 +1,14 @@
 import React, { PureComponent } from 'react';
-import { Button, Grid, Header, Icon, Segment, Tab, Table } from 'semantic-ui-react';
+import { Grid, Icon, Tab, Table } from 'semantic-ui-react';
 import { Window } from 'Component/';
 import AnalysisAPI from '../../../../PnApp/model/Analysis';
 import Report, { Condition, Node } from '../../../../PnApp/model/Report';
+import {
+  dateToString,
+  stringToDate,
+} from '../../../../PnApp/Helper';
 
-interface ComparePortalProps {
+interface CompareReportWindowProps {
   show: boolean;
   reportA?: Report;
   reportB?: Report;
@@ -15,54 +19,29 @@ interface ComparePortalProps {
   conditions?: Condition[];
 }
 
-interface ComparePortalState {
-  conditions: Condition[];
-}
-
-const segmentStyle = {
-  position: 'fixed',
-  left: '15%',
-  top: '18%',
-  zIndex: 1000,
-  overflow: 'auto',
-  maxHeight: '75%',
-  width: '70%',
-  textAlign: 'center',
-};
-
 export default class CompareReportWindow extends PureComponent<
-  ComparePortalProps,
-  ComparePortalState
+  CompareReportWindowProps,
+  {}
   > {
-  constructor(props: ComparePortalProps) {
+  constructor(props: CompareReportWindowProps) {
     super(props);
   }
 
-  public async componentDidMount() {
-    // const conditions = await Report.getConditions();
-    // console.log(conditions);
-    // this.setState({ conditions });
-  }
-
-  public getTableRow = (nodes: Node[], leftNodes: Node[] = []) => {
+  public getTableRow(nodes: Node[], leftHandSideNodes: Node[] = []) {
     const tableRow = nodes.map((node, index) => {
       let style;
       let variation;
       let arrow;
-      if (this.props.shareNodes.includes(node.name)) {
+      if (this.props.shareNodes && this.props.shareNodes.includes(node.name)) {
         style = { backgroundColor: '#e8f7ff' };
       }
-      if (leftNodes.length !== 0) {
-        const nodeNames = nodes.map((node) => {
-          return node.name;
-        });
-        const leftNodeNames = leftNodes.map((node) => {
-          return node.name;
-        });
+      if (leftHandSideNodes.length !== 0) {
+        const nodeNames = nodes.map(node => node.name);
+        const leftNodeNames = leftHandSideNodes.map(node => node.name);
         if (!(leftNodeNames.indexOf(node.name) < 0)) {
           variation = leftNodeNames.indexOf(node.name) - nodeNames.indexOf(node.name);
         }
-        switch (variation !== '') {
+        switch (true) {
           case variation < 0:
             arrow = (
               <React.Fragment>
@@ -102,14 +81,18 @@ export default class CompareReportWindow extends PureComponent<
       );
     });
     return tableRow;
-  };
-  public getTable = (name: string, tableRow: JSX.Element[]) => {
+  }
+
+  public getTable = (tableName: string, report: Report, leftHandSideReport: Report | undefined = undefined) => {
+    const nodes = report.nodes.sort((a, b) => b.weight - a.weight);
+    const leftHandSideNodes = leftHandSideReport ? leftHandSideReport.nodes : [];
+    const tableRow = this.getTableRow(nodes, leftHandSideNodes);
     return (
       <Table celled padded color='teal'>
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell>名次</Table.HeaderCell>
-            <Table.HeaderCell>圖{name}產品</Table.HeaderCell>
+            <Table.HeaderCell>圖{tableName}產品</Table.HeaderCell>
             <Table.HeaderCell>權重</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
@@ -119,40 +102,37 @@ export default class CompareReportWindow extends PureComponent<
     );
   };
 
+  public getConditionRow(currentCondition: Condition, reportConditions: Condition[]) {
+    let conditionRow;
+    for (const reportCondition of reportConditions) {
+      if (reportCondition.name === currentCondition.name) {
+        conditionRow =
+          reportCondition.type === 'date' ?
+            dateToString(stringToDate(reportCondition.values[0])) + ' - ' + dateToString(stringToDate(reportCondition.values[1])) :
+            reportCondition.values.join(', ');
+        break;
+      } else {
+        conditionRow = '-';
+      }
+    }
+    return conditionRow;
+  }
+
   public TabPanel = () => {
-    const nodesA = this.props.reportA.nodes.sort((a, b) => b.weight - a.weight);
-    const nodesB = this.props.reportB.nodes.sort((a, b) => b.weight - a.weight);
-    const tableRowA = this.getTableRow(nodesA);
-    const tableRowB = this.getTableRow(nodesB, nodesA);
-    const tableA = this.getTable('左', tableRowA);
-    const tableB = this.getTable('右', tableRowB);
+    const reportA = this.props.reportA;
+    const reportB = this.props.reportB;
+    const tableA = this.getTable('左', reportA);
+    const tableB = this.getTable('右', reportB, this.props.reportA);
     const share = this.props.shareNodes.map((node) => {
       return (
-        <Table.Row key={node}>
+        <Table.Row key={node} style={{ backgroundColor: '#e8f7ff' }}>
           <Table.Cell>{node}</Table.Cell>
         </Table.Row>
       );
     });
-    // const conditions = this.getConditions();
     const conditionRows = this.props.conditions.map((condition) => {
-      let conditionA;
-      let conditionB;
-      for (const reportACondition of this.props.reportA.conditions) {
-        if (reportACondition.name === condition.name) {
-          conditionA = reportACondition.values.join(', ');
-          break;
-        } else {
-          conditionA = '-';
-        }
-      }
-      for (const reportBCondition of this.props.reportB.conditions) {
-        if (reportBCondition.name === condition.name) {
-          conditionB = reportBCondition.values.join(', ');
-          break;
-        } else {
-          conditionB = '-';
-        }
-      }
+      const conditionA = this.getConditionRow(condition, this.props.reportA.conditions);
+      const conditionB = this.getConditionRow(condition, this.props.reportB.conditions);
       return (
         <Table.Row key={condition.name}>
           <Table.Cell>{condition.name}</Table.Cell>

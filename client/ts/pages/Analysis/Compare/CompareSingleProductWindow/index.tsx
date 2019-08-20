@@ -9,7 +9,7 @@ interface ConnectedNode {
   edgeWeight: number;
 }
 
-interface SingleProductComparePortalProps {
+interface CompareSingleProductWindowProps {
   show: boolean;
   reportA?: Report;
   reportB?: Report;
@@ -17,23 +17,18 @@ interface SingleProductComparePortalProps {
   selectedProduct?: string[];
 }
 
-interface SingleProductComparePortalState {
-  selectedProduct?: string;
-}
-
-
-export default class SingleProductCompareWindow extends PureComponent<
-  SingleProductComparePortalProps,
-  SingleProductComparePortalState
+export default class CompareSingleProductWindow extends PureComponent<
+  CompareSingleProductWindowProps,
+  {}
   > {
-  constructor(props: SingleProductComparePortalProps) {
+  constructor(props: CompareSingleProductWindowProps) {
     super(props);
   }
 
   public getTableRow = (
     connectedNodes: ConnectedNode[],
     shareProducts: ConnectedNode[],
-    leftNodes: ConnectedNode[] = [],
+    leftHandSideNodes: ConnectedNode[] = [],
   ) => {
     const tableRow = connectedNodes.map((node, index) => {
       let style;
@@ -44,17 +39,13 @@ export default class SingleProductCompareWindow extends PureComponent<
           style = { backgroundColor: '#e8f7ff' };
         }
       }
-      if (leftNodes.length !== 0) {
-        const nodeNames = connectedNodes.map((node) => {
-          return node.name;
-        });
-        const leftNodeNames = leftNodes.map((node) => {
-          return node.name;
-        });
+      if (leftHandSideNodes.length !== 0) {
+        const nodeNames = connectedNodes.map(node => node.name);
+        const leftNodeNames = leftHandSideNodes.map(node => node.name);
         if (!(leftNodeNames.indexOf(node.name) < 0)) {
           variation = leftNodeNames.indexOf(node.name) - nodeNames.indexOf(node.name);
         }
-        switch (variation !== '') {
+        switch (true) {
           case variation < 0:
             arrow = (
               <React.Fragment>
@@ -94,45 +85,47 @@ export default class SingleProductCompareWindow extends PureComponent<
     return tableRow;
   };
 
-  public getTable = (name: string, tableRow: JSX.Element[]) => {
-    return (
-      <Table celled padded color='teal'>
-        <Table.Header>
-          <Table.Row>
-            <Table.HeaderCell>名次</Table.HeaderCell>
-            <Table.HeaderCell>圖{name}連結產品</Table.HeaderCell>
-            <Table.HeaderCell>權重</Table.HeaderCell>
-          </Table.Row>
-        </Table.Header>
+  public getTable =
+    (
+      tableName: string,
+      nodes: ConnectedNode[],
+      shareProducts: ConnectedNode[],
+      leftHandSideNodes: ConnectedNode[] | undefined = undefined
+    ) => {
+      const tableRow = this.getTableRow(nodes, shareProducts, leftHandSideNodes ? leftHandSideNodes : []);
+      return (
+        <Table celled padded color='teal'>
+          <Table.Header>
+            <Table.Row>
+              <Table.HeaderCell>名次</Table.HeaderCell>
+              <Table.HeaderCell>圖{tableName}連結產品</Table.HeaderCell>
+              <Table.HeaderCell>權重</Table.HeaderCell>
+            </Table.Row>
+          </Table.Header>
 
-        <Table.Body>{tableRow}</Table.Body>
-      </Table>
-    );
-  };
+          <Table.Body>{tableRow}</Table.Body>
+        </Table>
+      );
+    };
 
-  public getConnected;
-
-  public getConnectedProduct(selectedProduct: string) {
-    let selectedNodeA: Node;
-    let selectedNodeB: Node;
-    const connectedNodesA: ConnectedNode[] = [];
-    const connectedNodesB: ConnectedNode[] = [];
-    const shareProducts: ConnectedNode[] = [];
-    for (const node of this.props.reportA.nodes) {
+  public getOneSideConnectedNodes(selectedProduct: string, report: Report) {
+    let selectedNode: Node;
+    const connectedNodes: ConnectedNode[] = [];
+    for (const node of report.nodes) {
       if (node.name === selectedProduct) {
-        selectedNodeA = node;
-        for (const edge of this.props.reportA.edges) {
+        selectedNode = node;
+        for (const edge of report.edges) {
           let connectedProductID;
           let connectedNode;
-          if (edge.from === selectedNodeA.id || edge.to === selectedNodeA.id) {
-            connectedProductID = edge.from !== selectedNodeA.id ? edge.from : edge.to;
-            for (const nodeA of this.props.reportA.nodes) {
+          if (edge.from === selectedNode.id || edge.to === selectedNode.id) {
+            connectedProductID = edge.from !== selectedNode.id ? edge.from : edge.to;
+            for (const nodeA of report.nodes) {
               if (nodeA.id === connectedProductID) {
                 connectedNode = nodeA;
                 break;
               }
             }
-            connectedNodesA.push({
+            connectedNodes.push({
               name: connectedNode.name,
               id: connectedNode.id,
               edgeWeight: edge.weight,
@@ -142,36 +135,16 @@ export default class SingleProductCompareWindow extends PureComponent<
         break;
       }
     }
-    for (const node of this.props.reportB.nodes) {
-      if (node.name === selectedProduct) {
-        selectedNodeB = node;
-        for (const edge of this.props.reportB.edges) {
-          let connectedProductID;
-          let connectedNode;
-          if (edge.from === selectedNodeB.id || edge.to === selectedNodeB.id) {
-            connectedProductID = edge.from !== selectedNodeB.id ? edge.from : edge.to;
-            for (const nodeB of this.props.reportB.nodes) {
-              if (nodeB.id === connectedProductID) {
-                connectedNode = nodeB;
-                break;
-              }
-            }
-            connectedNodesB.push({
-              name: connectedNode.name,
-              id: connectedNode.id,
-              edgeWeight: edge.weight,
-            });
-          }
-        }
-        break;
-      }
-    }
-    connectedNodesA.sort((a, b) => {
-      return b.edgeWeight - a.edgeWeight;
-    });
-    connectedNodesB.sort((a, b) => {
-      return b.edgeWeight - a.edgeWeight;
-    });
+    return connectedNodes;
+  }
+
+  public getConnectedInfo(selectedProduct: string) {
+    const connectedNodesA = this.getOneSideConnectedNodes(selectedProduct, this.props.reportA);
+    const connectedNodesB = this.getOneSideConnectedNodes(selectedProduct, this.props.reportB);
+    const shareProducts: ConnectedNode[] = [];
+
+    connectedNodesA.sort((a, b) => b.edgeWeight - a.edgeWeight);
+    connectedNodesB.sort((a, b) => b.edgeWeight - a.edgeWeight);
     for (const nodeA of connectedNodesA) {
       for (const nodeB of connectedNodesB) {
         if (nodeA.name === nodeB.name) {
@@ -192,14 +165,12 @@ export default class SingleProductCompareWindow extends PureComponent<
           connectedNodesA,
           connectedNodesB,
           shareProducts,
-        } = this.getConnectedProduct(this.props.selectedProduct[0]);
-        const tableRowA = this.getTableRow(connectedNodesA, shareProducts);
-        const tableRowB = this.getTableRow(connectedNodesB, shareProducts, connectedNodesA);
-        const tableA = this.getTable('左', tableRowA);
-        const tableB = this.getTable('右', tableRowB);
+        } = this.getConnectedInfo(this.props.selectedProduct[0]);
+        const tableA = this.getTable('左', connectedNodesA, shareProducts);
+        const tableB = this.getTable('右', connectedNodesB, shareProducts, connectedNodesA);
         const share = shareProducts.map((node) => {
           return (
-            <Table.Row key={node.name}>
+            <Table.Row key={node.name} style={{ backgroundColor: '#e8f7ff' }}>
               <Table.Cell>{node.name}</Table.Cell>
             </Table.Row>
           );

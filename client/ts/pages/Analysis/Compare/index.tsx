@@ -9,7 +9,7 @@ import {
 } from 'semantic-ui-react';
 
 import { SearchSingleItemDropdown } from '../../../components/dropdown';
-import { GraphViewCompare } from '../../../components/graph2/index';
+import { GraphViewCompare } from '../../../components/graph/CompareGraph';
 import Loader from '../../../components/Loader';
 import CompareReportWindow from './CompareReportWindow';
 import CompareSingleProductWindow from './CompareSingleProductWindow';
@@ -29,10 +29,7 @@ interface AnalysisState {
   reportB?: ReportAPI;
   shareNodes?: string[];
   conditions?: Condition[];
-  openCompare: boolean;
-  openSingleCompare: boolean;
   selectedProduct?: string[];
-  showCommunity: boolean;
   windowCompareReport: boolean;
   windowSingleProductCompare: boolean;
 }
@@ -42,18 +39,10 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
     super(props);
     this.state = {
       loading: true,
-      openCompare: false,
-      openSingleCompare: false,
-      showCommunity: false,
       windowCompareReport: false,
       windowSingleProductCompare: false,
     };
-    this.handleOpenCompare = this.handleOpenCompare.bind(this);
-    this.handleOpenSingleCompare = this.handleOpenSingleCompare.bind(this);
-    this.handleCloseCompare = this.handleCloseCompare.bind(this);
-    this.handleCloseSingleCompare = this.handleCloseSingleCompare.bind(this);
     this.onSingleItemSearch = this.onSingleItemSearch.bind(this);
-    this.toggleShowCommunity = this.toggleShowCommunity.bind(this);
     this.getAllProducts = this.getAllProducts.bind(this);
     this.openCompareReportWindow = this.openCompareReportWindow.bind(this);
     this.closeCompareReportWindow = this.closeCompareReportWindow.bind(this);
@@ -86,22 +75,6 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
     });
   }
 
-  public handleCloseCompare() {
-    this.setState({ openCompare: false });
-  }
-
-  public handleCloseSingleCompare() {
-    this.setState({ openSingleCompare: false });
-  }
-
-  public handleOpenCompare() {
-    this.setState({ openCompare: true });
-  }
-
-  public handleOpenSingleCompare() {
-    this.setState({ openSingleCompare: true });
-  }
-
   public getAllProducts(): string[] {
     if (this.state.reportA && this.state.reportB) {
       const reportANodesNames = this.state.reportA.nodes.map((node) => {
@@ -120,27 +93,6 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
     return [];
   }
 
-  public onSingleItemSearch(
-    event: React.SyntheticEvent<HTMLElement, Event>,
-    data: DropdownProps,
-  ) {
-    const allProducts = this.getAllProducts();
-    for (const product of allProducts) {
-      if (product === data.value) {
-        this.setState({ selectedProduct: [product] });
-      }
-    }
-    if (!data.value) {
-      this.setState({ selectedProduct: undefined });
-    }
-  }
-
-  public toggleShowCommunity() {
-    this.state.showCommunity
-      ? this.setState({ showCommunity: false })
-      : this.setState({ showCommunity: true });
-  }
-
   public openCompareReportWindow() {
     this.setState({ windowCompareReport: true });
   }
@@ -155,6 +107,21 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
 
   public closeSingleProductCompareWindow() {
     this.setState({ windowSingleProductCompare: false });
+  }
+
+  public onSingleItemSearch(
+    event: React.SyntheticEvent<HTMLElement, Event>,
+    data: DropdownProps,
+  ) {
+    const allProducts = this.getAllProducts();
+    for (const product of allProducts) {
+      if (product === data.value) {
+        this.setState({ selectedProduct: [product] });
+      }
+    }
+    if (!data.value) {
+      this.setState({ selectedProduct: undefined });
+    }
   }
 
   public render() {
@@ -193,16 +160,6 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
           );
         return (
           <React.Fragment>
-            {/* <Button color='teal' onClick={this.openCompareReportWindow}>
-              比較兩張網路圖
-            </Button> */}
-            {/* <div
-              style={{
-                position: 'relative',
-                left: '1rem',
-                display: 'inline',
-              }}
-            > */}
             <Menu style={{ marginBottom: '1rem' }} secondary>
               <Menu.Item onClick={this.openCompareReportWindow}>
                 <Button color='facebook'>
@@ -221,27 +178,6 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
                 {singleItemCompareButton}
               </Menu.Item>
             </Menu>
-            {/* </div> */}
-            {/* <div
-              style={{
-                position: 'fixed',
-                minWidth: '15%',
-                right: 170,
-                zIndex: 1,
-                display: 'inline',
-              }}
-            >
-              <SearchSingleItemDropdown
-                options={dropdownOption}
-                placeholder='搜尋單一產品連結'
-                onChange={this.onSingleItemSearch}
-              />
-            </div>
-            <div
-              style={{ position: 'fixed', right: 10, display: 'inline' }}
-            >
-              {singleItemCompareButton}
-            </div> */}
             <div style={{ padding: '1rem' }}>
               <Grid columns='two' divided>
                 <Grid.Row>
@@ -253,7 +189,6 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
                       nodes={this.state.reportA.nodes}
                       edges={this.state.reportA.edges}
                       selectedProduct={this.state.selectedProduct}
-                      showCommunity={this.state.showCommunity}
                       shareNodes={this.state.shareNodes}
                     />
                   </Grid.Column>
@@ -265,7 +200,6 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
                       nodes={this.state.reportB.nodes}
                       edges={this.state.reportB.edges}
                       selectedProduct={this.state.selectedProduct}
-                      showCommunity={this.state.showCommunity}
                       shareNodes={this.state.shareNodes}
                     />
                   </Grid.Column>
@@ -289,22 +223,6 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
                 onClose={this.closeSingleProductCompareWindow}
                 selectedProduct={this.state.selectedProduct}
               />
-              {/* <ComparePortal
-                open={this.state.openCompare}
-                reportA={this.state.reportA}
-                reportB={this.state.reportB}
-                shareNodes={this.state.shareNodes}
-                onClose={this.handleCloseCompare}
-                analysisA={this.state.analysisA}
-                analysisB={this.state.analysisB}
-              /> */}
-              {/* <SingleProductComparePortal
-                open={this.state.openSingleCompare}
-                reportA={this.state.reportA}
-                reportB={this.state.reportB}
-                onClose={this.handleCloseSingleCompare}
-                selectedProduct={this.state.selectedProduct}
-              /> */}
             </div>
           </React.Fragment>
         );

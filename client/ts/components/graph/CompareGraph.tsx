@@ -3,7 +3,7 @@ import React, { PureComponent } from 'react';
 import { DataSet, EdgeOptions, Network, NodeOptions } from 'vis';
 
 import Jgraph from '../../PnApp/Jgraph';
-import { Community, Edge, Node } from '../../PnApp/model/Report';
+import { Edge, Node } from '../../PnApp/model/Report';
 
 interface GraphNode extends Node, NodeOptions { }
 
@@ -26,7 +26,6 @@ const customScalingFunction = (
 interface GraphProps {
   nodes: Node[];
   edges: Edge[];
-  showCommunity: boolean;
   selectedProduct?: string[];
   shareNodes?: string[];
 }
@@ -43,9 +42,6 @@ export default class GraphViewCompare extends PureComponent<GraphProps, {}> {
     this.nodes = new DataSet();
     this.edges = new DataSet();
 
-    this.paintCommunity = this.paintCommunity.bind(this);
-    // this.paintSearchItems = this.paintSearchItems.bind(this);
-    // this.paintSelectedCommunity = this.paintSelectedCommunity.bind(this);
     this.paintSelectedProduct = this.paintSelectedProduct.bind(this);
     this.repaint = this.repaint.bind(this);
   }
@@ -59,32 +55,12 @@ export default class GraphViewCompare extends PureComponent<GraphProps, {}> {
 
   public componentDidUpdate(prevProps: GraphProps) {
     // Do not call repaint if correspondent props don't change.
-    if (!_.isEqual(this.props.showCommunity, prevProps.showCommunity)) {
-      this.repaint();
-    }
-
     if (!_.isEqual(this.props.selectedProduct, prevProps.selectedProduct)) {
       this.repaint();
       this.paintSelectedProduct();
     }
-
-    // if (!_.isEqual(this.props.selectedCommunities, prevProps.selectedCommunities)) {
-    //   this.repaint();
-    //   this.paintSelectedCommunity();
-    // }
-
-    if (!_.isEqual(this.props.focusElement, prevProps.focusElement)) {
-      this.focusNode();
-    }
   }
 
-  public focusNode(): void {
-    if (this.network && _.isNumber(this.props.focusElement)) {
-      this.network.focus(this.props.focusElement, {
-        scale: 1,
-      });
-    }
-  }
 
   public getHeight(): string {
     let height = 'auto';
@@ -102,11 +78,11 @@ export default class GraphViewCompare extends PureComponent<GraphProps, {}> {
     copy.label = node.name;
     copy.value = node.weight;
     copy.title = `
-    <div>
-      <p>${copy.name}</p>
-      <p>weight: ${Math.round(copy.weight)}</p>
-      <p>連接節點數: ${copy.degree}</p>
-    </div>
+      <div>
+        <p>${copy.name}</p>
+        <p>weight: ${Math.round(copy.weight)}</p>
+        <p>連接節點數: ${copy.degree}</p>
+      </div>
     `;
     if (this.props.shareNodes.includes(node.name)) {
       copy.color = {
@@ -165,25 +141,16 @@ export default class GraphViewCompare extends PureComponent<GraphProps, {}> {
       return {
         id: node.id,
         label: node.name,
-        title: this.props.showCommunity
-          ? `
-                <div>
-                  <p>${node.name}</p>
-                  <p>community: ${node.community}</p>
-                  <p>weight: ${Math.round(node.weight)}</p>
-                  <p>連接節點數: ${node.degree}</p>
-                </div>
-              `
-          : `
-                <div>
-                  <p>${node.name}</p>
-                  <p>weight: ${Math.round(node.weight)}</p>
-                  <p>連接節點數: ${node.degree}</p>
-                </div>
-              `,
-        group: this.props.showCommunity ? node.community : undefined,
+        title:
+          `
+            <div>
+              <p>${node.name}</p>
+              <p>weight: ${Math.round(node.weight)}</p>
+              <p>連接節點數: ${node.degree}</p>
+            </div>
+          `,
         color,
-        borderWidth: this.props.showCommunity && node.core ? 5 : 1,
+        borderWidth: 1,
         hidden: false,
       } as any;
     });
@@ -195,25 +162,6 @@ export default class GraphViewCompare extends PureComponent<GraphProps, {}> {
       animation: false,
     });
   }
-
-  // public paintSearchItems(): void {
-  //   if (this.props.searchItems && this.props.searchItems.length) {
-  //     const searchItems = this.nodes.get(this.props.searchItems).map((node) => {
-  //       console.log(node);
-  //       return {
-  //         id: node.id,
-  //         color: {
-  //           background: 'yellow',
-  //           hover: {
-  //             background: 'orange',
-  //           },
-  //           highlight: 'orange',
-  //         },
-  //       } as any;
-  //     });
-  //     this.nodes.update(searchItems);
-  //   }
-  // }
 
   public paintSelectedProduct(): void {
     if (!_.isUndefined(this.props.selectedProduct)) {
@@ -248,7 +196,6 @@ export default class GraphViewCompare extends PureComponent<GraphProps, {}> {
                   background,
                   border: '#D3E7FF',
                 },
-                group: undefined,
                 label: ' ',
               } as any;
             }
@@ -271,67 +218,12 @@ export default class GraphViewCompare extends PureComponent<GraphProps, {}> {
                 background,
                 border: '#D3E7FF',
               },
-              group: undefined,
               label: ' ',
             } as any;
           })
           .filter((node) => node);
         this.nodes.update(updateList);
       }
-    }
-  }
-
-  // public paintSelectedCommunity(): void {
-  //   if (this.props.selectedCommunities && this.props.selectedCommunities.length) {
-  //     const selectedNodes: GraphNode[] = [];
-  //     this.nodes.forEach((node) => {
-  //       const update: any = {
-  //         id: node.id,
-  //         hidden: !(this.props.selectedCommunities as number[]).includes(node.community),
-  //       };
-  //       selectedNodes.push(update);
-  //     });
-  //     this.nodes.update(selectedNodes);
-  //   } else {
-  //     this.repaint();
-  //   }
-  // }
-
-  public paintCommunity(): void {
-    if (this.props.showCommunity) {
-      const nodes: GraphNode[] = this.nodes.map((node) => {
-        return {
-          id: node.id,
-          group: node.community,
-          title: `
-            <div>
-              <p>${node.name}</p>
-              <p>community: ${node.community}</p>
-              <p>weight: ${Math.round(node.weight)}</p>
-              <p>連接節點數: ${node.degree}</p>
-            </div>
-          `,
-          borderWidth: node.core ? 5 : 1,
-        } as any;
-      });
-      this.nodes.update(nodes);
-    } else {
-      const nodes: GraphNode[] = this.nodes.map((node) => {
-        return {
-          id: node.id,
-          group: undefined,
-          title: `
-            <div>
-              <p>${node.name}</p>
-              <p>weight: ${Math.round(node.weight)}</p>
-              <p>連接節點數: ${node.degree}</p>
-            </div>
-          `,
-          color: '#8DC1FF',
-          borderWidth: 1,
-        } as any;
-      });
-      this.nodes.update(nodes);
     }
   }
 
