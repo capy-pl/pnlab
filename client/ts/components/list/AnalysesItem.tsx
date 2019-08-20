@@ -1,17 +1,18 @@
 import React from 'react';
 import { Button, Table } from 'semantic-ui-react';
 import Analysis from '../../PnApp/Model/Analysis';
+import { dateToString } from '../../PnApp/Helper';
 
 interface AnalysisItemProps {
   item: Analysis;
   onButtonClick: () => void;
 }
 
-const Analyses = ({ item, onButtonClick }: AnalysisItemProps) => {
+const Item = ({ item, onButtonClick }: AnalysisItemProps) => {
   return (
     <Table.Row style={{ clear: 'both' }} textAlign='center'>
       <Table.Cell>{item.title}</Table.Cell>
-      <Table.Cell>{item.created}</Table.Cell>
+      <Table.Cell>{dateToString(item.created)}</Table.Cell>
       <Table.Cell>
         <Button onClick={onButtonClick}>Detail</Button>
       </Table.Cell>
@@ -19,4 +20,4 @@ const Analyses = ({ item, onButtonClick }: AnalysisItemProps) => {
   );
 };
 
-export default Analyses;
+export default Item;

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import Report from './Report';
 
 export interface Comments {
   readonly userId: string;
@@ -15,7 +16,7 @@ export interface AnalysisModel {
   description?: string;
   report: string;
   comments?: Comments[];
-  created?: Date;
+  created?: string;
 }
 
 export default class Analysis {
@@ -40,15 +41,19 @@ export default class Analysis {
   public description: string;
   public comments: Comments[];
   public readonly created: Date;
-  public report: string;
+  public report: string | Report;
 
   constructor(model: AnalysisModel) {
     this.id = model._id as string;
     this.title = model.title as string;
     this.description = model.description as string;
     this.comments = model.comments as Comments[];
-    this.created = model.created as Date;
+    this.created = new Date(model.created as string) as Date;
     this.report = model.report;
+  }
+
+  public async loadReport(): Promise<void> {
+    this.report = await Report.get(this.report as string);
   }
 
   public async update(body: AnalysisModel): Promise<void> {

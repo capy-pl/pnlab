@@ -1,7 +1,4 @@
-import AnalysesList from './AnalysesList';
+import AnalysisItem from './AnalysesItem';
 import SearchHistoryItem from './SearchHistoryItem';
 
-export {
-  SearchHistoryItem,
-  AnalysesList,
-};
+export { SearchHistoryItem, AnalysisItem };

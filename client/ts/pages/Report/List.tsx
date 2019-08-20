@@ -26,7 +26,10 @@ class ReportList extends PureComponent<RouteComponentProps, ReportListState> {
 
   public onFinish(id: string): (event: MessageEvent) => void {
     return (event) => {
-      if (event.data as ReportStatus === 'success' || event.data as ReportStatus === 'error') {
+      if (
+        (event.data as ReportStatus) === 'success' ||
+        (event.data as ReportStatus) === 'error'
+      ) {
         const ws = this.listeningMap.get(id);
         if (ws) {
           ws.close();
@@ -83,7 +86,7 @@ class ReportList extends PureComponent<RouteComponentProps, ReportListState> {
           color='teal'
           icon
           labelPosition='right'
-          style={{ margin: '10px'}}
+          style={{ margin: '10px' }}
           onClick={this.onLinkClick('add')}
         >
           <Icon name='add circle' />
@@ -92,16 +95,22 @@ class ReportList extends PureComponent<RouteComponentProps, ReportListState> {
         <Table selectable color='teal'>
           <Table.Header>
             <Table.Row>
-              <Table.HeaderCell width='1' textAlign='center'>狀態</Table.HeaderCell>
-              <Table.HeaderCell width='2' textAlign='center'>開始時間</Table.HeaderCell>
-              <Table.HeaderCell width='2' textAlign='center'>結束時間</Table.HeaderCell>
-              <Table.HeaderCell width='5' textAlign='center'>條件</Table.HeaderCell>
+              <Table.HeaderCell width='1' textAlign='center'>
+                狀態
+              </Table.HeaderCell>
+              <Table.HeaderCell width='2' textAlign='center'>
+                開始時間
+              </Table.HeaderCell>
+              <Table.HeaderCell width='2' textAlign='center'>
+                結束時間
+              </Table.HeaderCell>
+              <Table.HeaderCell width='5' textAlign='center'>
+                條件
+              </Table.HeaderCell>
               <Table.HeaderCell width='2' textAlign='center' />
             </Table.Row>
           </Table.Header>
-          <Table.Body>
-            {history}
-          </Table.Body>
+          <Table.Body>{history}</Table.Body>
         </Table>
       </Segment>
     );

@@ -1,8 +1,8 @@
 import React, { PureComponent } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { Button, DropdownProps, Segment, Table } from 'semantic-ui-react';
+import { Button, Icon, DropdownProps, Segment, Table } from 'semantic-ui-react';
 
-import { AnalysesList } from '../../components/list';
+import { AnalysisItem } from '../../components/list';
 import ModalAddCompare from '../../components/modal/ModalAddCompare';
 import Analysis from '../../PnApp/model/Analysis';
 import ReportAPI from '../../PnApp/model/Report';
@@ -28,8 +28,7 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
     this.onCancel = this.onCancel.bind(this);
     this.onChangeA = this.onChangeA.bind(this);
     this.onChangeB = this.onChangeB.bind(this);
-    this.onClick = this.onClick. bind(this);
-
+    this.onClick = this.onClick.bind(this);
   }
 
   public async componentDidMount() {
@@ -41,7 +40,7 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
   }
 
   public onLinkClick(path: string): () => void {
-    return async () => {
+    return () => {
       this.props.history.push(`/analysis/${path}`);
     };
   }
@@ -89,7 +88,7 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
   public render() {
     const history = this.state.analyses.map((analysis) => {
       return (
-        <AnalysesList
+        <AnalysisItem
           key={analysis.id}
           item={analysis}
           onButtonClick={this.onLinkClick(analysis.id)}
@@ -110,24 +109,28 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
           />
           <Button
             floated='right'
-            inverted
             color='blue'
-            style={{ margin: '10px'}}
+            style={{ margin: '10px' }}
             onClick={this.onClick}
+            icon
+            labelPosition='right'
           >
-            Add Compare
+            <Icon name='clone outline' />
+            比較圖片
           </Button>
           <Table selectable color='blue'>
             <Table.Header>
               <Table.Row>
-                <Table.HeaderCell width='1' textAlign='center'>Title</Table.HeaderCell>
-                <Table.HeaderCell width='5' textAlign='center'>Created Time</Table.HeaderCell>
-                <Table.HeaderCell width='2' textAlign='center'>Link</Table.HeaderCell>
+                <Table.HeaderCell width='1' textAlign='center'>
+                  圖片名稱
+                </Table.HeaderCell>
+                <Table.HeaderCell width='5' textAlign='center'>
+                  建立時間
+                </Table.HeaderCell>
+                <Table.HeaderCell width='2' textAlign='center' />
               </Table.Row>
             </Table.Header>
-            <Table.Body>
-              {history}
-            </Table.Body>
+            <Table.Body>{history}</Table.Body>
           </Table>
         </React.Fragment>
       </Segment>
