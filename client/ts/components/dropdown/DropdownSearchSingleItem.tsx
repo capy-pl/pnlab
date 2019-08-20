@@ -23,8 +23,6 @@ const SearchSingleItemDropdown = ({ placeholder, options, onChange }: SearchDrop
     onChange={onChange}
     options={options}
     icon={<Icon name='search' style={{ padding: '10px' }} />}
-  // style={{minWidth: '18%'}}
-  // style={{ width: '100%' }}
   />
 );
 

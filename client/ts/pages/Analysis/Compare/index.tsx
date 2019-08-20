@@ -8,7 +8,7 @@ import {
   Popup,
 } from 'semantic-ui-react';
 
-import { SearchSingleItemDropdown } from '../../../components/dropdown';
+import { DropdownSearchSingleItem } from '../../../components/dropdown';
 import { GraphViewCompare } from '../../../components/graph/CompareGraph';
 import Loader from '../../../components/Loader';
 import CompareReportWindow from './CompareReportWindow';
@@ -168,7 +168,7 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
               </Menu.Item>
               <Menu.Item position='right' style={{ paddingTop: '0.1em', paddingBottom: '0.1em' }}>
                 <span style={{ minWidth: '280px' }}>
-                  <SearchSingleItemDropdown
+                  <DropdownSearchSingleItem
                     options={dropdownOption}
                     placeholder='搜尋單一產品連結'
                     onChange={this.onSingleItemSearch}

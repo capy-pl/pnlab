@@ -4,9 +4,7 @@ import {
   Modal,
   TextAreaProps,
   InputOnChangeData,
-  Message,
 } from 'semantic-ui-react';
-import { isUndefined } from 'lodash';
 
 import FormAddAnalysis from '../form/FormAddAnalysis';
 import { Report } from '../../PnApp/model';

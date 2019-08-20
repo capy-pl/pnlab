@@ -84,7 +84,7 @@ export default class GraphViewCompare extends PureComponent<GraphProps, {}> {
         <p>連接節點數: ${copy.degree}</p>
       </div>
     `;
-    if (this.props.shareNodes.includes(node.name)) {
+    if (this.props.shareNodes && this.props.shareNodes.includes(node.name)) {
       copy.color = {
         background: 'yellow',
         border: '#3f83d4',
@@ -187,7 +187,7 @@ export default class GraphViewCompare extends PureComponent<GraphProps, {}> {
         const updateList = this.nodes
           .map<GraphNode>((node) => {
             if (!connectedNodes.includes(node.id as any) && node.id !== selectedNode.id) {
-              const background = this.props.shareNodes.includes(node.name)
+              const background = this.props.shareNodes && this.props.shareNodes.includes(node.name)
                 ? '#ffffc9'
                 : '#D3E7FF';
               return {
@@ -209,7 +209,7 @@ export default class GraphViewCompare extends PureComponent<GraphProps, {}> {
       } else {
         const updateList = this.nodes
           .map<GraphNode>((node) => {
-            const background = this.props.shareNodes.includes(node.name)
+            const background = this.props.shareNodes && this.props.shareNodes.includes(node.name)
               ? '#ffffc9'
               : '#D3E7FF';
             return {
