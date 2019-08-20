@@ -166,7 +166,8 @@ export async function GetReport(req: e.Request, res: e.Response): Promise<void> 
 }
 
 export interface GetReportsRequestQuery {
-  limit?: number;
+  limit?: string;
+  page?: string;
 }
 
 export interface ProjectedReport {
@@ -183,21 +184,20 @@ export interface GetReportsResponseBody {
 }
 
 export async function GetReports(req: e.Request, res: e.Response): Promise<void> {
-  const { limit } = req.query as GetReportsRequestQuery;
+  const { limit, page } = req.query as GetReportsRequestQuery;
   const projection = {
     conditions: 1,
     status: 1,
     errMessage: 1,
     created: 1,
     modified: 1,
-    startTime: 1,
-    endTime: 1,
   };
   try {
     let reports: ProjectedReport[];
-    if (limit) {
+    if (limit && page) {
       reports = await Report.find({}, projection)
-        .limit(limit)
+        .skip(parseInt(limit) * (parseInt(page) - 1))
+        .limit(parseInt(limit))
         .sort({ created: -1 });
     } else {
       reports = await Report.find({}, projection).sort({ created: -1 });

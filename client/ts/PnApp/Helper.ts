@@ -39,9 +39,25 @@ export function simplifyDate(str: string): string {
   return dateToString(stringToDate(str));
 }
 
+export type Query = {
+  [key: string]: any;
+};
+
+export function appendQuery(path: string, query: Query) {
+  const queryList: string[] = [];
+  for (const key in query) {
+    queryList.push(`${key}=${query[key]}`);
+  }
+  if (queryList.length) {
+    return `${path}?${queryList.join('&')}`;
+  }
+  return path;
+}
+
 export default {
   getCurrentUser,
   hasToken,
   isLoggedIn,
   updateCurrentUser,
+  appendQuery,
 };
