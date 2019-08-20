@@ -51,15 +51,6 @@ export interface Hook {
 
 export type ReportStatus = 'error' | 'pending' | 'success';
 
-export interface ProjectedReport {
-  _id: string;
-  created: Date;
-  conditions: Condition[];
-  modified: Date;
-  status: ReportStatus;
-  errMessage: string;
-}
-
 export interface ReportModel {
   _id: string;
   created: Date;
@@ -73,6 +64,11 @@ export interface ReportModel {
   hooks: Hook[];
   rank: SimpleNode[];
 }
+
+export type ReportPreview = Pick<
+  ReportModel,
+  '_id' | 'created' | 'conditions' | 'modified' | 'status' | 'errMessage'
+>;
 
 export default class Report {
   public static async add(conditions: Condition[]): Promise<{ id: string }> {
@@ -92,10 +88,10 @@ export default class Report {
     return new Report(report.data);
   }
 
-  public static async getAll(limit?: number): Promise<ProjectedReport[]> {
+  public static async getAll(limit?: number): Promise<ReportPreview[]> {
     const url = limit && limit > 0 ? `/api/report?limit=${limit}` : '/api/report';
     const reports = await axios.get<{
-      reports: ProjectedReport[];
+      reports: ReportPreview[];
     }>(url);
     reports.data.reports.forEach((report) => {
       // attributes below are type of string when returned from axios. need to

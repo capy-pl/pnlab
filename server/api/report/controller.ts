@@ -3,10 +3,10 @@ import { connection } from 'mongoose';
 import { getChannel } from '../../core/mq';
 import { Logger } from '../../core/util';
 import { Promotion, Report } from '../../models';
+import { ReportInterface } from '../../models/Report';
 import { FieldSchemaInterface } from '../../models/ImportSchema';
 import { Condition } from '../../models/Report';
 import { UserSchemaInterface } from '../../models/User';
-import bodyParser = require('body-parser');
 
 interface SearchItemQuery {
   query: string;
@@ -169,17 +169,12 @@ export interface GetReportsRequestQuery {
   limit?: number;
 }
 
-export interface ProjectedReport {
-  _id: string;
-  created: Date;
-  conditions: Condition[];
-  modified: Date;
-  status: 'error' | 'pending' | 'success';
-  errorMessage: string;
-}
-
+export type ReportPreview = Pick<
+  ReportInterface,
+  '_id' | 'created' | 'conditions' | 'modified' | 'status' | 'errorMessage'
+>;
 export interface GetReportsResponseBody {
-  reports: ProjectedReport[];
+  reports: ReportPreview[];
 }
 
 export async function GetReports(req: e.Request, res: e.Response): Promise<void> {
@@ -194,7 +189,7 @@ export async function GetReports(req: e.Request, res: e.Response): Promise<void>
     endTime: 1,
   };
   try {
-    let reports: ProjectedReport[];
+    let reports: ReportPreview[];
     if (limit) {
       reports = await Report.find({}, projection)
         .limit(limit)
