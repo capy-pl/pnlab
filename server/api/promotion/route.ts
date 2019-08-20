@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
 import { loginRequired } from '../../core/auth';
-import { checkExist } from '../../core/middleware';
+import { checkExist, httpMethodNotSupport } from '../../core/middleware';
 import Promotion from '../../models/Promotions';
 
 import {
@@ -18,13 +18,15 @@ router
   .route('/')
   .all(loginRequired)
   .get(GetPromotions)
-  .post(AddPromotion);
+  .post(AddPromotion)
+  .all(httpMethodNotSupport);
 
 router
   .route('/:id')
   .all(loginRequired, checkExist(Promotion))
   .get(GetPromotion)
   .put(UpdatePromotion)
-  .delete(DeletePromotion);
+  .delete(DeletePromotion)
+  .all(httpMethodNotSupport);
 
 export default router;

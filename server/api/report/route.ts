@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { loginRequired } from '../../core/auth';
-
+import { httpMethodNotSupport } from '../../core/middleware';
 import {
   AddReport,
   GetConditions,
@@ -18,11 +18,13 @@ router
   .route('/')
   .all(loginRequired)
   .post(AddReport)
-  .get(GetReports);
+  .get(GetReports)
+  .all(httpMethodNotSupport);
 
 router
   .route('/:id')
   .all(loginRequired)
-  .get(GetReport);
+  .get(GetReport)
+  .all(httpMethodNotSupport);
 
 export default router;

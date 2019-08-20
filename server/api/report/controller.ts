@@ -6,6 +6,7 @@ import { Promotion, Report } from '../../models';
 import { FieldSchemaInterface } from '../../models/ImportSchema';
 import { Condition } from '../../models/Report';
 import { UserSchemaInterface } from '../../models/User';
+import bodyParser = require('body-parser');
 
 interface SearchItemQuery {
   query: string;
@@ -23,7 +24,7 @@ export interface SearchItemResponseBody {
  * @apiName SearchItem
  * @apiGroup Report
  */
-export async function SearchItem(req: e.Request, res: e.Response, next: e.NextFunction): Promise<void> {
+export async function SearchItem(req: e.Request, res: e.Response): Promise<void> {
   const { query } = req.query as SearchItemQuery;
   try {
     const items = await connection.db
@@ -71,7 +72,17 @@ export async function GetConditions(req: e.Request, res: e.Response): Promise<vo
       actions: ['delete'],
       values: promotions.map((promotion) => promotion.name),
     };
+
+    const methodField: FieldSchemaInterface = {
+      name: '權重方法',
+      type: 'method',
+      belong: 'method',
+      actions: [],
+      values: ['frequency', 'adjust-frequency', 'adjust-price'],
+    };
+
     conditions.push(promotionField);
+    conditions.push(methodField);
     res.send({
       conditions,
     });
@@ -117,6 +128,14 @@ export async function AddReport(req: e.Request, res: e.Response): Promise<void> 
       belong: 'promotion',
       actions: ['delete'],
     };
+
+    mapping['權重方法'] = {
+      name: '權重方法',
+      type: 'method',
+      belong: 'method',
+      actions: [],
+    };
+
     for (const condition of conditions) {
       if (condition.name in mapping && condition.type === mapping[condition.name].type) {
         report.conditions.push(condition);
