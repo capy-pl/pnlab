@@ -106,7 +106,7 @@ export default class Report {
   public created: Date;
   public conditions: Condition[];
   public modified: Date;
-  public status: 'error' | 'pending' | 'success';
+  public status: ReportStatus;
   public errMessage: string;
   public nodes: Node[];
   public edges: Edge[];
