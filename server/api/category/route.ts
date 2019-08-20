@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
 import { loginRequired } from '../../core/auth';
-import { checkExist } from '../../core/middleware';
+import { checkExist, httpMethodNotSupport } from '../../core/middleware';
 import { Category } from '../../models';
 import {
   AddCategory,
@@ -17,13 +17,15 @@ router
   .route('/')
   .all(loginRequired)
   .get(GetCategories)
-  .post(AddCategory);
+  .post(AddCategory)
+  .all(httpMethodNotSupport);
 
 router
   .route('/:id')
   .all(loginRequired, checkExist(Category))
   .get(GetCategory)
   .put(ModifyCategory)
-  .delete(DeleteCategory);
+  .delete(DeleteCategory)
+  .all(httpMethodNotSupport);
 
 export default router;

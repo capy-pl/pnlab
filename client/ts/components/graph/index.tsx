@@ -1,9 +1,9 @@
-import _ from 'lodash';
+import { isEqual, isNumber, isUndefined } from 'lodash';
 import React, { PureComponent } from 'react';
-import { DataSet, EdgeOptions, Network, NodeOptions } from 'vis';
+import { DataSet, EdgeOptions, Network, NodeOptions, Options } from 'vis';
 
 import Jgraph from '../../PnApp/Jgraph';
-import { Community, Edge, Node } from '../../PnApp/model/Report';
+import { Edge, Node } from '../../PnApp/model/Report';
 
 interface GraphNode extends Node, NodeOptions {}
 
@@ -32,12 +32,50 @@ interface GraphProps {
   focusElement?: number;
 }
 
+const graphOption: Options = {
+  edges: {
+    smooth: false,
+    scaling: {
+      customScalingFunction,
+      max: 30,
+      min: 1,
+    },
+  },
+  layout: {
+    improvedLayout: false,
+    randomSeed: 5,
+  },
+  nodes: {
+    scaling: {
+      customScalingFunction,
+      label: {
+        enabled: true,
+      },
+      max: 100,
+      min: 30,
+    },
+    shape: 'dot',
+  },
+  physics: {
+    barnesHut: {
+      springLength: 300,
+      centralGravity: 0.15,
+      avoidOverlap: 0.2,
+    },
+  },
+  interaction: {
+    hover: true,
+    tooltipDelay: 100,
+  },
+};
+
 export default class GraphView extends PureComponent<GraphProps, {}> {
   public graphRef: React.RefObject<HTMLDivElement>;
   public network?: Network;
   public jgraph?: Jgraph;
   public nodes: DataSet<GraphNode>;
   public edges: DataSet<GraphEdge>;
+
   constructor(props: GraphProps) {
     super(props);
     this.graphRef = React.createRef();
@@ -45,7 +83,6 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
     this.edges = new DataSet();
 
     this.paintCommunity = this.paintCommunity.bind(this);
-    this.paintSearchItems = this.paintSearchItems.bind(this);
     this.paintSelectedCommunity = this.paintSelectedCommunity.bind(this);
     this.paintSelectedProduct = this.paintSelectedProduct.bind(this);
     this.repaint = this.repaint.bind(this);
@@ -60,27 +97,39 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
 
   public componentDidUpdate(prevProps: GraphProps) {
     // Do not call repaint if correspondent props don't change.
-    if (!_.isEqual(this.props.showCommunity, prevProps.showCommunity)) {
+    if (!isEqual(this.props.showCommunity, prevProps.showCommunity)) {
       this.paintCommunity();
     }
 
-    if (!_.isEqual(this.props.selectedProduct, prevProps.selectedProduct)) {
+    const isSelectedProductEqual = isEqual(
+      this.props.selectedProduct,
+      prevProps.selectedProduct,
+    );
+
+    const isSelectedCommunitiesEqual = isEqual(
+      this.props.selectedCommunities,
+      prevProps.selectedCommunities,
+    );
+
+    if (!isSelectedProductEqual || !isSelectedCommunitiesEqual) {
       this.repaint();
+    }
+
+    if (!isSelectedProductEqual) {
       this.paintSelectedProduct();
     }
 
-    if (!_.isEqual(this.props.selectedCommunities, prevProps.selectedCommunities)) {
-      this.repaint();
+    if (!isSelectedCommunitiesEqual) {
       this.paintSelectedCommunity();
     }
 
-    if (!_.isEqual(this.props.focusElement, prevProps.focusElement)) {
+    if (!isEqual(this.props.focusElement, prevProps.focusElement)) {
       this.focusNode();
     }
   }
 
   public focusNode(): void {
-    if (this.network && _.isNumber(this.props.focusElement)) {
+    if (this.network && isNumber(this.props.focusElement)) {
       this.network.focus(this.props.focusElement, {
         scale: 1,
       });
@@ -138,27 +187,8 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
     this.nodes.update(updateList);
   }
 
-  public paintSearchItems(): void {
-    if (this.props.searchItems && this.props.searchItems.length) {
-      const searchItems = this.nodes.get(this.props.searchItems).map((node) => {
-        console.log(node);
-        return {
-          id: node.id,
-          color: {
-            background: 'yellow',
-            hover: {
-              background: 'orange',
-            },
-            highlight: 'orange',
-          },
-        } as any;
-      });
-      this.nodes.update(searchItems);
-    }
-  }
-
   public paintSelectedProduct(): void {
-    if (!_.isUndefined(this.props.selectedProduct)) {
+    if (!isUndefined(this.props.selectedProduct)) {
       const selectedNode: GraphNode = {
         id: this.props.selectedProduct,
         color: {
@@ -173,11 +203,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
           if (!connectedNodes.includes(node.id as any) && node.id !== selectedNode.id) {
             return {
               id: node.id,
-              color: {
-                background: '#D3E7FF',
-                border: '#D3E7FF',
-              },
-              group: undefined,
+              hidden: true,
               label: '',
             } as any;
           }
@@ -186,7 +212,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
       updateList.push(selectedNode);
       this.nodes.update(updateList);
       (this.network as Network).focus(selectedNode.id, {
-        scale: 0.6,
+        scale: 0.9,
       });
     }
   }
@@ -243,42 +269,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
           nodes: this.nodes,
           edges: this.edges,
         },
-        {
-          edges: {
-            smooth: false,
-            scaling: {
-              customScalingFunction,
-              max: 30,
-              min: 1,
-            },
-          },
-          layout: {
-            improvedLayout: false,
-            randomSeed: 5,
-          },
-          nodes: {
-            scaling: {
-              customScalingFunction,
-              label: {
-                enabled: true,
-              },
-              max: 100,
-              min: 30,
-            },
-            shape: 'dot',
-          },
-          physics: {
-            barnesHut: {
-              springLength: 250,
-              centralGravity: 0.1,
-            },
-            stabilization: true,
-          },
-          interaction: {
-            hover: true,
-            tooltipDelay: 100,
-          },
-        },
+        graphOption,
       );
     }
   }

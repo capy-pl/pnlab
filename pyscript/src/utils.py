@@ -1,7 +1,9 @@
 from datetime import datetime
 
+
 def to_datetime(string):
     return datetime.strptime(string, '%Y-%m-%dT%H:%M:%S.000Z')
+
 
 def to_query(conditions):
     default_query = {
@@ -11,7 +13,6 @@ def to_query(conditions):
     }
     item_query = {
     }
-    promotions = []
     for condition in conditions:
         if condition['type'] == 'string':
             if len(condition['values']) > 0:
@@ -33,12 +34,24 @@ def to_query(conditions):
                         '$gte': min_time
                     }
                 else:
-                    raise ValueError('Date condition should contain a max and a min value.')
-        if condition['type'] == 'promotion':
-            for promotion in condition['values']:
-                promotions.append(promotion)
+                    raise ValueError(
+                        'Date condition should contain a max and a min value.')
         if len(item_query.keys()) > 0:
             default_query['items'] = {
                 '$elemMatch': item_query
             }
-    return default_query, promotions
+    return default_query
+
+
+def extract_promotion(conditions):
+    for condition in conditions:
+        if condition['type'] == 'promotion':
+            return condition['values']
+    return []
+
+
+def extract_method(conditions) -> str:
+    for condition in conditions:
+        if condition['type'] == 'method':
+            return condition['values'][0]
+    return 'frequency'

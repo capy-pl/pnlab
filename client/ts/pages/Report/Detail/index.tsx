@@ -1,9 +1,10 @@
 import React, { PureComponent } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import {
+  Accordion,
+  AccordionTitleProps,
   Button,
   Checkbox,
-  Dropdown,
   Header,
   Icon,
   List,
@@ -42,6 +43,8 @@ interface ReportState {
   searchValue: string;
   searchResults: SearchResult[];
   focusNode?: number;
+  activeIndex: number;
+  infoOpen: boolean;
 }
 
 interface SearchResult extends Node {
@@ -68,30 +71,9 @@ export default class Report extends PureComponent<
       selectedCommunities: [],
       searchValue: '',
       searchResults: [],
+      activeIndex: -1,
+      infoOpen: true,
     };
-
-    this.toggleShowCommunities = this.toggleShowCommunities.bind(this);
-    this.selectProduct = this.selectProduct.bind(this);
-    this.handleToggleSidebar = this.handleToggleSidebar.bind(this);
-    this.toggleSidebar = this.toggleSidebar.bind(this);
-    this.selectCommunities = this.selectCommunities.bind(this);
-
-    // bind window functions
-    this.openCommunityCharacterWindow = this.openCommunityCharacterWindow.bind(this);
-
-    this.openCommunityListWidow = this.openCommunityListWidow.bind(this);
-    this.openProductRankWindow = this.openProductRankWindow.bind(this);
-
-    this.closeCommunityCharacterWindow = this.closeCommunityCharacterWindow.bind(this);
-    this.closeCommunityListWindow = this.closeCommunityListWindow.bind(this);
-    this.closeProductRankWindow = this.closeProductRankWindow.bind(this);
-
-    // bind search function
-    this.handleSearchChange = this.handleSearchChange.bind(this);
-    this.handleResultSelect = this.handleResultSelect.bind(this);
-
-    this.openAddAnalysisModal = this.openAddAnalysisModal.bind(this);
-    this.closeAddAnalysisModal = this.closeAddAnalysisModal.bind(this);
   }
 
   public async componentDidMount() {
@@ -102,60 +84,71 @@ export default class Report extends PureComponent<
     });
   }
 
-  public toggleShowCommunities() {
+  public handleAccordionIndexChange = (e: any, data: AccordionTitleProps) => {
+    const { index } = data;
+    this.setState({
+      activeIndex: this.state.activeIndex === index ? -1 : (index as number),
+    });
+  };
+
+  public handleInfoIndexChange = () => {
+    this.setState({
+      infoOpen: !this.state.infoOpen,
+    });
+  };
+
+  public toggleShowCommunities = () => {
     this.setState({
       showCommunity: !this.state.showCommunity,
     });
-  }
+  };
 
-  public openCommunityCharacterWindow(): void {
+  public openCommunityCharacterWindow = () => {
     this.setState({
       windowCommunityCharacter: true,
     });
-  }
+  };
 
-  public closeCommunityCharacterWindow(): void {
+  public closeCommunityCharacterWindow = () => {
     this.setState({
       windowCommunityCharacter: false,
     });
-  }
+  };
 
-  public openProductRankWindow(): void {
+  public openProductRankWindow = () => {
     this.setState({
       windowProductRank: true,
     });
-  }
+  };
 
-  public closeProductRankWindow(): void {
+  public closeProductRankWindow = () => {
     this.setState({
       windowProductRank: false,
-      selectedProduct: undefined,
     });
-  }
+  };
 
-  public openCommunityListWidow(): void {
+  public openCommunityListWidow = () => {
     this.setState({
       windowCommunityList: true,
     });
-  }
+  };
 
-  public closeCommunityListWindow(): void {
+  public closeCommunityListWindow = () => {
     this.setState({
       windowCommunityList: false,
-      selectedCommunities: [],
     });
-  }
+  };
 
-  public selectProduct(id?: number): void {
+  public selectProduct = (id?: number) => {
     if (this.state.report) {
       this.setState({
         selectedProduct: id,
         selectedCommunities: [],
       });
     }
-  }
+  };
 
-  public selectCommunities(id: number): void {
+  public selectCommunities = (id: number) => {
     if (this.state.selectedCommunities.includes(id)) {
       this.setState({
         selectedProduct: undefined,
@@ -167,24 +160,24 @@ export default class Report extends PureComponent<
         selectedCommunities: [...this.state.selectedCommunities, id],
       });
     }
-  }
+  };
 
-  public handleResultSelect(
+  public handleResultSelect = (
     event: React.MouseEvent<HTMLDivElement>,
     data: SearchResultData,
-  ): void {
+  ) => {
     const { result } = data;
     this.setState({
       focusNode: result.id,
       searchValue: result.name,
       searchResults: [],
     });
-  }
+  };
 
-  public handleSearchChange(
+  public handleSearchChange = (
     event: React.MouseEvent<HTMLElement>,
     data: SearchProps,
-  ): void {
+  ) => {
     const { value } = data;
     if (value) {
       const filter: Node[] = (this.state.report as ReportAPI).nodes.filter(
@@ -202,23 +195,23 @@ export default class Report extends PureComponent<
         searchResults: results,
       });
     }
-  }
+  };
 
-  public handleToggleSidebar() {
+  public handleToggleSidebar = () => {
     this.setState((prevState) => ({
       visible: !prevState.visible,
     }));
-  }
+  };
 
-  public resultRenderer(node) {
+  public resultRenderer(node: Node) {
     return <Search.Result key={node.id} id={node.id} title={node.name} />;
   }
 
-  public toggleSidebar() {
+  public toggleSidebar = () => {
     this.setState({
       sidebarVisible: !this.state.sidebarVisible,
     });
-  }
+  };
 
   public getConditions() {
     if (this.state.report) {
@@ -227,7 +220,9 @@ export default class Report extends PureComponent<
           return (
             <List.Item key={condition.name}>
               <List.Header>{condition.name}</List.Header>
-              <List.Description>{condition.values.join(', ')}</List.Description>
+              <List.Description>
+                {(condition.values as string[]).join(', ')}
+              </List.Description>
             </List.Item>
           );
         }
@@ -245,17 +240,17 @@ export default class Report extends PureComponent<
     }
   }
 
-  public openAddAnalysisModal(): void {
+  public openAddAnalysisModal = () => {
     this.setState({
       addAnalysisModalOpen: true,
     });
-  }
+  };
 
-  public closeAddAnalysisModal(): void {
+  public closeAddAnalysisModal = () => {
     this.setState({
       addAnalysisModalOpen: false,
     });
-  }
+  };
 
   public render() {
     if (this.state.loading) {
@@ -285,76 +280,93 @@ export default class Report extends PureComponent<
             />
             <Sidebar.Pushable>
               <Sidebar
-                as={Menu}
                 animation='push'
                 direction='left'
                 visible={this.state.sidebarVisible}
-                vertical
-                style={{ overflow: 'visible' }}
               >
-                <Menu.Item>
-                  <div style={{ textAlign: 'right' }}>
-                    <Icon link name='x' onClick={this.toggleSidebar} />
-                  </div>
-                </Menu.Item>
-                <Menu.Item>
-                  <Header textAlign='center'>基本資訊</Header>
-                  <List relaxed='very'>{this.getConditions()}</List>
-                </Menu.Item>
-                <Menu.Item>
-                  <Search
-                    size='small'
-                    placeholder='搜尋產品'
-                    noResultsMessage='無相關產品。'
-                    results={this.state.searchResults}
-                    onSearchChange={debounce(this.handleSearchChange, 300, {
-                      leading: true,
-                    })}
-                    onResultSelect={this.handleResultSelect}
-                    resultRenderer={this.resultRenderer}
-                  />
-                </Menu.Item>
-                <Menu.Item>
-                  <Checkbox
-                    style={{ color: 'white' }}
-                    label={this.state.showCommunity ? '隱藏Community' : '標示Community'}
-                    toggle
-                    onChange={this.toggleShowCommunities}
-                  />
-                </Menu.Item>
-                <Menu.Item as='a' onClick={this.openProductRankWindow}>
-                  產品排名
-                </Menu.Item>
-                <Dropdown
-                  text='產品Community列表'
-                  item
-                  style={{ overflow: 'visible !important' }}
-                >
-                  <Dropdown.Menu>
-                    <Dropdown.Item onClick={this.openCommunityListWidow}>
-                      Communities排名
-                    </Dropdown.Item>
-                    <Dropdown.Item onClick={this.openCommunityCharacterWindow}>
-                      Communities角色
-                    </Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
-                <ModalAddAnalysis
-                  report={this.state.report}
-                  close={this.closeAddAnalysisModal}
-                  show={this.state.addAnalysisModalOpen}
-                />
-                <Button
+                <Accordion
+                  vertical
+                  as={Menu}
                   fluid
-                  color='facebook'
-                  onClick={this.openAddAnalysisModal}
-                  style={{
-                    position: 'absolute',
-                    bottom: 0,
-                  }}
+                  style={{ height: '100%', overflowY: 'scroll' }}
                 >
-                  另存圖片
-                </Button>
+                  <Menu.Item>
+                    <div style={{ textAlign: 'right' }}>
+                      <Icon link name='x' onClick={this.toggleSidebar} />
+                    </div>
+                  </Menu.Item>
+                  <Menu.Item>
+                    <Accordion.Title
+                      active={this.state.infoOpen}
+                      onClick={this.handleInfoIndexChange}
+                    >
+                      <Header block textAlign='center'>
+                        基本資訊
+                      </Header>
+                    </Accordion.Title>
+                    <Accordion.Content active={this.state.infoOpen}>
+                      <List relaxed='very'>{this.getConditions()}</List>
+                    </Accordion.Content>
+                  </Menu.Item>
+                  <Menu.Item>
+                    <Search
+                      size='small'
+                      placeholder='搜尋產品'
+                      noResultsMessage='無相關產品。'
+                      results={this.state.searchResults}
+                      onSearchChange={debounce(this.handleSearchChange, 300, {
+                        leading: true,
+                      })}
+                      onResultSelect={this.handleResultSelect}
+                      resultRenderer={this.resultRenderer}
+                    />
+                  </Menu.Item>
+                  <Menu.Item>
+                    <Checkbox
+                      style={{ color: 'white' }}
+                      label={this.state.showCommunity ? '隱藏Community' : '標示Community'}
+                      toggle
+                      onChange={this.toggleShowCommunities}
+                    />
+                  </Menu.Item>
+                  <Menu.Item as='a' onClick={this.openProductRankWindow}>
+                    產品排名
+                  </Menu.Item>
+                  <Menu.Item>
+                    <Accordion.Title
+                      onClick={this.handleAccordionIndexChange}
+                      index={2}
+                      active={this.state.activeIndex === 2}
+                    >
+                      產品Community列表
+                      <Icon name='dropdown' />
+                    </Accordion.Title>
+                    <Accordion.Content active={this.state.activeIndex === 2}>
+                      <Menu.Item onClick={this.openCommunityListWidow}>
+                        Communities排名
+                      </Menu.Item>
+                      <Menu.Item onClick={this.openCommunityCharacterWindow}>
+                        Communities角色
+                      </Menu.Item>
+                    </Accordion.Content>
+                  </Menu.Item>
+                  <ModalAddAnalysis
+                    report={this.state.report}
+                    close={this.closeAddAnalysisModal}
+                    show={this.state.addAnalysisModalOpen}
+                  />
+                  <Button
+                    fluid
+                    color='facebook'
+                    onClick={this.openAddAnalysisModal}
+                    style={{
+                      position: 'absolute',
+                      bottom: 0,
+                    }}
+                  >
+                    另存圖片
+                  </Button>
+                </Accordion>
               </Sidebar>
               <Sidebar.Pusher>
                 <Button
@@ -363,6 +375,8 @@ export default class Report extends PureComponent<
                   icon='bars'
                   style={{
                     display: this.state.sidebarVisible ? 'none' : 'inline-block',
+                    position: 'absolute',
+                    zIndex: '1',
                   }}
                   onClick={this.toggleSidebar}
                 />

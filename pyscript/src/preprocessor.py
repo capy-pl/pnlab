@@ -6,6 +6,7 @@ from .product_network import ProductNerwork
 from .promotion import Promotion
 from .error import ZeroNodeError
 
+
 def all_pass(promotion_list, arg):
     for promotion in promotion_list:
         if not promotion.is_in(arg):
@@ -41,7 +42,8 @@ class NetworkConverter:
                                     promotion]
                             # Add a reverse entry.
                             if item2 not in self.promotion_filter['combination']:
-                                self.promotion_filter['combination'][item2] = {}
+                                self.promotion_filter['combination'][item2] = {
+                                }
                             if item not in self.promotion_filter['combination'][item2]:
                                 self.promotion_filter['combination'][item2][item] = [
                                     promotion]
@@ -95,7 +97,7 @@ class NetworkConverter:
         return edges
 
     def weight(self, edge, transaction, nums):
-        if self.method == 'adjust-degree':
+        if self.method == 'adjust-frequency':
             return 1 / nums
         if self.method == 'adjust-price':
             return sum([item['amount'] for item in edge]) / (len(transaction['items']) - 1)
@@ -118,16 +120,14 @@ class NetworkConverter:
                 support_total += 1
                 if edge_one in edge_dict or edge_two in edge_dict:
                     edge_in_list = edge_one if edge_one in edge_dict else edge_two
-                    edge_dict[edge_in_list]['count'] += 1
                     edge_dict[edge_in_list]['weight'] += weight
                 else:
                     edge_dict[edge_one] = {}
-                    edge_dict[edge_one]['count'] = 1
                     edge_dict[edge_one]['weight'] = weight
         series = Series([edge['weight'] for edge in edge_dict.values()])
         support = series.quantile(1 - support)
         for edge in list(edge_dict.keys()):
-            if edge_dict[edge]['count'] < support:
+            if edge_dict[edge]['weight'] < support:
                 del edge_dict[edge]
         for edge in edge_dict.keys():
             for node in edge:

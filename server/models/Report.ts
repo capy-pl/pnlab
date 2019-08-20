@@ -64,7 +64,7 @@ const ConditionSchema = new Schema<Condition>({
     required: true,
   },
   belong: {
-    enum: ['promotion', 'transaction', 'item'],
+    enum: ['promotion', 'transaction', 'item', 'method'],
     type: String,
   },
   actions: {
