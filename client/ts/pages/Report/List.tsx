@@ -20,12 +20,10 @@ class ReportList extends PureComponent<RouteComponentProps, ReportListState> {
       reports: [],
     };
     this.listeningMap = new Map<string, WebSocket>();
-
-    this.onFinish = this.onFinish.bind(this);
   }
 
-  public onFinish(id: string): (event: MessageEvent) => void {
-    return (event) => {
+  public onFinish = (id: string) => {
+    return (event: MessageEvent) => {
       if (
         (event.data as ReportStatus) === 'success' ||
         (event.data as ReportStatus) === 'error'
@@ -43,7 +41,7 @@ class ReportList extends PureComponent<RouteComponentProps, ReportListState> {
         this.setState({ reports });
       }
     };
-  }
+  };
 
   public async componentDidMount() {
     const reports = await Report.getAll();
