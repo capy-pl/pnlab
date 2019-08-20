@@ -245,7 +245,9 @@ export default class Report extends PureComponent<
           return (
             <List.Item key={condition.name}>
               <List.Header>{condition.name}</List.Header>
-              <List.Description>{condition.values.join(', ')}</List.Description>
+              <List.Description>
+                {(condition.values as string[]).join(', ')}
+              </List.Description>
             </List.Item>
           );
         }
@@ -328,9 +330,7 @@ export default class Report extends PureComponent<
                       </Header>
                     </Accordion.Title>
                     <Accordion.Content active={this.state.infoOpen}>
-                      <List textAlign relaxed='very'>
-                        {this.getConditions()}
-                      </List>
+                      <List relaxed='very'>{this.getConditions()}</List>
                     </Accordion.Content>
                   </Menu.Item>
                   <Menu.Item>
@@ -400,6 +400,8 @@ export default class Report extends PureComponent<
                   icon='bars'
                   style={{
                     display: this.state.sidebarVisible ? 'none' : 'inline-block',
+                    position: 'absolute',
+                    zIndex: '1',
                   }}
                   onClick={this.toggleSidebar}
                 />
