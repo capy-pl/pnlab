@@ -38,7 +38,7 @@ export default class Analysis {
   public readonly id: string;
   public title: string;
   public description: string;
-  public comments: Comments[];
+  public comments: Comment[];
   public readonly created: Date;
   public report: string;
 
@@ -46,7 +46,7 @@ export default class Analysis {
     this.id = model._id as string;
     this.title = model.title as string;
     this.description = model.description as string;
-    this.comments = model.comments as Comments[];
+    this.comments = model.comments as Comment[];
     this.created = model.created as Date;
     this.report = model.report;
   }
@@ -65,7 +65,7 @@ export default class Analysis {
     await this.reload();
   }
 
-  public async updateComment(body: Comments): Promise<void> {
+  public async updateComment(body: Comment): Promise<void> {
     await axios.post(`/api/analysis/${this.id}/comment/${body._id}`, body);
     await this.reload();
   }
