@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export interface Comments {
+export interface Comment {
   readonly userId: string;
   _id?: string;
   name?: string;
@@ -14,7 +14,7 @@ export interface AnalysisModel {
   title?: string;
   description?: string;
   report: string;
-  comments?: Comments[];
+  comments?: Comment[];
   created?: Date;
 }
 
