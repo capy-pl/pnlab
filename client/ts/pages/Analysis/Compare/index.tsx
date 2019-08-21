@@ -56,14 +56,11 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
     const reportA = await ReportAPI.get(analysisA.report);
     const reportB = await ReportAPI.get(analysisB.report);
     const conditions = await ReportAPI.getConditions();
-    const shareNodes: string[] = [];
-    for (const nodeA of reportA.nodes) {
-      for (const nodeB of reportB.nodes) {
-        if (nodeA.name === nodeB.name) {
-          shareNodes.push(nodeA.name);
-        }
-      }
-    }
+    const nodesSet = new Set<string>();
+    reportA.nodes.forEach((node) => {
+      nodesSet.add(node.name);
+    })
+    const shareNodes = reportB.nodes.filter(node => nodesSet.has(node.name)).map((node) => node.name);
     this.setState({
       analysisA,
       analysisB,
@@ -77,17 +74,15 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
 
   public getAllProducts(): string[] {
     if (this.state.reportA && this.state.reportB) {
-      const reportANodesNames = this.state.reportA.nodes.map((node) => {
-        return node.name;
+      const nodesSet = new Set<string>();
+      this.state.reportA.nodes.forEach((node) => {
+        nodesSet.add(node.name);
       });
-      const reportBNodesNames = this.state.reportB.nodes.map((node) => {
-        return node.name;
+      this.state.reportB.nodes.forEach((node) => {
+        nodesSet.add(node.name);
       });
-      const allProducts: string[] = reportANodesNames.concat(
-        reportBNodesNames.filter((node) => {
-          return reportANodesNames.indexOf(node) < 0;
-        }),
-      );
+
+      const allProducts = Array.from(nodesSet)
       return allProducts;
     }
     return [];
@@ -113,14 +108,14 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
     event: React.SyntheticEvent<HTMLElement, Event>,
     data: DropdownProps,
   ) {
+    if (!data.value) {
+      this.setState({ selectedProduct: undefined });
+    }
     const allProducts = this.getAllProducts();
     for (const product of allProducts) {
       if (product === data.value) {
-        this.setState({ selectedProduct: [product] });
+        return this.setState({ selectedProduct: [product] });
       }
-    }
-    if (!data.value) {
-      this.setState({ selectedProduct: undefined });
     }
   }
 
