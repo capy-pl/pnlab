@@ -3,10 +3,9 @@ import { connection } from 'mongoose';
 import { getChannel } from '../../core/mq';
 import { Logger } from '../../core/util';
 import { Promotion, Report } from '../../models';
+import { ReportInterface } from '../../models/Report';
 import { FieldSchemaInterface } from '../../models/ImportSchema';
-import { Condition } from '../../models/Report';
 import { UserSchemaInterface } from '../../models/User';
-import bodyParser = require('body-parser');
 
 interface SearchItemQuery {
   query: string;
@@ -166,38 +165,33 @@ export async function GetReport(req: e.Request, res: e.Response): Promise<void> 
 }
 
 export interface GetReportsRequestQuery {
-  limit?: number;
+  limit?: string;
+  page?: string;
 }
 
-export interface ProjectedReport {
-  _id: string;
-  created: Date;
-  conditions: Condition[];
-  modified: Date;
-  status: 'error' | 'pending' | 'success';
-  errorMessage: string;
-}
-
+export type ReportPreview = Pick<
+  ReportInterface,
+  '_id' | 'created' | 'conditions' | 'modified' | 'status' | 'errorMessage'
+>;
 export interface GetReportsResponseBody {
-  reports: ProjectedReport[];
+  reports: ReportPreview[];
 }
 
 export async function GetReports(req: e.Request, res: e.Response): Promise<void> {
-  const { limit } = req.query as GetReportsRequestQuery;
+  const { limit, page } = req.query as GetReportsRequestQuery;
   const projection = {
     conditions: 1,
     status: 1,
     errMessage: 1,
     created: 1,
     modified: 1,
-    startTime: 1,
-    endTime: 1,
   };
   try {
-    let reports: ProjectedReport[];
-    if (limit) {
+    let reports: ReportPreview[];
+    if (limit && page) {
       reports = await Report.find({}, projection)
-        .limit(limit)
+        .skip(parseInt(limit) * (parseInt(page) - 1))
+        .limit(parseInt(limit))
         .sort({ created: -1 });
     } else {
       reports = await Report.find({}, projection).sort({ created: -1 });

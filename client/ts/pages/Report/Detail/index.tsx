@@ -74,31 +74,6 @@ export default class Report extends PureComponent<
       activeIndex: -1,
       infoOpen: true,
     };
-
-    this.handleAccordionIndexChange = this.handleAccordionIndexChange.bind(this);
-    this.handleInfoIndexChange = this.handleInfoIndexChange.bind(this);
-    this.toggleShowCommunities = this.toggleShowCommunities.bind(this);
-    this.selectProduct = this.selectProduct.bind(this);
-    this.handleToggleSidebar = this.handleToggleSidebar.bind(this);
-    this.toggleSidebar = this.toggleSidebar.bind(this);
-    this.selectCommunities = this.selectCommunities.bind(this);
-
-    // bind window functions
-    this.openCommunityCharacterWindow = this.openCommunityCharacterWindow.bind(this);
-
-    this.openCommunityListWidow = this.openCommunityListWidow.bind(this);
-    this.openProductRankWindow = this.openProductRankWindow.bind(this);
-
-    this.closeCommunityCharacterWindow = this.closeCommunityCharacterWindow.bind(this);
-    this.closeCommunityListWindow = this.closeCommunityListWindow.bind(this);
-    this.closeProductRankWindow = this.closeProductRankWindow.bind(this);
-
-    // bind search function
-    this.handleSearchChange = this.handleSearchChange.bind(this);
-    this.handleResultSelect = this.handleResultSelect.bind(this);
-
-    this.openAddAnalysisModal = this.openAddAnalysisModal.bind(this);
-    this.closeAddAnalysisModal = this.closeAddAnalysisModal.bind(this);
   }
 
   public async componentDidMount() {
@@ -109,71 +84,71 @@ export default class Report extends PureComponent<
     });
   }
 
-  public handleAccordionIndexChange(e: any, data: AccordionTitleProps): void {
+  public handleAccordionIndexChange = (e: any, data: AccordionTitleProps) => {
     const { index } = data;
     this.setState({
       activeIndex: this.state.activeIndex === index ? -1 : (index as number),
     });
-  }
+  };
 
-  public handleInfoIndexChange(): void {
+  public handleInfoIndexChange = () => {
     this.setState({
       infoOpen: !this.state.infoOpen,
     });
-  }
+  };
 
-  public toggleShowCommunities() {
+  public toggleShowCommunities = () => {
     this.setState({
       showCommunity: !this.state.showCommunity,
     });
-  }
+  };
 
-  public openCommunityCharacterWindow(): void {
+  public openCommunityCharacterWindow = () => {
     this.setState({
       windowCommunityCharacter: true,
     });
-  }
+  };
 
-  public closeCommunityCharacterWindow(): void {
+  public closeCommunityCharacterWindow = () => {
     this.setState({
       windowCommunityCharacter: false,
     });
-  }
+  };
 
-  public openProductRankWindow(): void {
+  public openProductRankWindow = () => {
     this.setState({
       windowProductRank: true,
     });
-  }
+  };
 
-  public closeProductRankWindow(): void {
+  public closeProductRankWindow = () => {
     this.setState({
       windowProductRank: false,
     });
-  }
+  };
 
-  public openCommunityListWidow(): void {
+  public openCommunityListWidow = () => {
     this.setState({
       windowCommunityList: true,
     });
-  }
+  };
 
-  public closeCommunityListWindow(): void {
+  public closeCommunityListWindow = () => {
     this.setState({
       windowCommunityList: false,
     });
-  }
+  };
 
-  public selectProduct(id?: number): void {
+  public selectProduct = (id?: number) => {
     if (this.state.report) {
       this.setState({
         selectedProduct: id,
         selectedCommunities: [],
       });
     }
-  }
+  };
 
-  public selectCommunities(id: number): void {
+  public selectCommunities = (id: number) => {
     if (this.state.selectedCommunities.includes(id)) {
       this.setState({
         selectedProduct: undefined,
@@ -185,24 +160,24 @@ export default class Report extends PureComponent<
         selectedCommunities: [...this.state.selectedCommunities, id],
       });
     }
-  }
+  };
 
-  public handleResultSelect(
+  public handleResultSelect = (
     event: React.MouseEvent<HTMLDivElement>,
     data: SearchResultData,
-  ): void {
+  ) => {
     const { result } = data;
     this.setState({
       focusNode: result.id,
       searchValue: result.name,
       searchResults: [],
     });
-  }
+  };
 
-  public handleSearchChange(
+  public handleSearchChange = (
     event: React.MouseEvent<HTMLElement>,
     data: SearchProps,
-  ): void {
+  ) => {
     const { value } = data;
     if (value) {
       const filter: Node[] = (this.state.report as ReportAPI).nodes.filter(
@@ -220,23 +195,23 @@ export default class Report extends PureComponent<
         searchResults: results,
       });
     }
-  }
+  };
 
-  public handleToggleSidebar() {
+  public handleToggleSidebar = () => {
     this.setState((prevState) => ({
       visible: !prevState.visible,
     }));
-  }
+  };
 
-  public resultRenderer(node) {
+  public resultRenderer(node: Node) {
     return <Search.Result key={node.id} id={node.id} title={node.name} />;
   }
 
-  public toggleSidebar() {
+  public toggleSidebar = () => {
     this.setState({
       sidebarVisible: !this.state.sidebarVisible,
     });
-  }
+  };
 
   public getConditions() {
     if (this.state.report) {
@@ -265,17 +240,17 @@ export default class Report extends PureComponent<
     }
   }
 
-  public openAddAnalysisModal(): void {
+  public openAddAnalysisModal = () => {
     this.setState({
       addAnalysisModalOpen: true,
     });
-  }
+  };
 
-  public closeAddAnalysisModal(): void {
+  public closeAddAnalysisModal = () => {
     this.setState({
       addAnalysisModalOpen: false,
     });
-  }
+  };
 
   public render() {
     if (this.state.loading) {
