@@ -1,5 +1,6 @@
 import axios from 'axios';
 import Jgraph from '../Jgraph';
+import { appendQuery, Query } from '../Helper';
 
 type MethodType = 'frequency' | 'adjust-frequency' | 'adjust-price';
 
@@ -70,6 +71,11 @@ export type ReportPreview = Pick<
   '_id' | 'created' | 'conditions' | 'modified' | 'status' | 'errMessage'
 >;
 
+interface ListQuery {
+  page?: number;
+  limit?: number;
+}
+
 export default class Report {
   public static async add(conditions: Condition[]): Promise<{ id: string }> {
     const { data } = await axios.post<{ id: string }>(`/api/report/`, { conditions });
@@ -88,8 +94,8 @@ export default class Report {
     return new Report(report.data);
   }
 
-  public static async getAll(limit?: number): Promise<ReportPreview[]> {
-    const url = limit && limit > 0 ? `/api/report?limit=${limit}` : '/api/report';
+  public static async getAll(query: ListQuery): Promise<ReportPreview[]> {
+    const url = appendQuery(`/api/report`, query as Query);
     const reports = await axios.get<{
       reports: ReportPreview[];
     }>(url);
