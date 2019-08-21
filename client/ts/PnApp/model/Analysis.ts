@@ -1,7 +1,8 @@
 import axios from 'axios';
 import Report from './Report';
+import { appendQuery } from '../Helper';
 
-export interface Comments {
+export interface Comment {
   readonly userId: string;
   _id?: string;
   name?: string;
@@ -15,8 +16,13 @@ export interface AnalysisModel {
   title?: string;
   description?: string;
   report: string;
-  comments?: Comments[];
+  comments?: Comment[];
   created?: string;
+}
+
+interface ListQuery {
+  page: number;
+  limit: number;
 }
 
 export default class Analysis {
@@ -25,8 +31,9 @@ export default class Analysis {
     return new Analysis(response.data);
   }
 
-  public static async getAll(from?: number, limit?: number): Promise<Analysis[]> {
-    const response = await axios.get<AnalysisModel[]>(`/api/analysis/`);
+  public static async getAll(query?: ListQuery): Promise<Analysis[]> {
+    const url = query ? appendQuery(`/api/analysis`, query) : '/api/report';
+    const response = await axios.get<AnalysisModel[]>(url);
     return response.data.map((analysis) => new Analysis(analysis));
   }
 
@@ -39,7 +46,7 @@ export default class Analysis {
   public readonly id: string;
   public title: string;
   public description: string;
-  public comments: Comments[];
+  public comments: Comment[];
   public readonly created: Date;
   public report: string | Report;
 
@@ -47,7 +54,7 @@ export default class Analysis {
     this.id = model._id as string;
     this.title = model.title as string;
     this.description = model.description as string;
-    this.comments = model.comments as Comments[];
+    this.comments = model.comments as Comment[];
     this.created = new Date(model.created as string) as Date;
     this.report = model.report;
   }
@@ -66,11 +73,13 @@ export default class Analysis {
   }
 
   public async addComment(content: string): Promise<void> {
-    await axios.post(`/api/analysis/${this.id}/comment`, { content });
+    await axios.post(`/api/analysis/${this.id}/comment`, {
+      content,
+    });
     await this.reload();
   }
 
-  public async updateComment(body: Comments): Promise<void> {
+  public async updateComment(body: Comment): Promise<void> {
     await axios.post(`/api/analysis/${this.id}/comment/${body._id}`, body);
     await this.reload();
   }

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { loginRequired } from '../../core/auth';
-import { checkExist, httpMethodNotSupport } from '../../core/middleware';
+import { checkExist, httpMethodNotSupport, Pager } from '../../core/middleware';
 import { Analysis } from '../../models';
 import {
   AddAnalysis,
@@ -21,6 +21,12 @@ router
   .all(loginRequired)
   .get(GetAnalyses)
   .post(AddAnalysis)
+  .all(httpMethodNotSupport);
+
+router
+  .route('/page')
+  .all(loginRequired)
+  .get(Pager(Analysis))
   .all(httpMethodNotSupport);
 
 router

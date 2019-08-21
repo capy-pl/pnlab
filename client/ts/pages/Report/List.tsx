@@ -135,7 +135,11 @@ class ReportList extends PureComponent<RouteComponentProps, ReportListState> {
       : this.state.startPage + (this.state.leftNumber as number);
     for (let i = this.state.startPage; i < max; i++) {
       items.push(
-        <Menu.Item onClick={this.changePage(i)} as='a'>
+        <Menu.Item
+          active={this.state.currentPage === i}
+          onClick={this.changePage(i)}
+          as='a'
+        >
           {i}
         </Menu.Item>,
       );

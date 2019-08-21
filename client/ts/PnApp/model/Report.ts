@@ -72,8 +72,8 @@ export type ReportPreview = Pick<
 >;
 
 interface ListQuery {
-  page?: number;
-  limit?: number;
+  page: number;
+  limit: number;
 }
 
 export default class Report {
@@ -94,8 +94,8 @@ export default class Report {
     return new Report(report.data);
   }
 
-  public static async getAll(query: ListQuery): Promise<ReportPreview[]> {
-    const url = appendQuery(`/api/report`, query as Query);
+  public static async getAll(query?: ListQuery): Promise<ReportPreview[]> {
+    const url = query ? appendQuery(`/api/report`, query) : '/api/report';
     const reports = await axios.get<{
       reports: ReportPreview[];
     }>(url);

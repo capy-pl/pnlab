@@ -5,14 +5,14 @@ import {
   AccordionTitleProps,
   Button,
   Checkbox,
-  Header,
   Icon,
-  List,
   Menu,
   Search,
   Sidebar,
+  SearchResultProps,
   SearchResultData,
   SearchProps,
+  Table,
 } from 'semantic-ui-react';
 import { debounce } from 'lodash';
 
@@ -203,7 +203,7 @@ export default class Report extends PureComponent<
     }));
   };
 
-  public resultRenderer(node: Node) {
+  public resultRenderer(node: SearchResultProps) {
     return <Search.Result key={node.id} id={node.id} title={node.name} />;
   }
 
@@ -218,22 +218,20 @@ export default class Report extends PureComponent<
       return this.state.report.conditions.map((condition) => {
         if (condition.type === 'string' || condition.type === 'promotion') {
           return (
-            <List.Item key={condition.name}>
-              <List.Header>{condition.name}</List.Header>
-              <List.Description>
-                {(condition.values as string[]).join(', ')}
-              </List.Description>
-            </List.Item>
+            <Table.Row key={condition.name}>
+              <Table.Cell>{condition.name}</Table.Cell>
+              <Table.Cell>{(condition.values as string[]).join(', ')}</Table.Cell>
+            </Table.Row>
           );
         }
         if (condition.type === 'date') {
           return (
-            <List.Item key={condition.name}>
-              <List.Header>{condition.name}</List.Header>
-              <List.Description>
+            <Table.Row key={condition.name}>
+              <Table.Cell>{condition.name}</Table.Cell>
+              <Table.Cell>
                 {simplifyDate(condition.values[0])} - {simplifyDate(condition.values[1])}
-              </List.Description>
-            </List.Item>
+              </Table.Cell>
+            </Table.Row>
           );
         }
       });
@@ -300,12 +298,13 @@ export default class Report extends PureComponent<
                       active={this.state.infoOpen}
                       onClick={this.handleInfoIndexChange}
                     >
-                      <Header block textAlign='center'>
-                        基本資訊
-                      </Header>
+                      顯示篩選條件
+                      <Icon name='dropdown' />
                     </Accordion.Title>
                     <Accordion.Content active={this.state.infoOpen}>
-                      <List relaxed='very'>{this.getConditions()}</List>
+                      <Table definition basic='very' compact>
+                        <Table.Body>{this.getConditions()}</Table.Body>
+                      </Table>
                     </Accordion.Content>
                   </Menu.Item>
                   <Menu.Item>
