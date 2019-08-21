@@ -19,9 +19,11 @@ import { debounce } from 'lodash';
 import { ModalAddAnalysis } from 'Component/modal';
 import Graph from '../../../components/graph';
 import Loader from '../../../components/Loader';
-import CommunityCharacterWindow from './CommunityCharacterWindow';
-import CommunityListWindow from './CommunityListWindow';
-import ProductRankWindow from './ProductRankWindow';
+import {
+  CommunityCharacterWindow,
+  CommunityListWindow,
+  ProductRankWindow,
+} from 'Component/window';
 
 import ReportAPI, { Node } from '../../../PnApp/model/Report';
 import { simplifyDate } from '../../../PnApp/Helper';
@@ -302,7 +304,7 @@ export default class Report extends PureComponent<
                       <Icon name='dropdown' />
                     </Accordion.Title>
                     <Accordion.Content active={this.state.infoOpen}>
-                      <Table definition basic='very' compact>
+                      <Table definition style={{ marginTop: '2vh' }}>
                         <Table.Body>{this.getConditions()}</Table.Body>
                       </Table>
                     </Accordion.Content>

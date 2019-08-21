@@ -25,11 +25,7 @@ export interface Node {
   core: boolean | string;
 }
 
-export interface SimpleNode {
-  id: number;
-  name: string;
-  weight: number;
-}
+export type SimpleNode = Pick<Node, 'id' | 'name' | 'weight'>;
 
 export interface Edge {
   from: number;
