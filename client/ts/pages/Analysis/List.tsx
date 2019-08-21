@@ -17,7 +17,7 @@ interface AnalysisListState extends PagerState {
 
 class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState> {
   public pager: Pager;
-  constructor(props: any) {
+  constructor(props: RouteComponentProps) {
     super(props);
     this.state = {
       modalOpen: false,
@@ -29,11 +29,6 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
       currentPage: 1,
     };
 
-    this.onConfirm = this.onConfirm.bind(this);
-    this.onCancel = this.onCancel.bind(this);
-    this.onChangeA = this.onChangeA.bind(this);
-    this.onChangeB = this.onChangeB.bind(this);
-    this.onClick = this.onClick.bind(this);
     this.pager = new Pager('/api/analysis/page', this.state.pageLimit, this.state.limit);
   }
 
@@ -41,7 +36,7 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
     await this.setStartPage(1);
   }
 
-  public async load(): Promise<void> {
+  public load = async () => {
     const analyses = await Analysis.getAll({
       limit: this.state.limit,
       page: this.state.currentPage,
@@ -50,9 +45,9 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
       loading: false,
       analyses,
     });
-  }
+  };
 
-  public async setStartPage(start: number): Promise<void> {
+  public setStartPage = async (start: number) => {
     await this.pager.setStartPage(start);
     this.setState(
       {
@@ -65,7 +60,7 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
         await this.load();
       },
     );
-  }
+  };
 
   public getPageItems(): JSX.Element[] {
     const items: JSX.Element[] = [];
@@ -75,6 +70,7 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
     for (let i = this.state.startPage; i < max; i++) {
       items.push(
         <Menu.Item
+          key={i}
           active={this.state.currentPage === i}
           onClick={this.changePage(i)}
           as='a'
@@ -100,7 +96,7 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
     };
   }
 
-  public async nextPages(): Promise<void> {
+  public nextPages = async () => {
     this.setState(
       {
         loading: true,
@@ -109,9 +105,9 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
         await this.setStartPage(this.state.startPage + this.state.pageLimit);
       },
     );
-  }
+  };
 
-  public async previousPages(): Promise<void> {
+  public previousPages = async () => {
     this.setState(
       {
         loading: true,
@@ -120,21 +116,21 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
         await this.setStartPage(this.state.startPage - this.state.pageLimit);
       },
     );
-  }
+  };
 
-  public onLinkClick(path: string): () => void {
+  public onLinkClick = (path: string) => {
     return () => {
       this.props.history.push(`/analysis/${path}`);
     };
-  }
+  };
 
-  public onClick() {
+  public onClick = () => {
     this.setState({
       modalOpen: true,
     });
-  }
+  };
 
-  public async onConfirm(): Promise<void> {
+  public onConfirm = async () => {
     this.setState({
       modalOpen: false,
       loading: true,
@@ -146,27 +142,33 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
         analysisB: this.state.analysisB,
       },
     });
-  }
+  };
 
-  public onCancel() {
+  public onCancel = () => {
     this.setState({
       modalOpen: false,
     });
-  }
+  };
 
-  public onChangeA(event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) {
+  public onChangeA = (
+    event: React.SyntheticEvent<HTMLElement, Event>,
+    data: DropdownProps,
+  ) => {
     const values = data.value as undefined;
     this.setState({
       analysisA: values,
     });
-  }
+  };
 
-  public onChangeB(event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) {
+  public onChangeB = (
+    event: React.SyntheticEvent<HTMLElement, Event>,
+    data: DropdownProps,
+  ) => {
     const values = data.value as undefined;
     this.setState({
       analysisB: values,
     });
-  }
+  };
 
   public render() {
     const history = this.state.analyses.map((analysis) => {

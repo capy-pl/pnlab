@@ -190,9 +190,9 @@ export async function GetReports(req: e.Request, res: e.Response): Promise<void>
     let reports: ReportPreview[];
     if (limit && page) {
       reports = await Report.find({}, projection)
+        .sort({ created: -1 })
         .skip(parseInt(limit) * (parseInt(page) - 1))
-        .limit(parseInt(limit))
-        .sort({ created: -1 });
+        .limit(parseInt(limit));
     } else {
       reports = await Report.find({}, projection).sort({ created: -1 });
     }

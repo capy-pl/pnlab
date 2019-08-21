@@ -88,6 +88,7 @@ const Item = ({ item, onLinkClick }: ItemProps) => {
         {dateCondition ? dateToString(stringToDate(dateCondition[1])) : 'All'}
       </Table.Cell>
       <Table.Cell>{tagList}</Table.Cell>
+      <Table.Cell>{item.created.toLocaleString()}</Table.Cell>
       <Table.Cell>
         <Button
           content='View Detail'

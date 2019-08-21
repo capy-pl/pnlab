@@ -58,7 +58,7 @@ const graphOption: Options = {
   },
   physics: {
     barnesHut: {
-      springLength: 300,
+      springLength: 270,
       centralGravity: 0.15,
       avoidOverlap: 0.2,
     },

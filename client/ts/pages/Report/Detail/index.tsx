@@ -252,6 +252,10 @@ export default class Report extends PureComponent<
     });
   };
 
+  public addAnalysisSuccess = (id: string) => {
+    this.props.history.push(`/analysis/${id}`);
+  };
+
   public render() {
     if (this.state.loading) {
       return <Loader size='huge' />;
@@ -354,6 +358,7 @@ export default class Report extends PureComponent<
                   <ModalAddAnalysis
                     report={this.state.report}
                     close={this.closeAddAnalysisModal}
+                    onSuccess={this.addAnalysisSuccess}
                     show={this.state.addAnalysisModalOpen}
                   />
                   <Button
