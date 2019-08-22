@@ -206,10 +206,10 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
           <Table selectable color='blue'>
             <Table.Header>
               <Table.Row>
-                <Table.HeaderCell width='1' textAlign='center'>
+                <Table.HeaderCell width='8' textAlign='center'>
                   圖片名稱
                 </Table.HeaderCell>
-                <Table.HeaderCell width='5' textAlign='center'>
+                <Table.HeaderCell width='4' textAlign='center'>
                   建立時間
                 </Table.HeaderCell>
                 <Table.HeaderCell width='2' textAlign='center' />
