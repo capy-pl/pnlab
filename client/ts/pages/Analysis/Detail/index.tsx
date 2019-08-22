@@ -7,6 +7,7 @@ import {
   Checkbox,
   Icon,
   Menu,
+  Header,
   Search,
   Sidebar,
   SearchResultData,
@@ -16,7 +17,6 @@ import {
 } from 'semantic-ui-react';
 import { debounce } from 'lodash';
 
-import { ModalAddAnalysis } from 'Component/modal';
 import Graph from '../../../components/graph';
 import Loader from '../../../components/Loader';
 import {
@@ -24,32 +24,33 @@ import {
   CommunityListWindow,
   ProductRankWindow,
 } from 'Component/window';
-
+import AnalysisInfoWindow from './AnalysisInfoWindow.tsx';
 import ReportAPI, { Node } from '../../../PnApp/model/Report';
-import Analysis from '../../../PnApp/model/Analysis';
+import Analysis, { Comment } from '../../../PnApp/model/Analysis';
 
 import { simplifyDate } from '../../../PnApp/Helper';
 
-interface ReportState {
+interface State {
   loading: boolean;
   windowProductRank: boolean;
   windowCommunityList: boolean;
   windowCommunityCharacter: boolean;
+  windowAnalysisInfo: boolean;
   analysis?: Analysis;
+  title?: string;
   report?: ReportAPI;
   showCommunity: boolean;
   selectedCommunities: number[];
   selectedProduct?: number;
   searchItems?: number[];
   modalOpen: boolean;
-  addAnalysisModalOpen: boolean;
-  visible: boolean;
-  sidebarVisible: boolean;
   searchValue: string;
+  sidebarVisible: boolean;
   searchResults: SearchResult[];
   focusNode?: number;
   activeIndex: number;
   infoOpen: boolean;
+  comments: Comment[];
 }
 
 interface SearchResult extends Node {
@@ -59,7 +60,7 @@ interface SearchResult extends Node {
 
 export default class Detail extends PureComponent<
   RouteComponentProps<{ id: string }>,
-  ReportState
+  State
 > {
   constructor(props: RouteComponentProps<{ id: string }>) {
     super(props);
@@ -70,21 +71,20 @@ export default class Detail extends PureComponent<
       windowCommunityCharacter: false,
       showCommunity: false,
       modalOpen: false,
-      visible: false,
-      addAnalysisModalOpen: false,
+      windowAnalysisInfo: false,
       sidebarVisible: false,
       selectedCommunities: [],
       searchValue: '',
       searchResults: [],
       activeIndex: -1,
       infoOpen: true,
+      comments: [],
     };
 
     this.handleAccordionIndexChange = this.handleAccordionIndexChange.bind(this);
     this.handleInfoIndexChange = this.handleInfoIndexChange.bind(this);
     this.toggleShowCommunities = this.toggleShowCommunities.bind(this);
     this.selectProduct = this.selectProduct.bind(this);
-    this.handleToggleSidebar = this.handleToggleSidebar.bind(this);
     this.toggleSidebar = this.toggleSidebar.bind(this);
     this.selectCommunities = this.selectCommunities.bind(this);
 
@@ -101,19 +101,28 @@ export default class Detail extends PureComponent<
     // bind search function
     this.handleSearchChange = this.handleSearchChange.bind(this);
     this.handleResultSelect = this.handleResultSelect.bind(this);
-
-    this.openAddAnalysisModal = this.openAddAnalysisModal.bind(this);
-    this.closeAddAnalysisModal = this.closeAddAnalysisModal.bind(this);
   }
 
   public async componentDidMount() {
     const analysis = await Analysis.get(this.props.match.params.id);
     await analysis.loadReport();
     this.setState({
+      title: analysis.title,
+      analysis: analysis,
       report: analysis.report as ReportAPI,
+      comments: [...analysis.comments],
       loading: false,
     });
   }
+
+  public onSaved = () => {
+    const { analysis } = this.state;
+    this.setState({
+      title: (analysis as Analysis).title,
+      analysis,
+      comments: [...(analysis as Analysis).comments],
+    });
+  };
 
   public handleAccordionIndexChange(e: any, data: AccordionTitleProps): void {
     const { index } = data;
@@ -228,12 +237,6 @@ export default class Detail extends PureComponent<
     }
   }
 
-  public handleToggleSidebar() {
-    this.setState((prevState) => ({
-      visible: !prevState.visible,
-    }));
-  }
-
   public resultRenderer(node: SearchResultProps) {
     return <Search.Result key={node.id} id={node.id} title={node.name} />;
   }
@@ -250,8 +253,10 @@ export default class Detail extends PureComponent<
         if (condition.type === 'string' || condition.type === 'promotion') {
           return (
             <Table.Row key={condition.name}>
-              <Table.Cell>{condition.name}</Table.Cell>
-              <Table.Cell>{(condition.values as string[]).join(', ')}</Table.Cell>
+              <Table.Cell width='6'>{condition.name}</Table.Cell>
+              <Table.Cell width='10'>
+                {(condition.values as string[]).join(', ')}
+              </Table.Cell>
             </Table.Row>
           );
         }
@@ -269,17 +274,13 @@ export default class Detail extends PureComponent<
     }
   }
 
-  public openAddAnalysisModal(): void {
-    this.setState({
-      addAnalysisModalOpen: true,
-    });
-  }
+  public openAnalysisInfoWindow = () => {
+    this.setState({ windowAnalysisInfo: true });
+  };
 
-  public closeAddAnalysisModal(): void {
-    this.setState({
-      addAnalysisModalOpen: false,
-    });
-  }
+  public closeAnalysisInfoWindow = () => {
+    this.setState({ windowAnalysisInfo: false });
+  };
 
   public render() {
     if (this.state.loading) {
@@ -307,8 +308,16 @@ export default class Detail extends PureComponent<
               show={this.state.windowProductRank}
               close={this.closeProductRankWindow}
             />
+            <AnalysisInfoWindow
+              onSave={this.onSaved}
+              show={this.state.windowAnalysisInfo}
+              close={this.closeAnalysisInfoWindow}
+              model={this.state.analysis as Analysis}
+              comments={this.state.comments}
+            />
             <Sidebar.Pushable>
               <Sidebar
+                width='wide'
                 animation='push'
                 direction='left'
                 visible={this.state.sidebarVisible}
@@ -326,6 +335,12 @@ export default class Detail extends PureComponent<
                     <div style={{ textAlign: 'right' }}>
                       <Icon link name='x' onClick={this.toggleSidebar} />
                     </div>
+                  </Menu.Item>
+                  <Menu.Item as='a' onClick={this.openAnalysisInfoWindow}>
+                    <Header>
+                      {this.state.title as string}
+                      <Header.Subheader>點擊查看詳細資訊</Header.Subheader>
+                    </Header>
                   </Menu.Item>
                   <Menu.Item>
                     <Accordion.Title
@@ -383,22 +398,6 @@ export default class Detail extends PureComponent<
                       </Menu.Item>
                     </Accordion.Content>
                   </Menu.Item>
-                  <ModalAddAnalysis
-                    report={this.state.report}
-                    close={this.closeAddAnalysisModal}
-                    show={this.state.addAnalysisModalOpen}
-                  />
-                  <Button
-                    fluid
-                    color='facebook'
-                    onClick={this.openAddAnalysisModal}
-                    style={{
-                      position: 'absolute',
-                      bottom: 0,
-                    }}
-                  >
-                    另存圖片
-                  </Button>
                 </Accordion>
               </Sidebar>
               <Sidebar.Pusher>

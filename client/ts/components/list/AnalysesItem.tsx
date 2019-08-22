@@ -1,9 +1,9 @@
 import React from 'react';
 import { Button, Table } from 'semantic-ui-react';
-import Analysis from '../../PnApp/Model/Analysis';
+import { AnalysisPreview } from '../../PnApp/Model/Analysis';
 
 interface AnalysisItemProps {
-  item: Analysis;
+  item: AnalysisPreview;
   onButtonClick: () => void;
 }
 

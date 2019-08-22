@@ -284,6 +284,7 @@ export default class Report extends PureComponent<
             />
             <Sidebar.Pushable>
               <Sidebar
+                width='wide'
                 animation='push'
                 direction='left'
                 visible={this.state.sidebarVisible}

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, DropdownProps, Header, Icon, Modal } from 'semantic-ui-react';
 
-import Analysis from '../../PnApp/model/Analysis';
+import { AnalysisPreview } from '../../PnApp/model/Analysis';
 import FormAnalysis from '../form/FormAnalysis';
 
 interface ModalAddCompareProps {
@@ -10,7 +10,7 @@ interface ModalAddCompareProps {
   onConfirm?: () => void;
   onCancel?: () => void;
   children?: React.ReactNode;
-  analyses: Analysis[];
+  analyses: AnalysisPreview[];
   dropChangeA?: (
     event: React.SyntheticEvent<HTMLElement, Event>,
     data: DropdownProps,

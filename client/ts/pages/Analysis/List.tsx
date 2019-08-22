@@ -5,12 +5,12 @@ import { Button, Icon, DropdownProps, Menu, Segment, Table } from 'semantic-ui-r
 import Pager, { PagerState } from '../../PnApp/Pager';
 import { AnalysisItem } from '../../components/list';
 import ModalAddCompare from '../../components/modal/ModalAddCompare';
-import Analysis from '../../PnApp/model/Analysis';
+import Analysis, { AnalysisPreview } from '../../PnApp/model/Analysis';
 
 interface AnalysisListState extends PagerState {
   loading: boolean;
   modalOpen: boolean;
-  analyses: Analysis[];
+  analyses: AnalysisPreview[];
   analysisA?: Analysis;
   analysisB?: Analysis;
 }
@@ -174,9 +174,9 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
     const history = this.state.analyses.map((analysis) => {
       return (
         <AnalysisItem
-          key={analysis.id}
+          key={analysis._id}
           item={analysis}
-          onButtonClick={this.onLinkClick(analysis.id)}
+          onButtonClick={this.onLinkClick(analysis._id)}
         />
       );
     });

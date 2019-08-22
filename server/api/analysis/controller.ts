@@ -21,6 +21,7 @@ export async function AddAnalysis(req: Request, res: Response): Promise<void> {
       analysis.title = '未命名的分析';
     }
     analysis.created = new Date();
+    analysis.modified = new Date();
     await analysis.save();
     res.status(201).send({ id: analysis._id });
   } catch (err) {
@@ -44,6 +45,7 @@ export async function GetAnalyses(req: Request, res: Response): Promise<void> {
         {
           title: 1,
           created: 1,
+          modified: 1,
           description: 1,
         },
       )
