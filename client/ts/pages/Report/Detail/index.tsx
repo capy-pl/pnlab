@@ -339,30 +339,25 @@ export default class Report extends PureComponent<
                   <Menu.Item as='a' onClick={this.openProductRankWindow}>
                     產品排名
                   </Menu.Item>
-                  <Popup
-                    content='點選上方"標示community"後即可查看'
-                    disabled={this.state.showCommunity}
-                    trigger={
-                      <Menu.Item>
-                        <Accordion.Title
-                          onClick={this.handleAccordionIndexChange}
-                          index={2}
-                          active={this.state.activeIndex === 2}
-                        >
-                          產品Community列表
-                          <Icon name='dropdown' />
-                        </Accordion.Title>
-                        <Accordion.Content active={this.state.activeIndex === 2}>
-                          <Menu.Item onClick={this.openCommunityListWidow}>
-                            Communities排名
-                          </Menu.Item>
-                          <Menu.Item onClick={this.openCommunityCharacterWindow}>
-                            Communities角色
-                          </Menu.Item>
-                        </Accordion.Content>
-                      </Menu.Item>
-                    }
-                  />
+                  <Menu.Item>
+                    <Accordion.Title
+                      onClick={this.handleAccordionIndexChange}
+                      index={2}
+                      active={this.state.activeIndex === 2}
+                      disabled={!this.state.showCommunity}
+                    >
+                      產品Community列表
+                    <Icon name='dropdown' />
+                    </Accordion.Title>
+                    <Accordion.Content active={this.state.activeIndex === 2}>
+                      <Menu.Item onClick={this.openCommunityListWidow}>
+                        Communities排名
+                    </Menu.Item>
+                      <Menu.Item onClick={this.openCommunityCharacterWindow}>
+                        Communities角色
+                    </Menu.Item>
+                    </Accordion.Content>
+                  </Menu.Item>
                   <ModalAddAnalysis
                     report={this.state.report}
                     close={this.closeAddAnalysisModal}
