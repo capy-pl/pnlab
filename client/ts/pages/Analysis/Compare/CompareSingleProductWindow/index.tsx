@@ -82,7 +82,7 @@ export default class CompareSingleProductWindow extends PureComponent<
       tableName: string,
       nodes: ConnectedNode[],
       shareProducts: ConnectedNode[],
-      leftHandSideNodes: ConnectedNode[] | undefined = undefined
+      leftHandSideNodes?: ConnectedNode[]
     ) => {
       const tableRow = this.getTableRow(nodes, shareProducts, leftHandSideNodes ? leftHandSideNodes : []);
       return (
