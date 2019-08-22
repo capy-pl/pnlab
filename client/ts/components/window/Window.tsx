@@ -4,7 +4,7 @@ import { Card, Icon } from 'semantic-ui-react';
 
 interface WindowProps {
   title: string;
-  children?: React.ReactChild;
+  children?: JSX.Element | JSX.Element[];
   show?: boolean;
   defaultX?: number;
   defaultY?: number;

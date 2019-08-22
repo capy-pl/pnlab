@@ -7,16 +7,16 @@ import {
   Checkbox,
   Icon,
   Menu,
+  Header,
   Search,
   Sidebar,
-  SearchResultProps,
   SearchResultData,
+  SearchResultProps,
   SearchProps,
   Table,
 } from 'semantic-ui-react';
 import { debounce } from 'lodash';
 
-import { ModalAddAnalysis } from 'Component/modal';
 import Graph from '../../../components/graph';
 import Loader from '../../../components/Loader';
 import {
@@ -24,29 +24,33 @@ import {
   CommunityListWindow,
   ProductRankWindow,
 } from 'Component/window';
-
+import AnalysisInfoWindow from './AnalysisInfoWindow.tsx';
 import ReportAPI, { Node } from '../../../PnApp/model/Report';
+import Analysis, { Comment } from '../../../PnApp/model/Analysis';
+
 import { simplifyDate } from '../../../PnApp/Helper';
 
-interface ReportState {
+interface State {
   loading: boolean;
   windowProductRank: boolean;
   windowCommunityList: boolean;
   windowCommunityCharacter: boolean;
+  windowAnalysisInfo: boolean;
+  analysis?: Analysis;
+  title?: string;
   report?: ReportAPI;
   showCommunity: boolean;
   selectedCommunities: number[];
   selectedProduct?: number;
   searchItems?: number[];
   modalOpen: boolean;
-  addAnalysisModalOpen: boolean;
-  visible: boolean;
-  sidebarVisible: boolean;
   searchValue: string;
+  sidebarVisible: boolean;
   searchResults: SearchResult[];
   focusNode?: number;
   activeIndex: number;
   infoOpen: boolean;
+  comments: Comment[];
 }
 
 interface SearchResult extends Node {
@@ -54,9 +58,9 @@ interface SearchResult extends Node {
   core: string | boolean;
 }
 
-export default class Report extends PureComponent<
+export default class Detail extends PureComponent<
   RouteComponentProps<{ id: string }>,
-  ReportState
+  State
 > {
   constructor(props: RouteComponentProps<{ id: string }>) {
     super(props);
@@ -67,90 +71,124 @@ export default class Report extends PureComponent<
       windowCommunityCharacter: false,
       showCommunity: false,
       modalOpen: false,
-      visible: false,
-      addAnalysisModalOpen: false,
+      windowAnalysisInfo: false,
       sidebarVisible: false,
       selectedCommunities: [],
       searchValue: '',
       searchResults: [],
       activeIndex: -1,
       infoOpen: true,
+      comments: [],
     };
+
+    this.handleAccordionIndexChange = this.handleAccordionIndexChange.bind(this);
+    this.handleInfoIndexChange = this.handleInfoIndexChange.bind(this);
+    this.toggleShowCommunities = this.toggleShowCommunities.bind(this);
+    this.selectProduct = this.selectProduct.bind(this);
+    this.toggleSidebar = this.toggleSidebar.bind(this);
+    this.selectCommunities = this.selectCommunities.bind(this);
+
+    // bind window functions
+    this.openCommunityCharacterWindow = this.openCommunityCharacterWindow.bind(this);
+
+    this.openCommunityListWidow = this.openCommunityListWidow.bind(this);
+    this.openProductRankWindow = this.openProductRankWindow.bind(this);
+
+    this.closeCommunityCharacterWindow = this.closeCommunityCharacterWindow.bind(this);
+    this.closeCommunityListWindow = this.closeCommunityListWindow.bind(this);
+    this.closeProductRankWindow = this.closeProductRankWindow.bind(this);
+
+    // bind search function
+    this.handleSearchChange = this.handleSearchChange.bind(this);
+    this.handleResultSelect = this.handleResultSelect.bind(this);
   }
 
   public async componentDidMount() {
-    const report = await ReportAPI.get(this.props.match.params.id);
+    const analysis = await Analysis.get(this.props.match.params.id);
+    await analysis.loadReport();
     this.setState({
-      report,
+      title: analysis.title,
+      analysis: analysis,
+      report: analysis.report as ReportAPI,
+      comments: [...analysis.comments],
       loading: false,
     });
   }
 
-  public handleAccordionIndexChange = (e: any, data: AccordionTitleProps) => {
+  public onSaved = () => {
+    const { analysis } = this.state;
+    this.setState({
+      title: (analysis as Analysis).title,
+      analysis,
+      comments: [...(analysis as Analysis).comments],
+    });
+  };
+
+  public handleAccordionIndexChange(e: any, data: AccordionTitleProps): void {
     const { index } = data;
     this.setState({
       activeIndex: this.state.activeIndex === index ? -1 : (index as number),
     });
-  };
+  }
 
-  public handleInfoIndexChange = () => {
+  public handleInfoIndexChange(): void {
     this.setState({
       infoOpen: !this.state.infoOpen,
     });
-  };
+  }
 
-  public toggleShowCommunities = () => {
+  public toggleShowCommunities() {
     this.setState({
       showCommunity: !this.state.showCommunity,
     });
-  };
+  }
 
-  public openCommunityCharacterWindow = () => {
+  public openCommunityCharacterWindow(): void {
     this.setState({
       windowCommunityCharacter: true,
     });
-  };
+  }
 
-  public closeCommunityCharacterWindow = () => {
+  public closeCommunityCharacterWindow(): void {
     this.setState({
       windowCommunityCharacter: false,
     });
-  };
+  }
 
-  public openProductRankWindow = () => {
+  public openProductRankWindow(): void {
     this.setState({
       windowProductRank: true,
     });
-  };
+  }
 
-  public closeProductRankWindow = () => {
+  public closeProductRankWindow(): void {
     this.setState({
       windowProductRank: false,
     });
-  };
+  }
 
-  public openCommunityListWidow = () => {
+  public openCommunityListWidow(): void {
     this.setState({
       windowCommunityList: true,
     });
-  };
+  }
 
-  public closeCommunityListWindow = () => {
+  public closeCommunityListWindow(): void {
     this.setState({
       windowCommunityList: false,
     });
-  };
+  }
 
-  public selectProduct = (id?: number) => {
+  public selectProduct(id?: number): void {
     if (this.state.report) {
       this.setState({
         selectedProduct: id,
         selectedCommunities: [],
       });
     }
-  };
+  }
 
-  public selectCommunities = (id: number) => {
+  public selectCommunities(id: number): void {
     if (this.state.selectedCommunities.includes(id)) {
       this.setState({
         selectedProduct: undefined,
@@ -162,24 +200,24 @@ export default class Report extends PureComponent<
         selectedCommunities: [...this.state.selectedCommunities, id],
       });
     }
-  };
+  }
 
-  public handleResultSelect = (
+  public handleResultSelect(
     event: React.MouseEvent<HTMLDivElement>,
     data: SearchResultData,
-  ) => {
+  ): void {
     const { result } = data;
     this.setState({
       focusNode: result.id,
       searchValue: result.name,
       searchResults: [],
     });
-  };
+  }
 
-  public handleSearchChange = (
+  public handleSearchChange(
     event: React.MouseEvent<HTMLElement>,
     data: SearchProps,
-  ) => {
+  ): void {
     const { value } = data;
     if (value) {
       const filter: Node[] = (this.state.report as ReportAPI).nodes.filter(
@@ -197,23 +235,17 @@ export default class Report extends PureComponent<
         searchResults: results,
       });
     }
-  };
-
-  public handleToggleSidebar = () => {
-    this.setState((prevState) => ({
-      visible: !prevState.visible,
-    }));
-  };
+  }
 
   public resultRenderer(node: SearchResultProps) {
     return <Search.Result key={node.id} id={node.id} title={node.name} />;
   }
 
-  public toggleSidebar = () => {
+  public toggleSidebar() {
     this.setState({
       sidebarVisible: !this.state.sidebarVisible,
     });
-  };
+  }
 
   public getConditions() {
     if (this.state.report) {
@@ -221,8 +253,10 @@ export default class Report extends PureComponent<
         if (condition.type === 'string' || condition.type === 'promotion') {
           return (
             <Table.Row key={condition.name}>
-              <Table.Cell>{condition.name}</Table.Cell>
-              <Table.Cell>{(condition.values as string[]).join(', ')}</Table.Cell>
+              <Table.Cell width='6'>{condition.name}</Table.Cell>
+              <Table.Cell width='10'>
+                {(condition.values as string[]).join(', ')}
+              </Table.Cell>
             </Table.Row>
           );
         }
@@ -240,20 +274,12 @@ export default class Report extends PureComponent<
     }
   }
 
-  public openAddAnalysisModal = () => {
-    this.setState({
-      addAnalysisModalOpen: true,
-    });
+  public openAnalysisInfoWindow = () => {
+    this.setState({ windowAnalysisInfo: true });
   };
 
-  public closeAddAnalysisModal = () => {
-    this.setState({
-      addAnalysisModalOpen: false,
-    });
-  };
-
-  public addAnalysisSuccess = (id: string) => {
-    this.props.history.push(`/analysis/${id}`);
+  public closeAnalysisInfoWindow = () => {
+    this.setState({ windowAnalysisInfo: false });
   };
 
   public render() {
@@ -282,6 +308,13 @@ export default class Report extends PureComponent<
               show={this.state.windowProductRank}
               close={this.closeProductRankWindow}
             />
+            <AnalysisInfoWindow
+              onSave={this.onSaved}
+              show={this.state.windowAnalysisInfo}
+              close={this.closeAnalysisInfoWindow}
+              model={this.state.analysis as Analysis}
+              comments={this.state.comments}
+            />
             <Sidebar.Pushable>
               <Sidebar
                 width='wide'
@@ -293,12 +326,21 @@ export default class Report extends PureComponent<
                   vertical
                   as={Menu}
                   fluid
-                  style={{ height: '100%', overflowY: 'scroll' }}
+                  style={{
+                    height: '100%',
+                    overflowY: 'scroll',
+                  }}
                 >
                   <Menu.Item>
                     <div style={{ textAlign: 'right' }}>
                       <Icon link name='x' onClick={this.toggleSidebar} />
                     </div>
+                  </Menu.Item>
+                  <Menu.Item as='a' onClick={this.openAnalysisInfoWindow}>
+                    <Header>
+                      {this.state.title as string}
+                      <Header.Subheader>點擊查看詳細資訊</Header.Subheader>
+                    </Header>
                   </Menu.Item>
                   <Menu.Item>
                     <Accordion.Title
@@ -356,23 +398,6 @@ export default class Report extends PureComponent<
                       </Menu.Item>
                     </Accordion.Content>
                   </Menu.Item>
-                  <ModalAddAnalysis
-                    report={this.state.report}
-                    close={this.closeAddAnalysisModal}
-                    onSuccess={this.addAnalysisSuccess}
-                    show={this.state.addAnalysisModalOpen}
-                  />
-                  <Button
-                    fluid
-                    color='facebook'
-                    onClick={this.openAddAnalysisModal}
-                    style={{
-                      position: 'absolute',
-                      bottom: 0,
-                    }}
-                  >
-                    另存圖片
-                  </Button>
                 </Accordion>
               </Sidebar>
               <Sidebar.Pusher>

@@ -22,7 +22,10 @@ interface ModalEditPromotionProps {
   model: Promotion;
 }
 
-export default class ModalAddPromotion extends React.PureComponent<ModalEditPromotionProps, ModalEditPromotionState> {
+export default class ModalAddPromotion extends React.PureComponent<
+  ModalEditPromotionProps,
+  ModalEditPromotionState
+> {
   constructor(props: any) {
     super(props);
     const { model } = this.props;
@@ -97,7 +100,10 @@ export default class ModalAddPromotion extends React.PureComponent<ModalEditProm
       return false;
     }
 
-    if (this.state.type === 'combination' && (!this.state.groupTwo || !this.state.groupTwo.length)) {
+    if (
+      this.state.type === 'combination' &&
+      (!this.state.groupTwo || !this.state.groupTwo.length)
+    ) {
       this.setState({
         error: true,
         errorMessage: `產品群2為空。`,
@@ -185,9 +191,7 @@ export default class ModalAddPromotion extends React.PureComponent<ModalEditProm
           style={{ marginBottom: '5px' }}
           content='編輯'
         />
-        <Modal open={this.state.show}
-centered={false}
-closeOnDimmerClick={false}>
+        <Modal open={this.state.show} centered={false} closeOnDimmerClick={false}>
           <Modal.Header>編輯促銷</Modal.Header>
           <Modal.Content>
             <FormEditPromotion
@@ -207,9 +211,7 @@ closeOnDimmerClick={false}>
             </Message>
           </Modal.Content>
           <Modal.Actions>
-            <Button loading={this.state.loading}
-onClick={this.close}
-color='red'>
+            <Button loading={this.state.loading} onClick={this.close} color='red'>
               取消
             </Button>
             <Button loading={this.state.loading} onClick={this.save}>

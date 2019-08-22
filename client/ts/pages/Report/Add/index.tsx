@@ -67,7 +67,7 @@ export default class Add extends PureComponent<RouteComponentProps, AddState> {
       conditionTypeMap.set(condition.name, condition);
     }
     for (const name in this.state.conditionArgs) {
-      if (conditionTypeMap.get(name)) {
+      if (conditionTypeMap.get(name) && this.state.conditionArgs[name].length) {
         const condition = {
           type: (conditionTypeMap.get(name) as Condition).type,
           name,

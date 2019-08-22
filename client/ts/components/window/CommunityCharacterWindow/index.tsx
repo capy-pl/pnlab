@@ -1,9 +1,9 @@
 import React, { PureComponent } from 'react';
-import { Menu, MenuItemProps, Tab, Segment, Table } from 'semantic-ui-react';
+import { Menu, MenuItemProps, Segment, Table } from 'semantic-ui-react';
 import { isUndefined } from 'lodash';
 
 import { Window } from 'Component/';
-import Report from '../../../../PnApp/model/Report';
+import Report from '../../../PnApp/model/Report';
 
 interface Props {
   close: () => void;

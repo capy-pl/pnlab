@@ -58,7 +58,7 @@ const graphOption: Options = {
   },
   physics: {
     barnesHut: {
-      springLength: 300,
+      springLength: 270,
       centralGravity: 0.15,
       avoidOverlap: 0.2,
     },
@@ -154,6 +154,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
     copy.title = `
     <div>
       <p>${copy.name}</p>
+      <p>社群編號: ${copy.community}</p>
       <p>weight: ${Math.round(copy.weight)}</p>
       <p>連接節點數: ${copy.degree}</p>
     </div>
@@ -228,6 +229,8 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
         selectedNodes.push(update);
       });
       this.nodes.update(selectedNodes);
+    } else {
+      this.repaint();
     }
   }
 

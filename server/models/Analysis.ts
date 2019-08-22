@@ -7,6 +7,7 @@ export interface AnalysisInterface extends Document {
   report: ReportInterface;
   comments: Types.DocumentArray<Comment>;
   created: Date;
+  modified: Date;
 }
 
 export interface Comment extends Document {
@@ -45,8 +46,13 @@ const AnalysisSchema = new Schema<AnalysisInterface>({
   },
   comments: [CommentSchema],
   created: Date,
+  modified: Date,
 });
 
-const AnalysisModel = mongoose.model<AnalysisInterface>('analysis', AnalysisSchema, 'analyses');
+const AnalysisModel = mongoose.model<AnalysisInterface>(
+  'analysis',
+  AnalysisSchema,
+  'analyses',
+);
 
 export default AnalysisModel;

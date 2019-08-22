@@ -3,27 +3,27 @@ import { Dropdown, DropdownProps } from 'semantic-ui-react';
 
 interface Option {
   key: string;
-  value: number;
+  value: string;
   text: string;
 }
 
-interface DropdownSearchProps {
+interface SearchDropDownProps {
   options: Option[];
   placeholder: string;
   onChange: (event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => void;
 }
 
-const DropdownSearchItem = ({ placeholder, options, onChange }: DropdownSearchProps) => (
+const SearchSingleItemDropdown = ({ placeholder, options, onChange }: SearchDropDownProps) => (
   <Dropdown
     clearable
     placeholder={placeholder}
-    multiple
     search
     selection
     onChange={onChange}
     options={options}
+    // style={{minWidth: '18%'}}
     style={{width: '100%'}}
   />
 );
 
-export default DropdownSearchItem;
+export default SearchSingleItemDropdown;

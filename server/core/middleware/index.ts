@@ -47,7 +47,6 @@ export function Pager<T extends Document>(model: Model<T>): e.Handler {
         .skip((startPage - 1) * limit)
         .limit(pageLimit * limit)
         .count();
-      console.log(nums);
       if (nums === pageLimit * limit) {
         res.json({
           hasNext: true,

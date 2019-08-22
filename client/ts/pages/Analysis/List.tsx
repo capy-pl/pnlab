@@ -1,90 +1,182 @@
 import React, { PureComponent } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { Button, DropdownProps, Segment, Table } from 'semantic-ui-react';
+import { Button, Icon, DropdownProps, Menu, Segment, Table } from 'semantic-ui-react';
 
-import { AnalysesList } from '../../components/list';
+import Pager, { PagerState } from '../../PnApp/Pager';
+import { AnalysisItem } from '../../components/list';
 import ModalAddCompare from '../../components/modal/ModalAddCompare';
-import Analysis from '../../PnApp/model/Analysis';
+import Analysis, { AnalysisPreview } from '../../PnApp/model/Analysis';
 
-interface AnalysisListState {
+interface AnalysisListState extends PagerState {
   loading: boolean;
   modalOpen: boolean;
-  analyses: Analysis[];
+  analyses: AnalysisPreview[];
   analysisA?: Analysis;
   analysisB?: Analysis;
 }
 
 class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState> {
-  constructor(props: any) {
+  public pager: Pager;
+  constructor(props: RouteComponentProps) {
     super(props);
     this.state = {
       modalOpen: false,
       loading: true,
       analyses: [],
+      startPage: 1,
+      pageLimit: 10,
+      limit: 15,
+      currentPage: 1,
     };
 
-    this.onConfirm = this.onConfirm.bind(this);
-    this.onCancel = this.onCancel.bind(this);
-    this.onChangeA = this.onChangeA.bind(this);
-    this.onChangeB = this.onChangeB.bind(this);
-    this.onClick = this.onClick. bind(this);
-
+    this.pager = new Pager('/api/analysis/page', this.state.pageLimit, this.state.limit);
   }
 
   public async componentDidMount() {
-    const analyses = await Analysis.getAll();
+    await this.setStartPage(1);
+  }
+
+  public load = async () => {
+    const analyses = await Analysis.getAll({
+      limit: this.state.limit,
+      page: this.state.currentPage,
+    });
     this.setState({
       loading: false,
       analyses,
     });
+  };
+
+  public setStartPage = async (start: number) => {
+    await this.pager.setStartPage(start);
+    this.setState(
+      {
+        hasNext: this.pager.hasNext,
+        leftNumber: !this.pager.hasNext ? this.pager.leftNumber : undefined,
+        startPage: start,
+        currentPage: start,
+      },
+      async () => {
+        await this.load();
+      },
+    );
+  };
+
+  public getPageItems(): JSX.Element[] {
+    const items: JSX.Element[] = [];
+    const max: number = this.state.hasNext
+      ? this.state.startPage + this.state.pageLimit
+      : this.state.startPage + (this.state.leftNumber as number);
+    for (let i = this.state.startPage; i < max; i++) {
+      items.push(
+        <Menu.Item
+          key={i}
+          active={this.state.currentPage === i}
+          onClick={this.changePage(i)}
+          as='a'
+        >
+          {i}
+        </Menu.Item>,
+      );
+    }
+    return items;
   }
 
-  public onLinkClick(path: string): () => void {
-    return () => {
-      this.props.history.push(`/analysis/${path}`);
+  public changePage(page: number): () => Promise<void> {
+    return async () => {
+      this.setState(
+        {
+          loading: true,
+          currentPage: page,
+        },
+        async () => {
+          await this.load();
+        },
+      );
     };
   }
 
-  public onClick() {
+  public nextPages = async () => {
+    this.setState(
+      {
+        loading: true,
+      },
+      async () => {
+        await this.setStartPage(this.state.startPage + this.state.pageLimit);
+      },
+    );
+  };
+
+  public previousPages = async () => {
+    this.setState(
+      {
+        loading: true,
+      },
+      async () => {
+        await this.setStartPage(this.state.startPage - this.state.pageLimit);
+      },
+    );
+  };
+
+  public onLinkClick = (path: string) => {
+    return () => {
+      this.props.history.push(`/analysis/${path}`);
+    };
+  };
+
+  public onClick = () => {
     this.setState({
       modalOpen: true,
     });
-  }
+  };
 
-  public async onConfirm(): Promise<void> {
+  public onConfirm = async () => {
     this.setState({
       modalOpen: false,
       loading: true,
     });
-  }
+    this.props.history.push({
+      pathname: '/analysis/compare',
+      state: {
+        analysisA: this.state.analysisA,
+        analysisB: this.state.analysisB,
+      },
+    });
+  };
 
-  public onCancel() {
+  public onCancel = () => {
     this.setState({
       modalOpen: false,
     });
-  }
+  };
 
-  public onChangeA(event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) {
+  public onChangeA = (
+    event: React.SyntheticEvent<HTMLElement, Event>,
+    data: DropdownProps,
+  ) => {
     const values = data.value as undefined;
     this.setState({
       analysisA: values,
     });
-  }
+  };
 
-  public onChangeB(event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) {
+  public onChangeB = (
+    event: React.SyntheticEvent<HTMLElement, Event>,
+    data: DropdownProps,
+  ) => {
     const values = data.value as undefined;
     this.setState({
       analysisB: values,
     });
-  }
+  };
 
   public render() {
     const history = this.state.analyses.map((analysis) => {
       return (
-        <AnalysesList
-          key={analysis.id}
+        <AnalysisItem
+          key={analysis._id}
           item={analysis}
-          onButtonClick={this.onLinkClick(analysis.id)}
+          onButtonClick={this.onLinkClick(analysis._id)}
         />
       );
     });
@@ -102,26 +194,53 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
           />
           <Button
             floated='right'
-            inverted
             color='blue'
-            style={{ margin: '10px'}}
+            style={{ margin: '10px' }}
             onClick={this.onClick}
+            icon
+            labelPosition='right'
           >
-            Add Compare
+            <Icon name='clone outline' />
+            比較圖片
           </Button>
           <Table selectable color='blue'>
             <Table.Header>
               <Table.Row>
-                <Table.HeaderCell width='1' textAlign='center'>Title</Table.HeaderCell>
-                <Table.HeaderCell width='2' textAlign='center'>Description</Table.HeaderCell>
-                <Table.HeaderCell width='2' textAlign='center'>Comments</Table.HeaderCell>
-                <Table.HeaderCell width='5' textAlign='center'>Created Time</Table.HeaderCell>
-                <Table.HeaderCell width='2' textAlign='center'>Link</Table.HeaderCell>
+                <Table.HeaderCell width='8' textAlign='center'>
+                  圖片名稱
+                </Table.HeaderCell>
+                <Table.HeaderCell width='4' textAlign='center'>
+                  建立時間
+                </Table.HeaderCell>
+                <Table.HeaderCell width='2' textAlign='center' />
               </Table.Row>
             </Table.Header>
-            <Table.Body>
-              {history}
-            </Table.Body>
+            <Table.Body>{history}</Table.Body>
+            <Table.Footer>
+              <Table.Row>
+                <Table.HeaderCell colSpan='16'>
+                  <Menu floated='right' pagination>
+                    <Menu.Item
+                      as='a'
+                      onClick={this.previousPages}
+                      icon
+                      disabled={this.state.startPage === 1}
+                    >
+                      <Icon name='chevron left' />
+                    </Menu.Item>
+                    {this.getPageItems()}
+                    <Menu.Item
+                      as='a'
+                      onClick={this.nextPages}
+                      icon
+                      disabled={!this.state.hasNext}
+                    >
+                      <Icon name='chevron right' />
+                    </Menu.Item>
+                  </Menu>
+                </Table.HeaderCell>
+              </Table.Row>
+            </Table.Footer>
           </Table>
         </React.Fragment>
       </Segment>

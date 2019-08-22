@@ -3,7 +3,7 @@ import React, { PureComponent } from 'react';
 import { Message, Table } from 'semantic-ui-react';
 
 import { Window } from 'Component/';
-import { SimpleNode } from '../../../../PnApp/model/Report';
+import { SimpleNode } from '../../../PnApp/model/Report';
 
 interface Props {
   close: () => void;

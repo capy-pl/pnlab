@@ -1,5 +1,6 @@
 import Window from './Window';
+import CommunityCharacterWindow from './CommunityCharacterWindow';
+import CommunityListWindow from './CommunityListWindow';
+import ProductRankWindow from './ProductRankWindow';
 
-export {
-  Window,
-};
+export { CommunityCharacterWindow, CommunityListWindow, ProductRankWindow, Window };

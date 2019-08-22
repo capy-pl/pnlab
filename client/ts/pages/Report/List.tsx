@@ -30,10 +30,6 @@ class ReportList extends PureComponent<RouteComponentProps, ReportListState> {
 
     this.onFinish = this.onFinish.bind(this);
     this.pager = new Pager('/api/report/page', this.state.pageLimit, this.state.limit);
-    this.changePage = this.changePage.bind(this);
-    this.clearSocket = this.clearSocket.bind(this);
-    this.nextPages = this.nextPages.bind(this);
-    this.previousPages = this.previousPages.bind(this);
   }
 
   public onFinish(id: string): (event: MessageEvent) => void {
@@ -57,7 +53,7 @@ class ReportList extends PureComponent<RouteComponentProps, ReportListState> {
     };
   }
 
-  public async setStartPage(start: number): Promise<void> {
+  public setStartPage = async (start: number) => {
     await this.pager.setStartPage(start);
     this.setState(
       {
@@ -70,9 +66,9 @@ class ReportList extends PureComponent<RouteComponentProps, ReportListState> {
         await this.load();
       },
     );
-  }
+  };
 
-  public async load(): Promise<void> {
+  public load = async () => {
     const reports = await Report.getAll({
       limit: this.state.limit,
       page: this.state.currentPage,
@@ -91,13 +87,13 @@ class ReportList extends PureComponent<RouteComponentProps, ReportListState> {
       loading: false,
       reports,
     });
-  }
+  };
 
-  public clearSocket(): void {
+  public clearSocket = () => {
     this.listeningMap.forEach((socket) => {
       socket.close(1000);
     });
-  }
+  };
 
   public async componentDidMount() {
     await this.setStartPage(1);
@@ -135,7 +131,12 @@ class ReportList extends PureComponent<RouteComponentProps, ReportListState> {
       : this.state.startPage + (this.state.leftNumber as number);
     for (let i = this.state.startPage; i < max; i++) {
       items.push(
-        <Menu.Item onClick={this.changePage(i)} as='a'>
+        <Menu.Item
+          key={i}
+          active={this.state.currentPage === i}
+          onClick={this.changePage(i)}
+          as='a'
+        >
           {i}
         </Menu.Item>,
       );
@@ -143,7 +144,7 @@ class ReportList extends PureComponent<RouteComponentProps, ReportListState> {
     return items;
   }
 
-  public async nextPages(): Promise<void> {
+  public nextPages = async () => {
     this.setState(
       {
         loading: true,
@@ -152,9 +153,9 @@ class ReportList extends PureComponent<RouteComponentProps, ReportListState> {
         await this.setStartPage(this.state.startPage + this.state.pageLimit);
       },
     );
-  }
+  };
 
-  public async previousPages(): Promise<void> {
+  public previousPages = async () => {
     this.setState(
       {
         loading: true,
@@ -163,7 +164,7 @@ class ReportList extends PureComponent<RouteComponentProps, ReportListState> {
         await this.setStartPage(this.state.startPage - this.state.pageLimit);
       },
     );
-  }
+  };
 
   public render() {
     const history = this.state.reports.map((report) => {
@@ -194,14 +195,17 @@ class ReportList extends PureComponent<RouteComponentProps, ReportListState> {
               <Table.HeaderCell width='1' textAlign='center'>
                 狀態
               </Table.HeaderCell>
-              <Table.HeaderCell width='2' textAlign='center'>
+              <Table.HeaderCell width='1' textAlign='center'>
                 開始時間
               </Table.HeaderCell>
-              <Table.HeaderCell width='2' textAlign='center'>
+              <Table.HeaderCell width='1' textAlign='center'>
                 結束時間
               </Table.HeaderCell>
               <Table.HeaderCell width='5' textAlign='center'>
                 條件
+              </Table.HeaderCell>
+              <Table.HeaderCell width='2' textAlign='center'>
+                建立時間
               </Table.HeaderCell>
               <Table.HeaderCell width='2' textAlign='center' />
             </Table.Row>
