@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React, { PureComponent } from 'react';
-import { DataSet, EdgeOptions, Network, NodeOptions } from 'vis';
+import { DataSet, EdgeOptions, Network, NodeOptions, Options } from 'vis';
 
 import Jgraph from '../../PnApp/Jgraph';
 import { Edge, Node } from '../../PnApp/model/Report';
@@ -29,6 +29,43 @@ interface GraphProps {
   selectedProduct?: string[];
   shareNodes?: string[];
 }
+
+const graphOption: Options = {
+  edges: {
+    smooth: false,
+    scaling: {
+      customScalingFunction,
+      max: 30,
+      min: 1,
+    },
+  },
+  layout: {
+    improvedLayout: false,
+    randomSeed: 5,
+  },
+  nodes: {
+    scaling: {
+      customScalingFunction,
+      label: {
+        enabled: true,
+      },
+      max: 100,
+      min: 30,
+    },
+    shape: 'dot',
+  },
+  physics: {
+    barnesHut: {
+      springLength: 300,
+      centralGravity: 0.15,
+      avoidOverlap: 0.2,
+    },
+  },
+  interaction: {
+    hover: true,
+    tooltipDelay: 100,
+  },
+};
 
 export default class GraphViewCompare extends PureComponent<GraphProps, {}> {
   public graphRef: React.RefObject<HTMLDivElement>;
@@ -243,42 +280,7 @@ export default class GraphViewCompare extends PureComponent<GraphProps, {}> {
           nodes: this.nodes,
           edges: this.edges,
         },
-        {
-          edges: {
-            smooth: false,
-            scaling: {
-              customScalingFunction,
-              max: 30,
-              min: 1,
-            },
-          },
-          layout: {
-            improvedLayout: false,
-            randomSeed: 5,
-          },
-          nodes: {
-            scaling: {
-              customScalingFunction,
-              label: {
-                enabled: true,
-              },
-              max: 100,
-              min: 30,
-            },
-            shape: 'dot',
-          },
-          physics: {
-            barnesHut: {
-              springLength: 250,
-              centralGravity: 0.1,
-            },
-            stabilization: true,
-          },
-          interaction: {
-            hover: true,
-            tooltipDelay: 100,
-          },
-        },
+        graphOption,
       );
     }
   }
