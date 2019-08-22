@@ -2,17 +2,18 @@ import React, { PureComponent } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { Container, DropdownProps, Segment } from 'semantic-ui-react';
 
-import FormAddReport from 'Component/form/FormAddReport';
+import FormAddReport from './FormAddReport';
 import Loader from 'Component/Loader';
 import { ModalConfirmReport } from 'Component/modal';
-import { Report } from '../../PnApp/model';
-import { Condition } from '../../PnApp/model/Report';
+
+import { Report } from '../../../PnApp/model';
+import { Condition } from '../../../PnApp/model/Report';
 
 interface AddState {
   loading: boolean;
   buttonLoading: boolean;
   conditions: Condition[];
-  conditionArgs: { [key: string]: string[] };
+  conditionArgs: { [key: string]: string[] | string };
   modalOpen: boolean;
 }
 
@@ -42,8 +43,13 @@ export default class Add extends PureComponent<RouteComponentProps, AddState> {
     });
   }
 
-  public onChange(name: string): (event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => void {
-    return (event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps): void => {
+  public onChange(
+    name: string,
+  ): (event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => void {
+    return (
+      event: React.SyntheticEvent<HTMLElement, Event>,
+      data: DropdownProps,
+    ): void => {
       const values = data.value as string[];
       this.setState({
         conditionArgs: {
@@ -61,7 +67,7 @@ export default class Add extends PureComponent<RouteComponentProps, AddState> {
       conditionTypeMap.set(condition.name, condition);
     }
     for (const name in this.state.conditionArgs) {
-      if (conditionTypeMap.get(name)) {
+      if (conditionTypeMap.get(name) && this.state.conditionArgs[name].length) {
         const condition = {
           type: (conditionTypeMap.get(name) as Condition).type,
           name,

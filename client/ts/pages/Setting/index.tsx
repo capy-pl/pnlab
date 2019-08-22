@@ -12,18 +12,14 @@ export default class Setting extends PureComponent {
     return (
       <Container>
         <Grid>
-          <Grid.Column width={3} >
+          <Grid.Column width={3}>
             <SettingMenu />
           </Grid.Column>
-          <Grid.Column width={13} >
+          <Grid.Column width={13}>
             <Segment>
               <Switch>
-                <Route exact
-path='/settings/profile'
-component={Profile} />
-                <Route exact
-path='/settings/promotion'
-component={Promotion} />
+                <Route exact path='/settings/profile' component={Profile} />
+                <Route exact path='/settings/promotion' component={Promotion} />
               </Switch>
             </Segment>
           </Grid.Column>

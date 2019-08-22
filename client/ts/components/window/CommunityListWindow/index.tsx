@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 
 import { Window } from 'Component/';
-import { Community } from '../../../../PnApp/model/Report';
+import { Community } from '../../../PnApp/model/Report';
 import { Accordion, AccordionTitleProps, Icon, Message, Table } from 'semantic-ui-react';
 
 interface Props {
