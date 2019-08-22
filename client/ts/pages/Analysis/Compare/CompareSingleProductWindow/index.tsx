@@ -21,10 +21,6 @@ export default class CompareSingleProductWindow extends PureComponent<
   CompareSingleProductWindowProps,
   {}
   > {
-  constructor(props: CompareSingleProductWindowProps) {
-    super(props);
-  }
-
   public getTableRow = (
     connectedNodes: ConnectedNode[],
     shareProducts: ConnectedNode[],
@@ -45,33 +41,29 @@ export default class CompareSingleProductWindow extends PureComponent<
         if (!(leftNodeNames.indexOf(node.name) < 0)) {
           variation = leftNodeNames.indexOf(node.name) - nodeNames.indexOf(node.name);
         }
-        switch (true) {
-          case variation < 0:
-            arrow = (
-              <React.Fragment>
-                <Icon color='red' name='long arrow alternate down' />
-                <span style={{ color: 'red' }}>{Math.abs(variation)}</span>
-              </React.Fragment>
-            );
-            break;
-          case variation > 0:
-            arrow = (
-              <React.Fragment>
-                <Icon color='green' name='long arrow alternate up' />
-                <span style={{ color: 'green' }}>{Math.abs(variation)}</span>
-              </React.Fragment>
-            );
-            break;
-          case variation === 0:
-            arrow = (
-              <React.Fragment>
-                <Icon color='blue' name='minus' />
-                <span style={{ color: 'blue' }} />
-              </React.Fragment>
-            );
-            break;
-          default:
-            arrow = <React.Fragment />;
+        if (variation < 0) {
+          arrow = (
+            <React.Fragment>
+              <Icon color='red' name='long arrow alternate down' />
+              <span style={{ color: 'red' }}>{Math.abs(variation)}</span>
+            </React.Fragment>
+          );
+        } else if (variation > 0) {
+          arrow = (
+            <React.Fragment>
+              <Icon color='green' name='long arrow alternate up' />
+              <span style={{ color: 'green' }}>{Math.abs(variation)}</span>
+            </React.Fragment>
+          );
+        } else if (variation === 0) {
+          arrow = (
+            <React.Fragment>
+              <Icon color='blue' name='minus' />
+              <span style={{ color: 'blue' }} />
+            </React.Fragment>
+          );
+        } else {
+          arrow = <React.Fragment />;
         }
       }
       return (

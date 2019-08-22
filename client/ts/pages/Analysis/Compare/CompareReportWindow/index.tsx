@@ -23,10 +23,6 @@ export default class CompareReportWindow extends PureComponent<
   CompareReportWindowProps,
   {}
   > {
-  constructor(props: CompareReportWindowProps) {
-    super(props);
-  }
-
   public getTableRow(nodes: Node[], leftHandSideNodes: Node[] = []) {
     const tableRow = nodes.map((node, index) => {
       let style;
