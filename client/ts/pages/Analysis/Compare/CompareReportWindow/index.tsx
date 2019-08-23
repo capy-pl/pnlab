@@ -38,6 +38,16 @@ export default class CompareReportWindow extends PureComponent<CompareReportWind
   }
 
   public getTableBody(nodes: Node[], leftHandSideNodes: Node[] = []) {
+    const leftNodesMap = new Map<string, number>();
+    const rightNodesMap = new Map<string, number>();
+    if (leftHandSideNodes.length !== 0) {
+      leftHandSideNodes.forEach((node, index) => {
+        leftNodesMap.set(node.name, index);
+      })
+      nodes.forEach((node, index) => {
+        rightNodesMap.set(node.name, index);
+      })
+    }
     const tableRow = nodes.map((node, index) => {
       let style;
       let variation;
@@ -46,11 +56,7 @@ export default class CompareReportWindow extends PureComponent<CompareReportWind
         style = { backgroundColor: '#e8f7ff' };
       }
       if (leftHandSideNodes.length !== 0) {
-        const nodeNames = nodes.map(node => node.name);
-        const leftNodeNames = leftHandSideNodes.map(node => node.name);
-        if (!(leftNodeNames.indexOf(node.name) < 0)) {
-          variation = leftNodeNames.indexOf(node.name) - nodeNames.indexOf(node.name);
-        }
+        variation = leftNodesMap.get(node.name) - rightNodesMap.get(node.name);
         if (variation < 0) {
           arrow = (
             <React.Fragment>
