@@ -1,5 +1,6 @@
 import React, { PureComponent } from 'react';
 import { Button, DropdownProps, Grid, Header, Menu, Popup } from 'semantic-ui-react';
+import { RouteComponentProps } from 'react-router-dom';
 
 import { DropdownSearchSingleItem } from '../../../components/dropdown';
 import { GraphViewCompare } from '../../../components/graph/CompareGraph';
@@ -9,7 +10,7 @@ import CompareSingleProductWindow from './CompareSingleProductWindow';
 import AnalysisAPI from '../../../PnApp/model/Analysis';
 import ReportAPI, { Condition } from '../../../PnApp/model/Report';
 
-interface AnalysisProps {
+interface AnalysisProps extends RouteComponentProps {
   analysisA: string;
   analysisB: string;
 }
@@ -48,8 +49,8 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
   public async componentDidMount() {
     const analysisA = await AnalysisAPI.get(this.props.location.state.analysisA);
     const analysisB = await AnalysisAPI.get(this.props.location.state.analysisB);
-    const reportA = await ReportAPI.get(analysisA.report);
-    const reportB = await ReportAPI.get(analysisB.report);
+    const reportA = await ReportAPI.get(analysisA.report as string);
+    const reportB = await ReportAPI.get(analysisB.report as string);
     const conditions = await ReportAPI.getConditions();
     const nodesSet = new Set<string>();
     reportA.nodes.forEach((node) => {
