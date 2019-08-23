@@ -31,15 +31,15 @@ export async function AddAnalysis(req: Request, res: Response): Promise<void> {
 }
 
 interface GetCollectionQuery {
-  from?: number;
-  limit?: number;
+  page?: string;
+  limit?: string;
 }
 
 export async function GetAnalyses(req: Request, res: Response): Promise<void> {
   const query = req.query as GetCollectionQuery;
-  const { from, limit } = query;
+  const { page, limit } = query;
   try {
-    if (from && limit && isNumber(from) && isNumber(limit)) {
+    if (page && limit) {
       const collection = await Analysis.find(
         {},
         {
@@ -49,9 +49,9 @@ export async function GetAnalyses(req: Request, res: Response): Promise<void> {
           description: 1,
         },
       )
-        .sort({ created: -1 })
-        .skip(from)
-        .limit(limit);
+        .skip((parseInt(page) - 1) * parseInt(limit))
+        .limit(parseInt(limit))
+        .sort({ created: -1 });
       res.send(collection);
     } else {
       const collection = await Analysis.find(
