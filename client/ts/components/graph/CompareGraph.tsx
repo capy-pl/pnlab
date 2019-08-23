@@ -229,11 +229,7 @@ export default class GraphViewCompare extends PureComponent<GraphProps, {}> {
                 : '#D3E7FF';
               return {
                 id: node.id,
-                color: {
-                  background,
-                  border: '#D3E7FF',
-                },
-                label: ' ',
+                hidden: true,
               } as any;
             }
           })
