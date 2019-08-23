@@ -61,7 +61,7 @@ interface SearchResult extends Node {
 export default class Detail extends PureComponent<
   RouteComponentProps<{ id: string }>,
   State
-> {
+  > {
   constructor(props: RouteComponentProps<{ id: string }>) {
     super(props);
     this.state = {

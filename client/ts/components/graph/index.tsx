@@ -5,9 +5,9 @@ import { DataSet, EdgeOptions, Network, NodeOptions, Options } from 'vis';
 import Jgraph from '../../PnApp/Jgraph';
 import { Edge, Node } from '../../PnApp/model/Report';
 
-interface GraphNode extends Node, NodeOptions {}
+interface GraphNode extends Node, NodeOptions { }
 
-interface GraphEdge extends Edge, EdgeOptions {}
+interface GraphEdge extends Edge, EdgeOptions { }
 
 const customScalingFunction = (
   min: number,
@@ -186,6 +186,12 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
         } as any),
     );
     this.nodes.update(updateList);
+    (this.network as Network).fit({
+      nodes: this.nodes.map((node) => {
+        return node.id.toString();
+      }),
+      animation: false,
+    });
   }
 
   public paintSelectedProduct(): void {
@@ -204,6 +210,12 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
           if (!connectedNodes.includes(node.id as any) && node.id !== selectedNode.id) {
             return {
               id: node.id,
+              // color: {
+              //   background: '#D3E7FF',
+              //   border: '#D3E7FF',
+              // },
+              // group: undefined,
+              // label: ' ',
               hidden: true,
               label: '',
             } as any;
@@ -240,6 +252,15 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
         return {
           id: node.id,
           group: node.community,
+          title: `
+            <div>
+              <p>${node.name}</p>
+              <p>community: ${node.community}</p>
+              <p>weight: ${Math.round(node.weight)}</p>
+              <p>連接節點數: ${node.degree}</p>
+            </div>
+          `,
+          borderWidth: node.core ? 5 : 1,
         } as any;
       });
       this.nodes.update(nodes);
@@ -248,6 +269,13 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
         return {
           id: node.id,
           group: undefined,
+          title: `
+            <div>
+              <p>${node.name}</p>
+              <p>weight: ${Math.round(node.weight)}</p>
+              <p>連接節點數: ${node.degree}</p>
+            </div>
+          `,
           color: '#8DC1FF',
           borderWidth: 1,
         } as any;
