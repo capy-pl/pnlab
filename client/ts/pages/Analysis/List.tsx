@@ -265,7 +265,7 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
             dropChangeA={this.onChangeA}
             dropChangeB={this.onChangeB}
           />
-          {/* <Button
+          <Button
             floated='right'
             color='blue'
             style={{ margin: '10px' }}
@@ -275,7 +275,7 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
           >
             <Icon name='clone outline' />
             比較圖片
-          </Button> */}
+          </Button>
           <Button
             floated='right'
             style={{ margin: '10px' }}
