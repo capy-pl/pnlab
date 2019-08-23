@@ -11,7 +11,7 @@ interface AnalysisItemProps {
 
 const Item = ({ item, onButtonClick, onCheck, selected }: AnalysisItemProps) => {
   return (
-    <Table.Row style={{ clear: 'both' }} textAlign='center'>
+    <Table.Row style={{ clear: 'both' }} textAlign='center' positive={selected}>
       <Table.Cell textAlign='center'>{item.title}</Table.Cell>
       <Table.Cell textAlign='center'>{item.created.toLocaleString()}</Table.Cell>
       <Table.Cell>

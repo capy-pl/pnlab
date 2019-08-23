@@ -142,21 +142,23 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
   };
 
   public onConfirm = async () => {
-    await this.setState({
-      modalOpen: false,
-      loading: true,
-    });
-    await this.props.history.push({
-      pathname: '/analysis/compare',
-      state: {
-        analysisAId: this.state.compareList[0],
-        analysisBId: this.state.compareList[1],
-      },
-      // state: {
-      //   analysisA: this.state.analysisA,
-      //   analysisB: this.state.analysisB,
-      // },
-    });
+    if (this.state.compareList.length === 2) {
+      await this.setState({
+        modalOpen: false,
+        loading: true,
+      });
+      await this.props.history.push({
+        pathname: '/analysis/compare',
+        state: {
+          analysisAId: this.state.compareList[0],
+          analysisBId: this.state.compareList[1],
+        },
+        // state: {
+        //   analysisA: this.state.analysisA,
+        //   analysisB: this.state.analysisB,
+        // },
+      });
+    }
   };
 
   public onCancel = () => {
@@ -319,7 +321,7 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
                   建立時間
                 </Table.HeaderCell>
                 <Table.HeaderCell width='3' textAlign='center'>
-                  加入比較（已選擇{this.state.compareList.length}）
+                  加入比較（已勾選{this.state.compareList.length}）
                 </Table.HeaderCell>
                 <Table.HeaderCell width='2' textAlign='center' />
               </Table.Row>
