@@ -133,6 +133,14 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
       this.network.focus(this.props.focusElement, {
         scale: 1,
       });
+    } else {
+      // rescale graph
+      (this.network as Network).fit({
+        nodes: this.nodes.map((node) => {
+          return node.id.toString();
+        }),
+        animation: false,
+      });
     }
   }
 
@@ -210,12 +218,6 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
           if (!connectedNodes.includes(node.id as any) && node.id !== selectedNode.id) {
             return {
               id: node.id,
-              // color: {
-              //   background: '#D3E7FF',
-              //   border: '#D3E7FF',
-              // },
-              // group: undefined,
-              // label: ' ',
               hidden: true,
               label: '',
             } as any;

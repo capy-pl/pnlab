@@ -148,7 +148,7 @@ export default class CompareReportWindow extends PureComponent<CompareReportWind
         conditionRow =
           reportCondition.type === 'date' ?
             dateToString(stringToDate(reportCondition.values[0])) + ' - ' + dateToString(stringToDate(reportCondition.values[1])) :
-            reportCondition.values.join(', ');
+            (reportCondition.values as string[]).join(', ');
         break;
       } else {
         conditionRow = '-';

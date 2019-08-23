@@ -5,6 +5,7 @@ import {
   AccordionTitleProps,
   Button,
   Checkbox,
+  DropdownProps,
   Icon,
   Menu,
   Popup,
@@ -18,6 +19,7 @@ import {
 import { debounce } from 'lodash';
 
 import { ModalAddAnalysis } from 'Component/modal';
+import { DropdownSearchSingleItem } from '../../../components/dropdown';
 import Graph from '../../../components/graph';
 import Loader from '../../../components/Loader';
 import {
@@ -200,6 +202,16 @@ export default class Report extends PureComponent<
     }
   };
 
+  // search dropdown
+  public handleItemSearch = (
+    event: React.SyntheticEvent<HTMLElement, Event>,
+    data: DropdownProps
+  ) => {
+    this.setState({
+      focusNode: data.value as number,
+    });
+  }
+
   public handleToggleSidebar = () => {
     this.setState((prevState) => ({
       visible: !prevState.visible,
@@ -219,7 +231,7 @@ export default class Report extends PureComponent<
   public getConditions() {
     if (this.state.report) {
       return this.state.report.conditions.map((condition) => {
-        if (condition.type === 'string' || condition.type === 'promotion') {
+        if (condition.type === 'string' || condition.type === 'promotion' || condition.type === 'method') {
           return (
             <Table.Row key={condition.name}>
               <Table.Cell>{condition.name}</Table.Cell>
@@ -257,11 +269,24 @@ export default class Report extends PureComponent<
     this.props.history.push(`/analysis/${id}`);
   };
 
+  public getDropdownOption = () => {
+    const dropdownOption = this.state.report.nodes.map((node) => {
+      return {
+        key: node.name,
+        value: node.id,
+        text: node.name,
+      };
+    });
+    return dropdownOption;
+  }
+
   public render() {
     if (this.state.loading) {
       return <Loader size='huge' />;
     } else {
       if (this.state.report) {
+        // search dropdown
+        const dropdownOption = this.getDropdownOption();
         return (
           <React.Fragment>
             <CommunityCharacterWindow
@@ -315,7 +340,7 @@ export default class Report extends PureComponent<
                       </Table>
                     </Accordion.Content>
                   </Menu.Item>
-                  <Menu.Item>
+                  {/* <Menu.Item>
                     <Search
                       size='small'
                       placeholder='搜尋產品'
@@ -326,6 +351,15 @@ export default class Report extends PureComponent<
                       })}
                       onResultSelect={this.handleResultSelect}
                       resultRenderer={this.resultRenderer}
+                    />
+                  </Menu.Item> */}
+
+                  {/* search dropdown */}
+                  <Menu.Item>
+                    <DropdownSearchSingleItem
+                      options={dropdownOption}
+                      placeholder='搜尋產品'
+                      onChange={this.handleItemSearch}
                     />
                   </Menu.Item>
                   <Menu.Item>
@@ -350,12 +384,32 @@ export default class Report extends PureComponent<
                     <Icon name='dropdown' />
                     </Accordion.Title>
                     <Accordion.Content active={this.state.activeIndex === 2}>
-                      <Menu.Item onClick={this.openCommunityListWidow}>
-                        Communities排名
-                    </Menu.Item>
-                      <Menu.Item onClick={this.openCommunityCharacterWindow}>
-                        Communities角色
-                    </Menu.Item>
+                      <Popup
+                        content='點擊上方"標示community"後即可查看'
+                        disabled={this.state.showCommunity}
+                        trigger={
+                          <Menu.Item
+                            onClick={this.openCommunityListWidow}
+                            disabled={!this.state.showCommunity}
+                          >
+                            Communities排名
+                          </Menu.Item>
+                        }
+                      >
+                      </Popup>
+                      <Popup
+                        content='點擊上方"標示community"後即可查看'
+                        disabled={this.state.showCommunity}
+                        trigger={
+                          <Menu.Item
+                            onClick={this.openCommunityCharacterWindow}
+                            disabled={!this.state.showCommunity}
+                          >
+                            Communities角色
+                          </Menu.Item>
+                        }
+                      >
+                      </Popup>
                     </Accordion.Content>
                   </Menu.Item>
                   <ModalAddAnalysis
