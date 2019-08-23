@@ -101,9 +101,13 @@ export default class CompareReportWindow extends PureComponent<CompareReportWind
     const tableBody = this.getTableBody(nodes, leftHandSideNodes);
     return (
       <React.Fragment>
-        <Header>【{tableName}】</Header>
         <Table celled padded color='teal'>
           <Table.Header>
+            <Table.Row>
+              <Table.HeaderCell colSpan='16' textAlign='center'>
+                <h3>【{tableName}】</h3>
+              </Table.HeaderCell>
+            </Table.Row>
             <Table.Row>
               <Table.HeaderCell>名次</Table.HeaderCell>
               <Table.HeaderCell>產品列表（產品數：{report.nodes.length}）</Table.HeaderCell>
@@ -127,11 +131,15 @@ export default class CompareReportWindow extends PureComponent<CompareReportWind
     });
     return (
       <React.Fragment>
-        <Header>【共同產品】</Header>
         <Table celled padded color='yellow'>
           <Table.Header>
             <Table.Row>
-              <Table.HeaderCell>共同產品（產品數：{this.props.shareNodes.length}）</Table.HeaderCell>
+              <Table.HeaderCell colSpan='16' textAlign='center'>
+                <h3>【共同產品】</h3>
+              </Table.HeaderCell>
+            </Table.Row>
+            <Table.Row>
+              <Table.HeaderCell>產品列表（產品數：{this.props.shareNodes.length}）</Table.HeaderCell>
             </Table.Row>
           </Table.Header>
 

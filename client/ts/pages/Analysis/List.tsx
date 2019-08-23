@@ -21,6 +21,7 @@ interface AnalysisListState extends PagerState {
   analyses: AnalysisPreview[];
   analysisA?: Analysis;
   analysisB?: Analysis;
+  checked?: string[];
 }
 
 class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState> {
@@ -139,16 +140,20 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
   };
 
   public onConfirm = async () => {
-    this.setState({
+    await this.setState({
       modalOpen: false,
       loading: true,
     });
-    this.props.history.push({
+    await this.props.history.push({
       pathname: '/analysis/compare',
       state: {
-        analysisA: this.state.analysisA,
-        analysisB: this.state.analysisB,
+        analysisA: this.state.checked[0],
+        analysisB: this.state.checked[1],
       },
+      // state: {
+      //   analysisA: this.state.analysisA,
+      //   analysisB: this.state.analysisB,
+      // },
     });
   };
 
@@ -214,6 +219,27 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
     }));
   };
 
+  public handleCheck = (id: string) => {
+    let checked;
+    if (this.state.checked) {
+      if (!this.state.checked.includes(id)) {
+        if (this.state.checked.length < 2) {
+          checked = [...this.state.checked, id];
+        } else {
+          checked = [...this.state.checked]
+        }
+      } else {
+        checked = [...this.state.checked].filter(item => item !== id);
+        if (checked.length === 0) {
+          checked = undefined;
+        }
+      }
+    } else {
+      checked = [id];
+    }
+    return () => this.setState({ checked })
+  }
+
   public render() {
     const history = this.state.analyses.map((analysis) => {
       return (
@@ -221,6 +247,8 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
           key={analysis._id}
           item={analysis}
           onButtonClick={this.onLinkClick(analysis._id)}
+          onCheck={this.handleCheck(analysis._id)}
+          selected={this.state.checked ? this.state.checked.includes(analysis._id) : undefined}
         />
       );
     });
@@ -236,11 +264,22 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
             dropChangeA={this.onChangeA}
             dropChangeB={this.onChangeB}
           />
-          <Button
+          {/* <Button
             floated='right'
             color='blue'
             style={{ margin: '10px' }}
             onClick={this.onClick}
+            icon
+            labelPosition='right'
+          >
+            <Icon name='clone outline' />
+            比較圖片
+          </Button> */}
+          <Button
+            floated='right'
+            color='blue'
+            style={{ margin: '10px' }}
+            onClick={this.onConfirm}
             icon
             labelPosition='right'
           >
@@ -263,13 +302,16 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
                 </Table.HeaderCell>
               </Table.Row>
               <Table.Row>
-                <Table.HeaderCell width='8' textAlign='center'>
+                <Table.HeaderCell width='7' textAlign='center'>
                   圖片名稱
                 </Table.HeaderCell>
-                <Table.HeaderCell width='4' textAlign='center'>
+                <Table.HeaderCell width='5' textAlign='center'>
                   建立時間
                 </Table.HeaderCell>
                 <Table.HeaderCell width='2' textAlign='center' />
+                <Table.HeaderCell width='2' textAlign='center'>
+                  加入比較
+                </Table.HeaderCell>
               </Table.Row>
             </Table.Header>
             <Table.Body>{history}</Table.Body>
@@ -300,7 +342,7 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
             </Table.Footer>
           </Table>
         </React.Fragment>
-      </Segment>
+      </Segment >
     );
   }
 }
