@@ -1,6 +1,14 @@
 import React, { PureComponent } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { Button, Icon, Menu, Segment, Table } from 'semantic-ui-react';
+import {
+  Button,
+  Dropdown,
+  DropdownProps,
+  Icon,
+  Menu,
+  Segment,
+  Table,
+} from 'semantic-ui-react';
 
 import Pager, { PagerState } from '../../PnApp/Pager';
 import { SearchHistoryItem } from 'Component/list';
@@ -68,6 +76,22 @@ class ReportList extends PureComponent<RouteComponentProps, ReportListState> {
     );
   };
 
+  public setLimit = async (limit: number) => {
+    await this.pager.setLimit(limit);
+    this.setState(
+      {
+        hasNext: this.pager.hasNext,
+        leftNumber: !this.pager.hasNext ? this.pager.leftNumber : undefined,
+        startPage: 1,
+        currentPage: 1,
+        limit,
+      },
+      async () => {
+        await this.load();
+      },
+    );
+  };
+
   public load = async () => {
     const reports = await Report.getAll({
       limit: this.state.limit,
@@ -118,6 +142,19 @@ class ReportList extends PureComponent<RouteComponentProps, ReportListState> {
     };
   }
 
+  public changeLimit = (e, data: DropdownProps) => {
+    const { value } = data;
+    this.clearSocket();
+    this.setState(
+      {
+        loading: true,
+      },
+      async () => {
+        await this.setLimit(value as number);
+      },
+    );
+  };
+
   public onLinkClick(path: string): () => void {
     return () => {
       this.props.history.push(`/report/${path}`);
@@ -166,6 +203,14 @@ class ReportList extends PureComponent<RouteComponentProps, ReportListState> {
     );
   };
 
+  public getPageOptions = () => {
+    return [15, 25, 50].map((value) => ({
+      key: value,
+      text: value.toString(),
+      value,
+    }));
+  };
+
   public render() {
     const history = this.state.reports.map((report) => {
       return (
@@ -191,6 +236,19 @@ class ReportList extends PureComponent<RouteComponentProps, ReportListState> {
         </Button>
         <Table selectable color='teal'>
           <Table.Header>
+            <Table.Row>
+              <Table.HeaderCell textAlign='right' colSpan='16'>
+                每頁顯示
+                <Dropdown
+                  inline
+                  onChange={this.changeLimit}
+                  options={this.getPageOptions()}
+                  text={`${this.state.limit}`}
+                  value={this.state.limit}
+                />
+                筆資料
+              </Table.HeaderCell>
+            </Table.Row>
             <Table.Row>
               <Table.HeaderCell width='1' textAlign='center'>
                 狀態
