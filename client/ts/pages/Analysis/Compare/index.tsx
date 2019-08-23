@@ -1,12 +1,6 @@
 import React, { PureComponent } from 'react';
-import {
-  Button,
-  DropdownProps,
-  Grid,
-  Header,
-  Menu,
-  Popup,
-} from 'semantic-ui-react';
+import { Button, DropdownProps, Grid, Header, Menu, Popup } from 'semantic-ui-react';
+import { RouteComponentProps } from 'react-router-dom';
 
 import { DropdownSearchSingleItem } from '../../../components/dropdown';
 import { GraphViewCompare } from '../../../components/graph/CompareGraph';
@@ -16,7 +10,7 @@ import CompareSingleProductWindow from './CompareSingleProductWindow';
 import Analysis from '../../../PnApp/model/Analysis';
 import Report, { Condition } from '../../../PnApp/model/Report';
 
-interface AnalysisProps {
+interface AnalysisProps extends RouteComponentProps {
   analysisA: string;
   analysisB: string;
 }
@@ -25,8 +19,6 @@ interface AnalysisState {
   loading: boolean;
   analysisA?: Analysis;
   analysisB?: Analysis;
-  // reportA?: Report;
-  // reportB?: Report;
   shareNodes?: string[];
   conditions?: Condition[];
   selectedProduct?: string[];
@@ -47,7 +39,9 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
     this.openCompareReportWindow = this.openCompareReportWindow.bind(this);
     this.closeCompareReportWindow = this.closeCompareReportWindow.bind(this);
     this.openSingleProductCompareWindow = this.openSingleProductCompareWindow.bind(this);
-    this.closeSingleProductCompareWindow = this.closeSingleProductCompareWindow.bind(this);
+    this.closeSingleProductCompareWindow = this.closeSingleProductCompareWindow.bind(
+      this,
+    );
   }
 
   public async componentDidMount() {
@@ -55,19 +49,17 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
     await analysisA.loadReport();
     const analysisB = await Analysis.get(this.props.location.state.analysisB);
     await analysisB.loadReport();
-    // const reportA = await ReportAPI.get(analysisA.report);
-    // const reportB = await ReportAPI.get(analysisB.report);
     const conditions = await Report.getConditions();
     const nodesSet = new Set<string>();
     analysisA.report.nodes.forEach((node) => {
       nodesSet.add(node.name);
-    })
-    const shareNodes = analysisB.report.nodes.filter(node => nodesSet.has(node.name)).map((node) => node.name);
+    });
+    const shareNodes = analysisB.report.nodes
+      .filter((node) => nodesSet.has(node.name))
+      .map((node) => node.name);
     this.setState({
       analysisA,
       analysisB,
-      // reportA,
-      // reportB,
       shareNodes,
       conditions,
       loading: false,
@@ -84,7 +76,7 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
         nodesSet.add(node.name);
       });
 
-      const allProducts = Array.from(nodesSet)
+      const allProducts = Array.from(nodesSet);
       return allProducts;
     }
     return [];
@@ -155,11 +147,12 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
           <React.Fragment>
             <Menu style={{ marginBottom: '1rem' }} secondary>
               <Menu.Item onClick={this.openCompareReportWindow}>
-                <Button color='facebook'>
-                  比較兩張網路圖
-                </Button>
+                <Button color='facebook'>比較兩張網路圖</Button>
               </Menu.Item>
-              <Menu.Item position='right' style={{ paddingTop: '0.1em', paddingBottom: '0.1em' }}>
+              <Menu.Item
+                position='right'
+                style={{ paddingTop: '0.1em', paddingBottom: '0.1em' }}
+              >
                 <span style={{ minWidth: '280px' }}>
                   <DropdownSearchSingleItem
                     options={dropdownOption}
@@ -171,11 +164,16 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
                 {singleItemCompareButton}
               </Menu.Item>
             </Menu>
-            <div style={{ padding: '1rem' }}>
+            <div style={{ marginTop: '1rem' }}>
               <Grid columns='two' divided>
-                <Grid.Row>
+                <Grid.Row style={{ paddingBottom: '0' }}>
                   <Grid.Column>
-                    <Header as='h3' dividing textAlign='left'>
+                    <Header
+                      style={{ marginLeft: '1rem' }}
+                      as='h3'
+                      dividing
+                      textAlign='left'
+                    >
                       {this.state.analysisA.title}
                     </Header>
                     <GraphViewCompare
@@ -186,7 +184,12 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
                     />
                   </Grid.Column>
                   <Grid.Column>
-                    <Header as='h3' dividing textAlign='left'>
+                    <Header
+                      style={{ marginLeft: '1rem' }}
+                      as='h3'
+                      dividing
+                      textAlign='left'
+                    >
                       {this.state.analysisB.title}
                     </Header>
                     <GraphViewCompare
