@@ -24,7 +24,7 @@ import {
   CommunityListWindow,
   ProductRankWindow,
 } from 'Component/window';
-import AnalysisInfoWindow from './AnalysisInfoWindow.tsx';
+import AnalysisInfoWindow from './AnalysisInfoWindow';
 import ReportAPI, { Node } from '../../../PnApp/model/Report';
 import Analysis, { Comment } from '../../../PnApp/model/Analysis';
 

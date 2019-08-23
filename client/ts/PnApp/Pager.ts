@@ -50,7 +50,7 @@ export default class Pager {
     const { data } = await axios.get<PagerResponse>(appendQuery(this.path, query));
     this._startPage = startPage;
     this._hasNext = data.hasNext;
-    if (!this.hasNext && data.leftNumber) {
+    if (!this.hasNext && typeof data.leftNumber === 'number') {
       this._leftNumber = data.leftNumber as number;
     } else {
       this._leftNumber = undefined;
@@ -71,7 +71,7 @@ export default class Pager {
     this.pageLimit = pageLimit;
     this._startPage = 1;
     this._hasNext = data.hasNext;
-    if (!this.hasNext && data.leftNumber) {
+    if (!this.hasNext && typeof data.leftNumber === 'number') {
       this._leftNumber = data.leftNumber as number;
     } else {
       this._leftNumber = undefined;
@@ -92,7 +92,7 @@ export default class Pager {
     this.limit = limit;
     this._startPage = 1;
     this._hasNext = data.hasNext;
-    if (!this.hasNext && data.leftNumber) {
+    if (!this.hasNext && typeof data.leftNumber === 'number') {
       this._leftNumber = data.leftNumber as number;
     } else {
       this._leftNumber = undefined;
