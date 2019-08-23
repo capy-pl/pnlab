@@ -241,6 +241,10 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
     return () => this.setState({ compareList })
   }
 
+  public clearSelected = () => {
+    this.setState({ compareList: [] });
+  }
+
   public render() {
     const history = this.state.analyses.map((analysis) => {
       return (
@@ -321,7 +325,10 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
                   建立時間
                 </Table.HeaderCell>
                 <Table.HeaderCell width='3' textAlign='center'>
-                  加入比較（已勾選{this.state.compareList.length}）
+                  加入比較（已勾選{this.state.compareList.length} / 2）
+                  <Button onClick={this.clearSelected}>
+                    清除全部
+                  </Button>
                 </Table.HeaderCell>
                 <Table.HeaderCell width='2' textAlign='center' />
               </Table.Row>
