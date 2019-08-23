@@ -13,8 +13,8 @@ import { GraphViewCompare } from '../../../components/graph/CompareGraph';
 import Loader from '../../../components/Loader';
 import CompareReportWindow from './CompareReportWindow';
 import CompareSingleProductWindow from './CompareSingleProductWindow';
-import AnalysisAPI from '../../../PnApp/model/Analysis';
-import ReportAPI, { Condition } from '../../../PnApp/model/Report';
+import Analysis from '../../../PnApp/model/Analysis';
+import Report, { Condition } from '../../../PnApp/model/Report';
 
 interface AnalysisProps {
   analysisA: string;
@@ -23,10 +23,10 @@ interface AnalysisProps {
 
 interface AnalysisState {
   loading: boolean;
-  analysisA?: AnalysisAPI;
-  analysisB?: AnalysisAPI;
-  reportA?: ReportAPI;
-  reportB?: ReportAPI;
+  analysisA?: Analysis;
+  analysisB?: Analysis;
+  // reportA?: Report;
+  // reportB?: Report;
   shareNodes?: string[];
   conditions?: Condition[];
   selectedProduct?: string[];
@@ -51,21 +51,23 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
   }
 
   public async componentDidMount() {
-    const analysisA = await AnalysisAPI.get(this.props.location.state.analysisA);
-    const analysisB = await AnalysisAPI.get(this.props.location.state.analysisB);
-    const reportA = await ReportAPI.get(analysisA.report);
-    const reportB = await ReportAPI.get(analysisB.report);
-    const conditions = await ReportAPI.getConditions();
+    const analysisA = await Analysis.get(this.props.location.state.analysisA);
+    await analysisA.loadReport();
+    const analysisB = await Analysis.get(this.props.location.state.analysisB);
+    await analysisB.loadReport();
+    // const reportA = await ReportAPI.get(analysisA.report);
+    // const reportB = await ReportAPI.get(analysisB.report);
+    const conditions = await Report.getConditions();
     const nodesSet = new Set<string>();
-    reportA.nodes.forEach((node) => {
+    analysisA.report.nodes.forEach((node) => {
       nodesSet.add(node.name);
     })
-    const shareNodes = reportB.nodes.filter(node => nodesSet.has(node.name)).map((node) => node.name);
+    const shareNodes = analysisB.report.nodes.filter(node => nodesSet.has(node.name)).map((node) => node.name);
     this.setState({
       analysisA,
       analysisB,
-      reportA,
-      reportB,
+      // reportA,
+      // reportB,
       shareNodes,
       conditions,
       loading: false,
@@ -73,12 +75,12 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
   }
 
   public getAllProducts(): string[] {
-    if (this.state.reportA && this.state.reportB) {
+    if (this.state.analysisA && this.state.analysisB) {
       const nodesSet = new Set<string>();
-      this.state.reportA.nodes.forEach((node) => {
+      this.state.analysisA.report.nodes.forEach((node) => {
         nodesSet.add(node.name);
       });
-      this.state.reportB.nodes.forEach((node) => {
+      this.state.analysisB.report.nodes.forEach((node) => {
         nodesSet.add(node.name);
       });
 
@@ -110,11 +112,12 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
   ) {
     if (!data.value) {
       this.setState({ selectedProduct: undefined });
-    }
-    const allProducts = this.getAllProducts();
-    for (const product of allProducts) {
-      if (product === data.value) {
-        return this.setState({ selectedProduct: [product] });
+    } else {
+      const allProducts = this.getAllProducts();
+      for (const product of allProducts) {
+        if (product === data.value) {
+          return this.setState({ selectedProduct: [product] });
+        }
       }
     }
   }
@@ -123,12 +126,7 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
     if (this.state.loading) {
       return <Loader size='huge' />;
     } else {
-      if (
-        this.state.reportA &&
-        this.state.reportB &&
-        this.state.analysisA &&
-        this.state.analysisB
-      ) {
+      if (this.state.analysisA && this.state.analysisB) {
         const allProducts = this.getAllProducts();
         const dropdownOption = allProducts.map((productName) => {
           return {
@@ -181,8 +179,8 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
                       {this.state.analysisA.title}
                     </Header>
                     <GraphViewCompare
-                      nodes={this.state.reportA.nodes}
-                      edges={this.state.reportA.edges}
+                      nodes={this.state.analysisA.report.nodes}
+                      edges={this.state.analysisA.report.edges}
                       selectedProduct={this.state.selectedProduct}
                       shareNodes={this.state.shareNodes}
                     />
@@ -192,8 +190,8 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
                       {this.state.analysisB.title}
                     </Header>
                     <GraphViewCompare
-                      nodes={this.state.reportB.nodes}
-                      edges={this.state.reportB.edges}
+                      nodes={this.state.analysisB.report.nodes}
+                      edges={this.state.analysisB.report.edges}
                       selectedProduct={this.state.selectedProduct}
                       shareNodes={this.state.shareNodes}
                     />
@@ -203,8 +201,6 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
 
               <CompareReportWindow
                 show={this.state.windowCompareReport}
-                reportA={this.state.reportA}
-                reportB={this.state.reportB}
                 shareNodes={this.state.shareNodes}
                 onClose={this.closeCompareReportWindow}
                 analysisA={this.state.analysisA}
@@ -213,8 +209,8 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
               />
               <CompareSingleProductWindow
                 show={this.state.windowSingleProductCompare}
-                reportA={this.state.reportA}
-                reportB={this.state.reportB}
+                analysisA={this.state.analysisA}
+                analysisB={this.state.analysisB}
                 onClose={this.closeSingleProductCompareWindow}
                 selectedProduct={this.state.selectedProduct}
               />

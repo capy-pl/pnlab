@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
-import { Grid, Icon, Menu, MenuItemProps, Segment, Table } from 'semantic-ui-react';
+import { Grid, Icon, Menu, MenuItemProps, Message, Segment, Table, Header } from 'semantic-ui-react';
 import { Window } from 'Component/';
-import AnalysisAPI from '../../../../PnApp/model/Analysis';
+import Analysis from '../../../../PnApp/model/Analysis';
 import Report, { Condition, Node } from '../../../../PnApp/model/Report';
 import {
   dateToString,
@@ -10,12 +10,10 @@ import {
 
 interface CompareReportWindowProps {
   show: boolean;
-  reportA?: Report;
-  reportB?: Report;
   shareNodes?: string[];
   onClose: () => void;
-  analysisA?: AnalysisAPI;
-  analysisB?: AnalysisAPI;
+  analysisA?: Analysis;
+  analysisB?: Analysis;
   conditions?: Condition[];
 }
 
@@ -39,7 +37,7 @@ export default class CompareReportWindow extends PureComponent<CompareReportWind
     });
   }
 
-  public getTableRow(nodes: Node[], leftHandSideNodes: Node[] = []) {
+  public getTableBody(nodes: Node[], leftHandSideNodes: Node[] = []) {
     const tableRow = nodes.map((node, index) => {
       let style;
       let variation;
@@ -94,20 +92,20 @@ export default class CompareReportWindow extends PureComponent<CompareReportWind
   public getTable = (tableName: string, report: Report, leftHandSideReport: Report | undefined = undefined) => {
     const nodes = report.nodes.sort((a, b) => b.weight - a.weight);
     const leftHandSideNodes = leftHandSideReport ? leftHandSideReport.nodes : [];
-    const tableRow = this.getTableRow(nodes, leftHandSideNodes);
+    const tableBody = this.getTableBody(nodes, leftHandSideNodes);
     return (
       <React.Fragment>
-        <p>圖{tableName}產品數： {report.nodes.length}</p>
+        <Header>【{tableName}】</Header>
         <Table celled padded color='teal'>
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell>名次</Table.HeaderCell>
-              <Table.HeaderCell>圖{tableName}產品</Table.HeaderCell>
+              <Table.HeaderCell>產品列表（產品數：{report.nodes.length}）</Table.HeaderCell>
               <Table.HeaderCell>權重</Table.HeaderCell>
             </Table.Row>
           </Table.Header>
 
-          <Table.Body>{tableRow}</Table.Body>
+          <Table.Body>{tableBody}</Table.Body>
         </Table>
       </React.Fragment>
     );
@@ -123,11 +121,11 @@ export default class CompareReportWindow extends PureComponent<CompareReportWind
     });
     return (
       <React.Fragment>
-        <p>共同產品數： {this.props.shareNodes.length}</p>
+        <Header>【共同產品】</Header>
         <Table celled padded color='yellow'>
           <Table.Header>
             <Table.Row>
-              <Table.HeaderCell>共同產品</Table.HeaderCell>
+              <Table.HeaderCell>共同產品（產品數：{this.props.shareNodes.length}）</Table.HeaderCell>
             </Table.Row>
           </Table.Header>
 
@@ -153,10 +151,10 @@ export default class CompareReportWindow extends PureComponent<CompareReportWind
     return conditionRow;
   }
 
-  public getConditionTableBody() {
+  public getConditionTable() {
     const conditionTableBody = this.props.conditions.map((condition) => {
-      const conditionA = this.getConditionRow(condition, this.props.reportA.conditions);
-      const conditionB = this.getConditionRow(condition, this.props.reportB.conditions);
+      const conditionA = this.getConditionRow(condition, this.props.analysisA.report.conditions);
+      const conditionB = this.getConditionRow(condition, this.props.analysisB.report.conditions);
       return (
         <Table.Row key={condition.name}>
           <Table.Cell>{condition.name}</Table.Cell>
@@ -165,16 +163,28 @@ export default class CompareReportWindow extends PureComponent<CompareReportWind
         </Table.Row>
       );
     });
-    return conditionTableBody;
+    return (
+      <Table celled padded color='teal'>
+        <Table.Header>
+          <Table.Row>
+            <Table.HeaderCell width={4}>條件名稱</Table.HeaderCell>
+            <Table.HeaderCell width={6}>【{this.props.analysisA.title}】</Table.HeaderCell>
+            <Table.HeaderCell width={6}>【{this.props.analysisB.title}】</Table.HeaderCell>
+          </Table.Row>
+        </Table.Header>
+        <Table.Body>{conditionTableBody}</Table.Body>
+      </Table>
+    );
   }
 
   public render() {
+    const { analysisA, analysisB } = this.props;
     if (!this.props.show) {
       return <React.Fragment />;
     } else {
-      const conditionTableBody = this.getConditionTableBody();
-      const productTableA = this.getTable('左', this.props.reportA);
-      const productTableB = this.getTable('右', this.props.reportB, this.props.reportA);
+      const conditionTable = this.getConditionTable();
+      const productTableA = this.getTable(analysisA.title, analysisA.report);
+      const productTableB = this.getTable(analysisB.title, analysisB.report, analysisA.report);
       const shareProductsTable = this.getShareProductsTable();
       return (
         <Window
@@ -202,18 +212,12 @@ export default class CompareReportWindow extends PureComponent<CompareReportWind
               </Menu.Item>
             </Menu>
             <Segment hidden={this.state.activeIndex !== 0} attached='bottom'>
-              <Table celled padded color='teal'>
-                <Table.Header>
-                  <Table.Row>
-                    <Table.HeaderCell width={4}>條件名稱</Table.HeaderCell>
-                    <Table.HeaderCell>圖【{this.props.analysisA.title}】</Table.HeaderCell>
-                    <Table.HeaderCell>圖【{this.props.analysisB.title}】</Table.HeaderCell>
-                  </Table.Row>
-                </Table.Header>
-                <Table.Body>{conditionTableBody}</Table.Body>
-              </Table>
+              {conditionTable}
             </Segment>
             <Segment hidden={this.state.activeIndex !== 1} attached='bottom'>
+              <Message info>
+                <p>藍色底色為共同產品</p>
+              </Message>
               <Grid>
                 <Grid.Row>
                   <Grid.Column width={6}>

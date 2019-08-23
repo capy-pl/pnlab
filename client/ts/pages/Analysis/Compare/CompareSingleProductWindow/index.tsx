@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react';
-import { Grid, Icon, Table } from 'semantic-ui-react';
+import { Grid, Icon, Message, Table, Header } from 'semantic-ui-react';
 import { Window } from 'Component/';
 import Report, { Node } from '../../../../PnApp/model/Report';
+import { Analysis } from 'client/ts/PnApp/model';
 
 interface ConnectedNode {
   name: string;
@@ -11,8 +12,8 @@ interface ConnectedNode {
 
 interface CompareSingleProductWindowProps {
   show: boolean;
-  reportA?: Report;
-  reportB?: Report;
+  analysisA: Analysis;
+  analysisB: Analysis;
   onClose: () => void;
   selectedProduct?: string[];
 }
@@ -21,12 +22,22 @@ export default class CompareSingleProductWindow extends PureComponent<
   CompareSingleProductWindowProps,
   {}
   > {
-  public getTableRow = (
+  public getTableBody(
     connectedNodes: ConnectedNode[],
     shareProducts: ConnectedNode[],
     leftHandSideNodes: ConnectedNode[] = [],
-  ) => {
-    const tableRow = connectedNodes.map((node, index) => {
+  ) {
+    const leftNodesMap = new Map<string, number>();
+    const rightNodesMap = new Map<string, number>();
+    if (leftHandSideNodes.length !== 0) {
+      leftHandSideNodes.forEach((node, index) => {
+        leftNodesMap.set(node.name, index);
+      })
+      connectedNodes.forEach((node, index) => {
+        rightNodesMap.set(node.name, index);
+      })
+    }
+    const tableBody = connectedNodes.map((node, index) => {
       let style;
       let variation;
       let arrow;
@@ -36,11 +47,7 @@ export default class CompareSingleProductWindow extends PureComponent<
         }
       }
       if (leftHandSideNodes.length !== 0) {
-        const nodeNames = connectedNodes.map(node => node.name);
-        const leftNodeNames = leftHandSideNodes.map(node => node.name);
-        if (!(leftNodeNames.indexOf(node.name) < 0)) {
-          variation = leftNodeNames.indexOf(node.name) - nodeNames.indexOf(node.name);
-        }
+        variation = leftNodesMap.get(node.name) - rightNodesMap.get(node.name);
         if (variation < 0) {
           arrow = (
             <React.Fragment>
@@ -74,31 +81,33 @@ export default class CompareSingleProductWindow extends PureComponent<
         </Table.Row>
       );
     });
-    return tableRow;
-  };
+    return tableBody;
+  }
 
-  public getTable =
-    (
-      tableName: string,
-      nodes: ConnectedNode[],
-      shareProducts: ConnectedNode[],
-      leftHandSideNodes?: ConnectedNode[]
-    ) => {
-      const tableRow = this.getTableRow(nodes, shareProducts, leftHandSideNodes ? leftHandSideNodes : []);
-      return (
+  public getTable(
+    tableName: string,
+    nodes: ConnectedNode[],
+    shareProducts: ConnectedNode[],
+    leftHandSideNodes?: ConnectedNode[]
+  ) {
+    const tableBody = this.getTableBody(nodes, shareProducts, leftHandSideNodes ? leftHandSideNodes : []);
+    return (
+      <React.Fragment>
+        <Header>【{tableName}】</Header>
         <Table celled padded color='teal'>
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell>名次</Table.HeaderCell>
-              <Table.HeaderCell>圖{tableName}連結產品</Table.HeaderCell>
+              <Table.HeaderCell>連結產品列表（產品數：{nodes.length}）</Table.HeaderCell>
               <Table.HeaderCell>權重</Table.HeaderCell>
             </Table.Row>
           </Table.Header>
 
-          <Table.Body>{tableRow}</Table.Body>
+          <Table.Body>{tableBody}</Table.Body>
         </Table>
-      );
-    };
+      </React.Fragment>
+    );
+  }
 
   public getOneSideConnectedNodes(selectedProduct: string, report: Report) {
     let selectedNode: Node;
@@ -131,8 +140,8 @@ export default class CompareSingleProductWindow extends PureComponent<
   }
 
   public getConnectedInfo(selectedProduct: string) {
-    const connectedNodesA = this.getOneSideConnectedNodes(selectedProduct, this.props.reportA);
-    const connectedNodesB = this.getOneSideConnectedNodes(selectedProduct, this.props.reportB);
+    const connectedNodesA = this.getOneSideConnectedNodes(selectedProduct, this.props.analysisA.report);
+    const connectedNodesB = this.getOneSideConnectedNodes(selectedProduct, this.props.analysisB.report);
     const shareProducts: ConnectedNode[] = [];
 
     connectedNodesA.sort((a, b) => b.edgeWeight - a.edgeWeight);
@@ -147,6 +156,29 @@ export default class CompareSingleProductWindow extends PureComponent<
     return { connectedNodesA, connectedNodesB, shareProducts };
   }
 
+  public getShareProductsTable(shareProducts: ConnectedNode[]) {
+    const share = shareProducts.map((node) => {
+      return (
+        <Table.Row key={node.name} style={{ backgroundColor: '#e8f7ff' }}>
+          <Table.Cell>{node.name}</Table.Cell>
+        </Table.Row>
+      );
+    });
+    return (
+      <React.Fragment>
+        <Header>【共同連結產品】</Header>
+        <Table celled padded color='yellow'>
+          <Table.Header>
+            <Table.Row>
+              <Table.HeaderCell>共同產品（產品數：{shareProducts.length}）</Table.HeaderCell>
+            </Table.Row>
+          </Table.Header>
+          <Table.Body>{share}</Table.Body>
+        </Table>
+      </React.Fragment>
+    )
+  }
+
   public render() {
     if (!this.props.show) {
       return <React.Fragment />;
@@ -158,15 +190,9 @@ export default class CompareSingleProductWindow extends PureComponent<
           connectedNodesB,
           shareProducts,
         } = this.getConnectedInfo(this.props.selectedProduct[0]);
-        const tableA = this.getTable('左', connectedNodesA, shareProducts);
-        const tableB = this.getTable('右', connectedNodesB, shareProducts, connectedNodesA);
-        const share = shareProducts.map((node) => {
-          return (
-            <Table.Row key={node.name} style={{ backgroundColor: '#e8f7ff' }}>
-              <Table.Cell>{node.name}</Table.Cell>
-            </Table.Row>
-          );
-        });
+        const tableA = this.getTable(this.props.analysisA.title, connectedNodesA, shareProducts);
+        const tableB = this.getTable(this.props.analysisB.title, connectedNodesB, shareProducts, connectedNodesA);
+        const shareTable = this.getShareProductsTable(shareProducts);
         return (
           <Window
             title={`【${selectedProductName}】連結產品比較`}
@@ -175,27 +201,20 @@ export default class CompareSingleProductWindow extends PureComponent<
             defaultHeight={600}
             defaultWidth={1200}
           >
+            <Message info>
+              <p>藍色底色為共同產品</p>
+            </Message>
             <Grid>
               <Grid.Row>
                 <Grid.Column width={6}>
-                  <p>圖左連結產品數： {connectedNodesA.length}</p>
                   {tableA}
                 </Grid.Column>
 
                 <Grid.Column width={4}>
-                  <p>共同連結數： {shareProducts.length}</p>
-                  <Table celled padded color='yellow'>
-                    <Table.Header>
-                      <Table.Row>
-                        <Table.HeaderCell>共同產品</Table.HeaderCell>
-                      </Table.Row>
-                    </Table.Header>
-                    <Table.Body>{share}</Table.Body>
-                  </Table>
+                  {shareTable}
                 </Grid.Column>
 
                 <Grid.Column width={6}>
-                  <p>圖右連結產品數： {connectedNodesB.length}</p>
                   {tableB}
                 </Grid.Column>
               </Grid.Row>
