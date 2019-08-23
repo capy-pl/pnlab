@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Menu, MenuItemProps, Segment, Table } from 'semantic-ui-react';
+import { Menu, MenuItemProps, Message, Segment, Table } from 'semantic-ui-react';
 import { isUndefined } from 'lodash';
 
 import { Window } from 'Component/';
@@ -88,11 +88,14 @@ export default class CommunityCharacterWindow extends PureComponent<Props, State
             </Menu.Item>
           </Menu>
           <Segment hidden={this.state.activeIndex !== 0} attached='bottom'>
+            <Message info>
+              <p>僅列出產品數大於4之產品群的core</p>
+            </Message>
             <Table selectable>
               <Table.Header>
                 <Table.Row>
                   <Table.HeaderCell>產品名稱</Table.HeaderCell>
-                  <Table.HeaderCell>產品所屬Communnity</Table.HeaderCell>
+                  <Table.HeaderCell>產品所屬Community</Table.HeaderCell>
                 </Table.Row>
               </Table.Header>
               <Table.Body>{coreList.length ? coreList : '無Core資訊。'}</Table.Body>

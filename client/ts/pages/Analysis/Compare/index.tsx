@@ -11,8 +11,8 @@ import Analysis from '../../../PnApp/model/Analysis';
 import Report, { Condition } from '../../../PnApp/model/Report';
 
 interface AnalysisProps extends RouteComponentProps {
-  analysisA: string;
-  analysisB: string;
+  analysisAId: string;
+  analysisBId: string;
 }
 
 interface AnalysisState {
@@ -45,7 +45,7 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
   }
 
   public async componentDidMount() {
-    const [analysisA, analysisB] = await Promise.all([Analysis.get(this.props.location.state.analysisA), Analysis.get(this.props.location.state.analysisB)]);
+    const [analysisA, analysisB] = await Promise.all([Analysis.get(this.props.location.state.analysisAId), Analysis.get(this.props.location.state.analysisBId)]);
     await Promise.all([analysisA.loadReport(), analysisB.loadReport()]);
     const conditions = await Report.getConditions();
     const nodesSet = new Set<string>();

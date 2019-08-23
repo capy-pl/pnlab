@@ -15,20 +15,20 @@ const Item = ({ item, onButtonClick, onCheck, selected }: AnalysisItemProps) => 
       <Table.Cell textAlign='center'>{item.title}</Table.Cell>
       <Table.Cell textAlign='center'>{item.created.toLocaleString()}</Table.Cell>
       <Table.Cell>
+        <Icon
+          name='check circle'
+          size='large'
+          onClick={onCheck}
+          style={{ cursor: 'pointer', color: selected ? '#00a3a3' : 'lightgrey' }}
+        />
+      </Table.Cell>
+      <Table.Cell>
         <Button
           icon='right arrow'
           color='blue'
           labelPosition='right'
           content='View Detail'
           onClick={onButtonClick}
-        />
-      </Table.Cell>
-      <Table.Cell>
-        <Icon
-          name='check circle'
-          size='large'
-          onClick={onCheck}
-          style={{ cursor: 'pointer', color: selected ? 'LimeGreen' : 'lightgrey' }}
         />
       </Table.Cell>
     </Table.Row>
