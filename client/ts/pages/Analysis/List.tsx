@@ -1,6 +1,14 @@
 import React, { PureComponent } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { Button, Icon, DropdownProps, Menu, Segment, Table } from 'semantic-ui-react';
+import {
+  Button,
+  Icon,
+  Dropdown,
+  DropdownProps,
+  Menu,
+  Segment,
+  Table,
+} from 'semantic-ui-react';
 
 import Pager, { PagerState } from '../../PnApp/Pager';
 import { AnalysisItem } from '../../components/list';
@@ -170,6 +178,42 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
     });
   };
 
+  public setLimit = async (limit: number) => {
+    await this.pager.setLimit(limit);
+    this.setState(
+      {
+        hasNext: this.pager.hasNext,
+        leftNumber: !this.pager.hasNext ? this.pager.leftNumber : undefined,
+        startPage: 1,
+        currentPage: 1,
+        limit,
+      },
+      async () => {
+        await this.load();
+      },
+    );
+  };
+
+  public changeLimit = (e, data: DropdownProps) => {
+    const { value } = data;
+    this.setState(
+      {
+        loading: true,
+      },
+      async () => {
+        await this.setLimit(value as number);
+      },
+    );
+  };
+
+  public getPageOptions = () => {
+    return [15, 25, 50].map((value) => ({
+      key: value,
+      text: value.toString(),
+      value,
+    }));
+  };
+
   public render() {
     const history = this.state.analyses.map((analysis) => {
       return (
@@ -205,6 +249,19 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
           </Button>
           <Table selectable color='blue'>
             <Table.Header>
+              <Table.Row>
+                <Table.HeaderCell textAlign='right' colSpan='16'>
+                  每頁顯示
+                  <Dropdown
+                    inline
+                    onChange={this.changeLimit}
+                    options={this.getPageOptions()}
+                    text={`${this.state.limit}`}
+                    value={this.state.limit}
+                  />
+                  筆資料
+                </Table.HeaderCell>
+              </Table.Row>
               <Table.Row>
                 <Table.HeaderCell width='8' textAlign='center'>
                   圖片名稱
