@@ -1,12 +1,5 @@
 import React, { PureComponent } from 'react';
-import {
-  Button,
-  DropdownProps,
-  Grid,
-  Header,
-  Menu,
-  Popup,
-} from 'semantic-ui-react';
+import { Button, DropdownProps, Grid, Header, Menu, Popup } from 'semantic-ui-react';
 
 import { DropdownSearchSingleItem } from '../../../components/dropdown';
 import { GraphViewCompare } from '../../../components/graph/CompareGraph';
@@ -47,7 +40,9 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
     this.openCompareReportWindow = this.openCompareReportWindow.bind(this);
     this.closeCompareReportWindow = this.closeCompareReportWindow.bind(this);
     this.openSingleProductCompareWindow = this.openSingleProductCompareWindow.bind(this);
-    this.closeSingleProductCompareWindow = this.closeSingleProductCompareWindow.bind(this);
+    this.closeSingleProductCompareWindow = this.closeSingleProductCompareWindow.bind(
+      this,
+    );
   }
 
   public async componentDidMount() {
@@ -59,8 +54,10 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
     const nodesSet = new Set<string>();
     reportA.nodes.forEach((node) => {
       nodesSet.add(node.name);
-    })
-    const shareNodes = reportB.nodes.filter(node => nodesSet.has(node.name)).map((node) => node.name);
+    });
+    const shareNodes = reportB.nodes
+      .filter((node) => nodesSet.has(node.name))
+      .map((node) => node.name);
     this.setState({
       analysisA,
       analysisB,
@@ -82,7 +79,7 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
         nodesSet.add(node.name);
       });
 
-      const allProducts = Array.from(nodesSet)
+      const allProducts = Array.from(nodesSet);
       return allProducts;
     }
     return [];
@@ -142,26 +139,27 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
             產品連結比較表
           </Button>
         ) : (
-            <Popup
-              content='請先從左方框選擇產品'
-              trigger={
-                <span>
-                  <Button fluid onClick={this.openSingleProductCompareWindow} disabled>
-                    產品連結比較表
+          <Popup
+            content='請先從左方框選擇產品'
+            trigger={
+              <span>
+                <Button fluid onClick={this.openSingleProductCompareWindow} disabled>
+                  產品連結比較表
                 </Button>
-                </span>
-              }
-            />
-          );
+              </span>
+            }
+          />
+        );
         return (
           <React.Fragment>
             <Menu style={{ marginBottom: '1rem' }} secondary>
               <Menu.Item onClick={this.openCompareReportWindow}>
-                <Button color='facebook'>
-                  比較兩張網路圖
-                </Button>
+                <Button color='facebook'>比較兩張網路圖</Button>
               </Menu.Item>
-              <Menu.Item position='right' style={{ paddingTop: '0.1em', paddingBottom: '0.1em' }}>
+              <Menu.Item
+                position='right'
+                style={{ paddingTop: '0.1em', paddingBottom: '0.1em' }}
+              >
                 <span style={{ minWidth: '280px' }}>
                   <DropdownSearchSingleItem
                     options={dropdownOption}
@@ -173,11 +171,16 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
                 {singleItemCompareButton}
               </Menu.Item>
             </Menu>
-            <div style={{ padding: '1rem' }}>
+            <div style={{ marginTop: '1rem' }}>
               <Grid columns='two' divided>
-                <Grid.Row>
+                <Grid.Row style={{ paddingBottom: '0' }}>
                   <Grid.Column>
-                    <Header as='h3' dividing textAlign='left'>
+                    <Header
+                      style={{ marginLeft: '1rem' }}
+                      as='h3'
+                      dividing
+                      textAlign='left'
+                    >
                       {this.state.analysisA.title}
                     </Header>
                     <GraphViewCompare
@@ -188,7 +191,12 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
                     />
                   </Grid.Column>
                   <Grid.Column>
-                    <Header as='h3' dividing textAlign='left'>
+                    <Header
+                      style={{ marginLeft: '1rem' }}
+                      as='h3'
+                      dividing
+                      textAlign='left'
+                    >
                       {this.state.analysisB.title}
                     </Header>
                     <GraphViewCompare
