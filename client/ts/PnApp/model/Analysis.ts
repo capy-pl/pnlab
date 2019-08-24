@@ -21,6 +21,8 @@ export interface AnalysisModel {
   modified: string | Date;
 }
 
+export type AnalysisAddBody = Pick<AnalysisModel, 'report' | 'title' | 'description'>;
+
 export type AnalysisPreview = Pick<
   AnalysisModel,
   '_id' | 'title' | 'description' | 'created' | 'modified'
@@ -52,7 +54,7 @@ export default class Analysis {
   }
 
   // The function will return the newly added analysis's id for redirect.
-  public static async add(body: AnalysisModel): Promise<{ id: string }> {
+  public static async add(body: AnalysisAddBody): Promise<{ id: string }> {
     const response = await axios.post<{ id: string }>(`/api/analysis`, body);
     return response.data;
   }
