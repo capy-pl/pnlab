@@ -149,6 +149,11 @@ export default class Jgraph {
     return this._length;
   }
 
+  // return the ids nodes which connect to given node id.
+  public getConnectedNodes(id: number): number[] {
+    return this.adjacencyList[id].getConnectedNodes();
+  }
+
   /**
    * The function implement Dijkstra shortest path algorithm.
    * Instead of return the path, we return all edges

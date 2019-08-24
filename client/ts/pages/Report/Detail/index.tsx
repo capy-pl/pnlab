@@ -58,7 +58,7 @@ interface SearchResult extends Node {
 export default class Report extends PureComponent<
   RouteComponentProps<{ id: string }>,
   ReportState
-  > {
+> {
   constructor(props: RouteComponentProps<{ id: string }>) {
     super(props);
     this.state = {
@@ -277,6 +277,7 @@ export default class Report extends PureComponent<
               selectedCommunities={this.state.selectedCommunities}
             />
             <ProductRankWindow
+              model={this.state.report}
               selectedProduct={this.state.selectedProduct}
               selectProduct={this.selectProduct}
               productList={this.state.report.rank}
@@ -347,15 +348,15 @@ export default class Report extends PureComponent<
                       disabled={!this.state.showCommunity}
                     >
                       產品Community列表
-                    <Icon name='dropdown' />
+                      <Icon name='dropdown' />
                     </Accordion.Title>
                     <Accordion.Content active={this.state.activeIndex === 2}>
                       <Menu.Item onClick={this.openCommunityListWidow}>
                         Communities排名
-                    </Menu.Item>
+                      </Menu.Item>
                       <Menu.Item onClick={this.openCommunityCharacterWindow}>
                         Communities角色
-                    </Menu.Item>
+                      </Menu.Item>
                     </Accordion.Content>
                   </Menu.Item>
                   <ModalAddAnalysis
