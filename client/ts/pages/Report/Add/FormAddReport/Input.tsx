@@ -64,7 +64,7 @@ const FormAddReportInput = ({
           selection
           search
           options={options}
-          defaultValue={defaultValue}
+          defaultValue={defaultValue[0]}
         />
       </Segment>
     );
