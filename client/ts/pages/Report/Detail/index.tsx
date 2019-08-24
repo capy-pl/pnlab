@@ -5,23 +5,26 @@ import {
   AccordionTitleProps,
   Button,
   Checkbox,
-  Header,
   Icon,
-  List,
   Menu,
+  Popup,
   Search,
   Sidebar,
+  SearchResultProps,
   SearchResultData,
   SearchProps,
+  Table,
 } from 'semantic-ui-react';
 import { debounce } from 'lodash';
 
 import { ModalAddAnalysis } from 'Component/modal';
 import Graph from '../../../components/graph';
 import Loader from '../../../components/Loader';
-import CommunityCharacterWindow from './CommunityCharacterWindow';
-import CommunityListWindow from './CommunityListWindow';
-import ProductRankWindow from './ProductRankWindow';
+import {
+  CommunityCharacterWindow,
+  CommunityListWindow,
+  ProductRankWindow,
+} from 'Component/window';
 
 import ReportAPI, { Node } from '../../../PnApp/model/Report';
 import { simplifyDate } from '../../../PnApp/Helper';
@@ -203,7 +206,7 @@ export default class Report extends PureComponent<
     }));
   };
 
-  public resultRenderer(node: Node) {
+  public resultRenderer(node: SearchResultProps) {
     return <Search.Result key={node.id} id={node.id} title={node.name} />;
   }
 
@@ -218,22 +221,20 @@ export default class Report extends PureComponent<
       return this.state.report.conditions.map((condition) => {
         if (condition.type === 'string' || condition.type === 'promotion') {
           return (
-            <List.Item key={condition.name}>
-              <List.Header>{condition.name}</List.Header>
-              <List.Description>
-                {(condition.values as string[]).join(', ')}
-              </List.Description>
-            </List.Item>
+            <Table.Row key={condition.name}>
+              <Table.Cell>{condition.name}</Table.Cell>
+              <Table.Cell>{(condition.values as string[]).join(', ')}</Table.Cell>
+            </Table.Row>
           );
         }
         if (condition.type === 'date') {
           return (
-            <List.Item key={condition.name}>
-              <List.Header>{condition.name}</List.Header>
-              <List.Description>
+            <Table.Row key={condition.name}>
+              <Table.Cell>{condition.name}</Table.Cell>
+              <Table.Cell>
                 {simplifyDate(condition.values[0])} - {simplifyDate(condition.values[1])}
-              </List.Description>
-            </List.Item>
+              </Table.Cell>
+            </Table.Row>
           );
         }
       });
@@ -250,6 +251,10 @@ export default class Report extends PureComponent<
     this.setState({
       addAnalysisModalOpen: false,
     });
+  };
+
+  public addAnalysisSuccess = (id: string) => {
+    this.props.history.push(`/analysis/${id}`);
   };
 
   public render() {
@@ -272,6 +277,7 @@ export default class Report extends PureComponent<
               selectedCommunities={this.state.selectedCommunities}
             />
             <ProductRankWindow
+              model={this.state.report}
               selectedProduct={this.state.selectedProduct}
               selectProduct={this.selectProduct}
               productList={this.state.report.rank}
@@ -280,6 +286,7 @@ export default class Report extends PureComponent<
             />
             <Sidebar.Pushable>
               <Sidebar
+                width='wide'
                 animation='push'
                 direction='left'
                 visible={this.state.sidebarVisible}
@@ -300,12 +307,13 @@ export default class Report extends PureComponent<
                       active={this.state.infoOpen}
                       onClick={this.handleInfoIndexChange}
                     >
-                      <Header block textAlign='center'>
-                        基本資訊
-                      </Header>
+                      顯示篩選條件
+                      <Icon name='dropdown' />
                     </Accordion.Title>
                     <Accordion.Content active={this.state.infoOpen}>
-                      <List relaxed='very'>{this.getConditions()}</List>
+                      <Table definition style={{ marginTop: '2vh' }}>
+                        <Table.Body>{this.getConditions()}</Table.Body>
+                      </Table>
                     </Accordion.Content>
                   </Menu.Item>
                   <Menu.Item>
@@ -337,6 +345,7 @@ export default class Report extends PureComponent<
                       onClick={this.handleAccordionIndexChange}
                       index={2}
                       active={this.state.activeIndex === 2}
+                      disabled={!this.state.showCommunity}
                     >
                       產品Community列表
                       <Icon name='dropdown' />
@@ -353,6 +362,7 @@ export default class Report extends PureComponent<
                   <ModalAddAnalysis
                     report={this.state.report}
                     close={this.closeAddAnalysisModal}
+                    onSuccess={this.addAnalysisSuccess}
                     show={this.state.addAnalysisModalOpen}
                   />
                   <Button

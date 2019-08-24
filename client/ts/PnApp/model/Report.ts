@@ -1,5 +1,6 @@
 import axios from 'axios';
 import Jgraph from '../Jgraph';
+import { appendQuery, Query } from '../Helper';
 
 type MethodType = 'frequency' | 'adjust-frequency' | 'adjust-price';
 
@@ -24,11 +25,7 @@ export interface Node {
   core: boolean | string;
 }
 
-export interface SimpleNode {
-  id: number;
-  name: string;
-  weight: number;
-}
+export type SimpleNode = Pick<Node, 'id' | 'name' | 'weight'>;
 
 export interface Edge {
   from: number;
@@ -70,6 +67,11 @@ export type ReportPreview = Pick<
   '_id' | 'created' | 'conditions' | 'modified' | 'status' | 'errMessage'
 >;
 
+interface ListQuery {
+  page: number;
+  limit: number;
+}
+
 export default class Report {
   public static async add(conditions: Condition[]): Promise<{ id: string }> {
     const { data } = await axios.post<{ id: string }>(`/api/report/`, { conditions });
@@ -88,8 +90,8 @@ export default class Report {
     return new Report(report.data);
   }
 
-  public static async getAll(limit?: number): Promise<ReportPreview[]> {
-    const url = limit && limit > 0 ? `/api/report?limit=${limit}` : '/api/report';
+  public static async getAll(query?: ListQuery): Promise<ReportPreview[]> {
+    const url = query ? appendQuery(`/api/report`, query) : '/api/report';
     const reports = await axios.get<{
       reports: ReportPreview[];
     }>(url);
@@ -142,7 +144,7 @@ export default class Report {
     this.graph = new Jgraph(nodes, edges);
   }
 
-  public getMethod(): MethodType {
+  get method(): MethodType {
     for (const condition of this.conditions) {
       if (condition.type === 'method') {
         return condition.values as MethodType;

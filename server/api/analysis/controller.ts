@@ -21,6 +21,7 @@ export async function AddAnalysis(req: Request, res: Response): Promise<void> {
       analysis.title = '未命名的分析';
     }
     analysis.created = new Date();
+    analysis.modified = new Date();
     await analysis.save();
     res.status(201).send({ id: analysis._id });
   } catch (err) {
@@ -30,33 +31,37 @@ export async function AddAnalysis(req: Request, res: Response): Promise<void> {
 }
 
 interface GetCollectionQuery {
-  from?: number;
-  limit?: number;
+  page?: string;
+  limit?: string;
 }
 
 export async function GetAnalyses(req: Request, res: Response): Promise<void> {
   const query = req.query as GetCollectionQuery;
-  const { from, limit } = query;
+  const { page, limit } = query;
   try {
-    if (from && limit && isNumber(from) && isNumber(limit)) {
+    if (page && limit) {
       const collection = await Analysis.find(
         {},
         {
           title: 1,
-          created: -1,
+          created: 1,
+          modified: 1,
+          description: 1,
         },
       )
-        .skip(from)
-        .limit(limit);
+        .skip((parseInt(page) - 1) * parseInt(limit))
+        .limit(parseInt(limit))
+        .sort({ created: -1 });
       res.send(collection);
     } else {
       const collection = await Analysis.find(
         {},
         {
           title: 1,
-          created: -1,
+          created: 1,
+          description: 1,
         },
-      );
+      ).sort({ created: -1 });
       res.send(collection);
     }
   } catch (err) {
@@ -118,7 +123,9 @@ export async function GetAnalysisComment(req: Request, res: Response): Promise<v
   if (comment) {
     res.send(comment);
   } else {
-    Logger.error(new Error(`Comment ${commentId} not found in Analysis ${analysis._id}.`));
+    Logger.error(
+      new Error(`Comment ${commentId} not found in Analysis ${analysis._id}.`),
+    );
     res.status(404).end();
   }
 }
@@ -129,7 +136,9 @@ export async function ModifyAnalysisComment(req: Request, res: Response): Promis
   const comment = analysis.comments.id(commentId);
   const { body } = req;
   if (!comment) {
-    Logger.error(new Error(`Comment ${commentId} not found in Analysis ${analysis._id}.`));
+    Logger.error(
+      new Error(`Comment ${commentId} not found in Analysis ${analysis._id}.`),
+    );
     res.status(404).end();
   }
 
@@ -152,7 +161,9 @@ export async function DeleteAnalysisComment(req: Request, res: Response): Promis
   const commentId = req.params.comment_id as string;
   const comment = analysis.comments.id(commentId);
   if (!comment) {
-    Logger.error(new Error(`Comment ${commentId} not found in Analysis ${analysis._id}.`));
+    Logger.error(
+      new Error(`Comment ${commentId} not found in Analysis ${analysis._id}.`),
+    );
     res.status(404).end();
   }
 

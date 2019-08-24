@@ -58,7 +58,7 @@ const graphOption: Options = {
   },
   physics: {
     barnesHut: {
-      springLength: 300,
+      springLength: 270,
       centralGravity: 0.15,
       avoidOverlap: 0.2,
     },
@@ -81,11 +81,6 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
     this.graphRef = React.createRef();
     this.nodes = new DataSet();
     this.edges = new DataSet();
-
-    this.paintCommunity = this.paintCommunity.bind(this);
-    this.paintSelectedCommunity = this.paintSelectedCommunity.bind(this);
-    this.paintSelectedProduct = this.paintSelectedProduct.bind(this);
-    this.repaint = this.repaint.bind(this);
   }
 
   public componentDidMount() {
@@ -154,6 +149,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
     copy.title = `
     <div>
       <p>${copy.name}</p>
+      <p>社群編號: ${copy.community}</p>
       <p>weight: ${Math.round(copy.weight)}</p>
       <p>連接節點數: ${copy.degree}</p>
     </div>
@@ -185,6 +181,12 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
         } as any),
     );
     this.nodes.update(updateList);
+    (this.network as Network).fit({
+      nodes: this.nodes.map((node) => {
+        return node.id.toString();
+      }),
+      animation: false,
+    });
   }
 
   public paintSelectedProduct(): void {
@@ -204,7 +206,6 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
             return {
               id: node.id,
               hidden: true,
-              label: '',
             } as any;
           }
         })
@@ -228,6 +229,8 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
         selectedNodes.push(update);
       });
       this.nodes.update(selectedNodes);
+    } else {
+      this.repaint();
     }
   }
 
@@ -237,6 +240,15 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
         return {
           id: node.id,
           group: node.community,
+          title: `
+            <div>
+              <p>${node.name}</p>
+              <p>community: ${node.community}</p>
+              <p>weight: ${Math.round(node.weight)}</p>
+              <p>連接節點數: ${node.degree}</p>
+            </div>
+          `,
+          borderWidth: node.core ? 5 : 1,
         } as any;
       });
       this.nodes.update(nodes);
@@ -245,6 +257,13 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
         return {
           id: node.id,
           group: undefined,
+          title: `
+            <div>
+              <p>${node.name}</p>
+              <p>weight: ${Math.round(node.weight)}</p>
+              <p>連接節點數: ${node.degree}</p>
+            </div>
+          `,
           color: '#8DC1FF',
           borderWidth: 1,
         } as any;

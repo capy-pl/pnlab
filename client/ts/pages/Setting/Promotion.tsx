@@ -13,7 +13,10 @@ interface PromotionPageState {
   promotions: Promotion[];
 }
 
-export default class PromotionPage extends PureComponent<RouteComponentProps, PromotionPageState> {
+export default class PromotionPage extends PureComponent<
+  RouteComponentProps,
+  PromotionPageState
+> {
   constructor(props) {
     super(props);
     this.state = {
@@ -48,11 +51,7 @@ export default class PromotionPage extends PureComponent<RouteComponentProps, Pr
   public render() {
     const promotionHistory = this.state.promotions.map((promotion) => {
       return (
-        <PromotionItem
-          key={promotion.id}
-          onSave={this.load}
-          promotion={promotion}
-        />
+        <PromotionItem key={promotion.id} onSave={this.load} promotion={promotion} />
       );
     });
 
@@ -62,16 +61,22 @@ export default class PromotionPage extends PureComponent<RouteComponentProps, Pr
         <Table selectable color='teal'>
           <Table.Header>
             <Table.Row>
-              <Table.HeaderCell width='1' textAlign='center'>促銷名稱</Table.HeaderCell>
-              <Table.HeaderCell width='1' textAlign='center'>開始時間</Table.HeaderCell>
-              <Table.HeaderCell width='1' textAlign='center'>結束時間</Table.HeaderCell>
-              <Table.HeaderCell width='1' textAlign='center'>種類</Table.HeaderCell>
+              <Table.HeaderCell width='1' textAlign='center'>
+                促銷名稱
+              </Table.HeaderCell>
+              <Table.HeaderCell width='1' textAlign='center'>
+                開始時間
+              </Table.HeaderCell>
+              <Table.HeaderCell width='1' textAlign='center'>
+                結束時間
+              </Table.HeaderCell>
+              <Table.HeaderCell width='1' textAlign='center'>
+                種類
+              </Table.HeaderCell>
               <Table.HeaderCell width='1' textAlign='center' />
             </Table.Row>
           </Table.Header>
-          <Table.Body>
-            {promotionHistory}
-          </Table.Body>
+          <Table.Body>{promotionHistory}</Table.Body>
         </Table>
       </React.Fragment>
     );

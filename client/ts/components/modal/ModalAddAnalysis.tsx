@@ -4,9 +4,7 @@ import {
   Modal,
   TextAreaProps,
   InputOnChangeData,
-  Message,
 } from 'semantic-ui-react';
-import { isUndefined } from 'lodash';
 
 import FormAddAnalysis from '../form/FormAddAnalysis';
 import { Report } from '../../PnApp/model';
@@ -15,7 +13,7 @@ import { Analysis } from '../../PnApp/model';
 interface Props {
   show: boolean;
   report: Report;
-  onSuccess?: () => void;
+  onSuccess?: (id: string) => void;
   close: () => void;
 }
 
@@ -60,11 +58,15 @@ class ModalAddAnalysis extends React.PureComponent<Props, State> {
         loading: true,
       },
       async () => {
-        await Analysis.add({
+        const { id } = await Analysis.add({
           report: this.props.report.id,
           title: this.state.title,
           description: this.state.description,
         });
+        if (this.props.onSuccess) {
+          this.props.onSuccess(id);
+          return;
+        }
         this.setState({
           loading: false,
           description: '',

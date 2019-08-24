@@ -5,7 +5,6 @@ import { Logger } from '../../core/util';
 import { Promotion, Report } from '../../models';
 import { ReportInterface } from '../../models/Report';
 import { FieldSchemaInterface } from '../../models/ImportSchema';
-import { Condition } from '../../models/Report';
 import { UserSchemaInterface } from '../../models/User';
 
 interface SearchItemQuery {
@@ -166,7 +165,8 @@ export async function GetReport(req: e.Request, res: e.Response): Promise<void> 
 }
 
 export interface GetReportsRequestQuery {
-  limit?: number;
+  limit?: string;
+  page?: string;
 }
 
 export type ReportPreview = Pick<
@@ -178,22 +178,21 @@ export interface GetReportsResponseBody {
 }
 
 export async function GetReports(req: e.Request, res: e.Response): Promise<void> {
-  const { limit } = req.query as GetReportsRequestQuery;
+  const { limit, page } = req.query as GetReportsRequestQuery;
   const projection = {
     conditions: 1,
     status: 1,
     errMessage: 1,
     created: 1,
     modified: 1,
-    startTime: 1,
-    endTime: 1,
   };
   try {
     let reports: ReportPreview[];
-    if (limit) {
+    if (limit && page) {
       reports = await Report.find({}, projection)
-        .limit(limit)
-        .sort({ created: -1 });
+        .sort({ created: -1 })
+        .skip(parseInt(limit) * (parseInt(page) - 1))
+        .limit(parseInt(limit));
     } else {
       reports = await Report.find({}, projection).sort({ created: -1 });
     }
