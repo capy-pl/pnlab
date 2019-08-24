@@ -305,6 +305,29 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
           <Table selectable color='blue'>
             <Table.Header>
               <Table.Row>
+                <Table.HeaderCell colSpan='16'>
+                  <Menu floated='right' pagination>
+                    <Menu.Item
+                      as='a'
+                      onClick={this.previousPages}
+                      icon
+                      disabled={this.state.startPage === 1}
+                    >
+                      <Icon name='chevron left' />
+                    </Menu.Item>
+                    {this.getPageItems()}
+                    <Menu.Item
+                      as='a'
+                      onClick={this.nextPages}
+                      icon
+                      disabled={!this.state.hasNext}
+                    >
+                      <Icon name='chevron right' />
+                    </Menu.Item>
+                  </Menu>
+                </Table.HeaderCell>
+              </Table.Row>
+              <Table.Row>
                 <Table.HeaderCell textAlign='right' colSpan='16'>
                   每頁顯示
                   <Dropdown
