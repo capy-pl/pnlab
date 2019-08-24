@@ -4,6 +4,7 @@ import { Message, Table } from 'semantic-ui-react';
 
 import { Window } from 'Component/';
 import Report, { SimpleNode } from '../../../PnApp/model/Report';
+import Jgraph from '../../../PnApp/Jgraph';
 
 interface Props {
   close: () => void;
@@ -12,8 +13,9 @@ interface Props {
   model: Report;
   selectProduct: (id?: number) => void;
   selectedProduct?: number;
+  back: () => void;
+  graph: Jgraph;
 }
-
 export default class ProductRankWindow extends PureComponent<Props> {
   constructor(props: Props) {
     super(props);
@@ -23,46 +25,90 @@ export default class ProductRankWindow extends PureComponent<Props> {
 
   public selectCell(id: number): () => void {
     return () => {
-      if (id === this.props.selectedProduct) {
-        this.props.selectProduct(undefined);
-      } else {
-        this.props.selectProduct(id);
-      }
+      this.props.selectProduct(id);
     };
   }
 
+  public getConnectedProductList(): SimpleNode[] {
+    let connectedProductList;
+    if (this.props.selectedProduct !== undefined) {
+      connectedProductList = this.props.graph.edgeList.filter(edge => edge.from === this.props.selectedProduct).map((edge) => {
+        const connectedProduct = this.props.productList.find(product => product.id === edge.to);
+        return (
+          {
+            id: edge.to,
+            name: connectedProduct.name,
+            weight: edge.weight // connected edge weight
+          }
+        )
+      });
+      connectedProductList.sort((a, b) => {
+        return b.weight - a.weight
+      });
+    }
+    return connectedProductList;
+  }
+
   public getCells(): JSX.Element[] {
-    return this.props.productList.map((product) => (
-      <Table.Row
-        key={product.id}
-        positive={this.isSelected(product.id)}
-        onClick={this.selectCell(product.id)}
-      >
-        <Table.Cell>{product.name}</Table.Cell>
-        <Table.Cell>{product.weight}</Table.Cell>
-      </Table.Row>
-    ));
+    if (this.props.selectedProduct === undefined) {
+      return this.props.productList.map((product, index) => (
+        <Table.Row
+          key={product.id}
+          onClick={this.selectCell(product.id)}
+          textAlign='center'
+        >
+          <Table.Cell>{index + 1}</Table.Cell>
+          <Table.Cell>{product.name}</Table.Cell>
+          <Table.Cell>{Math.round(product.weight)}</Table.Cell>
+        </Table.Row>
+      ));
+    } else {
+      const connectedProductList = this.getConnectedProductList();
+      return connectedProductList.map((product, index) => (
+        <Table.Row
+          key={product.id}
+          textAlign='center'
+        >
+          <Table.Cell>{index + 1}</Table.Cell>
+          <Table.Cell>{product.name}</Table.Cell>
+          <Table.Cell>{Math.round(product.weight)}</Table.Cell>
+        </Table.Row>
+      ));
+    }
   }
 
   public render() {
     if (!this.props.show) {
       return <React.Fragment />;
     }
+    let selectedProduct, top, tableHeaderName, tableHeaderWeight;
+    if (this.props.selectedProduct !== undefined) {
+      selectedProduct = this.props.productList.find(product => product.id === this.props.selectedProduct);
+      top = <a onClick={this.props.back}> &lt;&lt; 返回</a>
+      tableHeaderName = '連結產品'
+      tableHeaderWeight = '連結'
+    } else {
+      selectedProduct = undefined;
+      top = <Message info content='點擊產品列可顯示單一產品' />
+      tableHeaderName = '產品'
+      tableHeaderWeight = '產品'
+    }
     return (
       <Window
-        title='產品排名'
+        title={selectedProduct ? `【${selectedProduct.name}】連結產品排名` : '產品排名'}
         defaultX={240}
         defaultWidth={450}
         defaultHeight={450}
         onClickX={this.props.close}
       >
         <React.Fragment>
-          <Message info content='點擊產品列可顯示單一產品' />
-          <Table selectable>
+          {top}
+          <Table selectable={this.props.selectedProduct === undefined}>
             <Table.Header>
-              <Table.Row>
-                <Table.HeaderCell textAlign='center'>產品名稱</Table.HeaderCell>
-                <Table.HeaderCell textAlign='center'>產品權重</Table.HeaderCell>
+              <Table.Row textAlign='center'>
+                <Table.HeaderCell>名次</Table.HeaderCell>
+                <Table.HeaderCell>{tableHeaderName}名稱</Table.HeaderCell>
+                <Table.HeaderCell>{tableHeaderWeight}權重</Table.HeaderCell>
               </Table.Row>
             </Table.Header>
             <Table.Body>{this.getCells()}</Table.Body>

@@ -16,7 +16,7 @@ class JgraphNode {
   constructor(id: number, name?: string) {
     this.id = id;
     if (name) {
-      this.name = this.name;
+      this.name = name;
     }
     this.edges = [];
   }

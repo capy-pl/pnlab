@@ -28,7 +28,6 @@ import {
 
 import ReportAPI, { Node } from '../../../PnApp/model/Report';
 import { simplifyDate } from '../../../PnApp/Helper';
-
 interface ReportState {
   loading: boolean;
   windowProductRank: boolean;
@@ -58,7 +57,7 @@ interface SearchResult extends Node {
 export default class Report extends PureComponent<
   RouteComponentProps<{ id: string }>,
   ReportState
-> {
+  > {
   constructor(props: RouteComponentProps<{ id: string }>) {
     super(props);
     this.state = {
@@ -142,9 +141,9 @@ export default class Report extends PureComponent<
     });
   };
 
-  public selectProduct = (id?: number) => {
+  public selectProduct = async (id?: number) => {
     if (this.state.report) {
-      this.setState({
+      await this.setState({
         selectedProduct: id,
         selectedCommunities: [],
       });
@@ -219,7 +218,7 @@ export default class Report extends PureComponent<
   public getConditions() {
     if (this.state.report) {
       return this.state.report.conditions.map((condition) => {
-        if (condition.type === 'string' || condition.type === 'promotion') {
+        if (condition.type === 'string' || condition.type === 'promotion' || condition.type === 'method') {
           return (
             <Table.Row key={condition.name}>
               <Table.Cell>{condition.name}</Table.Cell>
@@ -257,6 +256,10 @@ export default class Report extends PureComponent<
     this.props.history.push(`/analysis/${id}`);
   };
 
+  public clearSelectedProduct = () => {
+    this.setState({ selectedProduct: undefined });
+  }
+
   public render() {
     if (this.state.loading) {
       return <Loader size='huge' />;
@@ -283,6 +286,8 @@ export default class Report extends PureComponent<
               productList={this.state.report.rank}
               show={this.state.windowProductRank}
               close={this.closeProductRankWindow}
+              back={this.clearSelectedProduct}
+              graph={this.state.report.graph}
             />
             <Sidebar.Pushable>
               <Sidebar

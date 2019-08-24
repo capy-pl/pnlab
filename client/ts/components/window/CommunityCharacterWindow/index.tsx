@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Menu, MenuItemProps, Segment, Table } from 'semantic-ui-react';
+import { Menu, MenuItemProps, Message, Segment, Table } from 'semantic-ui-react';
 import { isUndefined } from 'lodash';
 
 import { Window } from 'Component/';
@@ -49,7 +49,7 @@ export default class CommunityCharacterWindow extends PureComponent<Props, State
       return (
         <Table.Row key={hook.name}>
           <Table.Cell>{hook.name}</Table.Cell>
-          <Table.Cell>{hook.weight}</Table.Cell>
+          <Table.Cell>{Math.round(hook.weight)}</Table.Cell>
           <Table.Cell>{connectedCommunitiesIds}</Table.Cell>
         </Table.Row>
       );
@@ -88,6 +88,7 @@ export default class CommunityCharacterWindow extends PureComponent<Props, State
             </Menu.Item>
           </Menu>
           <Segment hidden={this.state.activeIndex !== 0} attached='bottom'>
+            <Message info content='僅列出產品數大於4之產品群的core' />
             <Table selectable>
               <Table.Header>
                 <Table.Row>
