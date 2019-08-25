@@ -2,7 +2,8 @@
 /// <reference path="./index.d.ts" /> #
 import dotenv from 'dotenv';
 import http from 'http';
-
+import path from 'path';
+import fs from 'fs';
 import { ChildProcess } from 'child_process';
 import app from './App';
 import dbConnect from './core/db';
@@ -18,6 +19,13 @@ command.parse(process.argv);
 
 const server = http.createServer(app);
 let pyConsumers: ChildProcess;
+
+try {
+  fs.mkdirSync(path.resolve(__dirname, '..', 'logs'));
+  Logger.info('Logs directory created.');
+} catch (err) {
+  Logger.info('logs directory already exists. Skip...');
+}
 
 server.listen(process.env.PORT, async () => {
   if (!command.disablePython) {
