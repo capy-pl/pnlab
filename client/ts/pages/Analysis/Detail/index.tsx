@@ -282,6 +282,10 @@ export default class Detail extends PureComponent<
     this.setState({ windowAnalysisInfo: false });
   };
 
+  public clearSelectedProduct = () => {
+    this.setState({ selectedProduct: undefined });
+  };
+
   public render() {
     if (this.state.loading) {
       return <Loader size='huge' />;
@@ -308,6 +312,7 @@ export default class Detail extends PureComponent<
               productList={this.state.report.rank}
               show={this.state.windowProductRank}
               close={this.closeProductRankWindow}
+              back={this.clearSelectedProduct}
             />
             <AnalysisInfoWindow
               onSave={this.onSaved}
