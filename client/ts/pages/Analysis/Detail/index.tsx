@@ -61,7 +61,7 @@ interface SearchResult extends Node {
 export default class Detail extends PureComponent<
   RouteComponentProps<{ id: string }>,
   State
-> {
+  > {
   constructor(props: RouteComponentProps<{ id: string }>) {
     super(props);
     this.state = {
@@ -250,7 +250,7 @@ export default class Detail extends PureComponent<
   public getConditions() {
     if (this.state.report) {
       return this.state.report.conditions.map((condition) => {
-        if (condition.type === 'string' || condition.type === 'promotion') {
+        if (condition.type === 'string' || condition.type === 'promotion' || condition.type === 'method') {
           return (
             <Table.Row key={condition.name}>
               <Table.Cell width='6'>{condition.name}</Table.Cell>

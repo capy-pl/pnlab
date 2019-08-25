@@ -141,9 +141,9 @@ export default class Report extends PureComponent<
     });
   };
 
-  public selectProduct = async (id?: number) => {
+  public selectProduct = (id?: number) => {
     if (this.state.report) {
-      await this.setState({
+      this.setState({
         selectedProduct: id,
         selectedCommunities: [],
       });
