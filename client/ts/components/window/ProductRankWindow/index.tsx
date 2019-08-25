@@ -1,10 +1,8 @@
-import { isUndefined } from 'lodash';
 import React, { PureComponent } from 'react';
 import { Message, Table } from 'semantic-ui-react';
 
 import { Window } from 'Component/';
 import Report, { SimpleNode } from '../../../PnApp/model/Report';
-import Jgraph from '../../../PnApp/Jgraph';
 
 interface Props {
   close: () => void;
@@ -14,8 +12,8 @@ interface Props {
   selectProduct: (id?: number) => void;
   selectedProduct?: number;
   back: () => void;
-  graph: Jgraph;
 }
+
 export default class ProductRankWindow extends PureComponent<Props> {
   constructor(props: Props) {
     super(props);
@@ -30,20 +28,20 @@ export default class ProductRankWindow extends PureComponent<Props> {
   }
 
   public getConnectedProductList(): SimpleNode[] {
-    let connectedProductList;
+    let connectedProductList: SimpleNode[] = [];
     if (this.props.selectedProduct !== undefined) {
-      connectedProductList = this.props.graph.edgeList.filter(edge => edge.from === this.props.selectedProduct).map((edge) => {
-        const connectedProduct = this.props.productList.find(product => product.id === edge.to);
-        return (
-          {
-            id: edge.to,
-            name: connectedProduct.name,
-            weight: edge.weight // connected edge weight
-          }
-        )
-      });
+      connectedProductList = this.props.model.graph
+        .getConnectedNodes(this.props.selectedProduct)
+        .map((number) => {
+          return this.props.model.graph.getNode(number);
+        })
+        .map((node) => ({
+          id: node.id,
+          name: node.name as string,
+          weight: node.weight, // connected edge weight
+        }));
       connectedProductList.sort((a, b) => {
-        return b.weight - a.weight
+        return b.weight - a.weight;
       });
     }
     return connectedProductList;
@@ -65,10 +63,7 @@ export default class ProductRankWindow extends PureComponent<Props> {
     } else {
       const connectedProductList = this.getConnectedProductList();
       return connectedProductList.map((product, index) => (
-        <Table.Row
-          key={product.id}
-          textAlign='center'
-        >
+        <Table.Row key={product.id} textAlign='center'>
           <Table.Cell>{index + 1}</Table.Cell>
           <Table.Cell>{product.name}</Table.Cell>
           <Table.Cell>{Math.round(product.weight)}</Table.Cell>
@@ -83,15 +78,17 @@ export default class ProductRankWindow extends PureComponent<Props> {
     }
     let selectedProduct, top, tableHeaderName, tableHeaderWeight;
     if (this.props.selectedProduct !== undefined) {
-      selectedProduct = this.props.productList.find(product => product.id === this.props.selectedProduct);
-      top = <a onClick={this.props.back}> &lt;&lt; 返回</a>
-      tableHeaderName = '連結產品'
-      tableHeaderWeight = '連結'
+      selectedProduct = this.props.productList.find(
+        (product) => product.id === this.props.selectedProduct,
+      );
+      top = <a onClick={this.props.back}> &lt;&lt; 返回</a>;
+      tableHeaderName = '連結產品';
+      tableHeaderWeight = '連結';
     } else {
       selectedProduct = undefined;
-      top = <Message info content='點擊產品列可顯示單一產品' />
-      tableHeaderName = '產品'
-      tableHeaderWeight = '產品'
+      top = <Message info content='點擊產品列可顯示單一產品' />;
+      tableHeaderName = '產品';
+      tableHeaderWeight = '產品';
     }
     return (
       <Window
@@ -116,9 +113,5 @@ export default class ProductRankWindow extends PureComponent<Props> {
         </React.Fragment>
       </Window>
     );
-  }
-
-  private isSelected(id: number): boolean {
-    return !isUndefined(this.props.selectedProduct) && this.props.selectedProduct === id;
   }
 }
