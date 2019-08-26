@@ -2,9 +2,8 @@ import igraph
 from itertools import filterfalse, combinations
 from pandas import Series
 
-from .product_network import ProductNerwork
-from .promotion import Promotion
-from .error import ZeroNodeError
+from ..model import ProductNerwork, Promotion
+from ..error import ZeroNodeError
 
 
 def all_pass(promotion_list, arg):
@@ -14,7 +13,7 @@ def all_pass(promotion_list, arg):
     return True
 
 
-class NetworkConverter:
+class TransactionTransformer:
     def __init__(self, transactions, method='frequency'):
         self.method = method
         self.transactions = transactions

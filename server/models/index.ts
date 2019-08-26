@@ -1,3 +1,4 @@
+import Action from './Action';
 import Analysis from './Analysis';
 import Category from './Category';
 import ImportSchema from './ImportSchema';
@@ -8,6 +9,7 @@ import Transactinos from './Transactions';
 import User from './User';
 
 export {
+  Action,
   Analysis,
   ImportSchema,
   Organization,
@@ -19,6 +21,7 @@ export {
 };
 
 export default {
+  Action,
   Analysis,
   ImportSchema,
   Organization,

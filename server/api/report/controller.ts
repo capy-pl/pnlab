@@ -2,7 +2,7 @@ import e from 'express';
 import { connection } from 'mongoose';
 import { getChannel } from '../../core/mq';
 import { Logger } from '../../core/util';
-import { Promotion, Report } from '../../models';
+import { Action, Promotion, Report } from '../../models';
 import { ReportInterface } from '../../models/Report';
 import { FieldSchemaInterface } from '../../models/ImportSchema';
 import { UserSchemaInterface } from '../../models/User';
@@ -111,6 +111,12 @@ export async function AddReport(req: e.Request, res: e.Response): Promise<void> 
       modified: new Date(),
       status: 'pending',
     });
+    const action = new Action({
+      type: 'report',
+      created: new Date(),
+      modified: new Date(),
+      status: 'pending',
+    });
 
     for (const field of org.importSchema.transactionFields) {
       mapping[field.name] = field;
@@ -142,8 +148,12 @@ export async function AddReport(req: e.Request, res: e.Response): Promise<void> 
     }
     await report.save();
     res.status(201).send({ id: report.id });
+
+    action.targetId = report.id;
+    await action.save();
+
     const channel = getChannel();
-    channel.sendToQueue('pn', Buffer.from(report.id));
+    channel.sendToQueue('pn', Buffer.from(action.id));
   } catch (error) {
     Logger.error(error);
     res.status(400).send({ message: error.message });

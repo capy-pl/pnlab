@@ -8,13 +8,16 @@ async function askStatus(wsMap: Map<string, WebSocket>) {
   wsMap.forEach((value, key) => {
     keys.push(key);
   });
-  const reports = await Report.find({
-    _id: {
-      $in: keys,
+  const reports = await Report.find(
+    {
+      _id: {
+        $in: keys,
+      },
     },
-  }, {
+    {
       status: 1,
-  });
+    },
+  );
   if (reports && reports.length) {
     reports.forEach((report) => {
       const ws = wsMap.get(report._id.toString());
@@ -48,7 +51,7 @@ function startSocketServer(server: Server, callback?: () => void) {
 
   setInterval(() => {
     askStatus(wsMap);
-  }, 50);
+  }, 2500);
 }
 
 export default startSocketServer;
