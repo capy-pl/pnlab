@@ -18,7 +18,7 @@ def receive(action_id):
     if not action:
         logging.error('Action {} not found.'.format(action_id))
     else:
-        logging.info('Action {} found. type={} targetId={} .Start processing.'
+        logging.info('Action {} found. type={} targetId={}.'
                      .format(action_id, action['type'], action['_id']))
         try:
             if action['type'] == 'report':

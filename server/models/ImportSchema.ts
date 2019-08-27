@@ -25,6 +25,7 @@ export interface ImportSchemaInterface {
   itemName: string;
   itemFields: FieldSchemaInterface[];
   transactionName: string;
+  transactionTime: string;
 }
 
 const FieldSchema = new Schema<FieldSchemaInterface>({
@@ -57,6 +58,10 @@ const ImportSchema = new Schema<ImportSchemaInterface>({
   },
   itemFields: [FieldSchema],
   transactionName: {
+    type: String,
+    required: true,
+  },
+  transactionTime: {
     type: String,
     required: true,
   },

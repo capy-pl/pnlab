@@ -1,5 +1,5 @@
 import os
-from pyscript.src import worker
+from .src import worker
 from multiprocessing.pool import Pool
 import logging
 

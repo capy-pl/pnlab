@@ -66,6 +66,11 @@ module.exports = function (grunt) {
       stdout: true,
       exitCode: 0,
     },
+    populate: {
+      command: 'ts-node scripts/populateSchemaValue.ts',
+      stdout: true,
+      exitCode: 0,
+    }
   };
 
   grunt.initConfig({
@@ -84,6 +89,8 @@ module.exports = function (grunt) {
   grunt.task.registerTask('test:client', ['eslint:client', 'exec:testClient']);
   grunt.task.registerTask('test:server', ['eslint:server', 'exec:testServer']);
   grunt.task.registerTask('initdb', ['exec:initdb']);
+  grunt.task.registerTask('populate', ['exec:populate']);
+  grunt.task.registerTask('upgrade', ['exec:initdb', 'exec:populate'])
   grunt.task.registerTask('run', ['build:client', 'exec:run']);
   grunt.task.registerTask('prodRun', ['build', 'exec:prodRun']);
   grunt.loadNpmTasks('grunt-eslint');

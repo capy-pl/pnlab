@@ -14,10 +14,11 @@ def all_pass(promotion_list, arg):
 
 
 class TransactionTransformer:
-    def __init__(self, transactions, method='frequency'):
+    def __init__(self, transactions, org_schema, method='frequency'):
         self.method = method
         self.transactions = transactions
         self._done = False
+        self.org_schema = org_schema
         self.promotion_filter = {
             'direct': {},
             'combination': {}
@@ -73,8 +74,8 @@ class TransactionTransformer:
         return self._done
 
     def is_valid_edge(self, edge, time):
-        item1 = edge[0]['單品名稱']
-        item2 = edge[1]['單品名稱']
+        item1 = edge[0][self.org_schema['itemName']]
+        item2 = edge[1][self.org_schema['itemName']]
         # See if the item is in filter list.
         if item1 in self.item_filter or item2 in self.item_filter:
             return False
@@ -92,7 +93,7 @@ class TransactionTransformer:
 
     def get_edges(self, transaction):
         edges = [edge for edge in combinations(
-            transaction['items'], 2) if self.is_valid_edge(edge, transaction['資料日期與時間'])]
+            transaction['items'], 2) if self.is_valid_edge(edge, transaction[self.org_schema['transactionTime']])]
         return edges
 
     def weight(self, edge, transaction, nums):
@@ -113,7 +114,8 @@ class TransactionTransformer:
             edges = self.get_edges(transaction)
             number = len(edges)
             for edge in edges:
-                edge_one = tuple(item['單品名稱'] for item in edge)
+                edge_one = tuple(item[self.org_schema['itemName']]
+                                 for item in edge)
                 edge_two = (edge_one[1], edge_one[0])
                 weight = self.weight(edge, transaction, number)
                 support_total += 1

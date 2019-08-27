@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema, Types } from 'mongoose';
+import mongoose, { Document, Schema } from 'mongoose';
 
 type ActionType = 'report' | 'import';
 type ActionStatus = 'pending' | 'success' | 'error';
