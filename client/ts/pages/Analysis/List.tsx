@@ -7,6 +7,7 @@ import {
   DropdownProps,
   Label,
   Menu,
+  Popup,
   Segment,
   Table,
 } from 'semantic-ui-react';
@@ -254,6 +255,7 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
           onButtonClick={this.onLinkClick(analysis._id)}
           onCheck={this.handleCheck(analysis._id)}
           selected={this.state.compareList.includes(analysis._id)}
+          compareList={this.state.compareList}
         />
       );
     });
@@ -269,7 +271,7 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
             dropChangeA={this.onChangeA}
             dropChangeB={this.onChangeB}
           />
-          <Button
+          {/* <Button
             floated='right'
             color='blue'
             style={{ margin: '10px' }}
@@ -279,32 +281,32 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
           >
             <Icon name='clone outline' />
             比較圖片
-          </Button>
+          </Button> */}
           <Button
             floated='right'
             style={{ margin: '10px' }}
             onClick={this.onConfirm}
             icon
-            labelPosition='left'
+            labelPosition='right'
             disabled={this.state.compareList.length !== 2}
             color={this.state.compareList.length === 2 ? 'teal' : undefined}
           >
             <span>
-              比較圖片
+              比較圖片（已勾選{this.state.compareList.length} / 2）
 
-              <Label
+              {/* <Label
                 horizontal
                 circular
                 color='grey'
               >
                 {this.state.compareList.length}
-              </Label>
+              </Label> */}
             </span>
             <Icon name='clone outline' />
           </Button>
           <Table selectable color='blue'>
             <Table.Header>
-              <Table.Row>
+              {/* <Table.Row>
                 <Table.HeaderCell colSpan='16'>
                   <Menu floated='right' pagination>
                     <Menu.Item
@@ -326,7 +328,7 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
                     </Menu.Item>
                   </Menu>
                 </Table.HeaderCell>
-              </Table.Row>
+              </Table.Row> */}
               <Table.Row>
                 <Table.HeaderCell textAlign='right' colSpan='16'>
                   每頁顯示
@@ -347,13 +349,27 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
                 <Table.HeaderCell width='4' textAlign='center'>
                   建立時間
                 </Table.HeaderCell>
-                <Table.HeaderCell width='5' textAlign='center'>
-                  加入比較（已勾選{this.state.compareList.length} / 2）
-                  <Button onClick={this.clearSelected}>
+                <Table.HeaderCell width='4' textAlign='center'>
+                  加入比較 &nbsp;&nbsp;
+                  <Popup
+                    content='清除全部'
+                    basic
+                    trigger={
+                      <Icon
+                        name='trash alternate'
+                        // inverted
+                        bordered
+                        onClick={this.clearSelected}
+                        // color='red'
+                        style={{ cursor: 'pointer', borderRadius: '8px', backgroundColor: 'white' }}
+                      />
+                    }
+                  />
+                  {/* <Button onClick={this.clearSelected}>
                     清除全部
-                  </Button>
+                  </Button> */}
                 </Table.HeaderCell>
-                <Table.HeaderCell width='2' textAlign='center' />
+                <Table.HeaderCell width='3' textAlign='center' />
               </Table.Row>
             </Table.Header>
             <Table.Body>{history}</Table.Body>

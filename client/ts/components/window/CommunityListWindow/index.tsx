@@ -51,7 +51,7 @@ export default class CommunityListWindow extends PureComponent<Props, State> {
       const items = community.items.map((node) => (
         <Table.Row key={node.name}>
           <Table.Cell>{node.name}</Table.Cell>
-          <Table.Cell>{node.weight}</Table.Cell>
+          <Table.Cell>{Math.round(node.weight)}</Table.Cell>
         </Table.Row>
       ));
       const coreRow = community.core && (
