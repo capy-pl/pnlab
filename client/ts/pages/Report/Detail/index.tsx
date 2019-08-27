@@ -49,6 +49,7 @@ interface ReportState {
   focusNode?: number;
   activeIndex: number;
   infoOpen: boolean;
+  windowSearchItemProduct: boolean;
 }
 
 interface SearchResult extends Node {
@@ -77,6 +78,7 @@ export default class Report extends PureComponent<
       searchResults: [],
       activeIndex: -1,
       infoOpen: true,
+      windowSearchItemProduct: false,
     };
   }
 
@@ -207,8 +209,9 @@ export default class Report extends PureComponent<
     data: DropdownProps
   ) => {
     this.setState({
-      focusNode: data.value as number,
+      focusNode: data.value as number | undefined,
     });
+    data.value ? this.setState({ windowSearchItemProduct: true }) : this.setState({ windowSearchItemProduct: false })
   }
 
   public handleToggleSidebar = () => {
@@ -282,19 +285,46 @@ export default class Report extends PureComponent<
     });
     return dropdownOption;
   }
+
   public clearSelectedProduct = () => {
     this.setState({ selectedProduct: undefined });
   };
+
+  public closeSearchItemProductWindow = () => {
+    this.setState({ windowSearchItemProduct: false })
+  }
 
   public render() {
     if (this.state.loading) {
       return <Loader size='huge' />;
     } else {
       if (this.state.report) {
+        const searchItemProductWindow = this.state.focusNode ?
+          <ProductRankWindow
+            model={this.state.report}
+            selectedProduct={this.state.focusNode}
+            selectProduct={this.selectProduct}
+            productList={this.state.report.rank}
+            show={this.state.windowSearchItemProduct}
+            close={this.closeSearchItemProductWindow}
+            back={this.clearSelectedProduct}
+          /> :
+          <React.Fragment />
         // search dropdown
         const dropdownOption = this.getDropdownOption();
         return (
           <React.Fragment>
+            {/* {searchItemProductWindow} */}
+            <ProductRankWindow
+              model={this.state.report}
+              selectedProduct={this.state.focusNode}
+              selectProduct={this.selectProduct}
+              productList={this.state.report.rank}
+              show={this.state.windowSearchItemProduct}
+              close={this.closeSearchItemProductWindow}
+              back={this.clearSelectedProduct}
+              fromSearch={true}
+            />
             <CommunityCharacterWindow
               report={this.state.report}
               show={this.state.windowCommunityCharacter}
@@ -315,6 +345,7 @@ export default class Report extends PureComponent<
               show={this.state.windowProductRank}
               close={this.closeProductRankWindow}
               back={this.clearSelectedProduct}
+              fromSearch={false}
             />
             <Sidebar.Pushable>
               <Sidebar

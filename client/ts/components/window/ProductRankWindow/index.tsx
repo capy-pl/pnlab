@@ -12,6 +12,7 @@ interface Props {
   selectProduct: (id?: number) => void;
   selectedProduct?: number;
   back: () => void;
+  fromSearch: boolean;
 }
 
 export default class ProductRankWindow extends PureComponent<Props> {
@@ -77,7 +78,14 @@ export default class ProductRankWindow extends PureComponent<Props> {
       return <React.Fragment />;
     }
     let selectedProduct, top, tableHeaderName, tableHeaderWeight;
-    if (this.props.selectedProduct !== undefined) {
+    if (this.props.fromSearch === true) {
+      selectedProduct = this.props.productList.find(
+        (product) => product.id === this.props.selectedProduct,
+      );
+      top = <React.Fragment />;
+      tableHeaderName = '連結產品';
+      tableHeaderWeight = '連結';
+    } else if (this.props.selectedProduct !== undefined) {
       selectedProduct = this.props.productList.find(
         (product) => product.id === this.props.selectedProduct,
       );
