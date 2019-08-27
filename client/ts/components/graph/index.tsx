@@ -5,9 +5,9 @@ import { DataSet, EdgeOptions, Network, NodeOptions, Options } from 'vis';
 import Jgraph from '../../PnApp/Jgraph';
 import { Edge, Node } from '../../PnApp/model/Report';
 
-interface GraphNode extends Node, NodeOptions { }
+interface GraphNode extends Node, NodeOptions {}
 
-interface GraphEdge extends Edge, EdgeOptions { }
+interface GraphEdge extends Edge, EdgeOptions {}
 
 const customScalingFunction = (
   min: number,
@@ -81,11 +81,6 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
     this.graphRef = React.createRef();
     this.nodes = new DataSet();
     this.edges = new DataSet();
-
-    this.paintCommunity = this.paintCommunity.bind(this);
-    this.paintSelectedCommunity = this.paintSelectedCommunity.bind(this);
-    this.paintSelectedProduct = this.paintSelectedProduct.bind(this);
-    this.repaint = this.repaint.bind(this);
   }
 
   public componentDidMount() {
@@ -219,7 +214,6 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
             return {
               id: node.id,
               hidden: true,
-              label: '',
             } as any;
           }
         })

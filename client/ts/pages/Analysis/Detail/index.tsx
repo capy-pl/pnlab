@@ -250,7 +250,7 @@ export default class Detail extends PureComponent<
   public getConditions() {
     if (this.state.report) {
       return this.state.report.conditions.map((condition) => {
-        if (condition.type === 'string' || condition.type === 'promotion') {
+        if (condition.type === 'string' || condition.type === 'promotion' || condition.type === 'method') {
           return (
             <Table.Row key={condition.name}>
               <Table.Cell width='6'>{condition.name}</Table.Cell>
@@ -282,6 +282,10 @@ export default class Detail extends PureComponent<
     this.setState({ windowAnalysisInfo: false });
   };
 
+  public clearSelectedProduct = () => {
+    this.setState({ selectedProduct: undefined });
+  };
+
   public render() {
     if (this.state.loading) {
       return <Loader size='huge' />;
@@ -302,11 +306,13 @@ export default class Detail extends PureComponent<
               selectedCommunities={this.state.selectedCommunities}
             />
             <ProductRankWindow
+              model={this.state.report}
               selectedProduct={this.state.selectedProduct}
               selectProduct={this.selectProduct}
               productList={this.state.report.rank}
               show={this.state.windowProductRank}
               close={this.closeProductRankWindow}
+              back={this.clearSelectedProduct}
             />
             <AnalysisInfoWindow
               onSave={this.onSaved}

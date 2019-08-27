@@ -30,7 +30,6 @@ import {
 
 import ReportAPI, { Node } from '../../../PnApp/model/Report';
 import { simplifyDate } from '../../../PnApp/Helper';
-
 interface ReportState {
   loading: boolean;
   windowProductRank: boolean;
@@ -231,7 +230,11 @@ export default class Report extends PureComponent<
   public getConditions() {
     if (this.state.report) {
       return this.state.report.conditions.map((condition) => {
-        if (condition.type === 'string' || condition.type === 'promotion' || condition.type === 'method') {
+        if (
+          condition.type === 'string' ||
+          condition.type === 'promotion' ||
+          condition.type === 'method'
+        ) {
           return (
             <Table.Row key={condition.name}>
               <Table.Cell>{condition.name}</Table.Cell>
@@ -279,6 +282,9 @@ export default class Report extends PureComponent<
     });
     return dropdownOption;
   }
+  public clearSelectedProduct = () => {
+    this.setState({ selectedProduct: undefined });
+  };
 
   public render() {
     if (this.state.loading) {
@@ -302,11 +308,13 @@ export default class Report extends PureComponent<
               selectedCommunities={this.state.selectedCommunities}
             />
             <ProductRankWindow
+              model={this.state.report}
               selectedProduct={this.state.selectedProduct}
               selectProduct={this.selectProduct}
               productList={this.state.report.rank}
               show={this.state.windowProductRank}
               close={this.closeProductRankWindow}
+              back={this.clearSelectedProduct}
             />
             <Sidebar.Pushable>
               <Sidebar
@@ -381,7 +389,7 @@ export default class Report extends PureComponent<
                       disabled={!this.state.showCommunity}
                     >
                       產品Community列表
-                    <Icon name='dropdown' />
+                      <Icon name='dropdown' />
                     </Accordion.Title>
                     <Accordion.Content active={this.state.activeIndex === 2}>
                       <Popup

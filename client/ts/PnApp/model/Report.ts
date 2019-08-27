@@ -144,7 +144,7 @@ export default class Report {
     this.graph = new Jgraph(nodes, edges);
   }
 
-  public getMethod(): MethodType {
+  get method(): MethodType {
     for (const condition of this.conditions) {
       if (condition.type === 'method') {
         return condition.values as MethodType;
