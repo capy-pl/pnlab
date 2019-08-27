@@ -341,13 +341,13 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
                 </Table.HeaderCell>
               </Table.Row>
               <Table.Row>
-                <Table.HeaderCell width='6' textAlign='center'>
+                <Table.HeaderCell width='5' textAlign='center'>
                   圖片名稱
                 </Table.HeaderCell>
-                <Table.HeaderCell width='5' textAlign='center'>
+                <Table.HeaderCell width='4' textAlign='center'>
                   建立時間
                 </Table.HeaderCell>
-                <Table.HeaderCell width='3' textAlign='center'>
+                <Table.HeaderCell width='5' textAlign='center'>
                   加入比較（已勾選{this.state.compareList.length} / 2）
                   <Button onClick={this.clearSelected}>
                     清除全部

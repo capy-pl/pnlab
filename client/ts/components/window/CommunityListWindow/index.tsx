@@ -80,7 +80,7 @@ export default class CommunityListWindow extends PureComponent<Props, State> {
             產品群{community.id}
           </Accordion.Title>
           <Accordion.Content active={this.state.activeIndex === community.id}>
-            <Table selectable>
+            <Table>
               <Table.Header>
                 {coreRow}
                 <Table.Row>
