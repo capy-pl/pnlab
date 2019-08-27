@@ -1,8 +1,9 @@
 import dotenv from 'dotenv';
 import connectMongo from '../server/core/db';
 import { Logger } from '../server/core/util';
-import { Organization, Transactinos, User } from '../server/models';
+import { Organization, User } from '../server/models';
 import { ImportSchemaInterface } from '../server/models/ImportSchema';
+
 dotenv.config();
 
 (async () => {

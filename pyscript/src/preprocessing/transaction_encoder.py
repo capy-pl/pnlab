@@ -1,4 +1,14 @@
 class TransactionEncoder:
+    """The class creates an instance aims to transform transactions' pandas dataframe into dictionary.
+            
+        Attributes:
+            transaction_id_name: The transaction's id column name.
+            item_name: The item/product's column name.
+            transaction_amount_name: The transaction amount 's column name.
+            transaction_attrs(optional): A list contains all attributes' column names that belong to the transaction.
+            item_attrs(optional):  A list contains all attributes' column names that belong to the transaction.
+    """
+
     def __init__(self, org_schema, org_name=None):
         self.transaction_id_name = org_schema['transactionName']
         self.item_name = org_schema['itemName']
