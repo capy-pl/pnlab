@@ -158,11 +158,13 @@ export default class Report extends PureComponent<
     if (this.state.selectedCommunities.includes(id)) {
       this.setState({
         selectedProduct: undefined,
+        selectedProductMode: undefined,
         selectedCommunities: this.state.selectedCommunities.filter((num) => num !== id),
       });
     } else {
       this.setState({
         selectedProduct: undefined,
+        selectedProductMode: undefined,
         selectedCommunities: [...this.state.selectedCommunities, id],
       });
     }

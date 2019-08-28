@@ -236,8 +236,6 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
         selectedNodes.push(update);
       });
       this.nodes.update(selectedNodes);
-    } else {
-      this.repaint();
     }
   }
 
