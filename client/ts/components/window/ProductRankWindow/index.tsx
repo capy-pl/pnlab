@@ -39,7 +39,8 @@ export default class ProductRankWindow extends PureComponent<Props> {
         .map((node) => ({
           id: node.id,
           name: node.name as string,
-          weight: node.weight, // connected edge weight
+          weight: node.getDestinationWeight(this.props
+            .selectedProduct as number) as number, // connected edge weight
         }));
       connectedProductList.sort((a, b) => {
         return b.weight - a.weight;
