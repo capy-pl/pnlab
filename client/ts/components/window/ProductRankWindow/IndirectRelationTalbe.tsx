@@ -106,9 +106,11 @@ export default class IndirectRelationTalbe extends React.PureComponent<Props, St
         <a onClick={this.props.back}> &lt;&lt; 返回</a>
         <Table selectable>
           <Table.Header>
-            <Table.HeaderCell textAlign='center'>產品名稱</Table.HeaderCell>
-            <Table.HeaderCell textAlign='center'>產品距離</Table.HeaderCell>
-            <Table.HeaderCell />
+            <Table.Row>
+              <Table.HeaderCell textAlign='center'>產品名稱</Table.HeaderCell>
+              <Table.HeaderCell textAlign='center'>產品距離</Table.HeaderCell>
+              <Table.HeaderCell />
+            </Table.Row>
           </Table.Header>
           <Table.Body>{this.getCells()}</Table.Body>
         </Table>
