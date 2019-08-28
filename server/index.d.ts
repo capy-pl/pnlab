@@ -17,6 +17,7 @@ declare global {
       PORT: number;
       SECRET_KEY: string;
       EXPIRED_IN: string;
+      HOME: string;
     }
   }
 }
