@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  Button,
-  Modal,
-  TextAreaProps,
-  InputOnChangeData,
-} from 'semantic-ui-react';
+import { Button, Modal, TextAreaProps, InputOnChangeData } from 'semantic-ui-react';
 
 import FormAddAnalysis from '../form/FormAddAnalysis';
 import { Report } from '../../PnApp/model';
@@ -63,16 +58,16 @@ class ModalAddAnalysis extends React.PureComponent<Props, State> {
           title: this.state.title,
           description: this.state.description,
         });
-        if (this.props.onSuccess) {
-          this.props.onSuccess(id);
-          return;
-        }
         this.setState({
           loading: false,
           description: '',
           title: '',
         });
         this.props.close();
+        if (this.props.onSuccess) {
+          this.props.onSuccess(id);
+          return;
+        }
       },
     );
   }

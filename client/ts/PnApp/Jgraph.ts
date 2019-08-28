@@ -9,20 +9,32 @@ interface Edge {
   weight?: number;
 }
 
-class JgraphNode {
+export class JgraphNode {
   public id: number;
   public name?: string;
   public edges: JgraphEdge[];
   constructor(id: number, name?: string) {
     this.id = id;
     if (name) {
-      this.name = this.name;
+      this.name = name;
     }
     this.edges = [];
   }
 
-  public getConnectedNodes(): number[] {
+  get connectedNodes(): number[] {
     return this.edges.map((edge) => edge.to);
+  }
+
+  get weight(): number {
+    return this.edges.reduce((prev, current) => {
+      return prev + current.weight;
+    }, 0);
+  }
+
+  public getDestinationWeight(id: number): number | undefined {
+    for (const edge of this.edges) {
+      if (edge.to === id) return edge.weight;
+    }
   }
 }
 
@@ -151,7 +163,11 @@ export default class Jgraph {
 
   // return the ids nodes which connect to given node id.
   public getConnectedNodes(id: number): number[] {
-    return this.adjacencyList[id].getConnectedNodes();
+    return this.adjacencyList[id].connectedNodes;
+  }
+
+  public getNode(id: number): JgraphNode {
+    return this.adjacencyList[id];
   }
 
   /**

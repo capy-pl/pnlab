@@ -1,8 +1,13 @@
 import os
 from pyscript.src import worker
 from multiprocessing.pool import Pool
+import logging
+
+from .src.logger import config_logger
 
 def main():
+    config_logger()
+
     # No need for that much processes. It will cost lots memory.
     # worker_number = os.cpu_count()
     worker_number = 2
@@ -12,7 +17,7 @@ def main():
         worker_pool.apply_async(worker, [])
 
     worker_pool.close()
-    print('[*] Waiting for incoming messages.', flush=True)
+    print('Waiting for incoming messages.', flush=True)
     worker_pool.join()
 
 if __name__ == '__main__':

@@ -4,12 +4,15 @@ from bson.objectid import ObjectId
 import traceback
 from datetime import datetime
 from dotenv import load_dotenv
+import logging
 
+from .logger import config_logger
 from .preprocessor import NetworkConverter
 from .utils import to_query, to_datetime, extract_promotion, extract_method
 from .error import ZeroTransactionError, ZeroNodeError
 
 load_dotenv()
+config_logger()
 
 MONGO_PORT = int(getenv('MONGO_PORT'))
 MONGO_DB_NAME = getenv('MONGO_DB_NAME')
@@ -19,6 +22,7 @@ db = client[MONGO_DB_NAME]
 
 
 def network_analysis(report_id):
+    logging.info('Report {} analysis starts'.format(report_id))
     report = db['reports'].find_one({'_id': ObjectId(report_id)})
     if not report:
         return
@@ -50,8 +54,9 @@ def network_analysis(report_id):
             '$set': update_expr
         })
         return
-    except Exception:
+    except Exception as err:
         traceback.print_exc()
+        logging.exception(err)
         error_update = {
             'status': 'error',
             'errMessage': traceback.format_exc(),
