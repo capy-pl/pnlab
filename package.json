@@ -46,18 +46,28 @@
 			"browser": true
 		},
 		"parser": "@typescript-eslint/parser",
-		"plugins": ["@typescript-eslint", "prettier", "react"],
+		"plugins": [
+			"@typescript-eslint",
+			"prettier",
+			"react"
+		],
 		"rules": {
 			"@typescript-eslint/no-var-requires": 0,
 			"@typescript-eslint/explicit-function-return-type": 0,
 			"@typescript-eslint/no-explicit-any": 0,
 			"@typescript-eslint/triple-slash-reference": 0,
 			"require-atomic-updates": 0,
-			"react/jsx-max-props-per-line": [1, {
-				"maximum": 1,
-				"when": "multiline"
-			}],
-			"max-len": [1, 90]
+			"react/jsx-max-props-per-line": [
+				1,
+				{
+					"maximum": 1,
+					"when": "multiline"
+				}
+			],
+			"max-len": [
+				1,
+				90
+			]
 		},
 		"extends": [
 			"eslint:recommended",
@@ -69,6 +79,7 @@
 	},
 	"license": "ISC",
 	"dependencies": {
+		"@types/express-fileupload": "^1.1.0",
 		"@typescript-eslint/parser": "^2.0.0",
 		"amqplib": "0.5.3",
 		"axios": "0.18.1",
@@ -78,6 +89,7 @@
 		"dotenv": "7.0.0",
 		"eslint-plugin-import": "^2.18.2",
 		"express": "4.16.4",
+		"express-fileupload": "^1.1.5",
 		"express-session": "1.15.6",
 		"file-loader": "3.0.1",
 		"grunt": "1.0.3",

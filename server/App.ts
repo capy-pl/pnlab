@@ -5,6 +5,7 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import nunjucks from 'nunjucks';
 import path from 'path';
+import fileUpload from 'express-fileupload';
 
 // import routes
 import API from './api';
