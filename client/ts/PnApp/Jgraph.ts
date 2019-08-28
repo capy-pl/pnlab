@@ -30,6 +30,12 @@ export class JgraphNode {
       return prev + current.weight;
     }, 0);
   }
+
+  public getDestinationWeight(id: number): number | undefined {
+    for (const edge of this.edges) {
+      if (edge.to === id) return edge.weight;
+    }
+  }
 }
 
 class JgraphEdge {
