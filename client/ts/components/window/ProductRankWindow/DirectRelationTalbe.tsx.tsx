@@ -10,14 +10,14 @@ interface Props {
   back: () => void;
 }
 
-export default class SelectedProductTable extends React.PureComponent<Props> {
+export default class DirectRelationTalbe extends React.PureComponent<Props> {
   public getCells(): JSX.Element[] {
     const connectedProductList = this.getConnectedProductList();
     return connectedProductList.map((product, index) => (
       <Table.Row key={product.id} textAlign='center'>
         <Table.Cell>{index + 1}</Table.Cell>
         <Table.Cell>{product.name}</Table.Cell>
-        <Table.Cell>{Math.round(product.weight)}</Table.Cell>
+        <Table.Cell textAlign='center'>{Math.round(product.weight)}</Table.Cell>
       </Table.Row>
     ));
   }

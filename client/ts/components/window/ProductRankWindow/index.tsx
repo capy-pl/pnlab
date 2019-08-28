@@ -4,36 +4,51 @@ import { isNumber } from 'lodash';
 import { Window } from 'Component/';
 import Report, { SimpleNode } from '../../../PnApp/model/Report';
 import ProductRankTable from './ProductRankTable';
-import SelectedProductTable from './SelectedProductTable';
+import DirectRelationTalbe from './DirectRelationTalbe.tsx';
+import IndirectRelationTable from './IndirectRelationTalbe';
+
+type SelectedProductDisplayMode = 'direct' | 'indirect';
 
 interface Props {
-  close: () => void;
   show: boolean;
   productList: SimpleNode[];
   model: Report;
-  selectProduct: (id?: number) => void;
   selectedProduct?: number;
+  selectedProductMode?: SelectedProductDisplayMode;
   back: () => void;
+  selectProduct: (id?: number, direct?: boolean) => void;
+  close: () => void;
 }
 
 export default class ProductRankWindow extends PureComponent<Props> {
   constructor(props: Props) {
     super(props);
 
-    this.selectCell = this.selectCell.bind(this);
+    this.displayDirectRelation = this.displayDirectRelation.bind(this);
+    this.displayIndirectRelation = this.displayIndirectRelation.bind(this);
   }
 
-  public selectCell(id: number): () => void {
+  public displayDirectRelation(id: number): () => void {
     return () => {
-      this.props.selectProduct(id);
+      this.props.selectProduct(id, true);
+    };
+  }
+
+  public displayIndirectRelation(id: number): () => void {
+    return () => {
+      this.props.selectProduct(id, false);
     };
   }
 
   get title(): string {
-    if (!this.props.selectedProduct) {
+    if (!isNumber(this.props.selectedProduct)) {
       return '產品排名';
+    } else if (this.props.selectedProductMode === 'direct') {
+      return `${this.props.model.graph.getNode(this.props.selectedProduct)
+        .name as string}(直接)`;
     } else {
-      return this.props.model.graph.getNode(this.props.selectedProduct).name as string;
+      return `${this.props.model.graph.getNode(this.props.selectedProduct)
+        .name as string}(間接)`;
     }
   }
 
@@ -46,17 +61,29 @@ export default class ProductRankWindow extends PureComponent<Props> {
       content = (
         <ProductRankTable
           productList={this.props.productList}
-          selectCell={this.selectCell}
+          displayDirectRelation={this.displayDirectRelation}
+          displayIndirectRelation={this.displayIndirectRelation}
         />
       );
+      // TODO: Add indirect table here.
     } else {
-      content = (
-        <SelectedProductTable
-          model={this.props.model}
-          selectedProduct={this.props.selectedProduct}
-          back={this.props.back}
-        />
-      );
+      if (this.props.selectedProductMode === 'direct') {
+        content = (
+          <DirectRelationTalbe
+            model={this.props.model}
+            selectedProduct={this.props.selectedProduct}
+            back={this.props.back}
+          />
+        );
+      } else {
+        content = (
+          <IndirectRelationTable
+            model={this.props.model}
+            back={this.props.back}
+            selectedProduct={this.props.selectedProduct}
+          />
+        );
+      }
     }
 
     return (
