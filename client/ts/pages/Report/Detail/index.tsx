@@ -299,22 +299,10 @@ export default class Report extends PureComponent<
       return <Loader size='huge' />;
     } else {
       if (this.state.report) {
-        const searchItemProductWindow = this.state.focusNode ?
-          <ProductRankWindow
-            model={this.state.report}
-            selectedProduct={this.state.focusNode}
-            selectProduct={this.selectProduct}
-            productList={this.state.report.rank}
-            show={this.state.windowSearchItemProduct}
-            close={this.closeSearchItemProductWindow}
-            back={this.clearSelectedProduct}
-          /> :
-          <React.Fragment />
         // search dropdown
         const dropdownOption = this.getDropdownOption();
         return (
           <React.Fragment>
-            {/* {searchItemProductWindow} */}
             <ProductRankWindow
               model={this.state.report}
               selectedProduct={this.state.focusNode}

@@ -313,6 +313,7 @@ export default class Detail extends PureComponent<
               show={this.state.windowProductRank}
               close={this.closeProductRankWindow}
               back={this.clearSelectedProduct}
+              fromSearch={false}
             />
             <AnalysisInfoWindow
               onSave={this.onSaved}
