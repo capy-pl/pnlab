@@ -211,7 +211,7 @@ export default class Report extends PureComponent<
     this.setState({
       focusNode: data.value as number | undefined,
     });
-    data.value ? this.setState({ windowSearchItemProduct: true }) : this.setState({ windowSearchItemProduct: false })
+    data.value !== undefined ? this.setState({ windowSearchItemProduct: true }) : this.setState({ windowSearchItemProduct: false })
   }
 
   public handleToggleSidebar = () => {
