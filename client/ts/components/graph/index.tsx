@@ -23,12 +23,15 @@ const customScalingFunction = (
   }
 };
 
+type SelectedProductDisplayMode = 'direct' | 'indirect';
+
 interface GraphProps {
   nodes: Node[];
   edges: Edge[];
   showCommunity?: boolean;
   selectedCommunities?: number[];
   selectedProduct?: number;
+  selectedProductMode?: SelectedProductDisplayMode;
   focusElement?: number;
 }
 
@@ -199,19 +202,23 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
           highlight: 'orange',
         },
       } as any;
-      const connectedNodes = (this.network as Network).getConnectedNodes(selectedNode.id);
-      const updateList = this.nodes
-        .map<GraphNode>((node) => {
-          if (!connectedNodes.includes(node.id as any) && node.id !== selectedNode.id) {
-            return {
-              id: node.id,
-              hidden: true,
-            } as any;
-          }
-        })
-        .filter((node) => node);
-      updateList.push(selectedNode);
-      this.nodes.update(updateList);
+      if (this.props.selectedProductMode === 'direct') {
+        const connectedNodes = (this.network as Network).getConnectedNodes(
+          selectedNode.id,
+        );
+        const updateList = this.nodes
+          .map<GraphNode>((node) => {
+            if (!connectedNodes.includes(node.id as any) && node.id !== selectedNode.id) {
+              return {
+                id: node.id,
+                hidden: true,
+              } as any;
+            }
+          })
+          .filter((node) => node);
+        this.nodes.update(updateList);
+      }
+      this.nodes.update(selectedNode);
       (this.network as Network).focus(selectedNode.id, {
         scale: 0.9,
       });
