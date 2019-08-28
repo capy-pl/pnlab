@@ -5,9 +5,9 @@ import { DataSet, EdgeOptions, Network, NodeOptions, Options } from 'vis';
 import Jgraph from '../../PnApp/Jgraph';
 import { Edge, Node } from '../../PnApp/model/Report';
 
-interface GraphNode extends Node, NodeOptions {}
+interface GraphNode extends Node, NodeOptions { }
 
-interface GraphEdge extends Edge, EdgeOptions {}
+interface GraphEdge extends Edge, EdgeOptions { }
 
 const customScalingFunction = (
   min: number,
@@ -62,6 +62,10 @@ const graphOption: Options = {
       centralGravity: 0.15,
       avoidOverlap: 0.2,
     },
+    stabalization: {
+      enabled: true,
+    },
+    minVelocity: 0.5
   },
   interaction: {
     hover: true,

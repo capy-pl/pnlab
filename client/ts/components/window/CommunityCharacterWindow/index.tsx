@@ -88,7 +88,7 @@ export default class CommunityCharacterWindow extends PureComponent<Props, State
             </Menu.Item>
           </Menu>
           <Segment hidden={this.state.activeIndex !== 0} attached='bottom'>
-            <Message info content='僅列出產品數大於4之產品群的core' />
+            <Message info content='僅列出產品數大於3之產品群的core' />
             <Table selectable>
               <Table.Header>
                 <Table.Row>
