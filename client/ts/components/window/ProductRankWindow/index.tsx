@@ -14,9 +14,9 @@ interface Props {
   productList: SimpleNode[];
   model: Report;
   selectedProduct?: number;
+  searchItem?: number;
   selectedProductMode?: SelectedProductDisplayMode;
   back: () => void;
-  fromSearch: boolean;
   selectProduct: (id?: number, direct?: boolean) => void;
   close: () => void;
 }
@@ -42,14 +42,19 @@ export default class ProductRankWindow extends PureComponent<Props> {
   }
 
   get title(): string {
-    if (!isNumber(this.props.selectedProduct)) {
-      return '產品排名';
-    } else if (this.props.selectedProductMode === 'direct') {
-      return `${this.props.model.graph.getNode(this.props.selectedProduct)
-        .name as string}(直接)`;
+    if (!isNumber(this.props.searchItem)) {
+      if (!isNumber(this.props.selectedProduct)) {
+        return '產品排名';
+      } else if (this.props.selectedProductMode === 'direct') {
+        return `${this.props.model.graph.getNode(this.props.selectedProduct)
+          .name as string}(直接)`;
+      } else {
+        return `${this.props.model.graph.getNode(this.props.selectedProduct)
+          .name as string}(間接)`;
+      }
     } else {
-      return `${this.props.model.graph.getNode(this.props.selectedProduct)
-        .name as string}(間接)`;
+      return `${this.props.model.graph.getNode(this.props.searchItem)
+        .name as string}(直接)`;
     }
   }
 
@@ -58,33 +63,43 @@ export default class ProductRankWindow extends PureComponent<Props> {
       return <React.Fragment />;
     }
     let content: JSX.Element;
-    if (!isNumber(this.props.selectedProduct)) {
+    if (!isNumber(this.props.searchItem)) {
+      if (!isNumber(this.props.selectedProduct)) {
+        content = (
+          <ProductRankTable
+            productList={this.props.productList}
+            displayDirectRelation={this.displayDirectRelation}
+            displayIndirectRelation={this.displayIndirectRelation}
+          />
+        );
+        // TODO: Add indirect table here.
+      }
+      else {
+        if (this.props.selectedProductMode === 'direct') {
+          content = (
+            <DirectRelationTalbe
+              model={this.props.model}
+              selectedProduct={this.props.selectedProduct}
+              back={this.props.back}
+            />
+          );
+        } else {
+          content = (
+            <IndirectRelationTable
+              model={this.props.model}
+              back={this.props.back}
+              selectedProduct={this.props.selectedProduct}
+            />
+          );
+        }
+      }
+    } else {
       content = (
-        <ProductRankTable
-          productList={this.props.productList}
-          displayDirectRelation={this.displayDirectRelation}
-          displayIndirectRelation={this.displayIndirectRelation}
+        <DirectRelationTalbe
+          model={this.props.model}
+          searchItem={this.props.searchItem}
         />
       );
-      // TODO: Add indirect table here.
-    } else {
-      if (this.props.selectedProductMode === 'direct') {
-        content = (
-          <DirectRelationTalbe
-            model={this.props.model}
-            selectedProduct={this.props.selectedProduct}
-            back={this.props.back}
-          />
-        );
-      } else {
-        content = (
-          <IndirectRelationTable
-            model={this.props.model}
-            back={this.props.back}
-            selectedProduct={this.props.selectedProduct}
-          />
-        );
-      }
     }
 
     return (

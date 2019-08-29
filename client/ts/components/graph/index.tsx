@@ -32,7 +32,7 @@ interface GraphProps {
   selectedCommunities?: number[];
   selectedProduct?: number;
   selectedProductMode?: SelectedProductDisplayMode;
-  focusElement?: number;
+  searchItem?: number;
 }
 
 const graphOption: Options = {
@@ -43,10 +43,6 @@ const graphOption: Options = {
       max: 30,
       min: 1,
     },
-    // color: {
-    //   inherit: false,
-    //   color: '#8DC1FF'
-    // }
   },
   layout: {
     improvedLayout: false,
@@ -128,24 +124,42 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
       this.paintSelectedCommunity();
     }
 
-    if (!isEqual(this.props.focusElement, prevProps.focusElement)) {
-      this.focusNode();
+    if (!isEqual(this.props.searchItem, prevProps.searchItem)) {
+      this.paintSearchItem();
     }
   }
 
-  public focusNode(): void {
-    if (this.network && isNumber(this.props.focusElement)) {
-      this.network.focus(this.props.focusElement, {
-        scale: 1,
+  public paintSearchItem(): void {
+    if (this.network && isNumber(this.props.searchItem)) {
+      const selectedNode: GraphNode = {
+        id: this.props.searchItem,
+        group: undefined,
+        color: {
+          background: 'black',
+          hover: 'black',
+          highlight: 'black',
+        },
+      } as any;
+      const connectedNodes = (this.network as Network).getConnectedNodes(
+        selectedNode.id,
+      );
+      const updateList = this.nodes
+        .map<GraphNode>((node) => {
+          if (!connectedNodes.includes(node.id as any) && node.id !== selectedNode.id) {
+            return {
+              id: node.id,
+              hidden: true,
+            } as any;
+          }
+        })
+        .filter((node) => node);
+      this.nodes.update(updateList);
+      this.nodes.update(selectedNode);
+      this.network.focus(this.props.searchItem, {
+        scale: 0.9,
       });
     } else {
-      // rescale graph
-      (this.network as Network).fit({
-        nodes: this.nodes.map((node) => {
-          return node.id.toString();
-        }),
-        animation: false,
-      });
+      this.repaint();
     }
   }
 
@@ -213,9 +227,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
       const selectedNode: GraphNode = {
         id: this.props.selectedProduct,
         group: undefined,
-        // borderWidth: 8,
         color: {
-          // border: 'black',
           background: 'black',
           hover: 'black',
           highlight: 'black',

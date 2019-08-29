@@ -8,14 +8,11 @@ import {
   DropdownProps,
   Icon,
   Menu,
-  Search,
+  Popup,
   Sidebar,
-  SearchResultProps,
-  SearchResultData,
-  SearchProps,
   Table,
 } from 'semantic-ui-react';
-import { debounce, isBoolean } from 'lodash';
+import { debounce, isBoolean, isNumber } from 'lodash';
 
 import { ModalAddAnalysis } from 'Component/modal';
 import { DropdownSearchSingleItem } from '../../../components/dropdown';
@@ -47,17 +44,10 @@ interface ReportState {
   addAnalysisModalOpen: boolean;
   visible: boolean;
   sidebarVisible: boolean;
-  searchValue: string;
-  searchResults: SearchResult[];
-  focusNode?: number;
+  searchItem?: number;
   activeIndex: number;
   infoOpen: boolean;
   windowSearchItemProduct: boolean;
-}
-
-interface SearchResult extends Node {
-  title: string;
-  core: string | boolean;
 }
 
 export default class Report extends PureComponent<
@@ -77,8 +67,6 @@ export default class Report extends PureComponent<
       addAnalysisModalOpen: false,
       sidebarVisible: false,
       selectedCommunities: [],
-      searchValue: '',
-      searchResults: [],
       activeIndex: -1,
       infoOpen: true,
       windowSearchItemProduct: false,
@@ -174,50 +162,22 @@ export default class Report extends PureComponent<
     }
   };
 
-  public handleResultSelect = (
-    event: React.MouseEvent<HTMLDivElement>,
-    data: SearchResultData,
-  ) => {
-    const { result } = data;
-    this.setState({
-      focusNode: result.id,
-      searchValue: result.name,
-      searchResults: [],
-    });
-  };
-
-  public handleSearchChange = (
-    event: React.MouseEvent<HTMLElement>,
-    data: SearchProps,
-  ) => {
-    const { value } = data;
-    if (value) {
-      const filter: Node[] = (this.state.report as ReportAPI).nodes.filter(
-        (node) => node.name.indexOf(value) !== -1,
-      );
-      const results: SearchResult[] = filter.map((node) => {
-        return {
-          ...node,
-          title: node.name,
-          core: node.core.toString(),
-        };
-      });
-      this.setState({
-        searchValue: value as string,
-        searchResults: results,
-      });
-    }
-  };
-
   // search dropdown
   public handleItemSearch = (
     event: React.SyntheticEvent<HTMLElement, Event>,
     data: DropdownProps
   ) => {
-    this.setState({
-      selectedProduct: typeof data.value === 'number' ? data.value : undefined,
-    });
-    typeof data.value === 'number' ? this.setState({ windowSearchItemProduct: true }) : this.setState({ windowSearchItemProduct: false })
+    if (isNumber(data.value)) {
+      this.setState({
+        searchItem: data.value,
+        windowSearchItemProduct: true,
+      })
+    } else {
+      this.setState({
+        searchItem: undefined,
+        windowSearchItemProduct: false,
+      })
+    }
   }
 
   public handleToggleSidebar = () => {
@@ -225,10 +185,6 @@ export default class Report extends PureComponent<
       visible: !prevState.visible,
     }));
   };
-
-  public resultRenderer(node: SearchResultProps) {
-    return <Search.Result key={node.id} id={node.id} title={node.name} />;
-  }
 
   public toggleSidebar = () => {
     this.setState({
@@ -308,20 +264,9 @@ export default class Report extends PureComponent<
       return <Loader size='huge' />;
     } else {
       if (this.state.report) {
-        // search dropdown
         const dropdownOption = this.getDropdownOption();
         return (
           <React.Fragment>
-            <ProductRankWindow
-              model={this.state.report}
-              selectedProduct={this.state.selectedProduct}
-              selectProduct={this.selectProduct}
-              productList={this.state.report.rank}
-              show={this.state.windowSearchItemProduct}
-              close={this.closeSearchItemProductWindow}
-              back={this.clearSelectedProduct}
-              fromSearch={true}
-            />
             <CommunityCharacterWindow
               report={this.state.report}
               show={this.state.windowCommunityCharacter}
@@ -343,7 +288,17 @@ export default class Report extends PureComponent<
               show={this.state.windowProductRank}
               close={this.closeProductRankWindow}
               back={this.clearSelectedProduct}
-              fromSearch={false}
+            />
+
+            {/* search product window */}
+            <ProductRankWindow
+              model={this.state.report}
+              searchItem={this.state.searchItem}
+              selectProduct={this.selectProduct}
+              productList={this.state.report.rank}
+              show={this.state.windowSearchItemProduct}
+              close={this.closeSearchItemProductWindow}
+              back={this.clearSelectedProduct}
             />
             <Sidebar.Pushable>
               <Sidebar
@@ -377,21 +332,6 @@ export default class Report extends PureComponent<
                       </Table>
                     </Accordion.Content>
                   </Menu.Item>
-                  {/* <Menu.Item>
-                    <Search
-                      size='small'
-                      placeholder='搜尋產品'
-                      noResultsMessage='無相關產品。'
-                      results={this.state.searchResults}
-                      onSearchChange={debounce(this.handleSearchChange, 300, {
-                        leading: true,
-                      })}
-                      onResultSelect={this.handleResultSelect}
-                      resultRenderer={this.resultRenderer}
-                    />
-                  </Menu.Item> */}
-
-                  {/* search dropdown */}
                   <Menu.Item>
                     <DropdownSearchSingleItem
                       options={dropdownOption}
@@ -487,7 +427,7 @@ export default class Report extends PureComponent<
                   selectedCommunities={this.state.selectedCommunities}
                   selectedProduct={this.state.selectedProduct}
                   selectedProductMode={this.state.selectedProductMode}
-                  focusElement={this.state.focusNode}
+                  searchItem={this.state.searchItem}
                 />
               </Sidebar.Pusher>
             </Sidebar.Pushable>
