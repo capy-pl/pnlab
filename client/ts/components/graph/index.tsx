@@ -150,6 +150,11 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
               id: node.id,
               hidden: true,
             } as any;
+          } else {
+            return {
+              id: node.id,
+              hidden: false,
+            } as any;
           }
         })
         .filter((node) => node);

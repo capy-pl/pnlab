@@ -5,9 +5,7 @@ import {
   Icon,
   Dropdown,
   DropdownProps,
-  Label,
   Menu,
-  Popup,
   Segment,
   Table,
 } from 'semantic-ui-react';
@@ -23,7 +21,6 @@ interface AnalysisListState extends PagerState {
   analyses: AnalysisPreview[];
   analysisA?: Analysis;
   analysisB?: Analysis;
-  compareList: string[];
 }
 
 class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState> {
@@ -38,7 +35,6 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
       pageLimit: 10,
       limit: 15,
       currentPage: 1,
-      compareList: [],
     };
 
     this.pager = new Pager('/api/analysis/page', this.state.pageLimit, this.state.limit);
@@ -143,23 +139,17 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
   };
 
   public onConfirm = async () => {
-    if (this.state.compareList.length === 2) {
-      await this.setState({
-        modalOpen: false,
-        loading: true,
-      });
-      await this.props.history.push({
-        pathname: '/analysis/compare',
-        state: {
-          analysisAId: this.state.compareList[0],
-          analysisBId: this.state.compareList[1],
-        },
-        // state: {
-        //   analysisA: this.state.analysisA,
-        //   analysisB: this.state.analysisB,
-        // },
-      });
-    }
+    this.setState({
+      modalOpen: false,
+      loading: true,
+    });
+    this.props.history.push({
+      pathname: '/analysis/compare',
+      state: {
+        analysisA: this.state.analysisA,
+        analysisB: this.state.analysisB,
+      },
+    });
   };
 
   public onCancel = () => {
@@ -224,28 +214,6 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
     }));
   };
 
-  public handleCheck = (id: string) => {
-    let compareList;
-    if (this.state.compareList.length !== 0) {
-      if (!this.state.compareList.includes(id)) {
-        if (this.state.compareList.length < 2) {
-          compareList = [...this.state.compareList, id];
-        } else {
-          compareList = [...this.state.compareList]
-        }
-      } else {
-        compareList = [...this.state.compareList].filter(item => item !== id);
-      }
-    } else {
-      compareList = [id];
-    }
-    return () => this.setState({ compareList })
-  }
-
-  public clearSelected = () => {
-    this.setState({ compareList: [] });
-  }
-
   public render() {
     const history = this.state.analyses.map((analysis) => {
       return (
@@ -253,9 +221,6 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
           key={analysis._id}
           item={analysis}
           onButtonClick={this.onLinkClick(analysis._id)}
-          onCheck={this.handleCheck(analysis._id)}
-          selected={this.state.compareList.includes(analysis._id)}
-          compareList={this.state.compareList}
         />
       );
     });
@@ -271,7 +236,7 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
             dropChangeA={this.onChangeA}
             dropChangeB={this.onChangeB}
           />
-          {/* <Button
+          <Button
             floated='right'
             color='blue'
             style={{ margin: '10px' }}
@@ -281,54 +246,9 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
           >
             <Icon name='clone outline' />
             比較圖片
-          </Button> */}
-          <Button
-            floated='right'
-            style={{ margin: '10px' }}
-            onClick={this.onConfirm}
-            icon
-            labelPosition='right'
-            disabled={this.state.compareList.length !== 2}
-            color={this.state.compareList.length === 2 ? 'teal' : undefined}
-          >
-            <span>
-              比較圖片（已勾選{this.state.compareList.length} / 2）
-
-              {/* <Label
-                horizontal
-                circular
-                color='grey'
-              >
-                {this.state.compareList.length}
-              </Label> */}
-            </span>
-            <Icon name='clone outline' />
           </Button>
           <Table selectable color='blue'>
             <Table.Header>
-              {/* <Table.Row>
-                <Table.HeaderCell colSpan='16'>
-                  <Menu floated='right' pagination>
-                    <Menu.Item
-                      as='a'
-                      onClick={this.previousPages}
-                      icon
-                      disabled={this.state.startPage === 1}
-                    >
-                      <Icon name='chevron left' />
-                    </Menu.Item>
-                    {this.getPageItems()}
-                    <Menu.Item
-                      as='a'
-                      onClick={this.nextPages}
-                      icon
-                      disabled={!this.state.hasNext}
-                    >
-                      <Icon name='chevron right' />
-                    </Menu.Item>
-                  </Menu>
-                </Table.HeaderCell>
-              </Table.Row> */}
               <Table.Row>
                 <Table.HeaderCell textAlign='right' colSpan='16'>
                   每頁顯示
@@ -343,33 +263,13 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
                 </Table.HeaderCell>
               </Table.Row>
               <Table.Row>
-                <Table.HeaderCell width='5' textAlign='center'>
+                <Table.HeaderCell width='8' textAlign='center'>
                   圖片名稱
                 </Table.HeaderCell>
                 <Table.HeaderCell width='4' textAlign='center'>
                   建立時間
                 </Table.HeaderCell>
-                <Table.HeaderCell width='4' textAlign='center'>
-                  加入比較 &nbsp;&nbsp;
-                  <Popup
-                    content='清除全部'
-                    basic
-                    trigger={
-                      <Icon
-                        name='trash alternate'
-                        // inverted
-                        bordered
-                        onClick={this.clearSelected}
-                        // color='red'
-                        style={{ cursor: 'pointer', borderRadius: '8px', backgroundColor: 'white' }}
-                      />
-                    }
-                  />
-                  {/* <Button onClick={this.clearSelected}>
-                    清除全部
-                  </Button> */}
-                </Table.HeaderCell>
-                <Table.HeaderCell width='3' textAlign='center' />
+                <Table.HeaderCell width='2' textAlign='center' />
               </Table.Row>
             </Table.Header>
             <Table.Body>{history}</Table.Body>
@@ -400,7 +300,7 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
             </Table.Footer>
           </Table>
         </React.Fragment>
-      </Segment >
+      </Segment>
     );
   }
 }
