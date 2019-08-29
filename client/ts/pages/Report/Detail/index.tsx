@@ -209,9 +209,9 @@ export default class Report extends PureComponent<
     data: DropdownProps
   ) => {
     this.setState({
-      focusNode: data.value as number | undefined,
+      selectedProduct: typeof data.value === 'number' ? data.value : undefined,
     });
-    data.value !== undefined ? this.setState({ windowSearchItemProduct: true }) : this.setState({ windowSearchItemProduct: false })
+    typeof data.value === 'number' ? this.setState({ windowSearchItemProduct: true }) : this.setState({ windowSearchItemProduct: false })
   }
 
   public handleToggleSidebar = () => {
@@ -305,7 +305,7 @@ export default class Report extends PureComponent<
           <React.Fragment>
             <ProductRankWindow
               model={this.state.report}
-              selectedProduct={this.state.focusNode}
+              selectedProduct={this.state.selectedProduct}
               selectProduct={this.selectProduct}
               productList={this.state.report.rank}
               show={this.state.windowSearchItemProduct}

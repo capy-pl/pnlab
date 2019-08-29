@@ -79,9 +79,9 @@ export default class ProductRankWindow extends PureComponent<Props> {
       return <React.Fragment />;
     }
     let selectedProduct, top, tableHeaderName, tableHeaderWeight;
-    if (this.props.fromSearch === true) {
-      selectedProduct = this.props.productList.find(
-        (product) => product.id === this.props.selectedProduct,
+    if (this.props.fromSearch) {
+      selectedProduct = this.props.model.nodes.find(
+        (node) => node.id === this.props.selectedProduct,
       );
       top = <React.Fragment />;
       tableHeaderName = '連結產品';

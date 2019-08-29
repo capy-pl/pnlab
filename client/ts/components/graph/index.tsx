@@ -40,6 +40,10 @@ const graphOption: Options = {
       max: 30,
       min: 1,
     },
+    // color: {
+    //   inherit: false,
+    //   color: '#8DC1FF'
+    // }
   },
   layout: {
     improvedLayout: false,
@@ -62,10 +66,9 @@ const graphOption: Options = {
       centralGravity: 0.15,
       avoidOverlap: 0.2,
     },
-    stabalization: {
+    stabilization: {
       enabled: true,
     },
-    minVelocity: 0.5
   },
   interaction: {
     hover: true,
@@ -189,6 +192,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
           label: node.name,
           group: this.props.showCommunity ? node.community : undefined,
           color: '#8DC1FF',
+          borderWidth: this.props.showCommunity && node.core ? 5 : 1,
           hidden: false,
         } as any),
     );
@@ -205,10 +209,13 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
     if (!isUndefined(this.props.selectedProduct)) {
       const selectedNode: GraphNode = {
         id: this.props.selectedProduct,
+        group: undefined,
+        // borderWidth: 8,
         color: {
-          background: 'orange',
-          hover: 'orange',
-          highlight: 'orange',
+          // border: 'black',
+          background: 'black',
+          hover: 'black',
+          highlight: 'black',
         },
       } as any;
       const connectedNodes = (this.network as Network).getConnectedNodes(selectedNode.id);
