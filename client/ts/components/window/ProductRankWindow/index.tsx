@@ -4,8 +4,8 @@ import { isNumber } from 'lodash';
 import { Window } from 'Component/';
 import Report, { SimpleNode } from '../../../PnApp/model/Report';
 import ProductRankTable from './ProductRankTable';
-import DirectRelationTalbe from './DirectRelationTalbe.tsx';
-import IndirectRelationTable from './IndirectRelationTalbe';
+import DirectRelationTalbe from './DirectRelationTable';
+import IndirectRelationTable from './IndirectRelationTable';
 
 type SelectedProductDisplayMode = 'direct' | 'indirect';
 
