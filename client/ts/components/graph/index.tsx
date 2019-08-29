@@ -131,6 +131,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
 
   public paintSearchItem(): void {
     if (this.network && isNumber(this.props.searchItem)) {
+      this.repaint();
       const selectedNode: GraphNode = {
         id: this.props.searchItem,
         group: undefined,
