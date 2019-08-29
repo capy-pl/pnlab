@@ -15,7 +15,7 @@ import {
   SearchProps,
   Table,
 } from 'semantic-ui-react';
-import { debounce } from 'lodash';
+import { isBoolean, debounce } from 'lodash';
 
 import Graph from '../../../components/graph';
 import Loader from '../../../components/Loader';
@@ -30,6 +30,8 @@ import Analysis, { Comment } from '../../../PnApp/model/Analysis';
 
 import { simplifyDate } from '../../../PnApp/Helper';
 
+type SelectedProductDisplayMode = 'direct' | 'indirect';
+
 interface State {
   loading: boolean;
   windowProductRank: boolean;
@@ -43,6 +45,7 @@ interface State {
   selectedCommunities: number[];
   selectedProduct?: number;
   searchItems?: number[];
+  selectedProductMode?: SelectedProductDisplayMode;
   modalOpen: boolean;
   searchValue: string;
   sidebarVisible: boolean;
@@ -61,7 +64,7 @@ interface SearchResult extends Node {
 export default class Detail extends PureComponent<
   RouteComponentProps<{ id: string }>,
   State
-  > {
+> {
   constructor(props: RouteComponentProps<{ id: string }>) {
     super(props);
     this.state = {
@@ -179,14 +182,15 @@ export default class Detail extends PureComponent<
     });
   }
 
-  public selectProduct(id?: number): void {
-    if (this.state.report) {
+  public selectProduct = (id?: number, direct?: boolean) => {
+    if (this.state.report && isBoolean(direct)) {
       this.setState({
         selectedProduct: id,
+        selectedProductMode: direct ? 'direct' : 'indirect',
         selectedCommunities: [],
       });
     }
-  }
+  };
 
   public selectCommunities(id: number): void {
     if (this.state.selectedCommunities.includes(id)) {
@@ -250,7 +254,11 @@ export default class Detail extends PureComponent<
   public getConditions() {
     if (this.state.report) {
       return this.state.report.conditions.map((condition) => {
-        if (condition.type === 'string' || condition.type === 'promotion' || condition.type === 'method') {
+        if (
+          condition.type === 'string' ||
+          condition.type === 'promotion' ||
+          condition.type === 'method'
+        ) {
           return (
             <Table.Row key={condition.name}>
               <Table.Cell width='6'>{condition.name}</Table.Cell>
@@ -283,7 +291,10 @@ export default class Detail extends PureComponent<
   };
 
   public clearSelectedProduct = () => {
-    this.setState({ selectedProduct: undefined });
+    this.setState({
+      selectedProduct: undefined,
+      selectedProductMode: undefined,
+    });
   };
 
   public render() {
@@ -310,6 +321,7 @@ export default class Detail extends PureComponent<
               selectedProduct={this.state.selectedProduct}
               selectProduct={this.selectProduct}
               productList={this.state.report.rank}
+              selectedProductMode={this.state.selectedProductMode}
               show={this.state.windowProductRank}
               close={this.closeProductRankWindow}
               back={this.clearSelectedProduct}
@@ -425,6 +437,7 @@ export default class Detail extends PureComponent<
                   showCommunity={this.state.showCommunity}
                   selectedCommunities={this.state.selectedCommunities}
                   selectedProduct={this.state.selectedProduct}
+                  selectedProductMode={this.state.selectedProductMode}
                   focusElement={this.state.focusNode}
                 />
               </Sidebar.Pusher>

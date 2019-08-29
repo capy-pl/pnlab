@@ -176,11 +176,13 @@ export default class Jgraph {
    * on the path of the graph.
    *
    * @param {number} id: the start node's id number.
+   * @param {boolean} weight: Whether to use edge weight to find shortest path.
    * @returns {ShortestPathReturnedValue}
    */
   public shortestPathTree(
     id: number,
     returnDistance?: boolean,
+    weight?: boolean,
   ): ShortestPathReturnedValue {
     if (!(id in this.adjacencyList)) {
       throw new Error('id cannot be found in the list.');
@@ -196,7 +198,8 @@ export default class Jgraph {
     while (startVertex !== undefined) {
       inGraph.add(startVertex.id);
       for (const edge of startVertex.edges) {
-        const currentDistance = (distance.get(startVertex.id) as number) + edge.weight;
+        const newDistance = weight ? edge.weight : 1;
+        const currentDistance = (distance.get(startVertex.id) as number) + newDistance;
         if (currentDistance < (distance.get(edge.to) as number)) {
           distance.set(edge.to, currentDistance);
           previous.set(edge.to, startVertex.id);
