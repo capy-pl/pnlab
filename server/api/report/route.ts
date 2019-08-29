@@ -8,6 +8,7 @@ import {
   GetReport,
   GetReports,
   SearchItem,
+  DeleteReport,
 } from './controller';
 
 const router = Router();
@@ -32,6 +33,7 @@ router
   .route('/:id')
   .all(loginRequired)
   .get(GetReport)
+  .delete(DeleteReport)
   .all(httpMethodNotSupport);
 
 export default router;

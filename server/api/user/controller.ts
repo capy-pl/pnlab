@@ -7,7 +7,7 @@ import e from 'express';
  * @apiName Info
  * @apiGroup User
  */
-export function Info(req: e.Request, res: e.Response, next: e.NextFunction): void {
+export function Info(req: e.Request, res: e.Response): void {
   const { user } = req;
   res.send(user);
 }
