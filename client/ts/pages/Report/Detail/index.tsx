@@ -12,7 +12,7 @@ import {
   Sidebar,
   Table,
 } from 'semantic-ui-react';
-import { debounce, isBoolean, isNumber } from 'lodash';
+import { isBoolean, isNumber } from 'lodash';
 
 import { ModalAddAnalysis } from 'Component/modal';
 import { DropdownSearchSingleItem } from '../../../components/dropdown';
@@ -24,7 +24,7 @@ import {
   ProductRankWindow,
 } from 'Component/window';
 
-import ReportAPI, { Node } from '../../../PnApp/model/Report';
+import ReportAPI from '../../../PnApp/model/Report';
 import { simplifyDate } from '../../../PnApp/Helper';
 
 type SelectedProductDisplayMode = 'direct' | 'indirect';

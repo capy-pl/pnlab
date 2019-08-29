@@ -13,9 +13,8 @@ import {
   Sidebar,
   Table,
 } from 'semantic-ui-react';
-import { debounce, isBoolean, isNumber } from 'lodash';
+import { isBoolean, isNumber } from 'lodash';
 
-import { ModalAddAnalysis } from 'Component/modal';
 import { DropdownSearchSingleItem } from '../../../components/dropdown';
 import Graph from '../../../components/graph';
 import Loader from '../../../components/Loader';
@@ -26,14 +25,14 @@ import {
 } from 'Component/window';
 
 import AnalysisInfoWindow from './AnalysisInfoWindow';
-import ReportAPI, { Node } from '../../../PnApp/model/Report';
+import ReportAPI from '../../../PnApp/model/Report';
 import Analysis, { Comment } from '../../../PnApp/model/Analysis';
 
 import { simplifyDate } from '../../../PnApp/Helper';
 
 type SelectedProductDisplayMode = 'direct' | 'indirect';
 
-interface ReportState {
+interface State {
   loading: boolean;
   windowProductRank: boolean;
   windowCommunityList: boolean;
@@ -48,7 +47,6 @@ interface ReportState {
   selectedProductMode?: SelectedProductDisplayMode;
   searchItems?: number[];
   modalOpen: boolean;
-  addAnalysisModalOpen: boolean;
   sidebarVisible: boolean;
   searchItem?: number;
   activeIndex: number;
@@ -57,9 +55,9 @@ interface ReportState {
   comments: Comment[];
 }
 
-export default class Report extends PureComponent<
+export default class Detail extends PureComponent<
   RouteComponentProps<{ id: string }>,
-  ReportState
+  State
   > {
   constructor(props: RouteComponentProps<{ id: string }>) {
     super(props);
@@ -71,7 +69,6 @@ export default class Report extends PureComponent<
       showCommunity: false,
       modalOpen: false,
       windowAnalysisInfo: false,
-      addAnalysisModalOpen: false,
       sidebarVisible: false,
       selectedCommunities: [],
       activeIndex: -1,
