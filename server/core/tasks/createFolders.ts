@@ -42,8 +42,21 @@ function makeFileFolder(): Promise<void> {
   });
 }
 
+function makeTempFileFolder(): Promise<void> {
+  return new Promise((resolve) => {
+    fs.mkdir(path.resolve(process.env.HOME, 'pnlab', 'temp'), (err) => {
+      if (err) {
+        Logger.info('Project temp files folder already exists.');
+      } else {
+        Logger.info('Project temp files folder created.');
+      }
+      resolve();
+    });
+  });
+}
+
 // The function will create necessary folder.
 export async function createFolders(): Promise<void> {
   await makeRootFolder();
-  await Promise.all([makeLoggingFolder(), makeFileFolder()]);
+  await Promise.all([makeLoggingFolder(), makeFileFolder(), makeTempFileFolder()]);
 }

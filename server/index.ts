@@ -20,7 +20,7 @@ const server = http.createServer(app);
 let pyConsumers: ChildProcess;
 
 server.listen(process.env.PORT, async () => {
-  await createFolders();
+  await Promise.all([amqpConnect(), dbConnect(), createFolders()]);
   if (!command.disablePython) {
     try {
       pyConsumers = await startPythonWorker();
@@ -30,7 +30,6 @@ server.listen(process.env.PORT, async () => {
     }
   }
 
-  await Promise.all([amqpConnect(), dbConnect()]);
   startSocketServer(server, () => {
     Logger.info('Websocket server is listening.');
   });
