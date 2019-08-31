@@ -1,5 +1,5 @@
 from .logger import config_logger
-from .task import network_analysis, import_data
+from .task import network_analysis, import_from_histories
 from .mongo_client import db
 
 import pika
@@ -23,6 +23,9 @@ def receive(action_id):
         try:
             if action['type'] == 'report':
                 network_analysis(action['targetId'])
+            if action['type'] == 'import':
+                import_from_histories(action['targetId'])
+
             db['actions'].update_one({
                 '_id': ObjectId(action['_id'])
             }, {
