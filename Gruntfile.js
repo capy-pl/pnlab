@@ -70,6 +70,11 @@ module.exports = function (grunt) {
       command: 'ts-node scripts/populateSchemaValue.ts',
       stdout: true,
       exitCode: 0,
+    },
+    clean: {
+      command: 'ts-node scripts/clean.ts',
+      stdout: true,
+      exitCode: 0,
     }
   };
 
@@ -88,6 +93,7 @@ module.exports = function (grunt) {
   grunt.task.registerTask('test', ['eslint', 'exec:test']);
   grunt.task.registerTask('test:client', ['eslint:client', 'exec:testClient']);
   grunt.task.registerTask('test:server', ['eslint:server', 'exec:testServer']);
+  grunt.task.registerTask('cleandb', ['exec:clean']);
   grunt.task.registerTask('initdb', ['exec:initdb']);
   grunt.task.registerTask('populate', ['exec:populate']);
   grunt.task.registerTask('upgrade', ['exec:initdb', 'exec:populate'])

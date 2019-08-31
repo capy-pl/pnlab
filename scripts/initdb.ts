@@ -1,4 +1,5 @@
 import dotenv from 'dotenv';
+
 import connectMongo from '../server/core/db';
 import { Logger } from '../server/core/util';
 import { Organization, User } from '../server/models';
@@ -116,11 +117,33 @@ dotenv.config();
 
     await defaultOrg.save();
 
+    try {
+      await connection.db.createCollection('items');
+      Logger.info('Collection items created.');
+    } catch (err) {
+      Logger.info('Collection items alread exist.');
+    }
+
+    try {
+      Logger.info('Create unique index for item name.');
+      await connection.db.collection('items').createIndex(
+        defaultSchema.itemName,
+        {
+          unique: true,
+          dropDups: true,
+        },
+        () => {},
+      );
+    } catch (err) {
+      Logger.info('Index exist.');
+    }
+
     const admin = new User({
       email: 'admin@gmail.com',
       name: 'admin',
       org: defaultOrg,
     });
+
     await admin.setPassword('admin');
     await admin.save();
     Logger.info('Default user has been created.');

@@ -1,19 +1,11 @@
 class TransactionEncoder:
-    """The class creates an instance aims to transform transactions' pandas dataframe into dictionary.
-            
-        Attributes:
-            transaction_id_name: The transaction's id column name.
-            item_name: The item/product's column name.
-            transaction_amount_name: The transaction amount 's column name.
-            transaction_attrs(optional): A list contains all attributes' column names that belong to the transaction.
-            item_attrs(optional):  A list contains all attributes' column names that belong to the transaction.
-    """
-
     def __init__(self, org_schema, org_name=None):
         self.transaction_id_name = org_schema['transactionName']
         self.item_name = org_schema['itemName']
-        self.transaction_attrs = list(map(lambda x: x['name'], org_schema['transactionFields']))
-        self.item_attrs = list(map(lambda x: x['name'], org_schema['itemFields']))
+        self.transaction_attrs = list(
+            map(lambda x: x['name'], org_schema['transactionFields']))
+        self.item_attrs = list(
+            map(lambda x: x['name'], org_schema['itemFields']))
         self.transaction_amount_name = org_schema['amountName']
         self.org_name = org_name
 
@@ -22,23 +14,24 @@ class TransactionEncoder:
         df = df.filter(filter_cols)
         groupbyObject = df.groupby([group_by])
         df = groupbyObject.agg(aggregation_option)
-        dic =  df.to_dict('index')
+        dic = df.to_dict('index')
         for index, value in dic.items():
             value[group_by] = index
         return dic
 
     def get_transaction_dict(self, df):
-        filter_columns = [self.transaction_id_name, self.transaction_amount_name] + self.transaction_attrs 
-        aggr_option = { key: 'first' for key in self.transaction_attrs }
+        filter_columns = [self.transaction_id_name,
+                          self.transaction_amount_name] + self.transaction_attrs
+        aggr_option = {key: 'first' for key in self.transaction_attrs}
         aggr_option[self.transaction_amount_name] = 'sum'
         return self.to_dict(df, filter_columns, self.transaction_id_name, aggr_option)
-    
+
     def get_item_dict(self, df):
         filter_columns = [self.item_name] + self.item_attrs
-        aggr_option = {key: 'first' for key in self.item_attrs }
+        aggr_option = {key: 'first' for key in self.item_attrs}
         return self.to_dict(df, filter_columns, self.item_name,  aggr_option)
-    
-    def encode(self, df):
+
+    def transform(self, df):
         df = df.dropna()
         transaction_dict = self.get_transaction_dict(df)
         item_dict = self.get_item_dict(df)
@@ -51,7 +44,7 @@ class TransactionEncoder:
                 item_name = data[self.item_name]
                 if item_name in item_dict:
                     item = dict(item_dict[item_name])
-                    # TODO: Calculation here is hardcoded. Need to 
+                    # TODO: Calculation here is hardcoded. Need to
                     # design another mechanism to handle this.
                     item['amount'] = data['銷售單價'] * data['銷售數量']
                     ts['items'].append(item)
@@ -59,3 +52,8 @@ class TransactionEncoder:
             if len(transaction_dict[key]['items']) < 2:
                 del transaction_dict[key]
         return (list(transaction_dict.values()), list(item_dict.values()))
+
+    # The function may cause potential file lose.
+    def transform_by_chunk(self, df_iterator):
+        for df in df_iterator:
+            yield self.transform(df)
