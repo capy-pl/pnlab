@@ -56,7 +56,8 @@ def import_from_file_path(file_path):
     if bigger_than_256mb(file_path):
         logging.info(
             '{} is larger than 256MB. It will be processed by chunk.'.format(file_path))
-        print('{} is larger than 256MB. It will be processed by chunk.'.format(file_path))
+        print('{} is larger than 256MB. It will be processed by chunk.'.format(
+            file_path), flush=True)
         chunks = reader.read_csv_by_chunk(file_path, 1000000)
         for transactions, items in transformer.transform_by_chunk(chunks):
             records['transaction_num'] += len(transactions)
@@ -65,7 +66,8 @@ def import_from_file_path(file_path):
             try:
                 db.transactions.insert_many(transactions)
                 db.items.insert_many(items)
-                print('{} transactions processed.'.format(len(transactions)))
+                print('{} transactions processed.'.format(
+                    len(transactions)), flush=True)
                 logging.info(
                     '{} transactions processed.'.format(len(transactions)))
             except BulkWriteError:
@@ -80,7 +82,8 @@ def import_from_file_path(file_path):
         try:
             db.transactions.insert_many(transactions)
             db.items.insert_many(items)
-            print('{} transactions processed.'.format(len(transactions)))
+            print('{} transactions processed.'.format(
+                len(transactions)), flush=True)
             logging.info(
                 '{} transactions processed.'.format(len(transactions)))
         except BulkWriteError:
