@@ -55,9 +55,11 @@ def main():
     def callback(ch, method, properties, body: bytes):
         try:
             msg = body.decode('utf-8')
-            receive(msg)
-            ch.basic_ack(delivery_tag=method.delivery_tag)
+            if msg:
+                ch.basic_ack(delivery_tag=method.delivery_tag)
+                receive(msg)
         except Exception as err:
+            ch.basic_ack(delivery_tag=method.delivery_tag)
             logging.exception(err)
 
     channel.basic_consume(queue='pn', on_message_callback=callback)
