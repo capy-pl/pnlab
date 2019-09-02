@@ -6,10 +6,11 @@ import Navbar from 'Component/menu/Navbar';
 import { Switch } from 'Component/route';
 import { Auth } from '../../PnApp';
 import { updateCurrentUser } from '../../PnApp/Helper';
-import AnalysisRouter from '../Analysis';
+import Analysis from '../Analysis';
 import NotFound from '../NotFound';
-import ReportRouter, { ReportList } from '../Report';
+import Report, { ReportList } from '../Report';
 import Setting from '../Setting';
+import Upload from '../Upload';
 
 interface HomeState {
   loading: boolean;
@@ -50,9 +51,10 @@ class Home extends PureComponent<RouteComponentProps, HomeState> {
       <div>
         <Navbar />
         <Switch>
-          <Route path='/report' component={ReportRouter} />
+          <Route path='/report' component={Report} />
           <Route path='/settings' component={Setting} />
-          <Route path='/analysis' component={AnalysisRouter} />
+          <Route path='/analysis' component={Analysis} />
+          <Route path='/upload' component={Upload} />
           <Route exact path='/' component={ReportList} />
           <Route component={NotFound} />
         </Switch>

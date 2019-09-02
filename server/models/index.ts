@@ -1,3 +1,4 @@
+import Action from './Action';
 import Analysis from './Analysis';
 import Category from './Category';
 import ImportSchema from './ImportSchema';
@@ -6,8 +7,10 @@ import Promotion from './Promotions';
 import Report from './Report';
 import Transactinos from './Transactions';
 import User from './User';
+import ImportHistory from './ImportHistory';
 
 export {
+  Action,
   Analysis,
   ImportSchema,
   Organization,
@@ -16,9 +19,11 @@ export {
   Category,
   Transactinos,
   Promotion,
+  ImportHistory,
 };
 
 export default {
+  Action,
   Analysis,
   ImportSchema,
   Organization,
@@ -26,4 +31,5 @@ export default {
   User,
   Category,
   Promotion,
+  ImportHistory,
 };

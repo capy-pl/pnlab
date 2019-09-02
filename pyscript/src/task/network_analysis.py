@@ -1,41 +1,33 @@
 from os import getenv
-from pymongo import MongoClient
 from bson.objectid import ObjectId
 import traceback
 from datetime import datetime
-from dotenv import load_dotenv
 import logging
 
-from .logger import config_logger
-from .preprocessor import NetworkConverter
-from .utils import to_query, to_datetime, extract_promotion, extract_method
-from .error import ZeroTransactionError, ZeroNodeError
-
-load_dotenv()
-config_logger()
-
-MONGO_PORT = int(getenv('MONGO_PORT'))
-MONGO_DB_NAME = getenv('MONGO_DB_NAME')
-
-client = MongoClient('localhost', MONGO_PORT)
-db = client[MONGO_DB_NAME]
+from ..preprocessing import TransactionTransformer
+from ..utils import to_query, to_datetime, extract_promotion, extract_method
+from ..error import ZeroTransactionError, ZeroNodeError
+from ..mongo_client import db
 
 
 def network_analysis(report_id):
-    logging.info('Report {} analysis starts'.format(report_id))
+    logging.info('Start processing Report {}.'.format(report_id))
     report = db['reports'].find_one({'_id': ObjectId(report_id)})
+    org_data = db['orgs'].find_one()
     if not report:
         return
     try:
         query = to_query(report['conditions'])
         method = extract_method(report['conditions'])
         promotions = extract_promotion(report['conditions'])
+        org_schema = org_data['importSchema']
         purchase_list = list(db['transactions'].find(
-            query, projection=['items', '資料日期與時間']))
+            query, projection=['items', org_schema['transactionTime']]))
         promotions = list(db['promotions'].find({'name': {'$in': promotions}}))
         if len(purchase_list) <= 0:
             raise ZeroTransactionError('No transactions match the conditions.')
-        converter = NetworkConverter(purchase_list, method=method)
+        converter = TransactionTransformer(
+            purchase_list, org_schema, method=method)
         converter.add_promotion_filters(promotions)
         converter.done()
         product_network = converter.transform()
@@ -55,7 +47,6 @@ def network_analysis(report_id):
         })
         return
     except Exception as err:
-        traceback.print_exc()
         logging.exception(err)
         error_update = {
             'status': 'error',
@@ -67,4 +58,4 @@ def network_analysis(report_id):
         }, {
             '$set': error_update
         })
-        return
+        raise err

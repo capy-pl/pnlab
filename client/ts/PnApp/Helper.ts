@@ -54,10 +54,30 @@ export function appendQuery(path: string, query: Query) {
   return path;
 }
 
+export function verboseFileSize(size: number): string {
+  if (size > Math.pow(2, 30)) {
+    const verboseSize = size / Math.pow(2, 30);
+    return `${verboseSize.toFixed(2)} GB`;
+  }
+
+  if (size > Math.pow(2, 20)) {
+    const verboseSize = size / Math.pow(2, 20);
+    return `${verboseSize.toFixed(2)} MB`;
+  }
+
+  if (size > Math.pow(2, 10)) {
+    const verboseSize = size / Math.pow(2, 10);
+    return `${verboseSize.toFixed(2)} KB`;
+  }
+
+  return `${size} Bytes`;
+}
+
 export default {
   getCurrentUser,
   hasToken,
   isLoggedIn,
   updateCurrentUser,
   appendQuery,
+  verboseFileSize,
 };

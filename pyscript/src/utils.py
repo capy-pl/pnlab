@@ -1,5 +1,5 @@
 from datetime import datetime
-
+import os
 
 def to_datetime(string):
     return datetime.strptime(string, '%Y-%m-%dT%H:%M:%S.000Z')
@@ -55,3 +55,6 @@ def extract_method(conditions) -> str:
         if condition['type'] == 'method':
             return condition['values'][0]
     return 'frequency'
+
+def bigger_than_256mb(file_path):
+    return os.stat(file_path).st_size > 256 * 2 ** 20
