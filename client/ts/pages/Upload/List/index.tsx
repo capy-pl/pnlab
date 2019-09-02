@@ -13,7 +13,7 @@ import { RouteComponentProps } from 'react-router-dom';
 
 import Pager, { PagerState } from '../../../PnApp/Pager';
 import { verboseFileSize } from '../../../PnApp/Helper';
-import ImportHistory from '../../../PnApp/model/ImportHistory';
+import ImportHistory, { ImportHistoryStatus } from '../../../PnApp/model/ImportHistory';
 import { StatusIcon } from 'Component/icon';
 import ModalUpload from './ModalUpload';
 
@@ -25,6 +25,8 @@ interface State extends PagerState {
 
 export default class List extends React.PureComponent<RouteComponentProps, State> {
   public pager: Pager;
+  public listeningMap: Map<string, WebSocket>;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -36,16 +38,59 @@ export default class List extends React.PureComponent<RouteComponentProps, State
       pageLimit: 10,
       limit: 15,
     };
+    this.listeningMap = new Map<string, WebSocket>();
     this.pager = new Pager(`/api/upload/page`, this.state.pageLimit, this.state.limit);
   }
 
+  public onFinish(id: string): (event: MessageEvent) => void {
+    return (event) => {
+      if (
+        (event.data as ImportHistoryStatus) === 'success' ||
+        (event.data as ImportHistoryStatus) === 'error'
+      ) {
+        const ws = this.listeningMap.get(id);
+        if (ws) {
+          ws.close();
+        }
+        const histories = [...this.state.histories];
+        histories.forEach((report) => {
+          if (report.id === id) {
+            report.status = event.data;
+          }
+        });
+        this.setState({ histories });
+      }
+    };
+  }
+
+  public clearSocket = () => {
+    this.listeningMap.forEach((socket) => {
+      socket.close(1000);
+    });
+  };
+
   public load = async () => {
+    this.clearSocket();
     const histories = await ImportHistory.getAll({
       limit: this.state.limit,
       page: this.state.currentPage,
     });
+    for (const history of histories) {
+      if (history.status === 'pending') {
+        const ws = new WebSocket('ws://localhost:3000/upload');
+        ws.onmessage = this.onFinish(history.id);
+        ws.onopen = () => {
+          ws.send(history.id);
+        };
+        this.listeningMap.set(history.id, ws);
+      }
+    }
     this.setState({ histories, loading: false });
   };
+
+  public componentWillUnmount() {
+    this.clearSocket();
+  }
 
   public async componentDidMount() {
     await this.load();

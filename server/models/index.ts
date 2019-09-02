@@ -7,6 +7,7 @@ import Promotion from './Promotions';
 import Report from './Report';
 import Transactinos from './Transactions';
 import User from './User';
+import ImportHistory from './ImportHistory';
 
 export {
   Action,
@@ -18,6 +19,7 @@ export {
   Category,
   Transactinos,
   Promotion,
+  ImportHistory,
 };
 
 export default {
@@ -29,4 +31,5 @@ export default {
   User,
   Category,
   Promotion,
+  ImportHistory,
 };

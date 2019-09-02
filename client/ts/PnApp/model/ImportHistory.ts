@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { appendQuery } from '../Helper';
 
-type ImportHistoryStatus = 'success' | 'error' | 'pending';
+export type ImportHistoryStatus = 'success' | 'error' | 'pending';
 
 interface ImportHistoryModel {
   _id: string;

@@ -15,7 +15,6 @@ def import_from_histories(history_id):
     import_history = db['importHistories'].find_one(
         {'_id': ObjectId(history_id)})
     try:
-        logging.info()
         file_path = path.join(
             import_history['filepath'], import_history['filename'])
         transaction_nums, item_nums = import_from_file_path(file_path)
