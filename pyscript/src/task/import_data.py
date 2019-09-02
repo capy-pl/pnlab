@@ -1,4 +1,4 @@
-from os import getenv, path
+from os import getenv, path, remove
 from bson.objectid import ObjectId
 import traceback
 from datetime import datetime
@@ -15,15 +15,23 @@ def import_from_histories(history_id):
     import_history = db['importHistories'].find_one(
         {'_id': ObjectId(history_id)})
     try:
+        logging.info()
         file_path = path.join(
             import_history['filepath'], import_history['filename'])
         transaction_nums, item_nums = import_from_file_path(file_path)
+        logging.info('History {} process successed.'.format(
+            history_id, file_path))
         success_update = {
             'status': 'success',
             'modified': datetime.utcnow(),
             'transactionNum': transaction_nums,
             'itemNum': item_nums
         }
+        if path.exists(file_path):
+            logging.info('History {} processed.  Ready to delete {} from disk.'.format(
+                history_id, file_path))
+            remove(file_path)
+            logging.info('{} deleted.'.format(file_path))
         db['importHistories'].update_one({
             '_id': ObjectId(history_id)
         }, {
