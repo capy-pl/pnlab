@@ -4,7 +4,7 @@ import path from 'path';
 import fs from 'fs';
 
 import { getChannel } from '../../core/mq';
-import ImportHistory from '../../models/ImportHistory';
+import ImportHistory, { ImportHistoryInterface } from '../../models/ImportHistory';
 import Action from '../../models/Action';
 import { Logger } from '../../core/util';
 
@@ -13,17 +13,20 @@ export async function UploadFile(req: e.Request, res: e.Response): Promise<void>
   if (files) {
     const file = files.file as fileUpload.UploadedFile;
 
-    const { md5 } = files;
+    const { md5 } = file;
 
     const hasDuplicate = await ImportHistory.findOne({ md5 });
 
     if (hasDuplicate) {
+      // If it is a duplicate file, remove the temporary file.
       fs.unlink(file.tempFilePath, (err) => {
         if (err) {
           Logger.error(err);
+          res.status(500).end();
+          return;
         }
+        res.status(400).send('Duplicate files.');
       });
-      res.status(400).send('Duplicate files.');
       return;
     }
 
@@ -38,8 +41,9 @@ export async function UploadFile(req: e.Request, res: e.Response): Promise<void>
     const history = new ImportHistory({
       filepath: dir,
       filename: name,
+      fileSize: file.size,
       originFilename: file.name,
-      type: 'pending',
+      status: 'pending',
       created: new Date(),
       modified: new Date(),
     });
@@ -56,4 +60,33 @@ export async function UploadFile(req: e.Request, res: e.Response): Promise<void>
     return res.status(400).end();
   }
   res.status(200).end();
+}
+
+export async function GetUploadHistories(req: e.Request, res: e.Response): Promise<void> {
+  const { page, limit } = req.query;
+  if (page && limit) {
+    const histories = await ImportHistory.find({})
+      .sort({ created: -1 })
+      .skip(parseInt(limit) * (parseInt(page) - 1))
+      .limit(parseInt(limit));
+    res.send(histories);
+  } else {
+    const histories = await ImportHistory.find({});
+    res.send(histories);
+  }
+}
+
+export async function DeleteUploadFile(req: e.Request, res: e.Response): Promise<void> {
+  const obj = req.object as ImportHistoryInterface;
+  if (obj.status === 'pending') {
+    res.status(400).send('The file is still waiting for processing.');
+    return;
+  }
+  fs.unlink(path.resolve(obj.filepath, obj.filename), (err) => {
+    if (err) {
+      res.status(500).end();
+      return;
+    }
+    res.status(200).end();
+  });
 }

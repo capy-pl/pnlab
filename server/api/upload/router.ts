@@ -2,10 +2,10 @@ import path from 'path';
 import { Router } from 'express';
 import fileUpload from 'express-fileupload';
 
-import { httpMethodNotSupport } from '../../core/middleware';
+import { checkExist, httpMethodNotSupport, Pager } from '../../core/middleware';
 import { loginRequired } from '../../core/auth';
-
-import { UploadFile } from './controller';
+import ImportHistory from '../../models/ImportHistory';
+import { UploadFile, GetUploadHistories } from './controller';
 
 const router = Router();
 
@@ -24,6 +24,18 @@ router
     }),
     UploadFile,
   )
+  .get(GetUploadHistories)
   .all(httpMethodNotSupport);
+
+router
+  .route('/page')
+  .all(loginRequired)
+  .get(Pager(ImportHistory))
+  .all(httpMethodNotSupport);
+
+router
+  .route('/:id/delete')
+  .all(loginRequired, checkExist(ImportHistory))
+  .delete();
 
 export default router;

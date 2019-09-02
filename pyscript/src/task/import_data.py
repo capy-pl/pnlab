@@ -19,7 +19,7 @@ def import_from_histories(history_id):
             import_history['filepath'], import_history['filename'])
         transaction_nums, item_nums = import_from_file_path(file_path)
         success_update = {
-            'type': 'success',
+            'status': 'success',
             'modified': datetime.utcnow(),
             'transactionNum': transaction_nums,
             'itemNum': item_nums
@@ -32,7 +32,7 @@ def import_from_histories(history_id):
     except Exception as err:
         logging.error(err)
         error_update = {
-            'type': 'error',
+            'status': 'error',
             'errMessage': traceback.format_exc(),
             'modified': datetime.utcnow()
         }

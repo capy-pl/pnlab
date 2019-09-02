@@ -2,15 +2,16 @@ import mongoose, { Document, Schema } from 'mongoose';
 
 type ImportHistoryType = 'pending' | 'sucesss' | 'error';
 
-interface ImportHistoryInterface extends Document {
+export interface ImportHistoryInterface extends Document {
   filepath: string;
   filename: string;
+  fileSize: number;
   originFilename: string;
   transactionNum: number;
   itemNum: number;
   created: Date;
   modified: Date;
-  type: ImportHistoryType;
+  status: ImportHistoryType;
   errMessage?: string;
   md5: string;
 }
@@ -18,6 +19,7 @@ interface ImportHistoryInterface extends Document {
 const ImportHistorySchema = new Schema<ImportHistoryInterface>({
   filepath: String,
   filename: String,
+  fileSize: Number,
   originFilename: String,
   md5: String,
   transactionNum: {
@@ -30,7 +32,7 @@ const ImportHistorySchema = new Schema<ImportHistoryInterface>({
     required: false,
     default: 0,
   },
-  type: {
+  status: {
     type: String,
     default: 'pending',
     enum: ['pending', 'success', 'error'],
