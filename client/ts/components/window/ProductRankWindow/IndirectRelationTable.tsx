@@ -84,7 +84,7 @@ export default class IndirectRelationTalbe extends React.PureComponent<Props, St
           <Popup
             hoverable
             position='top center'
-            trigger={<Button basic>顯示中間產品</Button>}
+            trigger={<Button basic>顯示最短路徑</Button>}
           >
             {this.getNodesPathList(node.nodesOnPath)}
           </Popup>

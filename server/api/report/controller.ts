@@ -2,7 +2,7 @@ import e from 'express';
 import { connection } from 'mongoose';
 import { getChannel } from '../../core/mq';
 import { Logger } from '../../core/util';
-import { Action, Promotion, Report } from '../../models';
+import { Action, Analysis, Promotion, Report } from '../../models';
 import { ReportInterface } from '../../models/Report';
 import { FieldSchemaInterface } from '../../models/ImportSchema';
 import { UserSchemaInterface } from '../../models/User';
@@ -163,7 +163,7 @@ export async function AddReport(req: e.Request, res: e.Response): Promise<void> 
 export async function GetReport(req: e.Request, res: e.Response): Promise<void> {
   const id = req.params.id as string;
   try {
-    const report = await Report.findOne({ _id: id }).exec();
+    const report = await Report.findOne({ _id: id });
     if (!report) {
       throw Error('Not found');
     }
@@ -209,6 +209,25 @@ export async function GetReports(req: e.Request, res: e.Response): Promise<void>
     res.send({ reports });
   } catch (error) {
     Logger.error(error);
+    res.status(500).end();
+  }
+}
+
+export async function DeleteReport(req: e.Request, res: e.Response): Promise<void> {
+  const id = req.params.id as string;
+  const isUsed = await Analysis.findOne({ report: id }).count();
+  if (isUsed) {
+    return res.status(403).end();
+  }
+  try {
+    const report = await Report.findOne({ _id: id });
+    if (!report) {
+      throw Error('Document Not found');
+    }
+    await report.remove();
+    res.status(200).end();
+  } catch (err) {
+    Logger.error(err);
     res.status(500).end();
   }
 }
