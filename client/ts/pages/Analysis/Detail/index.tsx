@@ -347,6 +347,7 @@ export default class Detail extends PureComponent<
                   style={{
                     height: '100%',
                     overflowY: 'scroll',
+                    paddingBottom: '3rem',
                   }}
                 >
                   <Menu.Item>
