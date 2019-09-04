@@ -72,6 +72,7 @@ app.use('/api/report', API.Report);
 app.use('/api/category', API.Category);
 app.use('/api/promotion', API.Promotion);
 app.use('/api/analysis', API.Analysis);
+app.use('/api/upload', API.Upload);
 
 app.get('/*', (req, res) => {
   res.render('index.html');

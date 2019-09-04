@@ -9,7 +9,7 @@ export default async function amqpConnect(): Promise<void> {
   channel.assertQueue('pn', {
     durable: true,
   });
-  Logger.info('Connection Established.');
+  Logger.info('RabbitMQ connection Established.');
 }
 
 export function getChannel(): amqplib.Channel {

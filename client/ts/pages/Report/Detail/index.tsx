@@ -7,7 +7,6 @@ import {
   Checkbox,
   Icon,
   Menu,
-  Popup,
   Search,
   Sidebar,
   SearchResultProps,
@@ -15,7 +14,7 @@ import {
   SearchProps,
   Table,
 } from 'semantic-ui-react';
-import { debounce } from 'lodash';
+import { debounce, isBoolean } from 'lodash';
 
 import { ModalAddAnalysis } from 'Component/modal';
 import Graph from '../../../components/graph';
@@ -28,6 +27,9 @@ import {
 
 import ReportAPI, { Node } from '../../../PnApp/model/Report';
 import { simplifyDate } from '../../../PnApp/Helper';
+
+type SelectedProductDisplayMode = 'direct' | 'indirect';
+
 interface ReportState {
   loading: boolean;
   windowProductRank: boolean;
@@ -37,6 +39,7 @@ interface ReportState {
   showCommunity: boolean;
   selectedCommunities: number[];
   selectedProduct?: number;
+  selectedProductMode?: SelectedProductDisplayMode;
   searchItems?: number[];
   modalOpen: boolean;
   addAnalysisModalOpen: boolean;
@@ -141,10 +144,11 @@ export default class Report extends PureComponent<
     });
   };
 
-  public selectProduct = (id?: number) => {
-    if (this.state.report) {
+  public selectProduct = (id?: number, direct?: boolean) => {
+    if (this.state.report && isBoolean(direct)) {
       this.setState({
         selectedProduct: id,
+        selectedProductMode: direct ? 'direct' : 'indirect',
         selectedCommunities: [],
       });
     }
@@ -154,11 +158,13 @@ export default class Report extends PureComponent<
     if (this.state.selectedCommunities.includes(id)) {
       this.setState({
         selectedProduct: undefined,
+        selectedProductMode: undefined,
         selectedCommunities: this.state.selectedCommunities.filter((num) => num !== id),
       });
     } else {
       this.setState({
         selectedProduct: undefined,
+        selectedProductMode: undefined,
         selectedCommunities: [...this.state.selectedCommunities, id],
       });
     }
@@ -261,7 +267,10 @@ export default class Report extends PureComponent<
   };
 
   public clearSelectedProduct = () => {
-    this.setState({ selectedProduct: undefined });
+    this.setState({
+      selectedProduct: undefined,
+      selectedProductMode: undefined,
+    });
   };
 
   public render() {
@@ -288,6 +297,7 @@ export default class Report extends PureComponent<
               selectedProduct={this.state.selectedProduct}
               selectProduct={this.selectProduct}
               productList={this.state.report.rank}
+              selectedProductMode={this.state.selectedProductMode}
               show={this.state.windowProductRank}
               close={this.closeProductRankWindow}
               back={this.clearSelectedProduct}
@@ -404,6 +414,7 @@ export default class Report extends PureComponent<
                   showCommunity={this.state.showCommunity}
                   selectedCommunities={this.state.selectedCommunities}
                   selectedProduct={this.state.selectedProduct}
+                  selectedProductMode={this.state.selectedProductMode}
                   focusElement={this.state.focusNode}
                 />
               </Sidebar.Pusher>
