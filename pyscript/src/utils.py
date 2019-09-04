@@ -5,6 +5,7 @@ import os
 def to_datetime(string):
     return datetime.strptime(string, '%Y-%m-%dT%H:%M:%S.000Z')
 
+
 def to_query(conditions):
     default_query = {
         'items.1': {
@@ -12,7 +13,6 @@ def to_query(conditions):
         }
     }
     item_query = {
-        '$or': []
     }
     for condition in conditions:
         if condition['type'] == 'string':
@@ -22,6 +22,8 @@ def to_query(conditions):
                         '$in': condition['values']
                     }
                 if condition['belong'] == 'item':
+                    if '$or' not in item_query:
+                        item_query['$or'] = []
                     item_query['$or'].append({
                         condition['name']: {
                             '$in': condition['values']
@@ -44,6 +46,7 @@ def to_query(conditions):
                 '$elemMatch': item_query
             }
     return default_query
+
 
 def extract_promotion(conditions):
     for condition in conditions:
