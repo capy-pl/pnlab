@@ -10,7 +10,6 @@ from ..mongo_client import db
 from ..utils import bigger_than_256mb
 from ..preprocessing import TransactionCSVReader, TransactionEncoder
 
-
 def import_from_histories(history_id):
     import_history = db['importHistories'].find_one(
         {'_id': ObjectId(history_id)})
@@ -48,7 +47,6 @@ def import_from_histories(history_id):
         }, {
             '$set': error_update
         })
-
 
 def import_from_file_path(file_path):
     org_data = db['orgs'].find_one()
@@ -106,7 +104,6 @@ def import_from_file_path(file_path):
     logging.info('Db schema updated.')
     print('Db schema updated.')
     return tuple(records.values())
-
 
 def update_schema(fields, items):
     field_value_dict = {}

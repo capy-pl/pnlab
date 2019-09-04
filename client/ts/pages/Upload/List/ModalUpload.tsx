@@ -52,7 +52,7 @@ export default class ModalUpload extends React.PureComponent<Props, State> {
         error: true,
         errMessage: `${file.name} 超過限制大小2GB，請考慮將檔案切割後再上傳。`,
       });
-    } else if (file.type !== 'text/csv') {
+    } else if (file.type !== 'text/csv' && file.type !== 'application/vnd.ms-excel') {
       this.setState({
         error: true,
         errMessage: `${file.name} 類型不為csv。`,
