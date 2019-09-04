@@ -1,9 +1,9 @@
 from datetime import datetime
 import os
 
+
 def to_datetime(string):
     return datetime.strptime(string, '%Y-%m-%dT%H:%M:%S.000Z')
-
 
 def to_query(conditions):
     default_query = {
@@ -12,6 +12,7 @@ def to_query(conditions):
         }
     }
     item_query = {
+        '$or': []
     }
     for condition in conditions:
         if condition['type'] == 'string':
@@ -21,9 +22,11 @@ def to_query(conditions):
                         '$in': condition['values']
                     }
                 if condition['belong'] == 'item':
-                    item_query[condition['name']] = {
-                        '$in': condition['values']
-                    }
+                    item_query['$or'].append({
+                        condition['name']: {
+                            '$in': condition['values']
+                        }
+                    })
         if condition['type'] == 'date':
             if len(condition['values']) > 0:
                 if len(condition['values']) == 2:
@@ -42,7 +45,6 @@ def to_query(conditions):
             }
     return default_query
 
-
 def extract_promotion(conditions):
     for condition in conditions:
         if condition['type'] == 'promotion':
@@ -55,6 +57,7 @@ def extract_method(conditions) -> str:
         if condition['type'] == 'method':
             return condition['values'][0]
     return 'frequency'
+
 
 def bigger_than_256mb(file_path):
     return os.stat(file_path).st_size > 256 * 2 ** 20
