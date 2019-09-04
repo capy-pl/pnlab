@@ -311,7 +311,7 @@ export default class Report extends PureComponent<
                   vertical
                   as={Menu}
                   fluid
-                  style={{ height: '100%', overflowY: 'scroll' }}
+                  style={{ height: '100%', overflowY: 'scroll', paddingBottom: '3rem' }}
                 >
                   <Menu.Item>
                     <div style={{ textAlign: 'right' }}>

@@ -1,4 +1,5 @@
 from datetime import datetime
+import os
 
 
 def to_datetime(string):
@@ -21,9 +22,13 @@ def to_query(conditions):
                         '$in': condition['values']
                     }
                 if condition['belong'] == 'item':
-                    item_query[condition['name']] = {
-                        '$in': condition['values']
-                    }
+                    if '$or' not in item_query:
+                        item_query['$or'] = []
+                    item_query['$or'].append({
+                        condition['name']: {
+                            '$in': condition['values']
+                        }
+                    })
         if condition['type'] == 'date':
             if len(condition['values']) > 0:
                 if len(condition['values']) == 2:
@@ -55,3 +60,7 @@ def extract_method(conditions) -> str:
         if condition['type'] == 'method':
             return condition['values'][0]
     return 'frequency'
+
+
+def bigger_than_256mb(file_path):
+    return os.stat(file_path).st_size > 256 * 2 ** 20

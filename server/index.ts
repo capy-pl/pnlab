@@ -20,7 +20,8 @@ const server = http.createServer(app);
 let pyConsumers: ChildProcess;
 
 server.listen(process.env.PORT, async () => {
-  await createFolders();
+  await Promise.all([amqpConnect(), dbConnect(), createFolders()]);
+  startSocketServer(server);
   if (!command.disablePython) {
     try {
       pyConsumers = await startPythonWorker();
@@ -29,11 +30,6 @@ server.listen(process.env.PORT, async () => {
       process.exit(1);
     }
   }
-
-  await Promise.all([amqpConnect(), dbConnect()]);
-  startSocketServer(server, () => {
-    Logger.info('Websocket server is listening.');
-  });
   Logger.info(`Server is available on 127.0.0.1:${process.env.PORT}`);
 });
 

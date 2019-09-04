@@ -1,8 +1,6 @@
 import React, { PureComponent } from 'react';
-import { Link } from 'react-router-dom';
 import {
   Accordion,
-  AccordionTitleProps,
   Button,
   Checkbox,
   Comment,
