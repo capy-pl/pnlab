@@ -10,11 +10,16 @@ interface CommunityDetailProps {
   backTo?: string;
 }
 
-const CommunityDetail =
-({community, onDismiss, onBacktoCommunitiesRank, onBacktoSelectedCommunities, backTo}: CommunityDetailProps) => {
+const CommunityDetail = ({
+  community,
+  onDismiss,
+  onBacktoCommunitiesRank,
+  onBacktoSelectedCommunities,
+  backTo,
+}: CommunityDetailProps) => {
   if (community) {
     const productRank = community.items.map((product, index) => {
-      return(
+      return (
         <Table.Row key={product.name} textAlign='center'>
           <Table.Cell>{index + 1}</Table.Cell>
           <Table.Cell>{product.name}</Table.Cell>
@@ -23,14 +28,21 @@ const CommunityDetail =
       );
     });
 
-    const back = (backTo === 'communitiesRankList') ?
-      <a onClick={onBacktoCommunitiesRank} style={{cursor: 'pointer'}}>&lt;&lt; 返回</a> :
-      <a onClick={onBacktoSelectedCommunities} style={{cursor: 'pointer'}}>&lt;&lt; 返回</a>;
+    const back =
+      backTo === 'communitiesRankList' ? (
+        <a onClick={onBacktoCommunitiesRank} style={{ cursor: 'pointer' }}>
+          &lt;&lt; 返回
+        </a>
+      ) : (
+        <a onClick={onBacktoSelectedCommunities} style={{ cursor: 'pointer' }}>
+          &lt;&lt; 返回
+        </a>
+      );
 
     return (
       <Message className='report-message' onDismiss={onDismiss}>
         {back}
-        <h3 style={{textAlign: 'center'}}>Community {community.id} 產品排名</h3>
+        <h3 style={{ textAlign: 'center' }}>Community {community.id} 產品排名</h3>
         <Table basic='very'>
           <Table.Header>
             <Table.Row textAlign='center'>
@@ -39,18 +51,12 @@ const CommunityDetail =
               <Table.HeaderCell>產品權重</Table.HeaderCell>
             </Table.Row>
           </Table.Header>
-          <TableBody>
-            {productRank}
-          </TableBody>
+          <TableBody>{productRank}</TableBody>
         </Table>
       </Message>
     );
   } else {
-    return (
-      <React.Fragment>
-        No Result
-      </React.Fragment>
-    );
+    return <React.Fragment>No Result</React.Fragment>;
   }
 };
 

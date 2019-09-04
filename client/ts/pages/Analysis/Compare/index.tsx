@@ -45,7 +45,10 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
   }
 
   public async componentDidMount() {
-    const [analysisA, analysisB] = await Promise.all([Analysis.get(this.props.location.state.analysisA), Analysis.get(this.props.location.state.analysisB)]);
+    const [analysisA, analysisB] = await Promise.all([
+      Analysis.get(this.props.location.state.analysisA),
+      Analysis.get(this.props.location.state.analysisB),
+    ]);
     await Promise.all([analysisA.loadReport(), analysisB.loadReport()]);
     const conditions = await Report.getConditions();
     const nodesSet = new Set<string>();
@@ -130,17 +133,17 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
             產品連結比較表
           </Button>
         ) : (
-            <Popup
-              content='請先從左方框選擇產品'
-              trigger={
-                <span>
-                  <Button fluid onClick={this.openSingleProductCompareWindow} disabled>
-                    產品連結比較表
+          <Popup
+            content='請先從左方框選擇產品'
+            trigger={
+              <span>
+                <Button fluid onClick={this.openSingleProductCompareWindow} disabled>
+                  產品連結比較表
                 </Button>
-                </span>
-              }
-            />
-          );
+              </span>
+            }
+          />
+        );
         return (
           <React.Fragment>
             <Menu style={{ marginBottom: '1rem' }} secondary>

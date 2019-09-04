@@ -10,10 +10,17 @@ interface Option {
 interface SearchDropDownProps {
   options: Option[];
   placeholder: string;
-  onChange: (event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => void;
+  onChange: (
+    event: React.SyntheticEvent<HTMLElement, Event>,
+    data: DropdownProps,
+  ) => void;
 }
 
-const SearchSingleItemDropdown = ({ placeholder, options, onChange }: SearchDropDownProps) => (
+const SearchSingleItemDropdown = ({
+  placeholder,
+  options,
+  onChange,
+}: SearchDropDownProps) => (
   <Dropdown
     clearable
     fluid

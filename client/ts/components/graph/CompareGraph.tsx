@@ -5,9 +5,9 @@ import { DataSet, EdgeOptions, Network, NodeOptions, Options } from 'vis';
 import Jgraph from '../../PnApp/Jgraph';
 import { Edge, Node } from '../../PnApp/model/Report';
 
-interface GraphNode extends Node, NodeOptions { }
+interface GraphNode extends Node, NodeOptions {}
 
-interface GraphEdge extends Edge, EdgeOptions { }
+interface GraphEdge extends Edge, EdgeOptions {}
 
 const customScalingFunction = (
   min: number,
@@ -98,7 +98,6 @@ export default class GraphViewCompare extends PureComponent<GraphProps, {}> {
     }
   }
 
-
   public getHeight(): string {
     let height = 'auto';
     if (this.graphRef.current) {
@@ -156,17 +155,17 @@ export default class GraphViewCompare extends PureComponent<GraphProps, {}> {
       if (this.props.shareNodes) {
         this.props.shareNodes.includes(node.name)
           ? (color = {
-            background: 'yellow',
-            border: '#3f83d4',
-            hover: '#ffdd00',
-            highlight: '#ffdd00',
-          })
+              background: 'yellow',
+              border: '#3f83d4',
+              hover: '#ffdd00',
+              highlight: '#ffdd00',
+            })
           : (color = {
-            background: '#8DC1FF',
-            border: '#3f83d4',
-            hover: '#3692ff',
-            highlight: '#3692ff',
-          });
+              background: '#8DC1FF',
+              border: '#3f83d4',
+              hover: '#3692ff',
+              highlight: '#3692ff',
+            });
       } else {
         color = {
           background: '#8DC1FF',
@@ -178,8 +177,7 @@ export default class GraphViewCompare extends PureComponent<GraphProps, {}> {
       return {
         id: node.id,
         label: node.name,
-        title:
-          `
+        title: `
             <div>
               <p>${node.name}</p>
               <p>weight: ${Math.round(node.weight)}</p>
@@ -224,9 +222,10 @@ export default class GraphViewCompare extends PureComponent<GraphProps, {}> {
         const updateList = this.nodes
           .map<GraphNode>((node) => {
             if (!connectedNodes.includes(node.id as any) && node.id !== selectedNode.id) {
-              const background = this.props.shareNodes && this.props.shareNodes.includes(node.name)
-                ? '#ffffc9'
-                : '#D3E7FF';
+              const background =
+                this.props.shareNodes && this.props.shareNodes.includes(node.name)
+                  ? '#ffffc9'
+                  : '#D3E7FF';
               return {
                 id: node.id,
                 hidden: true,
@@ -242,9 +241,10 @@ export default class GraphViewCompare extends PureComponent<GraphProps, {}> {
       } else {
         const updateList = this.nodes
           .map<GraphNode>((node) => {
-            const background = this.props.shareNodes && this.props.shareNodes.includes(node.name)
-              ? '#ffffc9'
-              : '#D3E7FF';
+            const background =
+              this.props.shareNodes && this.props.shareNodes.includes(node.name)
+                ? '#ffffc9'
+                : '#D3E7FF';
             return {
               id: node.id,
               color: {

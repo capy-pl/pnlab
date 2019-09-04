@@ -1,9 +1,7 @@
 import { Router } from 'express';
 
 import { loginRequired } from '../../core/auth';
-import {
-  Info,
-} from './controller';
+import { Info } from './controller';
 
 const router = Router();
 

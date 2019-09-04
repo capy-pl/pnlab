@@ -21,7 +21,10 @@ interface ModalAddPromotionProps {
   onAdd: () => Promise<void>;
 }
 
-export default class ModalAddPromotion extends React.PureComponent<ModalAddPromotionProps, ModalAddPromotionState> {
+export default class ModalAddPromotion extends React.PureComponent<
+  ModalAddPromotionProps,
+  ModalAddPromotionState
+> {
   constructor(props: any) {
     super(props);
     this.state = {
@@ -103,7 +106,10 @@ export default class ModalAddPromotion extends React.PureComponent<ModalAddPromo
       return false;
     }
 
-    if (this.state.type === 'combination' && (!this.state.groupTwo || !this.state.groupTwo.length)) {
+    if (
+      this.state.type === 'combination' &&
+      (!this.state.groupTwo || !this.state.groupTwo.length)
+    ) {
       this.setState({
         error: true,
         errorMessage: `產品群2為空。`,
@@ -183,15 +189,15 @@ export default class ModalAddPromotion extends React.PureComponent<ModalAddPromo
   public render() {
     return (
       <React.Fragment>
-        <Button color='teal'
-onClick={this.show}
-floated='right'
-style={{ marginBottom: '5px' }}>
+        <Button
+          color='teal'
+          onClick={this.show}
+          floated='right'
+          style={{ marginBottom: '5px' }}
+        >
           新增促銷
         </Button>
-        <Modal open={this.state.show}
-centered={false}
-closeOnDimmerClick={false}>
+        <Modal open={this.state.show} centered={false} closeOnDimmerClick={false}>
           <Modal.Header>新增促銷</Modal.Header>
           <Modal.Content>
             <FormAddPromotion
@@ -210,9 +216,7 @@ closeOnDimmerClick={false}>
             </Message>
           </Modal.Content>
           <Modal.Actions>
-            <Button loading={this.state.loading}
-onClick={this.close}
-color='red'>
+            <Button loading={this.state.loading} onClick={this.close} color='red'>
               取消
             </Button>
             <Button loading={this.state.loading} onClick={this.add}>
