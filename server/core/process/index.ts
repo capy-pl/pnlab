@@ -5,17 +5,16 @@ export function startPythonWorker(): Promise<ChildProcess> {
   let finish = false;
   return new Promise((resolve, reject) => {
     Logger.info('Spawn python consumers.');
-    const ps = spawn(
-      'python',
-      ['./index.py'],
-      {
-        env: process.env,
-      });
+    const ps = spawn('python', ['./index.py'], {
+      env: process.env,
+    });
 
     ps.on('exit', (code) => {
       if (code === 1) {
-        reject(new Error(`Python process exited with code ${code}.\
-  Please check your virtual environment or run python index.py to debug.`));
+        reject(
+          new Error(`Python process exited with code ${code}.\
+  Please check your virtual environment or run python index.py to debug.`),
+        );
       } else {
         Logger.info(`Python process exited with code ${code}.`);
       }

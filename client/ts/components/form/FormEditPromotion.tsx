@@ -41,7 +41,10 @@ const TYPE_OPTIONS = [
   },
 ];
 
-class FormEditPromotion extends React.PureComponent<FormEditPromotionProps, FormEditPromotionState> {
+class FormEditPromotion extends React.PureComponent<
+  FormEditPromotionProps,
+  FormEditPromotionState
+> {
   private prodcutPool: Set<string>;
   constructor(props: FormEditPromotionProps) {
     super(props);
@@ -102,9 +105,11 @@ class FormEditPromotion extends React.PureComponent<FormEditPromotionProps, Form
       <Form>
         <Form.Field>
           <label>名稱</label>
-          <Form.Input placeholder='名稱'
-defaultValue={this.props.model.name}
-onChange={this.props.nameChange} />
+          <Form.Input
+            placeholder='名稱'
+            defaultValue={this.props.model.name}
+            onChange={this.props.nameChange}
+          />
         </Form.Field>
         <Form.Field>
           <label>種類</label>
@@ -157,7 +162,10 @@ onChange={this.props.nameChange} />
             onChange={this.props.startTimeChange}
           />
           <label>結束時間</label>
-          <DatetimeInput defaultValue={this.props.model.endTime.toUTCString()} onChange={this.props.endTimeChange} />
+          <DatetimeInput
+            defaultValue={this.props.model.endTime.toUTCString()}
+            onChange={this.props.endTimeChange}
+          />
         </Form.Field>
       </Form>
     );

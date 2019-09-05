@@ -10,21 +10,24 @@ interface ModalConfirmProps {
   children?: React.ReactNode;
 }
 
-const ModalConfirmReport = ({ header, content, onConfirm, onCancel, open, children }: ModalConfirmProps) => {
+const ModalConfirmReport = ({
+  header,
+  content,
+  onConfirm,
+  onCancel,
+  open,
+  children,
+}: ModalConfirmProps) => {
   return (
     <React.Fragment>
       {children}
-      <Modal basic
-size='small'
-open={open}>
+      <Modal basic size='small' open={open}>
         <Header content={header} />
         <Modal.Content>
           <p>{content}</p>
         </Modal.Content>
         <Modal.Actions>
-          <Button color='red'
-inverted
-onClick={onCancel}>
+          <Button color='red' inverted onClick={onCancel}>
             <Icon name='remove' />
             取消
           </Button>

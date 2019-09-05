@@ -37,7 +37,9 @@ export async function AddPromotion(req: e.Request, res: e.Response): Promise<voi
   if (body.type === 'combination') {
     if (body.groupTwo) {
       for (const item of body.groupTwo) {
-        const hasFound = await connection.db.collection('items').findOne({ 單品名稱: item });
+        const hasFound = await connection.db
+          .collection('items')
+          .findOne({ 單品名稱: item });
         if (!hasFound) {
           return res
             .status(404)

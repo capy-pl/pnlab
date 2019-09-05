@@ -1581,7 +1581,7 @@
   resolved "https://registry.yarnpkg.com/@types/events/-/events-3.0.0.tgz#2862f3f58a9a7f7c3e78d79f130dd4d71c25c2a7"
   integrity sha512-EaObqwIvayI5a8dCzhFrjKzVwKLxjoG9T6Ppd5CEo07LRKfQ8Yokw54r5+Wq7FaBQ+yXRvQAYPrHwya1/UFt9g==
 
-"@types/express-fileupload@^1.1.0":
+"@types/express-fileupload@1.1.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@types/express-fileupload/-/express-fileupload-1.1.0.tgz#c2f0555be691b11f6cddaf8b23b0d41b3ef689c8"
   integrity sha512-l7ElHOlTt3Dis1My3LvEwP4tDw/cYiM1sor5nQY8aRm8HPVwalG48lf7ym9k2/z/PwRGADABGgIhv0a6y7XzoA==
@@ -1684,7 +1684,7 @@
     "@types/mongodb" "*"
     "@types/node" "*"
 
-"@types/morgan@^1.7.37":
+"@types/morgan@1.7.37":
   version "1.7.37"
   resolved "https://registry.yarnpkg.com/@types/morgan/-/morgan-1.7.37.tgz#ebdd0b0f0276073f85283bf4f03c7c54284874df"
   integrity sha512-tIdEA10BcHcOumMmUiiYdw8lhiVVq62r0ghih5Xpp4WETkfsMiTUZL4w9jCI502BBOrKhFrAOGml9IeELvVaBA==
@@ -1869,7 +1869,7 @@
     "@types/events" "*"
     "@types/node" "*"
 
-"@typescript-eslint/eslint-plugin@^2.0.0":
+"@typescript-eslint/eslint-plugin@2.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@typescript-eslint/eslint-plugin/-/eslint-plugin-2.0.0.tgz#609a5d7b00ce21a6f94d7ef282eba9da57ca1e42"
   integrity sha512-Mo45nxTTELODdl7CgpZKJISvLb+Fu64OOO2ZFc2x8sYSnUpFrBUW3H+H/ZGYmEkfnL6VkdtOSxgdt+Av79j0sA==
@@ -1889,7 +1889,7 @@
     "@typescript-eslint/typescript-estree" "2.0.0"
     eslint-scope "^4.0.0"
 
-"@typescript-eslint/parser@^2.0.0":
+"@typescript-eslint/parser@2.0.0":
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@typescript-eslint/parser/-/parser-2.0.0.tgz#4273bb19d03489daf8372cdaccbc8042e098178f"
   integrity sha512-ibyMBMr0383ZKserIsp67+WnNVoM402HKkxqXGlxEZsXtnGGurbnY90pBO3e0nBUM7chEEOcxUhgw9aPq7fEBA==
@@ -10153,6 +10153,11 @@ prettier-linter-helpers@^1.0.0:
   integrity sha512-GbK2cP9nraSSUF9N2XwUwqfzlAFlMNYYl+ShE/V+H8a9uNl/oUqB1w2EL54Jh0OlyRSd8RfWYJ3coVS4TROP2w==
   dependencies:
     fast-diff "^1.1.2"
+
+prettier@^1.18.2:
+  version "1.18.2"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-1.18.2.tgz#6823e7c5900017b4bd3acf46fe9ac4b4d7bda9ea"
+  integrity sha512-OeHeMc0JhFE9idD4ZdtNibzY0+TPHSpSSb9h8FqtP+YnoZZ1sl8Vc9b1sasjfymH3SonAF4QcA2+mzHPhMvIiw==
 
 pretty-error@^2.0.2, pretty-error@^2.1.1:
   version "2.1.1"

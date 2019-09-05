@@ -1,7 +1,4 @@
 import DropdownSearch from './DropdownSearch';
 import DropdownSearchSingleItem from './DropdownSearchSingleItem';
 
-export {
-  DropdownSearch,
-  DropdownSearchSingleItem,
-};
+export { DropdownSearch, DropdownSearchSingleItem };

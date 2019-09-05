@@ -56,13 +56,12 @@ class DatetimeInput extends React.PureComponent<DatetimeInputProps, DatetimeInpu
     if (this.props.max) {
       end = this.props.max.getFullYear();
     }
-    for (let i = start; i <= end; i++ ) {
-      options.push(
-        {
-          key: i.toString(),
-          text: i,
-          value: i,
-        });
+    for (let i = start; i <= end; i++) {
+      options.push({
+        key: i.toString(),
+        text: i,
+        value: i,
+      });
     }
     return options;
   }
@@ -90,7 +89,7 @@ class DatetimeInput extends React.PureComponent<DatetimeInputProps, DatetimeInpu
   }
 
   public isLeapYear(year: number): boolean {
-    return year % 4 === 0 && year % 100 !== 0 || year % 400 === 0;
+    return (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
   }
 
   public getDayOptions(): Option[] {
@@ -101,16 +100,18 @@ class DatetimeInput extends React.PureComponent<DatetimeInputProps, DatetimeInpu
     }
     let start = 1;
     let end = monthToDay[this.state.month - 1];
-    if (this.props.min
-      && this.state.year === this.props.min.getFullYear()
-      && this.state.month === this.props.min.getMonth() + 1
+    if (
+      this.props.min &&
+      this.state.year === this.props.min.getFullYear() &&
+      this.state.month === this.props.min.getMonth() + 1
     ) {
       start = this.props.min.getDate();
     }
 
-    if (this.props.max
-      && this.state.year === this.props.max.getFullYear()
-      && this.state.month === this.props.max.getMonth() + 1
+    if (
+      this.props.max &&
+      this.state.year === this.props.max.getFullYear() &&
+      this.state.month === this.props.max.getMonth() + 1
     ) {
       end = this.props.max.getDate();
     }
@@ -127,52 +128,58 @@ class DatetimeInput extends React.PureComponent<DatetimeInputProps, DatetimeInpu
 
   public onChange(key: DatetimeKeys) {
     return (e, { value }: DropdownProps) => {
-      this.setState({
-        [key]: value,
-      } as any, () => {
-        if (this.props.onChange) {
-          this.props.onChange(e, new Date(this.state.year, this.state.month - 1, this.state.day, 8));
-        }
-      });
+      this.setState(
+        {
+          [key]: value,
+        } as any,
+        () => {
+          if (this.props.onChange) {
+            this.props.onChange(
+              e,
+              new Date(this.state.year, this.state.month - 1, this.state.day, 8),
+            );
+          }
+        },
+      );
     };
   }
 
   public render() {
     return (
-        <Form.Group>
-          <Form.Dropdown
-            width={6}
-            search
-            onChange={this.onChange('year')}
-            options={this.getYearOptions()}
-            placeholder='年'
-            defaultValue={this.state.year}
-            selection
-            fluid
-          />
-          <Form.Dropdown
-            width={5}
-            search
-            placeholder='月'
-            closeOnChange={true}
-            defaultValue={this.state.month}
-            onChange={this.onChange('month')}
-            options={this.getMonthOptions()}
-            fluid
-            selection
-          />
-          <Form.Dropdown
-            width={5}
-            search
-            closeOnChange={true}
-            placeholder='日'
-            defaultValue={this.state.day}
-            onChange={this.onChange('day')}
-            options={this.getDayOptions()}
-            fluid
-            selection
-          />
-        </Form.Group>
+      <Form.Group>
+        <Form.Dropdown
+          width={6}
+          search
+          onChange={this.onChange('year')}
+          options={this.getYearOptions()}
+          placeholder='年'
+          defaultValue={this.state.year}
+          selection
+          fluid
+        />
+        <Form.Dropdown
+          width={5}
+          search
+          placeholder='月'
+          closeOnChange={true}
+          defaultValue={this.state.month}
+          onChange={this.onChange('month')}
+          options={this.getMonthOptions()}
+          fluid
+          selection
+        />
+        <Form.Dropdown
+          width={5}
+          search
+          closeOnChange={true}
+          placeholder='日'
+          defaultValue={this.state.day}
+          onChange={this.onChange('day')}
+          options={this.getDayOptions()}
+          fluid
+          selection
+        />
+      </Form.Group>
     );
   }
 }

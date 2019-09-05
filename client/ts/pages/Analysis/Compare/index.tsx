@@ -45,7 +45,10 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
   }
 
   public async componentDidMount() {
-    const [analysisA, analysisB] = await Promise.all([Analysis.get(this.props.location.state.analysisAId), Analysis.get(this.props.location.state.analysisBId)]);
+    const [analysisA, analysisB] = await Promise.all([
+      Analysis.get(this.props.location.state.analysisA),
+      Analysis.get(this.props.location.state.analysisB),
+    ]);
     await Promise.all([analysisA.loadReport(), analysisB.loadReport()]);
     const conditions = await Report.getConditions();
     const nodesSet = new Set<string>();

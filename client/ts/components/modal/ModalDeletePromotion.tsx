@@ -59,27 +59,31 @@ export default class ModalDeletePromotion extends React.PureComponent<
   public render() {
     return (
       <React.Fragment>
-        <Button color='red'
-onClick={this.show}
-icon='delete'
-style={{ marginBottom: '5px' }}
-content='刪除' />
-        <Modal open={this.state.show}
-closeOnDimmerClick={false}
-basic>
+        <Button
+          color='red'
+          onClick={this.show}
+          icon='delete'
+          style={{ marginBottom: '5px' }}
+          content='刪除'
+        />
+        <Modal open={this.state.show} closeOnDimmerClick={false} basic>
           <Header content={`刪除促銷「${this.props.model.name}」`} />
           <Modal.Content>
             <h3>確認是否要刪除促銷{this.props.model.name}?</h3>
           </Modal.Content>
           <Modal.Actions>
-            <Button color='grey'
-loading={this.state.loading}
-onClick={this.close}
-content='取消' />
-            <Button color='red'
-loading={this.state.loading}
-onClick={this.delete}
-content='確認' />
+            <Button
+              color='grey'
+              loading={this.state.loading}
+              onClick={this.close}
+              content='取消'
+            />
+            <Button
+              color='red'
+              loading={this.state.loading}
+              onClick={this.delete}
+              content='確認'
+            />
           </Modal.Actions>
         </Modal>
       </React.Fragment>

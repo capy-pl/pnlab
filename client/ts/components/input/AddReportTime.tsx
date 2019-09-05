@@ -24,7 +24,9 @@ export default class AddReportTime extends React.PureComponent<
   constructor(props: AddReportTimeProps) {
     super(props);
     this.state = {
-      values: props.defaultValues.length ? props.defaultValues : props.condition.values,
+      values: (props.defaultValues.length
+        ? props.defaultValues
+        : props.condition.values) as string[],
     };
     this.startTimeChange = this.startTimeChange.bind(this);
     this.endTimeChange = this.endTimeChange.bind(this);

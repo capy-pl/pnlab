@@ -59,21 +59,13 @@ class FormLogin extends PureComponent<{}, FormLoginState> {
       return <Redirect to='/' />;
     } else {
       return (
-        <Segment style={{ width: '35%' }}
-padded
-raised>
-          <Grid textAlign='center'
-style={{ height: '100%' }}
-verticalAlign='middle'>
+        <Segment style={{ width: '35%' }} padded raised>
+          <Grid textAlign='center' style={{ height: '100%' }} verticalAlign='middle'>
             <Grid.Column style={{ maxWidth: 450 }}>
-              <Header as='h2'
-color='teal'
-textAlign='center'>
+              <Header as='h2' color='teal' textAlign='center'>
                 Login
-            </Header>
-              <Form size='large'
-loading={this.state.loading}
-error={this.state.error}>
+              </Header>
+              <Form size='large' loading={this.state.loading} error={this.state.error}>
                 <Segment stacked>
                   <Form.Input
                     fluid
@@ -81,7 +73,9 @@ error={this.state.error}>
                     iconPosition='left'
                     placeholder='E-mail address'
                     // tslint:disable-next-line:jsx-no-lambda
-                    onChange={(e, { value }) => { this.handleChange('email', value as string); }}
+                    onChange={(e, { value }) => {
+                      this.handleChange('email', value as string);
+                    }}
                   />
                   <Form.Input
                     fluid
@@ -90,21 +84,21 @@ error={this.state.error}>
                     placeholder='Password'
                     type='password'
                     // tslint:disable-next-line:jsx-no-lambda
-                    onChange={(e, { value }) => { this.handleChange('password', value as string); }}
+                    onChange={(e, { value }) => {
+                      this.handleChange('password', value as string);
+                    }}
                   />
-                  <Button color='teal'
-fluid
-size='large'
-disabled={this.state.loading}
-onClick={this.onClick}>
+                  <Button
+                    color='teal'
+                    fluid
+                    size='large'
+                    disabled={this.state.loading}
+                    onClick={this.onClick}
+                  >
                     Login
                   </Button>
                 </Segment>
-                <Message
-                  error
-                  header='Error'
-                  content='Wrong email or password.'
-                />
+                <Message error header='Error' content='Wrong email or password.' />
               </Form>
               <Message>
                 New to us? <a href='#'>Sign Up</a>

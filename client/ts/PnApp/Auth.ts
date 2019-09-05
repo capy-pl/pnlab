@@ -7,9 +7,9 @@ interface LoginResponse {
 export default class Auth {
   public static async login(email: string, password: string): Promise<string> {
     const response = await axios.post<LoginResponse>('/api/auth/login', {
-        email,
-        password,
-      });
+      email,
+      password,
+    });
     const { token } = response.data;
     return token;
   }

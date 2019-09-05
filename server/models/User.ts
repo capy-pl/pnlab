@@ -1,4 +1,4 @@
-import mongoose, {PassportLocalDocument, PassportLocalModel, Schema  } from 'mongoose';
+import mongoose, { PassportLocalDocument, PassportLocalModel, Schema } from 'mongoose';
 import passportLocalMongoose from 'passport-local-mongoose';
 import { OrgSchema } from './Organization';
 
@@ -26,7 +26,9 @@ UserSchema.plugin(passportLocalMongoose, {
   usernameField: 'email',
 });
 
-const User =
-  mongoose.model<UserSchemaInterface, PassportLocalModel<UserSchemaInterface>>('user', UserSchema);
+const User = mongoose.model<UserSchemaInterface, PassportLocalModel<UserSchemaInterface>>(
+  'user',
+  UserSchema,
+);
 
 export default User;

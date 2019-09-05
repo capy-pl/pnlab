@@ -7,7 +7,7 @@ export interface CategoryModel {
 }
 
 export default class Category {
-  public static async getAll(): Promise<CategoryModel[]>  {
+  public static async getAll(): Promise<CategoryModel[]> {
     const response = await axios.get<CategoryModel[]>('/api/category');
     return response.data;
   }
@@ -25,7 +25,7 @@ export default class Category {
   public name: string;
   public items: string[];
 
-  constructor({_id, name, items}: CategoryModel) {
+  constructor({ _id, name, items }: CategoryModel) {
     this.id = _id as string;
     this.name = name;
     this.items = items;

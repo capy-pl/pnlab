@@ -5,7 +5,7 @@ import User from '../../models/User';
 
 dotenv.config();
 
-const { SECRET_KEY }  = process.env;
+const { SECRET_KEY } = process.env;
 const { Strategy, ExtractJwt } = passportJWT;
 
 export default new Strategy(
@@ -24,4 +24,5 @@ export default new Strategy(
       .catch((err) => {
         cb(err);
       });
-  });
+  },
+);

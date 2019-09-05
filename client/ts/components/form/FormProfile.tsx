@@ -13,7 +13,10 @@ interface FormProfileState {
   errorMessage: string;
 }
 
-export default class FormProfile extends PureComponent<FormProfileProps, FormProfileState> {
+export default class FormProfile extends PureComponent<
+  FormProfileProps,
+  FormProfileState
+> {
   constructor(props: FormProfileProps) {
     super(props);
     this.state = {
@@ -43,21 +46,14 @@ export default class FormProfile extends PureComponent<FormProfileProps, FormPro
       <Form error={this.state.isError}>
         <Form.Field width={10}>
           <label>Email</label>
-          <input placeholder='Email'
-value={this.state.email}
-onChange={this.onChange}/>
+          <input placeholder='Email' value={this.state.email} onChange={this.onChange} />
         </Form.Field>
-        <Message
-          error
-          content={this.state.errorMessage}
-        />
+        <Message error content={this.state.errorMessage} />
         <Form.Field width={10}>
           <label>Organization</label>
           <input disabled={true} value={this.props.user.org.name} />
         </Form.Field>
-        <Button onClick={this.onClick}>
-          Update
-        </Button>
+        <Button onClick={this.onClick}>Update</Button>
       </Form>
     );
   }

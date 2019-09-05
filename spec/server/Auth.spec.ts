@@ -19,28 +19,25 @@ describe('Test Auth API.', () => {
   });
 
   test('SignUp: Duplicate email.', async () => {
-    const response = await req.post('/api/auth/signup')
-      .send({
-        email: 'admin@gmail.com',
-        password: '1234',
-      });
+    const response = await req.post('/api/auth/signup').send({
+      email: 'admin@gmail.com',
+      password: '1234',
+    });
     expect(response.status).toEqual(409);
   });
 
   test('SignUp: Missing argument.', async () => {
-    const response = await req.post('/api/auth/signup')
-      .send({
-        email: 'admin@gmail.com',
-      });
+    const response = await req.post('/api/auth/signup').send({
+      email: 'admin@gmail.com',
+    });
     expect(response.status).toEqual(422);
   });
 
   test('SignUp: Valid.', async () => {
-    const response = await req.post('/api/auth/signup')
-      .send({
-        email: 'apple@gmail.com',
-        password: '1234',
-      });
+    const response = await req.post('/api/auth/signup').send({
+      email: 'apple@gmail.com',
+      password: '1234',
+    });
     // 201 created.
     expect(response.status).toEqual(201);
 
@@ -51,28 +48,25 @@ describe('Test Auth API.', () => {
   });
 
   test('Login: Missing argument.', async () => {
-    const response = await req.post('/api/auth/login')
-    .send({
+    const response = await req.post('/api/auth/login').send({
       email: 'admin@gmail.com',
     });
     expect(response.status).toEqual(422);
   });
 
   test('Login: Email or password error.', async () => {
-    const response = await req.post('/api/auth/login')
-      .send({
-        email: 'admin@gmail.com',
-        password: '2223',
-      });
+    const response = await req.post('/api/auth/login').send({
+      email: 'admin@gmail.com',
+      password: '2223',
+    });
     expect(response.status).toEqual(401);
   });
 
   test('Login: Valid.', async () => {
-    const response = await req.post('/api/auth/login')
-      .send({
-        email: 'admin@gmail.com',
-        password: 'admin',
-      });
+    const response = await req.post('/api/auth/login').send({
+      email: 'admin@gmail.com',
+      password: 'admin',
+    });
     expect(response.status).toEqual(200);
     expect(response.body).toBeDefined();
     expect(response.body.token).toBeDefined();
@@ -86,13 +80,13 @@ describe('Test Auth API.', () => {
   });
 
   test('Valid: With Authentication header.', async () => {
-    const logInResponse = await req.post('/api/auth/login')
-      .send({
-        email: 'admin@gmail.com',
-        password: 'admin',
-      });
+    const logInResponse = await req.post('/api/auth/login').send({
+      email: 'admin@gmail.com',
+      password: 'admin',
+    });
     const { token } = logInResponse.body;
-    const response = await req.get('/api/auth/validate')
+    const response = await req
+      .get('/api/auth/validate')
       .set('Authorization', `Bearer ${token}`);
     expect(response.status).toEqual(204);
   });
