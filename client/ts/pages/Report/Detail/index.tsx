@@ -12,7 +12,7 @@ import {
   Sidebar,
   Table,
 } from 'semantic-ui-react';
-import { debounce, isBoolean, isNumber } from 'lodash';
+import { isBoolean, isNumber } from 'lodash';
 
 import { ModalAddAnalysis } from 'Component/modal';
 import { DropdownSearchSingleItem } from '../../../components/dropdown';
@@ -22,9 +22,10 @@ import {
   CommunityCharacterWindow,
   CommunityListWindow,
   ProductRankWindow,
+  SearchItemWindow,
 } from 'Component/window';
 
-import ReportAPI, { Node } from '../../../PnApp/model/Report';
+import ReportAPI from '../../../PnApp/model/Report';
 import { simplifyDate } from '../../../PnApp/Helper';
 
 type SelectedProductDisplayMode = 'direct' | 'indirect';
@@ -53,7 +54,7 @@ interface ReportState {
 export default class Report extends PureComponent<
   RouteComponentProps<{ id: string }>,
   ReportState
-  > {
+> {
   constructor(props: RouteComponentProps<{ id: string }>) {
     super(props);
     this.state = {
@@ -165,20 +166,20 @@ export default class Report extends PureComponent<
   // search dropdown
   public handleItemSearch = (
     event: React.SyntheticEvent<HTMLElement, Event>,
-    data: DropdownProps
+    data: DropdownProps,
   ) => {
     if (isNumber(data.value)) {
       this.setState({
         searchItem: data.value,
         windowSearchItemProduct: true,
-      })
+      });
     } else {
       this.setState({
         searchItem: undefined,
         windowSearchItemProduct: false,
-      })
+      });
     }
-  }
+  };
 
   public handleToggleSidebar = () => {
     this.setState((prevState) => ({
@@ -246,7 +247,7 @@ export default class Report extends PureComponent<
       };
     });
     return dropdownOption;
-  }
+  };
 
   public clearSelectedProduct = () => {
     this.setState({
@@ -256,8 +257,8 @@ export default class Report extends PureComponent<
   };
 
   public closeSearchItemProductWindow = () => {
-    this.setState({ windowSearchItemProduct: false })
-  }
+    this.setState({ windowSearchItemProduct: false });
+  };
 
   public render() {
     if (this.state.loading) {
@@ -289,16 +290,12 @@ export default class Report extends PureComponent<
               close={this.closeProductRankWindow}
               back={this.clearSelectedProduct}
             />
-
-            {/* search product window */}
-            <ProductRankWindow
+            <SearchItemWindow
               model={this.state.report}
               searchItem={this.state.searchItem}
               selectProduct={this.selectProduct}
-              productList={this.state.report.rank}
               show={this.state.windowSearchItemProduct}
               close={this.closeSearchItemProductWindow}
-              back={this.clearSelectedProduct}
             />
             <Sidebar.Pushable>
               <Sidebar
@@ -372,8 +369,7 @@ export default class Report extends PureComponent<
                             Communities排名
                           </Menu.Item>
                         }
-                      >
-                      </Popup>
+                      ></Popup>
                       <Popup
                         content='點擊上方"標示community"後即可查看'
                         disabled={this.state.showCommunity}
@@ -385,8 +381,7 @@ export default class Report extends PureComponent<
                             Communities角色
                           </Menu.Item>
                         }
-                      >
-                      </Popup>
+                      ></Popup>
                     </Accordion.Content>
                   </Menu.Item>
                   <ModalAddAnalysis

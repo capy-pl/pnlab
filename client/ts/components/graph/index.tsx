@@ -5,9 +5,9 @@ import { DataSet, EdgeOptions, Network, NodeOptions, Options } from 'vis';
 import Jgraph from '../../PnApp/Jgraph';
 import { Edge, Node } from '../../PnApp/model/Report';
 
-interface GraphNode extends Node, NodeOptions { }
+interface GraphNode extends Node, NodeOptions {}
 
-interface GraphEdge extends Edge, EdgeOptions { }
+interface GraphEdge extends Edge, EdgeOptions {}
 
 const customScalingFunction = (
   min: number,
@@ -140,15 +140,20 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
           highlight: 'black',
         },
       } as any;
-      const connectedNodes = (this.network as Network).getConnectedNodes(
-        selectedNode.id,
-      );
+      const connectedNodes = (this.network as Network).getConnectedNodes(selectedNode.id);
       const updateList = this.nodes
         .map<GraphNode>((node) => {
           if (!connectedNodes.includes(node.id as any) && node.id !== selectedNode.id) {
             return {
               id: node.id,
               hidden: true,
+            } as any;
+          } else {
+            return {
+              id: node.id,
+              group: this.props.showCommunity ? node.community : undefined,
+              color: '#8DC1FF',
+              hidden: false,
             } as any;
           }
         })

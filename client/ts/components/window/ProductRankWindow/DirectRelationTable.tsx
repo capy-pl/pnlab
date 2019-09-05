@@ -1,7 +1,7 @@
 import React from 'react';
 import { Table } from 'semantic-ui-react';
 
-import { isNumber } from 'lodash';
+import { isUndefined } from 'lodash';
 import { Report } from '../../../PnApp/model';
 import { SimpleNode } from '../../../PnApp/model/Report';
 
@@ -9,7 +9,6 @@ interface Props {
   selectedProduct?: number;
   model: Report;
   back?: () => void;
-  searchItem?: number;
 }
 
 export default class DirectRelationTalbe extends React.PureComponent<Props> {
@@ -26,17 +25,17 @@ export default class DirectRelationTalbe extends React.PureComponent<Props> {
 
   public getConnectedProductList(): SimpleNode[] {
     let connectedProductList: SimpleNode[] = [];
-    const product = isNumber(this.props.selectedProduct) ? this.props.selectedProduct : this.props.searchItem
-    if (isNumber(product)) {
+    if (this.props.selectedProduct !== undefined) {
       connectedProductList = this.props.model.graph
-        .getConnectedNodes(product)
+        .getConnectedNodes(this.props.selectedProduct)
         .map((number) => {
           return this.props.model.graph.getNode(number);
         })
         .map((node) => ({
           id: node.id,
           name: node.name as string,
-          weight: node.getDestinationWeight(product as number) as number, // connected edge weight
+          weight: node.getDestinationWeight(this.props
+            .selectedProduct as number) as number, // connected edge weight
         }));
       connectedProductList.sort((a, b) => {
         return b.weight - a.weight;
@@ -46,9 +45,14 @@ export default class DirectRelationTalbe extends React.PureComponent<Props> {
   }
 
   public render() {
+    const back = isUndefined(this.props.back) ? (
+      <React.Fragment />
+    ) : (
+      <a onClick={this.props.back}> &lt;&lt; 返回</a>
+    );
     return (
       <React.Fragment>
-        {isNumber(this.props.searchItem) ? <React.Fragment /> : <a onClick={this.props.back}> &lt;&lt; 返回</a>}
+        {back}
         <Table>
           <Table.Header>
             <Table.Row textAlign='center'>

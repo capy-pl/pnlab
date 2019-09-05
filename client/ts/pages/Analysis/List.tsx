@@ -5,7 +5,6 @@ import {
   Icon,
   Dropdown,
   DropdownProps,
-  Label,
   Menu,
   Popup,
   Segment,
@@ -154,10 +153,6 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
           analysisAId: this.state.compareList[0],
           analysisBId: this.state.compareList[1],
         },
-        // state: {
-        //   analysisA: this.state.analysisA,
-        //   analysisB: this.state.analysisB,
-        // },
       });
     }
   };
@@ -231,20 +226,20 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
         if (this.state.compareList.length < 2) {
           compareList = [...this.state.compareList, id];
         } else {
-          compareList = [...this.state.compareList]
+          compareList = [...this.state.compareList];
         }
       } else {
-        compareList = [...this.state.compareList].filter(item => item !== id);
+        compareList = [...this.state.compareList].filter((item) => item !== id);
       }
     } else {
       compareList = [id];
     }
-    return () => this.setState({ compareList })
-  }
+    return () => this.setState({ compareList });
+  };
 
   public clearSelected = () => {
     this.setState({ compareList: [] });
-  }
+  };
 
   public render() {
     const history = this.state.analyses.map((analysis) => {
@@ -271,17 +266,6 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
             dropChangeA={this.onChangeA}
             dropChangeB={this.onChangeB}
           />
-          {/* <Button
-            floated='right'
-            color='blue'
-            style={{ margin: '10px' }}
-            onClick={this.onClick}
-            icon
-            labelPosition='right'
-          >
-            <Icon name='clone outline' />
-            比較圖片
-          </Button> */}
           <Button
             floated='right'
             style={{ margin: '10px' }}
@@ -291,44 +275,11 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
             disabled={this.state.compareList.length !== 2}
             color={this.state.compareList.length === 2 ? 'teal' : undefined}
           >
-            <span>
-              比較圖片（已勾選{this.state.compareList.length} / 2）
-
-              {/* <Label
-                horizontal
-                circular
-                color='grey'
-              >
-                {this.state.compareList.length}
-              </Label> */}
-            </span>
+            <span>比較圖片（已勾選{this.state.compareList.length} / 2）</span>
             <Icon name='clone outline' />
           </Button>
           <Table selectable color='blue'>
             <Table.Header>
-              {/* <Table.Row>
-                <Table.HeaderCell colSpan='16'>
-                  <Menu floated='right' pagination>
-                    <Menu.Item
-                      as='a'
-                      onClick={this.previousPages}
-                      icon
-                      disabled={this.state.startPage === 1}
-                    >
-                      <Icon name='chevron left' />
-                    </Menu.Item>
-                    {this.getPageItems()}
-                    <Menu.Item
-                      as='a'
-                      onClick={this.nextPages}
-                      icon
-                      disabled={!this.state.hasNext}
-                    >
-                      <Icon name='chevron right' />
-                    </Menu.Item>
-                  </Menu>
-                </Table.HeaderCell>
-              </Table.Row> */}
               <Table.Row>
                 <Table.HeaderCell textAlign='right' colSpan='16'>
                   每頁顯示
@@ -357,17 +308,16 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
                     trigger={
                       <Icon
                         name='trash alternate'
-                        // inverted
                         bordered
                         onClick={this.clearSelected}
-                        // color='red'
-                        style={{ cursor: 'pointer', borderRadius: '8px', backgroundColor: 'white' }}
+                        style={{
+                          cursor: 'pointer',
+                          borderRadius: '8px',
+                          backgroundColor: 'white',
+                        }}
                       />
                     }
                   />
-                  {/* <Button onClick={this.clearSelected}>
-                    清除全部
-                  </Button> */}
                 </Table.HeaderCell>
                 <Table.HeaderCell width='3' textAlign='center' />
               </Table.Row>
@@ -400,7 +350,7 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
             </Table.Footer>
           </Table>
         </React.Fragment>
-      </Segment >
+      </Segment>
     );
   }
 }

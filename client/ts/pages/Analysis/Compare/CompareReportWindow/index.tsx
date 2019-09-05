@@ -29,7 +29,7 @@ interface CompareReportWindowState {
 export default class CompareReportWindow extends PureComponent<
   CompareReportWindowProps,
   CompareReportWindowState
-  > {
+> {
   constructor(props: CompareReportWindowProps) {
     super(props);
     this.state = {
@@ -114,13 +114,9 @@ export default class CompareReportWindow extends PureComponent<
     const tableBody = this.getTableBody(nodes, leftHandSideNodes);
     return (
       <React.Fragment>
+        <Header>【{tableName}】</Header>
         <Table celled padded color='teal'>
           <Table.Header>
-            <Table.Row>
-              <Table.HeaderCell colSpan='16' textAlign='center'>
-                <h3>【{tableName}】</h3>
-              </Table.HeaderCell>
-            </Table.Row>
             <Table.Row>
               <Table.HeaderCell>名次</Table.HeaderCell>
               <Table.HeaderCell>
@@ -146,6 +142,7 @@ export default class CompareReportWindow extends PureComponent<
     });
     return (
       <React.Fragment>
+        <Header>【共同連結產品】</Header>
         <Table celled padded color='yellow'>
           <Table.Header>
             <Table.Row>
@@ -168,8 +165,8 @@ export default class CompareReportWindow extends PureComponent<
         conditionRow =
           reportCondition.type === 'date'
             ? dateToString(stringToDate(reportCondition.values[0])) +
-            ' - ' +
-            dateToString(stringToDate(reportCondition.values[1]))
+              ' - ' +
+              dateToString(stringToDate(reportCondition.values[1]))
             : (reportCondition.values as string[]).join(', ');
         break;
       } else {
