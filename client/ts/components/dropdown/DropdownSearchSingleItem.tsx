@@ -3,7 +3,7 @@ import { Dropdown, DropdownProps, Icon } from 'semantic-ui-react';
 
 interface Option {
   key: string;
-  value: string;
+  value: string | number;
   text: string;
 }
 
@@ -23,13 +23,15 @@ const SearchSingleItemDropdown = ({
 }: SearchDropDownProps) => (
   <Dropdown
     clearable
-    fluid
+    fluid={typeof options[0].value === 'string'}
     placeholder={placeholder}
     search
     selection
     onChange={onChange}
     options={options}
     icon={<Icon name='search' style={{ padding: '10px' }} />}
+    noResultsMessage='無相關產品。'
+    style={{ borderRadius: '18px' }}
   />
 );
 

@@ -4,7 +4,7 @@ import { isNumber } from 'lodash';
 import { Window } from 'Component/';
 import Report, { SimpleNode } from '../../../PnApp/model/Report';
 import ProductRankTable from './ProductRankTable';
-import DirectRelationTalbe from './DirectRelationTable';
+import DirectRelationTable from './DirectRelationTable';
 import IndirectRelationTable from './IndirectRelationTable';
 
 type SelectedProductDisplayMode = 'direct' | 'indirect';
@@ -69,7 +69,7 @@ export default class ProductRankWindow extends PureComponent<Props> {
     } else {
       if (this.props.selectedProductMode === 'direct') {
         content = (
-          <DirectRelationTalbe
+          <DirectRelationTable
             model={this.props.model}
             selectedProduct={this.props.selectedProduct}
             back={this.props.back}

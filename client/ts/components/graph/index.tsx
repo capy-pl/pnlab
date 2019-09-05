@@ -32,7 +32,7 @@ interface GraphProps {
   selectedCommunities?: number[];
   selectedProduct?: number;
   selectedProductMode?: SelectedProductDisplayMode;
-  focusElement?: number;
+  searchItem?: number;
 }
 
 const graphOption: Options = {
@@ -64,6 +64,9 @@ const graphOption: Options = {
       springLength: 270,
       centralGravity: 0.15,
       avoidOverlap: 0.2,
+    },
+    stabilization: {
+      enabled: true,
     },
   },
   interaction: {
@@ -109,7 +112,9 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
       prevProps.selectedCommunities,
     );
 
-    if (!isSelectedProductEqual || !isSelectedCommunitiesEqual) {
+    const isSearchItemEqual = isEqual(this.props.searchItem, prevProps.searchItem);
+
+    if (!isSelectedProductEqual || !isSelectedCommunitiesEqual || !isSearchItemEqual) {
       this.repaint();
     }
 
@@ -121,15 +126,44 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
       this.paintSelectedCommunity();
     }
 
-    if (!isEqual(this.props.focusElement, prevProps.focusElement)) {
-      this.focusNode();
+    if (!isSearchItemEqual) {
+      this.paintSearchItem();
     }
   }
 
-  public focusNode(): void {
-    if (this.network && isNumber(this.props.focusElement)) {
-      this.network.focus(this.props.focusElement, {
-        scale: 1,
+  public paintSearchItem(): void {
+    if (this.network && isNumber(this.props.searchItem)) {
+      const selectedNode: GraphNode = {
+        id: this.props.searchItem,
+        group: undefined,
+        color: {
+          background: 'black',
+          hover: 'black',
+          highlight: 'black',
+        },
+      } as any;
+      const connectedNodes = (this.network as Network).getConnectedNodes(selectedNode.id);
+      const updateList = this.nodes
+        .map<GraphNode>((node) => {
+          if (!connectedNodes.includes(node.id as any) && node.id !== selectedNode.id) {
+            return {
+              id: node.id,
+              hidden: true,
+            } as any;
+          } else {
+            return {
+              id: node.id,
+              group: this.props.showCommunity ? node.community : undefined,
+              color: '#8DC1FF',
+              hidden: false,
+            } as any;
+          }
+        })
+        .filter((node) => node);
+      this.nodes.update(updateList);
+      this.nodes.update(selectedNode);
+      this.network.focus(this.props.searchItem, {
+        scale: 0.9,
       });
     }
   }
@@ -180,6 +214,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
           label: node.name,
           group: this.props.showCommunity ? node.community : undefined,
           color: '#8DC1FF',
+          borderWidth: this.props.showCommunity && node.core ? 5 : 1,
           hidden: false,
         } as any),
     );
@@ -196,10 +231,11 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
     if (!isUndefined(this.props.selectedProduct)) {
       const selectedNode: GraphNode = {
         id: this.props.selectedProduct,
+        group: undefined,
         color: {
-          background: 'orange',
-          hover: 'orange',
-          highlight: 'orange',
+          background: 'black',
+          hover: 'black',
+          highlight: 'black',
         },
       } as any;
       if (this.props.selectedProductMode === 'direct') {

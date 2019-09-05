@@ -5,27 +5,27 @@ import {
   AccordionTitleProps,
   Button,
   Checkbox,
+  DropdownProps,
   Icon,
   Menu,
-  Search,
+  Popup,
   Sidebar,
-  SearchResultProps,
-  SearchResultData,
-  SearchProps,
   Table,
 } from 'semantic-ui-react';
-import { debounce, isBoolean } from 'lodash';
+import { isBoolean, isNumber } from 'lodash';
 
 import { ModalAddAnalysis } from 'Component/modal';
+import { DropdownSearchSingleItem } from '../../../components/dropdown';
 import Graph from '../../../components/graph';
 import Loader from '../../../components/Loader';
 import {
   CommunityCharacterWindow,
   CommunityListWindow,
   ProductRankWindow,
+  SearchItemWindow,
 } from 'Component/window';
 
-import ReportAPI, { Node } from '../../../PnApp/model/Report';
+import ReportAPI from '../../../PnApp/model/Report';
 import { simplifyDate } from '../../../PnApp/Helper';
 
 type SelectedProductDisplayMode = 'direct' | 'indirect';
@@ -40,21 +40,13 @@ interface ReportState {
   selectedCommunities: number[];
   selectedProduct?: number;
   selectedProductMode?: SelectedProductDisplayMode;
-  searchItems?: number[];
   modalOpen: boolean;
   addAnalysisModalOpen: boolean;
-  visible: boolean;
   sidebarVisible: boolean;
-  searchValue: string;
-  searchResults: SearchResult[];
-  focusNode?: number;
+  searchItem?: number;
   activeIndex: number;
   infoOpen: boolean;
-}
-
-interface SearchResult extends Node {
-  title: string;
-  core: string | boolean;
+  windowSearchItemProduct: boolean;
 }
 
 export default class Report extends PureComponent<
@@ -70,14 +62,12 @@ export default class Report extends PureComponent<
       windowCommunityCharacter: false,
       showCommunity: false,
       modalOpen: false,
-      visible: false,
       addAnalysisModalOpen: false,
       sidebarVisible: false,
       selectedCommunities: [],
-      searchValue: '',
-      searchResults: [],
       activeIndex: -1,
       infoOpen: true,
+      windowSearchItemProduct: false,
     };
   }
 
@@ -150,6 +140,7 @@ export default class Report extends PureComponent<
         selectedProduct: id,
         selectedProductMode: direct ? 'direct' : 'indirect',
         selectedCommunities: [],
+        searchItem: undefined,
       });
     }
   };
@@ -159,61 +150,37 @@ export default class Report extends PureComponent<
       this.setState({
         selectedProduct: undefined,
         selectedProductMode: undefined,
+        searchItem: undefined,
         selectedCommunities: this.state.selectedCommunities.filter((num) => num !== id),
       });
     } else {
       this.setState({
         selectedProduct: undefined,
         selectedProductMode: undefined,
+        searchItem: undefined,
         selectedCommunities: [...this.state.selectedCommunities, id],
       });
     }
   };
 
-  public handleResultSelect = (
-    event: React.MouseEvent<HTMLDivElement>,
-    data: SearchResultData,
+  public handleItemSearch = (
+    event: React.SyntheticEvent<HTMLElement, Event>,
+    data: DropdownProps,
   ) => {
-    const { result } = data;
-    this.setState({
-      focusNode: result.id,
-      searchValue: result.name,
-      searchResults: [],
-    });
-  };
-
-  public handleSearchChange = (
-    event: React.MouseEvent<HTMLElement>,
-    data: SearchProps,
-  ) => {
-    const { value } = data;
-    if (value) {
-      const filter: Node[] = (this.state.report as ReportAPI).nodes.filter(
-        (node) => node.name.indexOf(value) !== -1,
-      );
-      const results: SearchResult[] = filter.map((node) => {
-        return {
-          ...node,
-          title: node.name,
-          core: node.core.toString(),
-        };
-      });
+    if (isNumber(data.value)) {
       this.setState({
-        searchValue: value as string,
-        searchResults: results,
+        searchItem: data.value,
+        windowSearchItemProduct: true,
+        selectedProduct: undefined,
+        selectedCommunities: [],
+      });
+    } else {
+      this.setState({
+        searchItem: undefined,
+        windowSearchItemProduct: false,
       });
     }
   };
-
-  public handleToggleSidebar = () => {
-    this.setState((prevState) => ({
-      visible: !prevState.visible,
-    }));
-  };
-
-  public resultRenderer(node: SearchResultProps) {
-    return <Search.Result key={node.id} id={node.id} title={node.name} />;
-  }
 
   public toggleSidebar = () => {
     this.setState({
@@ -266,6 +233,17 @@ export default class Report extends PureComponent<
     this.props.history.push(`/analysis/${id}`);
   };
 
+  public getDropdownOption = () => {
+    const dropdownOption = this.state.report.nodes.map((node) => {
+      return {
+        key: node.name,
+        value: node.id,
+        text: node.name,
+      };
+    });
+    return dropdownOption;
+  };
+
   public clearSelectedProduct = () => {
     this.setState({
       selectedProduct: undefined,
@@ -273,11 +251,16 @@ export default class Report extends PureComponent<
     });
   };
 
+  public closeSearchItemProductWindow = () => {
+    this.setState({ windowSearchItemProduct: false });
+  };
+
   public render() {
     if (this.state.loading) {
       return <Loader size='huge' />;
     } else {
       if (this.state.report) {
+        const dropdownOption = this.getDropdownOption();
         return (
           <React.Fragment>
             <CommunityCharacterWindow
@@ -301,6 +284,13 @@ export default class Report extends PureComponent<
               show={this.state.windowProductRank}
               close={this.closeProductRankWindow}
               back={this.clearSelectedProduct}
+            />
+            <SearchItemWindow
+              model={this.state.report}
+              searchItem={this.state.searchItem}
+              selectProduct={this.selectProduct}
+              show={this.state.windowSearchItemProduct}
+              close={this.closeSearchItemProductWindow}
             />
             <Sidebar.Pushable>
               <Sidebar
@@ -335,16 +325,10 @@ export default class Report extends PureComponent<
                     </Accordion.Content>
                   </Menu.Item>
                   <Menu.Item>
-                    <Search
-                      size='small'
+                    <DropdownSearchSingleItem
+                      options={dropdownOption}
                       placeholder='搜尋產品'
-                      noResultsMessage='無相關產品。'
-                      results={this.state.searchResults}
-                      onSearchChange={debounce(this.handleSearchChange, 300, {
-                        leading: true,
-                      })}
-                      onResultSelect={this.handleResultSelect}
-                      resultRenderer={this.resultRenderer}
+                      onChange={this.handleItemSearch}
                     />
                   </Menu.Item>
                   <Menu.Item>
@@ -369,12 +353,30 @@ export default class Report extends PureComponent<
                       <Icon name='dropdown' />
                     </Accordion.Title>
                     <Accordion.Content active={this.state.activeIndex === 2}>
-                      <Menu.Item onClick={this.openCommunityListWidow}>
-                        Communities排名
-                      </Menu.Item>
-                      <Menu.Item onClick={this.openCommunityCharacterWindow}>
-                        Communities角色
-                      </Menu.Item>
+                      <Popup
+                        content='點擊上方"標示community"後即可查看'
+                        disabled={this.state.showCommunity}
+                        trigger={
+                          <Menu.Item
+                            onClick={this.openCommunityListWidow}
+                            disabled={!this.state.showCommunity}
+                          >
+                            Communities排名
+                          </Menu.Item>
+                        }
+                      ></Popup>
+                      <Popup
+                        content='點擊上方"標示community"後即可查看'
+                        disabled={this.state.showCommunity}
+                        trigger={
+                          <Menu.Item
+                            onClick={this.openCommunityCharacterWindow}
+                            disabled={!this.state.showCommunity}
+                          >
+                            Communities角色
+                          </Menu.Item>
+                        }
+                      ></Popup>
                     </Accordion.Content>
                   </Menu.Item>
                   <ModalAddAnalysis
@@ -415,7 +417,7 @@ export default class Report extends PureComponent<
                   selectedCommunities={this.state.selectedCommunities}
                   selectedProduct={this.state.selectedProduct}
                   selectedProductMode={this.state.selectedProductMode}
-                  focusElement={this.state.focusNode}
+                  searchItem={this.state.searchItem}
                 />
               </Sidebar.Pusher>
             </Sidebar.Pushable>

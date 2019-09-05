@@ -142,7 +142,7 @@ export default class CompareReportWindow extends PureComponent<
     });
     return (
       <React.Fragment>
-        <Header>【共同產品】</Header>
+        <Header>【共同連結產品】</Header>
         <Table celled padded color='yellow'>
           <Table.Header>
             <Table.Row>
