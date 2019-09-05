@@ -112,7 +112,9 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
       prevProps.selectedCommunities,
     );
 
-    if (!isSelectedProductEqual || !isSelectedCommunitiesEqual) {
+    const isSearchItemEqual = isEqual(this.props.searchItem, prevProps.searchItem);
+
+    if (!isSelectedProductEqual || !isSelectedCommunitiesEqual || !isSearchItemEqual) {
       this.repaint();
     }
 
@@ -124,7 +126,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
       this.paintSelectedCommunity();
     }
 
-    if (!isEqual(this.props.searchItem, prevProps.searchItem)) {
+    if (!isSearchItemEqual) {
       this.paintSearchItem();
     }
   }
@@ -163,8 +165,6 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
       this.network.focus(this.props.searchItem, {
         scale: 0.9,
       });
-    } else {
-      this.repaint();
     }
   }
 

@@ -141,13 +141,13 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
     });
   };
 
-  public onConfirm = async () => {
+  public onConfirm = () => {
     if (this.state.compareList.length === 2) {
-      await this.setState({
+      this.setState({
         modalOpen: false,
         loading: true,
       });
-      await this.props.history.push({
+      this.props.history.push({
         pathname: '/analysis/compare',
         state: {
           analysisAId: this.state.compareList[0],
@@ -221,7 +221,7 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
 
   public handleCheck = (id: string) => {
     let compareList;
-    if (this.state.compareList.length !== 0) {
+    if (this.state.compareList.length) {
       if (!this.state.compareList.includes(id)) {
         if (this.state.compareList.length < 2) {
           compareList = [...this.state.compareList, id];
