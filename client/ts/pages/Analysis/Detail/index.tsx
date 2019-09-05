@@ -158,6 +158,7 @@ export default class Detail extends PureComponent<
         selectedProduct: id,
         selectedProductMode: direct ? 'direct' : 'indirect',
         selectedCommunities: [],
+        searchItem: undefined,
       });
     }
   };
@@ -167,18 +168,19 @@ export default class Detail extends PureComponent<
       this.setState({
         selectedProduct: undefined,
         selectedProductMode: undefined,
+        searchItem: undefined,
         selectedCommunities: this.state.selectedCommunities.filter((num) => num !== id),
       });
     } else {
       this.setState({
         selectedProduct: undefined,
         selectedProductMode: undefined,
+        searchItem: undefined,
         selectedCommunities: [...this.state.selectedCommunities, id],
       });
     }
   };
 
-  // search dropdown
   public handleItemSearch = (
     event: React.SyntheticEvent<HTMLElement, Event>,
     data: DropdownProps,
@@ -187,6 +189,8 @@ export default class Detail extends PureComponent<
       this.setState({
         searchItem: data.value,
         windowSearchItemProduct: true,
+        selectedProduct: undefined,
+        selectedCommunities: [],
       });
     } else {
       this.setState({
