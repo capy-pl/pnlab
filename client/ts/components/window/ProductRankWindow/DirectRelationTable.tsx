@@ -11,7 +11,7 @@ interface Props {
   back?: () => void;
 }
 
-export default class DirectRelationTalbe extends React.PureComponent<Props> {
+export default class DirectRelationTable extends React.PureComponent<Props> {
   public getCells(): JSX.Element[] {
     const connectedProductList = this.getConnectedProductList();
     return connectedProductList.map((product, index) => (

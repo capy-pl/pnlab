@@ -40,10 +40,8 @@ interface ReportState {
   selectedCommunities: number[];
   selectedProduct?: number;
   selectedProductMode?: SelectedProductDisplayMode;
-  searchItems?: number[];
   modalOpen: boolean;
   addAnalysisModalOpen: boolean;
-  visible: boolean;
   sidebarVisible: boolean;
   searchItem?: number;
   activeIndex: number;
@@ -64,7 +62,6 @@ export default class Report extends PureComponent<
       windowCommunityCharacter: false,
       showCommunity: false,
       modalOpen: false,
-      visible: false,
       addAnalysisModalOpen: false,
       sidebarVisible: false,
       selectedCommunities: [],
@@ -179,12 +176,6 @@ export default class Report extends PureComponent<
         windowSearchItemProduct: false,
       });
     }
-  };
-
-  public handleToggleSidebar = () => {
-    this.setState((prevState) => ({
-      visible: !prevState.visible,
-    }));
   };
 
   public toggleSidebar = () => {

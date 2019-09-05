@@ -3,7 +3,7 @@ import { isNumber } from 'lodash';
 
 import { Window } from 'Component/';
 import Report from '../../../PnApp/model/Report';
-import DirectRelationTalbe from '../ProductRankWindow/DirectRelationTable';
+import DirectRelationTable from '../ProductRankWindow/DirectRelationTable';
 
 interface Props {
   show: boolean;
@@ -18,18 +18,11 @@ export default class SearchItemWindow extends PureComponent<Props> {
     super(props);
 
     this.displayDirectRelation = this.displayDirectRelation.bind(this);
-    this.displayIndirectRelation = this.displayIndirectRelation.bind(this);
   }
 
   public displayDirectRelation(id: number): () => void {
     return () => {
       this.props.selectProduct(id, true);
-    };
-  }
-
-  public displayIndirectRelation(id: number): () => void {
-    return () => {
-      this.props.selectProduct(id, false);
     };
   }
 
@@ -52,7 +45,7 @@ export default class SearchItemWindow extends PureComponent<Props> {
         defaultHeight={450}
         onClickX={this.props.close}
       >
-        <DirectRelationTalbe
+        <DirectRelationTable
           model={this.props.model}
           selectedProduct={this.props.searchItem}
         />
