@@ -4,7 +4,7 @@ interface Store {
   user?: User;
 }
 
-const Store: Store  = {
+const Store: Store = {
   user: undefined,
 };
 

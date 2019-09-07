@@ -13,6 +13,4 @@ const loginRequired = passport.authenticate('jwt', { session: false });
 
 export default passport;
 
-export {
-  loginRequired,
-};
+export { loginRequired };

@@ -21,7 +21,7 @@ interface CompareSingleProductWindowProps {
 export default class CompareSingleProductWindow extends PureComponent<
   CompareSingleProductWindowProps,
   {}
-  > {
+> {
   public getTableBody(
     connectedNodes: ConnectedNode[],
     shareProducts: ConnectedNode[],
@@ -32,10 +32,10 @@ export default class CompareSingleProductWindow extends PureComponent<
     if (leftHandSideNodes.length !== 0) {
       leftHandSideNodes.forEach((node, index) => {
         leftNodesMap.set(node.name, index);
-      })
+      });
       connectedNodes.forEach((node, index) => {
         rightNodesMap.set(node.name, index);
-      })
+      });
     }
     const tableBody = connectedNodes.map((node, index) => {
       let style;
@@ -75,7 +75,9 @@ export default class CompareSingleProductWindow extends PureComponent<
       }
       return (
         <Table.Row key={node.id} style={style}>
-          <Table.Cell>{index + 1}&nbsp;&nbsp;&nbsp;{arrow}</Table.Cell>
+          <Table.Cell>
+            {index + 1}&nbsp;&nbsp;&nbsp;{arrow}
+          </Table.Cell>
           <Table.Cell>{node.name}</Table.Cell>
           <Table.Cell>{Math.round(node.edgeWeight)}</Table.Cell>
         </Table.Row>
@@ -88,9 +90,13 @@ export default class CompareSingleProductWindow extends PureComponent<
     tableName: string,
     nodes: ConnectedNode[],
     shareProducts: ConnectedNode[],
-    leftHandSideNodes?: ConnectedNode[]
+    leftHandSideNodes?: ConnectedNode[],
   ) {
-    const tableBody = this.getTableBody(nodes, shareProducts, leftHandSideNodes ? leftHandSideNodes : []);
+    const tableBody = this.getTableBody(
+      nodes,
+      shareProducts,
+      leftHandSideNodes ? leftHandSideNodes : [],
+    );
     return (
       <React.Fragment>
         <Header>【{tableName}】</Header>
@@ -140,8 +146,14 @@ export default class CompareSingleProductWindow extends PureComponent<
   }
 
   public getConnectedInfo(selectedProduct: string) {
-    const connectedNodesA = this.getOneSideConnectedNodes(selectedProduct, this.props.analysisA.report);
-    const connectedNodesB = this.getOneSideConnectedNodes(selectedProduct, this.props.analysisB.report);
+    const connectedNodesA = this.getOneSideConnectedNodes(
+      selectedProduct,
+      this.props.analysisA.report,
+    );
+    const connectedNodesB = this.getOneSideConnectedNodes(
+      selectedProduct,
+      this.props.analysisB.report,
+    );
     const shareProducts: ConnectedNode[] = [];
 
     connectedNodesA.sort((a, b) => b.edgeWeight - a.edgeWeight);
@@ -170,13 +182,15 @@ export default class CompareSingleProductWindow extends PureComponent<
         <Table celled padded color='yellow'>
           <Table.Header>
             <Table.Row>
-              <Table.HeaderCell>共同產品（產品數：{shareProducts.length}）</Table.HeaderCell>
+              <Table.HeaderCell>
+                共同產品（產品數：{shareProducts.length}）
+              </Table.HeaderCell>
             </Table.Row>
           </Table.Header>
           <Table.Body>{share}</Table.Body>
         </Table>
       </React.Fragment>
-    )
+    );
   }
 
   public render() {
@@ -185,13 +199,20 @@ export default class CompareSingleProductWindow extends PureComponent<
     } else {
       if (this.props.selectedProduct) {
         const selectedProductName = this.props.selectedProduct[0];
-        const {
+        const { connectedNodesA, connectedNodesB, shareProducts } = this.getConnectedInfo(
+          this.props.selectedProduct[0],
+        );
+        const tableA = this.getTable(
+          this.props.analysisA.title,
           connectedNodesA,
+          shareProducts,
+        );
+        const tableB = this.getTable(
+          this.props.analysisB.title,
           connectedNodesB,
           shareProducts,
-        } = this.getConnectedInfo(this.props.selectedProduct[0]);
-        const tableA = this.getTable(this.props.analysisA.title, connectedNodesA, shareProducts);
-        const tableB = this.getTable(this.props.analysisB.title, connectedNodesB, shareProducts, connectedNodesA);
+          connectedNodesA,
+        );
         const shareTable = this.getShareProductsTable(shareProducts);
         return (
           <Window
@@ -206,23 +227,17 @@ export default class CompareSingleProductWindow extends PureComponent<
             </Message>
             <Grid>
               <Grid.Row>
-                <Grid.Column width={6}>
-                  {tableA}
-                </Grid.Column>
+                <Grid.Column width={6}>{tableA}</Grid.Column>
 
-                <Grid.Column width={4}>
-                  {shareTable}
-                </Grid.Column>
+                <Grid.Column width={4}>{shareTable}</Grid.Column>
 
-                <Grid.Column width={6}>
-                  {tableB}
-                </Grid.Column>
+                <Grid.Column width={6}>{tableB}</Grid.Column>
               </Grid.Row>
             </Grid>
           </Window>
         );
       } else {
-        return <React.Fragment />
+        return <React.Fragment />;
       }
     }
   }

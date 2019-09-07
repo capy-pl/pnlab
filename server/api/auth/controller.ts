@@ -26,7 +26,11 @@ interface SignUpRequestBody {
  * @response 422 Missing params.
  * @response 201 Created.
  */
-export async function SignUp(req: e.Request, res: e.Response, next: e.NextFunction): Promise<void | e.Response> {
+export async function SignUp(
+  req: e.Request,
+  res: e.Response,
+  next: e.NextFunction,
+): Promise<void | e.Response> {
   const { email, password } = req.body as SignUpRequestBody;
   if (!(email && password)) {
     res.status(422).send({ message: 'Lack of email or password.' });
@@ -58,7 +62,11 @@ interface LogInRequestBody {
  * @apiParam email {String} User's email.
  * @apiParam password {String} User's password.
  */
-export async function LogIn(req: e.Request, res: e.Response, next: e.NextFunction): Promise<void> {
+export async function LogIn(
+  req: e.Request,
+  res: e.Response,
+  next: e.NextFunction,
+): Promise<void> {
   const { email, password } = req.body as LogInRequestBody;
   if (!(email && password)) {
     res.status(422).json({ message: 'email or password not provided.' });

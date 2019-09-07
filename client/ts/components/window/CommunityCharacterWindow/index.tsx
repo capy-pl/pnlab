@@ -88,12 +88,12 @@ export default class CommunityCharacterWindow extends PureComponent<Props, State
             </Menu.Item>
           </Menu>
           <Segment hidden={this.state.activeIndex !== 0} attached='bottom'>
-            <Message info content='僅列出產品數大於4之產品群的core' />
+            <Message info content='僅列出產品數大於3之產品群的core' />
             <Table selectable>
               <Table.Header>
                 <Table.Row>
                   <Table.HeaderCell>產品名稱</Table.HeaderCell>
-                  <Table.HeaderCell>產品所屬Communnity</Table.HeaderCell>
+                  <Table.HeaderCell>產品所屬Community</Table.HeaderCell>
                 </Table.Row>
               </Table.Header>
               <Table.Body>{coreList.length ? coreList : '無Core資訊。'}</Table.Body>

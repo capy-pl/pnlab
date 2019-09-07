@@ -1,16 +1,17 @@
 import React from 'react';
 import { Table } from 'semantic-ui-react';
 
+import { isUndefined } from 'lodash';
 import { Report } from '../../../PnApp/model';
 import { SimpleNode } from '../../../PnApp/model/Report';
 
 interface Props {
   selectedProduct: number;
   model: Report;
-  back: () => void;
+  back?: () => void;
 }
 
-export default class DirectRelationTalbe extends React.PureComponent<Props> {
+export default class DirectRelationTable extends React.PureComponent<Props> {
   public getCells(): JSX.Element[] {
     const connectedProductList = this.getConnectedProductList();
     return connectedProductList.map((product, index) => (
@@ -44,12 +45,17 @@ export default class DirectRelationTalbe extends React.PureComponent<Props> {
   }
 
   public render() {
+    const back = isUndefined(this.props.back) ? (
+      <React.Fragment />
+    ) : (
+      <a onClick={this.props.back}> &lt;&lt; 返回</a>
+    );
     return (
       <React.Fragment>
-        <a onClick={this.props.back}> &lt;&lt; 返回</a>
+        {back}
         <Table>
           <Table.Header>
-            <Table.Row>
+            <Table.Row textAlign='center'>
               <Table.HeaderCell>名次</Table.HeaderCell>
               <Table.HeaderCell>連結產品</Table.HeaderCell>
               <Table.HeaderCell>連結</Table.HeaderCell>

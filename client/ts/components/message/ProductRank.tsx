@@ -75,7 +75,7 @@ export default class ProductRank extends PureComponent<ProductRankProps, Message
       connectedInfo.sort((a, b) => {
         return b.edgeWeight - a.edgeWeight;
       });
-      this.setState({connectedInfo});
+      this.setState({ connectedInfo });
     }
   }
 
@@ -90,8 +90,8 @@ export default class ProductRank extends PureComponent<ProductRankProps, Message
   }
 
   public backToProductRank() {
-    this.setState({content: 'productRank'});
-    this.setState({clickedProduct: undefined}, () => {
+    this.setState({ content: 'productRank' });
+    this.setState({ clickedProduct: undefined }, () => {
       this.props.updateProductGraph(this.state.clickedProduct);
     });
   }
@@ -101,11 +101,14 @@ export default class ProductRank extends PureComponent<ProductRankProps, Message
     if (this.props.productRankInfo) {
       if (this.state.content === 'productRank') {
         const productRank = this.props.productRankInfo.map((product, index) => {
-          return(
+          return (
             <tr key={product.name} className='center aligned'>
               <td>{index + 1}</td>
               <td>
-                <a onClick={this.handleProductClick(product)} style={{cursor: 'pointer'}}>
+                <a
+                  onClick={this.handleProductClick(product)}
+                  style={{ cursor: 'pointer' }}
+                >
                   {product.name}
                 </a>
               </td>
@@ -115,7 +118,7 @@ export default class ProductRank extends PureComponent<ProductRankProps, Message
         });
         message = (
           <React.Fragment>
-            <h3 style={{textAlign: 'center'}}>產品排名</h3>
+            <h3 style={{ textAlign: 'center' }}>產品排名</h3>
             <table className='ui very basic table'>
               <thead>
                 <tr className='center aligned'>
@@ -124,9 +127,7 @@ export default class ProductRank extends PureComponent<ProductRankProps, Message
                   <th>產品權重</th>
                 </tr>
               </thead>
-              <tbody>
-                {productRank}
-              </tbody>
+              <tbody>{productRank}</tbody>
             </table>
           </React.Fragment>
         );
@@ -143,8 +144,12 @@ export default class ProductRank extends PureComponent<ProductRankProps, Message
           });
           message = (
             <React.Fragment>
-              <a onClick={this.backToProductRank} style={{cursor: 'pointer'}}>&lt;&lt; 返回</a>
-              <h4 style={{textAlign: 'center'}}>與【{this.state.clickedProduct.name}】相連之產品關聯性排名</h4>
+              <a onClick={this.backToProductRank} style={{ cursor: 'pointer' }}>
+                &lt;&lt; 返回
+              </a>
+              <h4 style={{ textAlign: 'center' }}>
+                與【{this.state.clickedProduct.name}】相連之產品關聯性排名
+              </h4>
               <table className='ui very basic table'>
                 <thead>
                   <tr className='center aligned'>
@@ -153,9 +158,7 @@ export default class ProductRank extends PureComponent<ProductRankProps, Message
                     <th>關聯權重</th>
                   </tr>
                 </thead>
-                <tbody>
-                  {connectedMessage}
-                </tbody>
+                <tbody>{connectedMessage}</tbody>
               </table>
             </React.Fragment>
           );
@@ -165,16 +168,16 @@ export default class ProductRank extends PureComponent<ProductRankProps, Message
 
     if (this.state.visible) {
       return (
-        <Message className='report-message'
-onDismiss={this.handleDismiss}
-style={{ backgroundColor: 'white' }}>
+        <Message
+          className='report-message'
+          onDismiss={this.handleDismiss}
+          style={{ backgroundColor: 'white' }}
+        >
           {message}
         </Message>
       );
     }
 
-    return (
-      <React.Fragment />
-    );
+    return <React.Fragment />;
   }
 }

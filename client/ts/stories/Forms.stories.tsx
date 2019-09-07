@@ -10,20 +10,17 @@ import { ConditionType } from '../PnApp/model/Report';
 const stories = storiesOf('Forms', module);
 
 stories
-  .add(
-    'Filter Form', () => {
-      const conditions = [
-        {
-          name: '餐別帶',
-          type: 'string' as ConditionType,
-          values: ['早餐時間帶', '中餐時間帶', '午餐時間帶', '一般時間帶'],
-        },
-      ];
-      return <FormAddReport conditions={conditions} />;
-    })
-  .add('Login Form', () => (
-    <FormLogin />
-  ))
+  .add('Filter Form', () => {
+    const conditions = [
+      {
+        name: '餐別帶',
+        type: 'string' as ConditionType,
+        values: ['早餐時間帶', '中餐時間帶', '午餐時間帶', '一般時間帶'],
+      },
+    ];
+    return <FormAddReport conditions={conditions} />;
+  })
+  .add('Login Form', () => <FormLogin />)
   .add('Profile Form', () => {
     const fakeUser = {
       __v: 0,

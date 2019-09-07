@@ -5,7 +5,7 @@ module.exports = function (grunt) {
     options: {
       configFile: './package.json',
       fix: true,
-      quiet: true,
+      quiet: false,
     },
     client: {
       files: {

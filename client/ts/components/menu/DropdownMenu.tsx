@@ -20,13 +20,15 @@ const onToggleDisable = () => {
   console.log('a');
 };
 
-const DropdownMenu =
-({onShowProductNetwork, onShowCommunities, onShowProductRank, onShowCommunitiesRank,
-  onShowCharacter, showCommunity}: DropdownMenuProps) => (
-  <Menu
-    style={style}
-    compact
-  >
+const DropdownMenu = ({
+  onShowProductNetwork,
+  onShowCommunities,
+  onShowProductRank,
+  onShowCommunitiesRank,
+  onShowCharacter,
+  showCommunity,
+}: DropdownMenuProps) => (
+  <Menu style={style} compact>
     <Dropdown.Item>
       <Checkbox
         toggle

@@ -5,17 +5,15 @@ import {
   AccordionTitleProps,
   Button,
   Checkbox,
+  DropdownProps,
   Icon,
   Menu,
+  Popup,
   Header,
-  Search,
   Sidebar,
-  SearchResultData,
-  SearchResultProps,
-  SearchProps,
   Table,
 } from 'semantic-ui-react';
-import { isBoolean, debounce } from 'lodash';
+import { isBoolean, isNumber } from 'lodash';
 
 import Graph from '../../../components/graph';
 import Loader from '../../../components/Loader';
@@ -23,9 +21,11 @@ import {
   CommunityCharacterWindow,
   CommunityListWindow,
   ProductRankWindow,
+  SearchItemWindow,
 } from 'Component/window';
 import AnalysisInfoWindow from './AnalysisInfoWindow';
-import ReportAPI, { Node } from '../../../PnApp/model/Report';
+import { DropdownSearchSingleItem } from '../../../components/dropdown';
+import ReportAPI from '../../../PnApp/model/Report';
 import Analysis, { Comment } from '../../../PnApp/model/Analysis';
 
 import { simplifyDate } from '../../../PnApp/Helper';
@@ -44,23 +44,15 @@ interface State {
   showCommunity: boolean;
   selectedCommunities: number[];
   selectedProduct?: number;
-  searchItems?: number[];
   selectedProductMode?: SelectedProductDisplayMode;
   modalOpen: boolean;
-  searchValue: string;
   sidebarVisible: boolean;
-  searchResults: SearchResult[];
-  focusNode?: number;
   activeIndex: number;
   infoOpen: boolean;
   comments: Comment[];
+  searchItem?: number;
+  windowSearchItemProduct: boolean;
 }
-
-interface SearchResult extends Node {
-  title: string;
-  core: string | boolean;
-}
-
 export default class Detail extends PureComponent<
   RouteComponentProps<{ id: string }>,
   State
@@ -77,33 +69,11 @@ export default class Detail extends PureComponent<
       windowAnalysisInfo: false,
       sidebarVisible: false,
       selectedCommunities: [],
-      searchValue: '',
-      searchResults: [],
       activeIndex: -1,
       infoOpen: true,
       comments: [],
+      windowSearchItemProduct: false,
     };
-
-    this.handleAccordionIndexChange = this.handleAccordionIndexChange.bind(this);
-    this.handleInfoIndexChange = this.handleInfoIndexChange.bind(this);
-    this.toggleShowCommunities = this.toggleShowCommunities.bind(this);
-    this.selectProduct = this.selectProduct.bind(this);
-    this.toggleSidebar = this.toggleSidebar.bind(this);
-    this.selectCommunities = this.selectCommunities.bind(this);
-
-    // bind window functions
-    this.openCommunityCharacterWindow = this.openCommunityCharacterWindow.bind(this);
-
-    this.openCommunityListWidow = this.openCommunityListWidow.bind(this);
-    this.openProductRankWindow = this.openProductRankWindow.bind(this);
-
-    this.closeCommunityCharacterWindow = this.closeCommunityCharacterWindow.bind(this);
-    this.closeCommunityListWindow = this.closeCommunityListWindow.bind(this);
-    this.closeProductRankWindow = this.closeProductRankWindow.bind(this);
-
-    // bind search function
-    this.handleSearchChange = this.handleSearchChange.bind(this);
-    this.handleResultSelect = this.handleResultSelect.bind(this);
   }
 
   public async componentDidMount() {
@@ -127,60 +97,60 @@ export default class Detail extends PureComponent<
     });
   };
 
-  public handleAccordionIndexChange(e: any, data: AccordionTitleProps): void {
+  public handleAccordionIndexChange = (e: any, data: AccordionTitleProps) => {
     const { index } = data;
     this.setState({
       activeIndex: this.state.activeIndex === index ? -1 : (index as number),
     });
-  }
+  };
 
-  public handleInfoIndexChange(): void {
+  public handleInfoIndexChange = () => {
     this.setState({
       infoOpen: !this.state.infoOpen,
     });
-  }
+  };
 
-  public toggleShowCommunities() {
+  public toggleShowCommunities = () => {
     this.setState({
       showCommunity: !this.state.showCommunity,
     });
-  }
+  };
 
-  public openCommunityCharacterWindow(): void {
+  public openCommunityCharacterWindow = () => {
     this.setState({
       windowCommunityCharacter: true,
     });
-  }
+  };
 
-  public closeCommunityCharacterWindow(): void {
+  public closeCommunityCharacterWindow = () => {
     this.setState({
       windowCommunityCharacter: false,
     });
-  }
+  };
 
-  public openProductRankWindow(): void {
+  public openProductRankWindow = () => {
     this.setState({
       windowProductRank: true,
     });
-  }
+  };
 
-  public closeProductRankWindow(): void {
+  public closeProductRankWindow = () => {
     this.setState({
       windowProductRank: false,
     });
-  }
+  };
 
-  public openCommunityListWidow(): void {
+  public openCommunityListWidow = () => {
     this.setState({
       windowCommunityList: true,
     });
-  }
+  };
 
-  public closeCommunityListWindow(): void {
+  public closeCommunityListWindow = () => {
     this.setState({
       windowCommunityList: false,
     });
-  }
+  };
 
   public selectProduct = (id?: number, direct?: boolean) => {
     if (this.state.report && isBoolean(direct)) {
@@ -188,68 +158,53 @@ export default class Detail extends PureComponent<
         selectedProduct: id,
         selectedProductMode: direct ? 'direct' : 'indirect',
         selectedCommunities: [],
+        searchItem: undefined,
       });
     }
   };
 
-  public selectCommunities(id: number): void {
+  public selectCommunities = (id: number) => {
     if (this.state.selectedCommunities.includes(id)) {
       this.setState({
         selectedProduct: undefined,
+        selectedProductMode: undefined,
+        searchItem: undefined,
         selectedCommunities: this.state.selectedCommunities.filter((num) => num !== id),
       });
     } else {
       this.setState({
         selectedProduct: undefined,
+        selectedProductMode: undefined,
+        searchItem: undefined,
         selectedCommunities: [...this.state.selectedCommunities, id],
       });
     }
-  }
+  };
 
-  public handleResultSelect(
-    event: React.MouseEvent<HTMLDivElement>,
-    data: SearchResultData,
-  ): void {
-    const { result } = data;
-    this.setState({
-      focusNode: result.id,
-      searchValue: result.name,
-      searchResults: [],
-    });
-  }
-
-  public handleSearchChange(
-    event: React.MouseEvent<HTMLElement>,
-    data: SearchProps,
-  ): void {
-    const { value } = data;
-    if (value) {
-      const filter: Node[] = (this.state.report as ReportAPI).nodes.filter(
-        (node) => node.name.indexOf(value) !== -1,
-      );
-      const results: SearchResult[] = filter.map((node) => {
-        return {
-          ...node,
-          title: node.name,
-          core: node.core.toString(),
-        };
-      });
+  public handleItemSearch = (
+    event: React.SyntheticEvent<HTMLElement, Event>,
+    data: DropdownProps,
+  ) => {
+    if (isNumber(data.value)) {
       this.setState({
-        searchValue: value as string,
-        searchResults: results,
+        searchItem: data.value,
+        windowSearchItemProduct: true,
+        selectedProduct: undefined,
+        selectedCommunities: [],
+      });
+    } else {
+      this.setState({
+        searchItem: undefined,
+        windowSearchItemProduct: false,
       });
     }
-  }
+  };
 
-  public resultRenderer(node: SearchResultProps) {
-    return <Search.Result key={node.id} id={node.id} title={node.name} />;
-  }
-
-  public toggleSidebar() {
+  public toggleSidebar = () => {
     this.setState({
       sidebarVisible: !this.state.sidebarVisible,
     });
-  }
+  };
 
   public getConditions() {
     if (this.state.report) {
@@ -290,6 +245,17 @@ export default class Detail extends PureComponent<
     this.setState({ windowAnalysisInfo: false });
   };
 
+  public getDropdownOption = () => {
+    const dropdownOption = this.state.report.nodes.map((node) => {
+      return {
+        key: node.name,
+        value: node.id,
+        text: node.name,
+      };
+    });
+    return dropdownOption;
+  };
+
   public clearSelectedProduct = () => {
     this.setState({
       selectedProduct: undefined,
@@ -297,11 +263,16 @@ export default class Detail extends PureComponent<
     });
   };
 
+  public closeSearchItemProductWindow = () => {
+    this.setState({ windowSearchItemProduct: false });
+  };
+
   public render() {
     if (this.state.loading) {
       return <Loader size='huge' />;
     } else {
       if (this.state.report) {
+        const dropdownOption = this.getDropdownOption();
         return (
           <React.Fragment>
             <CommunityCharacterWindow
@@ -325,6 +296,13 @@ export default class Detail extends PureComponent<
               show={this.state.windowProductRank}
               close={this.closeProductRankWindow}
               back={this.clearSelectedProduct}
+            />
+            <SearchItemWindow
+              model={this.state.report}
+              searchItem={this.state.searchItem}
+              selectProduct={this.selectProduct}
+              show={this.state.windowSearchItemProduct}
+              close={this.closeSearchItemProductWindow}
             />
             <AnalysisInfoWindow
               onSave={this.onSaved}
@@ -376,16 +354,10 @@ export default class Detail extends PureComponent<
                     </Accordion.Content>
                   </Menu.Item>
                   <Menu.Item>
-                    <Search
-                      size='small'
+                    <DropdownSearchSingleItem
+                      options={dropdownOption}
                       placeholder='搜尋產品'
-                      noResultsMessage='無相關產品。'
-                      results={this.state.searchResults}
-                      onSearchChange={debounce(this.handleSearchChange, 300, {
-                        leading: true,
-                      })}
-                      onResultSelect={this.handleResultSelect}
-                      resultRenderer={this.resultRenderer}
+                      onChange={this.handleItemSearch}
                     />
                   </Menu.Item>
                   <Menu.Item>
@@ -409,12 +381,30 @@ export default class Detail extends PureComponent<
                       <Icon name='dropdown' />
                     </Accordion.Title>
                     <Accordion.Content active={this.state.activeIndex === 2}>
-                      <Menu.Item onClick={this.openCommunityListWidow}>
-                        Communities排名
-                      </Menu.Item>
-                      <Menu.Item onClick={this.openCommunityCharacterWindow}>
-                        Communities角色
-                      </Menu.Item>
+                      <Popup
+                        content='點擊上方"標示community"後即可查看'
+                        disabled={this.state.showCommunity}
+                        trigger={
+                          <Menu.Item
+                            onClick={this.openCommunityListWidow}
+                            disabled={!this.state.showCommunity}
+                          >
+                            Communities排名
+                          </Menu.Item>
+                        }
+                      ></Popup>
+                      <Popup
+                        content='點擊上方"標示community"後即可查看'
+                        disabled={this.state.showCommunity}
+                        trigger={
+                          <Menu.Item
+                            onClick={this.openCommunityCharacterWindow}
+                            disabled={!this.state.showCommunity}
+                          >
+                            Communities角色
+                          </Menu.Item>
+                        }
+                      ></Popup>
                     </Accordion.Content>
                   </Menu.Item>
                 </Accordion>
@@ -438,7 +428,7 @@ export default class Detail extends PureComponent<
                   selectedCommunities={this.state.selectedCommunities}
                   selectedProduct={this.state.selectedProduct}
                   selectedProductMode={this.state.selectedProductMode}
-                  focusElement={this.state.focusNode}
+                  searchItem={this.state.searchItem}
                 />
               </Sidebar.Pusher>
             </Sidebar.Pushable>

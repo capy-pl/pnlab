@@ -18,18 +18,24 @@ const sidebarStyle: React.CSSProperties = {
   left: 0,
 };
 
-export default class AnalysisSidebar extends PureComponent<AnalysisSidebarProps, AnalysisSidebarState> {
-    constructor(props) {
-      super(props);
-      this.state = {
-        activeItem: 'Description',
-      };
-      this.onClick = this.onClick.bind(this);
-    }
+export default class AnalysisSidebar extends PureComponent<
+  AnalysisSidebarProps,
+  AnalysisSidebarState
+> {
+  constructor(props) {
+    super(props);
+    this.state = {
+      activeItem: 'Description',
+    };
+    this.onClick = this.onClick.bind(this);
+  }
 
-  public onClick(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, { name }: SidebarProps): void {
-      this.setState({ activeItem: name });
-    }
+  public onClick(
+    event: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+    { name }: SidebarProps,
+  ): void {
+    this.setState({ activeItem: name });
+  }
 
   public render() {
     return (

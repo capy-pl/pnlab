@@ -1,12 +1,18 @@
 import React, { PureComponent } from 'react';
-import { Grid, Icon, Menu, MenuItemProps, Message, Segment, Table, Header } from 'semantic-ui-react';
+import {
+  Grid,
+  Icon,
+  Menu,
+  MenuItemProps,
+  Message,
+  Segment,
+  Table,
+  Header,
+} from 'semantic-ui-react';
 import { Window } from 'Component/';
 import Analysis from '../../../../PnApp/model/Analysis';
 import Report, { Condition, Node } from '../../../../PnApp/model/Report';
-import {
-  dateToString,
-  stringToDate,
-} from '../../../../PnApp/Helper';
+import { dateToString, stringToDate } from '../../../../PnApp/Helper';
 
 interface CompareReportWindowProps {
   show: boolean;
@@ -20,7 +26,10 @@ interface CompareReportWindowProps {
 interface CompareReportWindowState {
   activeIndex: number;
 }
-export default class CompareReportWindow extends PureComponent<CompareReportWindowProps, CompareReportWindowState> {
+export default class CompareReportWindow extends PureComponent<
+  CompareReportWindowProps,
+  CompareReportWindowState
+> {
   constructor(props: CompareReportWindowProps) {
     super(props);
     this.state = {
@@ -43,10 +52,10 @@ export default class CompareReportWindow extends PureComponent<CompareReportWind
     if (leftHandSideNodes.length !== 0) {
       leftHandSideNodes.forEach((node, index) => {
         leftNodesMap.set(node.name, index);
-      })
+      });
       nodes.forEach((node, index) => {
         rightNodesMap.set(node.name, index);
-      })
+      });
     }
     const tableRow = nodes.map((node, index) => {
       let style;
@@ -95,7 +104,11 @@ export default class CompareReportWindow extends PureComponent<CompareReportWind
     return tableRow;
   }
 
-  public getTable = (tableName: string, report: Report, leftHandSideReport: Report | undefined = undefined) => {
+  public getTable = (
+    tableName: string,
+    report: Report,
+    leftHandSideReport: Report | undefined = undefined,
+  ) => {
     const nodes = report.nodes.sort((a, b) => b.weight - a.weight);
     const leftHandSideNodes = leftHandSideReport ? leftHandSideReport.nodes : [];
     const tableBody = this.getTableBody(nodes, leftHandSideNodes);
@@ -106,7 +119,9 @@ export default class CompareReportWindow extends PureComponent<CompareReportWind
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell>名次</Table.HeaderCell>
-              <Table.HeaderCell>產品列表（產品數：{report.nodes.length}）</Table.HeaderCell>
+              <Table.HeaderCell>
+                產品列表（產品數：{report.nodes.length}）
+              </Table.HeaderCell>
               <Table.HeaderCell>權重</Table.HeaderCell>
             </Table.Row>
           </Table.Header>
@@ -127,11 +142,13 @@ export default class CompareReportWindow extends PureComponent<CompareReportWind
     });
     return (
       <React.Fragment>
-        <Header>【共同產品】</Header>
+        <Header>【共同連結產品】</Header>
         <Table celled padded color='yellow'>
           <Table.Header>
             <Table.Row>
-              <Table.HeaderCell>共同產品（產品數：{this.props.shareNodes.length}）</Table.HeaderCell>
+              <Table.HeaderCell>
+                共同產品（產品數：{this.props.shareNodes.length}）
+              </Table.HeaderCell>
             </Table.Row>
           </Table.Header>
 
@@ -146,9 +163,11 @@ export default class CompareReportWindow extends PureComponent<CompareReportWind
     for (const reportCondition of reportConditions) {
       if (reportCondition.name === currentCondition.name) {
         conditionRow =
-          reportCondition.type === 'date' ?
-            dateToString(stringToDate(reportCondition.values[0])) + ' - ' + dateToString(stringToDate(reportCondition.values[1])) :
-            (reportCondition.values as string[]).join(', ');
+          reportCondition.type === 'date'
+            ? dateToString(stringToDate(reportCondition.values[0])) +
+              ' - ' +
+              dateToString(stringToDate(reportCondition.values[1]))
+            : (reportCondition.values as string[]).join(', ');
         break;
       } else {
         conditionRow = '-';
@@ -159,8 +178,14 @@ export default class CompareReportWindow extends PureComponent<CompareReportWind
 
   public getConditionTable() {
     const conditionTableBody = this.props.conditions.map((condition) => {
-      const conditionA = this.getConditionRow(condition, this.props.analysisA.report.conditions);
-      const conditionB = this.getConditionRow(condition, this.props.analysisB.report.conditions);
+      const conditionA = this.getConditionRow(
+        condition,
+        this.props.analysisA.report.conditions,
+      );
+      const conditionB = this.getConditionRow(
+        condition,
+        this.props.analysisB.report.conditions,
+      );
       return (
         <Table.Row key={condition.name}>
           <Table.Cell>{condition.name}</Table.Cell>
@@ -174,8 +199,12 @@ export default class CompareReportWindow extends PureComponent<CompareReportWind
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell width={4}>條件名稱</Table.HeaderCell>
-            <Table.HeaderCell width={6}>【{this.props.analysisA.title}】</Table.HeaderCell>
-            <Table.HeaderCell width={6}>【{this.props.analysisB.title}】</Table.HeaderCell>
+            <Table.HeaderCell width={6}>
+              【{this.props.analysisA.title}】
+            </Table.HeaderCell>
+            <Table.HeaderCell width={6}>
+              【{this.props.analysisB.title}】
+            </Table.HeaderCell>
           </Table.Row>
         </Table.Header>
         <Table.Body>{conditionTableBody}</Table.Body>
@@ -190,7 +219,11 @@ export default class CompareReportWindow extends PureComponent<CompareReportWind
     } else {
       const conditionTable = this.getConditionTable();
       const productTableA = this.getTable(analysisA.title, analysisA.report);
-      const productTableB = this.getTable(analysisB.title, analysisB.report, analysisA.report);
+      const productTableB = this.getTable(
+        analysisB.title,
+        analysisB.report,
+        analysisA.report,
+      );
       const shareProductsTable = this.getShareProductsTable();
       return (
         <Window
@@ -226,15 +259,9 @@ export default class CompareReportWindow extends PureComponent<CompareReportWind
               </Message>
               <Grid>
                 <Grid.Row>
-                  <Grid.Column width={6}>
-                    {productTableA}
-                  </Grid.Column>
-                  <Grid.Column width={4}>
-                    {shareProductsTable}
-                  </Grid.Column>
-                  <Grid.Column width={6}>
-                    {productTableB}
-                  </Grid.Column>
+                  <Grid.Column width={6}>{productTableA}</Grid.Column>
+                  <Grid.Column width={4}>{shareProductsTable}</Grid.Column>
+                  <Grid.Column width={6}>{productTableB}</Grid.Column>
                 </Grid.Row>
               </Grid>
             </Segment>

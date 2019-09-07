@@ -1,5 +1,3 @@
 import AnalysisAccordion from './AnalysisAccordion';
 
-export {
-  AnalysisAccordion,
-};
+export { AnalysisAccordion };

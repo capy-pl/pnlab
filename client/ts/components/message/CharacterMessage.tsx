@@ -13,7 +13,10 @@ interface MessageState {
   content: string;
 }
 
-export default class CharacterMessage extends PureComponent<CharacterMessageProps, MessageState> {
+export default class CharacterMessage extends PureComponent<
+  CharacterMessageProps,
+  MessageState
+> {
   constructor(props) {
     super(props);
     this.state = {
@@ -36,7 +39,7 @@ export default class CharacterMessage extends PureComponent<CharacterMessageProp
           if (this.props.communitiesInfo.length !== 0) {
             cores = this.props.communitiesInfo.map((community) => {
               if (community.core) {
-                return(
+                return (
                   <tr key={community.id} className='center aligned'>
                     <td>{community.id}</td>
                     <td>{community.core}</td>
@@ -58,7 +61,7 @@ export default class CharacterMessage extends PureComponent<CharacterMessageProp
         if (this.props.hookInfo) {
           if (this.props.hookInfo.length !== 0) {
             hooks = this.props.hookInfo.map((hook) => {
-              return(
+              return (
                 <tr key={hook.name} className='center aligned'>
                   <td>{hook.name}</td>
                   <td>{hook.connectTo.join(', ')}</td>
@@ -74,8 +77,10 @@ export default class CharacterMessage extends PureComponent<CharacterMessageProp
           }
         }
         const panes = [
-          { menuItem: 'Core', render: () => {
-              return(
+          {
+            menuItem: 'Core',
+            render: () => {
+              return (
                 <Tab.Pane>
                   <table className='ui very basic table'>
                     <thead>
@@ -84,16 +89,16 @@ export default class CharacterMessage extends PureComponent<CharacterMessageProp
                         <th>Core</th>
                       </tr>
                     </thead>
-                    <tbody>
-                      {cores}
-                    </tbody>
+                    <tbody>{cores}</tbody>
                   </table>
                 </Tab.Pane>
               );
             },
           },
-          { menuItem: 'Hook', render: () => {
-              return(
+          {
+            menuItem: 'Hook',
+            render: () => {
+              return (
                 <Tab.Pane>
                   <table className='ui very basic table'>
                     <thead>
@@ -102,18 +107,14 @@ export default class CharacterMessage extends PureComponent<CharacterMessageProp
                         <th>連結商品群</th>
                       </tr>
                     </thead>
-                    <tbody>
-                      {hooks}
-                    </tbody>
+                    <tbody>{hooks}</tbody>
                   </table>
                 </Tab.Pane>
               );
             },
           },
         ];
-        return(
-          <Tab panes={panes} />
-        );
+        return <Tab panes={panes} />;
       };
 
       return (
@@ -123,8 +124,6 @@ export default class CharacterMessage extends PureComponent<CharacterMessageProp
       );
     }
 
-    return (
-      <React.Fragment />
-    );
+    return <React.Fragment />;
   }
 }
