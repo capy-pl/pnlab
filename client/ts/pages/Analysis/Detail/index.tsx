@@ -45,7 +45,6 @@ interface State {
   selectedCommunities: number[];
   selectedProduct?: number;
   selectedProductMode?: SelectedProductDisplayMode;
-  modalOpen: boolean;
   sidebarVisible: boolean;
   activeIndex: number;
   infoOpen: boolean;
@@ -65,7 +64,6 @@ export default class Detail extends PureComponent<
       windowCommunityList: false,
       windowCommunityCharacter: false,
       showCommunity: false,
-      modalOpen: false,
       windowAnalysisInfo: false,
       sidebarVisible: false,
       selectedCommunities: [],
@@ -113,6 +111,9 @@ export default class Detail extends PureComponent<
   public toggleShowCommunities = () => {
     this.setState({
       showCommunity: !this.state.showCommunity,
+      selectedCommunities: [],
+      windowCommunityList: false,
+      windowCommunityCharacter: false,
     });
   };
 

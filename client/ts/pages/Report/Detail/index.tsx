@@ -40,7 +40,6 @@ interface ReportState {
   selectedCommunities: number[];
   selectedProduct?: number;
   selectedProductMode?: SelectedProductDisplayMode;
-  modalOpen: boolean;
   addAnalysisModalOpen: boolean;
   sidebarVisible: boolean;
   searchItem?: number;
@@ -61,7 +60,6 @@ export default class Report extends PureComponent<
       windowCommunityList: false,
       windowCommunityCharacter: false,
       showCommunity: false,
-      modalOpen: false,
       addAnalysisModalOpen: false,
       sidebarVisible: false,
       selectedCommunities: [],
@@ -95,6 +93,9 @@ export default class Report extends PureComponent<
   public toggleShowCommunities = () => {
     this.setState({
       showCommunity: !this.state.showCommunity,
+      selectedCommunities: [],
+      windowCommunityList: false,
+      windowCommunityCharacter: false,
     });
   };
 
