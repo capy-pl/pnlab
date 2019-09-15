@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 
 import { Window } from 'Component/';
+import { CommunityAccordion } from '../../../components/accrodion';
 import { Community } from '../../../PnApp/model/Report';
 import { Accordion, AccordionTitleProps, Icon, Message, Table } from 'semantic-ui-react';
 
@@ -48,17 +49,22 @@ export default class CommunityListWindow extends PureComponent<Props, State> {
 
   public getComunityAccordions(): React.ReactNode {
     return this.props.communities.map((community) => {
-      const items = community.items.map((node) => (
-        <Table.Row key={node.name}>
-          <Table.Cell>{node.name}</Table.Cell>
-          <Table.Cell>{Math.round(node.weight)}</Table.Cell>
-        </Table.Row>
-      ));
-      const coreRow = community.core && (
-        <Table.Row>
-          <Table.HeaderCell colSpan='2'>Community核心: {community.core}</Table.HeaderCell>
-        </Table.Row>
-      );
+      // const items = community.items.map((node) => (
+      //   <Table.Row key={node.name}>
+      //     <Table.Cell>{node.name}</Table.Cell>
+      //     <Table.Cell>{Math.round(node.weight)}</Table.Cell>
+      //   </Table.Row>
+      // ));
+      // const coreRow = community.core && (
+      //   <Table.Row>
+      //     <Table.HeaderCell colSpan='2'>Community核心: {community.core}</Table.HeaderCell>
+      //   </Table.Row>
+      // );
+      // const priceRow = (
+      //   <Table.Row>
+      //     <Table.HeaderCell colSpan='2'>平均單價: 95.3元</Table.HeaderCell>
+      //   </Table.Row>
+      // );
       return (
         <React.Fragment key={community.id}>
           <Accordion.Title
@@ -80,16 +86,11 @@ export default class CommunityListWindow extends PureComponent<Props, State> {
             產品群{community.id}
           </Accordion.Title>
           <Accordion.Content active={this.state.activeIndex === community.id}>
-            <Table>
-              <Table.Header>
-                {coreRow}
-                <Table.Row>
-                  <Table.HeaderCell>名稱</Table.HeaderCell>
-                  <Table.HeaderCell>權重</Table.HeaderCell>
-                </Table.Row>
-              </Table.Header>
-              <Table.Body>{items}</Table.Body>
-            </Table>
+            <CommunityAccordion
+              core={community.core}
+              price={95.3}
+              community={community}
+            />
           </Accordion.Content>
         </React.Fragment>
       );
