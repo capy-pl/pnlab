@@ -130,23 +130,12 @@ class TransactionTransformer:
         for edge in list(edge_dict.keys()):
             if edge_dict[edge]['weight'] < support:
                 del edge_dict[edge]
-        ### added
-        # edges = self.get_edges(transaction)
-        ###
         for edge in edge_dict.keys():
             for node in edge:
                 if node not in nodes_dict:
                     nodes_dict[node] = {
                         'weight': edge_dict[edge]['weight']
                     }
-                    ### added
-                    # for e in edges:
-                    #     for i in e:
-                    #         if i['單品名稱'] == node:
-                    #             nodes_dict[node]['群號-群名稱'] = i['群號-群名稱']
-                    #             nodes_dict[node]['銷售單價'] = i['銷售單價']
-                    #             break
-                    ###
                 else:
                     nodes_dict[node]['weight'] += edge_dict[edge]['weight']
         if len(nodes_dict.keys()) <= 0:
@@ -157,7 +146,7 @@ class TransactionTransformer:
     def to_graph(self, nodes, edges):
         g = igraph.Graph()
         for node in nodes.keys():
-            g.add_vertex(node, core=False, weight=nodes[node]['weight'], itemGroup=nodes[node]['群號-群名稱'], price=nodes[node]['銷售單價'])
+            g.add_vertex(node, core=False, weight=nodes[node]['weight'])
         for edge, attrs in edges.items():
             weight = attrs['weight'] if attrs['weight'] > 0 else 1
             g.add_edge(edge[0], edge[1], weight=weight)
