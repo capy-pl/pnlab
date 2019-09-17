@@ -158,9 +158,9 @@ export default class Report {
   }
 
   public async getCommunityDetail(id: number): Promise<CommunityDetail> {
-    const resopnse = await axios.get<CommunityDetail>(
+    const response = await axios.get<CommunityDetail>(
       `/api/report/${this.id}/community/${id}`,
     );
-    return resopnse.data;
+    return response.data;
   }
 }

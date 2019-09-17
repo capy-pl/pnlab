@@ -2,7 +2,7 @@ import React, { PureComponent } from 'react';
 
 import { Window } from 'Component/';
 import { CommunityAccordion } from '../../../components/accrodion';
-import { Community } from '../../../PnApp/model/Report';
+import Report, { Community } from '../../../PnApp/model/Report';
 import { Accordion, AccordionTitleProps, Icon, Message, Table } from 'semantic-ui-react';
 
 interface Props {
@@ -49,6 +49,7 @@ export default class CommunityListWindow extends PureComponent<Props, State> {
 
   public getComunityAccordions(): React.ReactNode {
     return this.props.communities.map((community) => {
+      console.log(Report.getCommunityDetail(community.id));
       // const items = community.items.map((node) => (
       //   <Table.Row key={node.name}>
       //     <Table.Cell>{node.name}</Table.Cell>
