@@ -33,12 +33,16 @@ export interface Edge {
   weight: number;
 }
 
-export interface Community {
+interface CommunityDetail {
   id: number;
   core?: string;
   items: SimpleNode[];
   weight: number;
+  averagePrice: number;
+  tags: string[];
 }
+
+type Community = Pick<CommunityDetail, 'id' | 'core' | 'items' | 'weight'>;
 
 export interface Hook {
   name: string;
@@ -151,5 +155,12 @@ export default class Report {
       }
     }
     return 'frequency';
+  }
+
+  public async getCommunityDetail(id: number): Promise<CommunityDetail> {
+    const resopnse = await axios.get<CommunityDetail>(
+      `/api/report/${this.id}/community/${id}`,
+    );
+    return resopnse.data;
   }
 }
