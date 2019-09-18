@@ -256,9 +256,10 @@ export async function GetCommunityInfo(req: e.Request, res: e.Response): Promise
       },
     })
     .toArray();
-  const averagePrice = items.reduce<number>((current, prev) => {
-    return current + prev['銷售單價'];
-  }, 0);
+  const averagePrice =
+    items.reduce<number>((current, prev) => {
+      return current + prev['銷售單價'];
+    }, 0) / items.length;
   const tagsArr = items.map((item) => item['群號-群名稱']);
   const tagsSet = new Set<string>(tagsArr);
   const tags = Array.from(tagsSet);
