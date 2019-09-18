@@ -19,7 +19,8 @@ const getBasicInfo = (community) => {
         </Table.Row>
         <Table.Row>
           <Table.Cell>
-            <h5 style={{ display: 'inline' }}>平均單價：</h5> {community.averagePrice}元
+            <h5 style={{ display: 'inline' }}>平均單價：</h5>{' '}
+            {Math.round(community.averagePrice)}元
           </Table.Cell>
         </Table.Row>
       </Table.Body>
@@ -33,10 +34,10 @@ const getTagList = (community) => {
   });
   return (
     <React.Fragment>
-      <Label.Group>{tags}</Label.Group>
-      <Label basic color='black'>
-        共{community.tags.length}個群號
-      </Label>
+      <Label.Group basic size='medium'>
+        {tags}
+      </Label.Group>
+      <Label basic>共{community.tags.length}個群號</Label>
     </React.Fragment>
   );
 };
