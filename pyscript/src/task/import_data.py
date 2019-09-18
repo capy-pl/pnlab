@@ -136,4 +136,3 @@ def update_schema(fields, items):
             field['values'] = list(field_value_dict[field['name']])
         if field['type'] == 'date':
             field['values'] = field_value_dict[field['name']]
-            
