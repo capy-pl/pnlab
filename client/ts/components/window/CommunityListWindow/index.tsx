@@ -3,7 +3,7 @@ import React, { PureComponent } from 'react';
 import { Window } from 'Component/';
 import { CommunityAccordion } from '../../../components/accrodion';
 import Report, { Community } from '../../../PnApp/model/Report';
-import { Accordion, AccordionTitleProps, Icon, Message, Table } from 'semantic-ui-react';
+import { Accordion, AccordionTitleProps, Icon, Message } from 'semantic-ui-react';
 
 interface Props {
   close: () => void;
@@ -11,10 +11,12 @@ interface Props {
   communities: Community[];
   selectedCommunities: number[];
   selectCommunity: (id: number) => void;
+  report: Report;
 }
 
 interface State {
   activeIndex: number;
+  currentCommunity?: Community;
 }
 
 const iconStyle = {
@@ -33,10 +35,12 @@ export default class CommunityListWindow extends PureComponent<Props, State> {
     this.onClickShow = this.onClickShow.bind(this);
   }
 
-  public onClick(e, titleProps: AccordionTitleProps) {
+  public async onClick(e, titleProps: AccordionTitleProps) {
     const { index } = titleProps;
+    const currentCommunity = await this.props.report.getCommunityDetail(index as number);
     this.setState({
       activeIndex: index === this.state.activeIndex ? -1 : (index as number),
+      currentCommunity,
     });
   }
 
@@ -47,25 +51,8 @@ export default class CommunityListWindow extends PureComponent<Props, State> {
     };
   }
 
-  public getComunityAccordions(): React.ReactNode {
+  public getCommunityAccordions(): React.ReactNode {
     return this.props.communities.map((community) => {
-      console.log(Report.getCommunityDetail(community.id));
-      // const items = community.items.map((node) => (
-      //   <Table.Row key={node.name}>
-      //     <Table.Cell>{node.name}</Table.Cell>
-      //     <Table.Cell>{Math.round(node.weight)}</Table.Cell>
-      //   </Table.Row>
-      // ));
-      // const coreRow = community.core && (
-      //   <Table.Row>
-      //     <Table.HeaderCell colSpan='2'>Community核心: {community.core}</Table.HeaderCell>
-      //   </Table.Row>
-      // );
-      // const priceRow = (
-      //   <Table.Row>
-      //     <Table.HeaderCell colSpan='2'>平均單價: 95.3元</Table.HeaderCell>
-      //   </Table.Row>
-      // );
       return (
         <React.Fragment key={community.id}>
           <Accordion.Title
@@ -87,11 +74,7 @@ export default class CommunityListWindow extends PureComponent<Props, State> {
             產品群{community.id}
           </Accordion.Title>
           <Accordion.Content active={this.state.activeIndex === community.id}>
-            <CommunityAccordion
-              core={community.core}
-              price={95.3}
-              community={community}
-            />
+            <CommunityAccordion community={this.state.currentCommunity} />
           </Accordion.Content>
         </React.Fragment>
       );
@@ -112,7 +95,7 @@ export default class CommunityListWindow extends PureComponent<Props, State> {
       >
         <React.Fragment>
           <Message info content='點擊眼睛圖案可以選擇顯示該產品群' />
-          <Accordion styled>{this.getComunityAccordions()}</Accordion>
+          <Accordion styled>{this.getCommunityAccordions()}</Accordion>
         </React.Fragment>
       </Window>
     );
