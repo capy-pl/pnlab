@@ -34,9 +34,7 @@ const getTagList = (community) => {
   });
   return (
     <React.Fragment>
-      <Label.Group basic size='medium'>
-        {tags}
-      </Label.Group>
+      <Label.Group size='medium'>{tags}</Label.Group>
       <Label basic>共{community.tags.length}個群號</Label>
     </React.Fragment>
   );

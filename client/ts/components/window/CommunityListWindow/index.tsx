@@ -3,7 +3,7 @@ import React, { PureComponent } from 'react';
 import { Window } from 'Component/';
 import { CommunityAccordion } from '../../accordion';
 import Report, { Community } from '../../../PnApp/model/Report';
-import { Accordion, AccordionTitleProps, Icon, Message } from 'semantic-ui-react';
+import { Accordion, AccordionTitleProps, Icon, Loader, Message } from 'semantic-ui-react';
 
 interface Props {
   close: () => void;
@@ -16,7 +16,8 @@ interface Props {
 
 interface State {
   activeIndex: number;
-  currentCommunity?: Community;
+  loadedCommunities: Community[];
+  communityLoading: boolean;
 }
 
 const iconStyle = {
@@ -29,19 +30,31 @@ export default class CommunityListWindow extends PureComponent<Props, State> {
     super(props);
     this.state = {
       activeIndex: -1,
+      loadedCommunities: [],
+      communityLoading: false,
     };
 
     this.onClick = this.onClick.bind(this);
     this.onClickShow = this.onClickShow.bind(this);
   }
 
-  public async onClick(e, titleProps: AccordionTitleProps) {
+  public updateLoadedCommunities = async (index: number) => {
+    if (!this.state.loadedCommunities.some((community) => community.id === index)) {
+      this.setState({ communityLoading: true });
+      const newCommunity = await this.props.report.getCommunityDetail(index as number);
+      this.setState((prevState) => ({
+        loadedCommunities: [...prevState.loadedCommunities, newCommunity],
+        communityLoading: false,
+      }));
+    }
+  };
+
+  public onClick(e, titleProps: AccordionTitleProps) {
     const { index } = titleProps;
-    const currentCommunity = await this.props.report.getCommunityDetail(index as number);
     this.setState({
       activeIndex: index === this.state.activeIndex ? -1 : (index as number),
-      currentCommunity,
     });
+    this.updateLoadedCommunities(index as number);
   }
 
   public onClickShow(id: number): (e: React.SyntheticEvent<HTMLDivElement>) => void {
@@ -53,6 +66,15 @@ export default class CommunityListWindow extends PureComponent<Props, State> {
 
   public getCommunityAccordions(): React.ReactNode {
     return this.props.communities.map((community) => {
+      const loader =
+        this.state.activeIndex === community.id ? (
+          <Loader active={this.state.communityLoading} inline size='mini' />
+        ) : (
+          <React.Fragment />
+        );
+      const currentCommunity = this.state.loadedCommunities.find((loadedCommunity) => {
+        return loadedCommunity.id === community.id;
+      });
       return (
         <React.Fragment key={community.id}>
           <Accordion.Title
@@ -71,10 +93,10 @@ export default class CommunityListWindow extends PureComponent<Props, State> {
               style={iconStyle}
               onClick={this.onClickShow(community.id)}
             />
-            產品群{community.id}
+            產品群{community.id} {loader}
           </Accordion.Title>
           <Accordion.Content active={this.state.activeIndex === community.id}>
-            <CommunityAccordion community={this.state.currentCommunity} />
+            <CommunityAccordion community={currentCommunity} />
           </Accordion.Content>
         </React.Fragment>
       );
