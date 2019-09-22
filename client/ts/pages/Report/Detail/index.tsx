@@ -275,6 +275,7 @@ export default class Report extends PureComponent<
               close={this.closeCommunityListWindow}
               selectCommunity={this.selectCommunities}
               selectedCommunities={this.state.selectedCommunities}
+              report={this.state.report}
             />
             <ProductRankWindow
               model={this.state.report}

@@ -60,6 +60,9 @@ const graphOption: Options = {
       centralGravity: 0.15,
       avoidOverlap: 0.2,
     },
+    stabilization: {
+      enabled: true,
+    },
   },
   interaction: {
     hover: true,
