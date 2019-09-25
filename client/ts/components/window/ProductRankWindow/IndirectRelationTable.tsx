@@ -43,10 +43,11 @@ export default class IndirectRelationTalbe extends React.PureComponent<Props, St
   }
 
   public componentDidMount() {
-    const { previous, distance } = this.props.model.graph.shortestPathTree(
-      this.props.selectedProduct,
-      true,
-    );
+    const {
+      previous,
+      distance,
+      weightedDistance,
+    } = this.props.model.graph.shortestPathTree(this.props.selectedProduct, true);
     const nodes: IndirectNode[] = Array.from(previous.keys())
       .filter((id) => ((distance as Map<number, number>).get(id) as number) > 1)
       .map((id) => {
@@ -55,7 +56,7 @@ export default class IndirectRelationTalbe extends React.PureComponent<Props, St
           id,
           name: node.name as string,
           distance: (distance as Map<number, number>).get(id) as number,
-          distanceWeight: 0,
+          distanceWeight: (weightedDistance as Map<number, number>).get(id) as number,
           nodesOnPath: this.getNodeOnPaths(previous, id),
         };
       });
@@ -80,6 +81,7 @@ export default class IndirectRelationTalbe extends React.PureComponent<Props, St
       <Table.Row key={node.id}>
         <Table.Cell textAlign='center'>{node.name}</Table.Cell>
         <Table.Cell textAlign='center'>{node.distance}</Table.Cell>
+        <Table.Cell textAlign='center'>{Math.round(node.distanceWeight)}</Table.Cell>
         <Table.Cell textAlign='right'>
           <Popup
             hoverable
@@ -109,6 +111,7 @@ export default class IndirectRelationTalbe extends React.PureComponent<Props, St
             <Table.Row>
               <Table.HeaderCell textAlign='center'>產品名稱</Table.HeaderCell>
               <Table.HeaderCell textAlign='center'>產品距離</Table.HeaderCell>
+              <Table.HeaderCell textAlign='center'>產品權重距離</Table.HeaderCell>
               <Table.HeaderCell />
             </Table.Row>
           </Table.Header>

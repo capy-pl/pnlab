@@ -52,7 +52,10 @@ class JgraphEdge {
 
 interface ShortestPathReturnedValue {
   previous: Map<number, number>;
+  // how much distance(weight) does the node need to travel to start point.
   distance?: Map<number, number>;
+  // how many nodes does the encounter to travel to start point.
+  weightedDistance?: Map<number, number>;
 }
 
 export default class Jgraph {
@@ -190,10 +193,12 @@ export default class Jgraph {
     const inGraph: Set<number> = new Set();
     const distance: Map<number, number> = new Map();
     const previous: Map<number, number> = new Map();
+    const weightedDistance: Map<number, number> = new Map();
     for (const id in this.adjacencyList) {
       distance.set(parseInt(id), Number.MAX_VALUE);
     }
     distance.set(id, 0);
+    weightedDistance.set(id, 0);
     let startVertex: JgraphNode | undefined = this.adjacencyList[id];
     while (startVertex !== undefined) {
       inGraph.add(startVertex.id);
@@ -201,6 +206,10 @@ export default class Jgraph {
         const newDistance = weight ? edge.weight : 1;
         const currentDistance = (distance.get(startVertex.id) as number) + newDistance;
         if (currentDistance < (distance.get(edge.to) as number)) {
+          const newWeightedDistance = weight
+            ? currentDistance
+            : (weightedDistance.get(startVertex.id) as number) + edge.weight;
+          weightedDistance.set(edge.to, newWeightedDistance);
           distance.set(edge.to, currentDistance);
           previous.set(edge.to, startVertex.id);
         }
@@ -216,7 +225,7 @@ export default class Jgraph {
       });
     }
 
-    if (returnDistance) return { previous, distance };
+    if (returnDistance) return { previous, distance, weightedDistance };
     else return { previous };
   }
 
