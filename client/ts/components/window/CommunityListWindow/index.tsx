@@ -1,8 +1,9 @@
 import React, { PureComponent } from 'react';
 
 import { Window } from 'Component/';
-import { Community } from '../../../PnApp/model/Report';
-import { Accordion, AccordionTitleProps, Icon, Message, Table } from 'semantic-ui-react';
+import { CommunityAccordion } from '../../accordion';
+import Report, { Community } from '../../../PnApp/model/Report';
+import { Accordion, AccordionTitleProps, Icon, Loader, Message } from 'semantic-ui-react';
 
 interface Props {
   close: () => void;
@@ -10,10 +11,13 @@ interface Props {
   communities: Community[];
   selectedCommunities: number[];
   selectCommunity: (id: number) => void;
+  report: Report;
 }
 
 interface State {
   activeIndex: number;
+  loadedCommunities: Community[];
+  communityLoading: boolean;
 }
 
 const iconStyle = {
@@ -26,17 +30,31 @@ export default class CommunityListWindow extends PureComponent<Props, State> {
     super(props);
     this.state = {
       activeIndex: -1,
+      loadedCommunities: [],
+      communityLoading: false,
     };
 
     this.onClick = this.onClick.bind(this);
     this.onClickShow = this.onClickShow.bind(this);
   }
 
+  public updateLoadedCommunities = async (index: number) => {
+    if (!this.state.loadedCommunities.some((community) => community.id === index)) {
+      this.setState({ communityLoading: true });
+      const newCommunity = await this.props.report.getCommunityDetail(index as number);
+      this.setState((prevState) => ({
+        loadedCommunities: [...prevState.loadedCommunities, newCommunity],
+        communityLoading: false,
+      }));
+    }
+  };
+
   public onClick(e, titleProps: AccordionTitleProps) {
     const { index } = titleProps;
     this.setState({
       activeIndex: index === this.state.activeIndex ? -1 : (index as number),
     });
+    this.updateLoadedCommunities(index as number);
   }
 
   public onClickShow(id: number): (e: React.SyntheticEvent<HTMLDivElement>) => void {
@@ -46,19 +64,17 @@ export default class CommunityListWindow extends PureComponent<Props, State> {
     };
   }
 
-  public getComunityAccordions(): React.ReactNode {
+  public getCommunityAccordions(): React.ReactNode {
     return this.props.communities.map((community) => {
-      const items = community.items.map((node) => (
-        <Table.Row key={node.name}>
-          <Table.Cell>{node.name}</Table.Cell>
-          <Table.Cell>{Math.round(node.weight)}</Table.Cell>
-        </Table.Row>
-      ));
-      const coreRow = community.core && (
-        <Table.Row>
-          <Table.HeaderCell colSpan='2'>Community核心: {community.core}</Table.HeaderCell>
-        </Table.Row>
-      );
+      const loader =
+        this.state.activeIndex === community.id ? (
+          <Loader active={this.state.communityLoading} inline size='mini' />
+        ) : (
+          <React.Fragment />
+        );
+      const currentCommunity = this.state.loadedCommunities.find((loadedCommunity) => {
+        return loadedCommunity.id === community.id;
+      });
       return (
         <React.Fragment key={community.id}>
           <Accordion.Title
@@ -77,19 +93,10 @@ export default class CommunityListWindow extends PureComponent<Props, State> {
               style={iconStyle}
               onClick={this.onClickShow(community.id)}
             />
-            產品群{community.id}
+            產品群{community.id} {loader}
           </Accordion.Title>
           <Accordion.Content active={this.state.activeIndex === community.id}>
-            <Table>
-              <Table.Header>
-                {coreRow}
-                <Table.Row>
-                  <Table.HeaderCell>名稱</Table.HeaderCell>
-                  <Table.HeaderCell>權重</Table.HeaderCell>
-                </Table.Row>
-              </Table.Header>
-              <Table.Body>{items}</Table.Body>
-            </Table>
+            <CommunityAccordion community={currentCommunity} />
           </Accordion.Content>
         </React.Fragment>
       );
@@ -110,7 +117,7 @@ export default class CommunityListWindow extends PureComponent<Props, State> {
       >
         <React.Fragment>
           <Message info content='點擊眼睛圖案可以選擇顯示該產品群' />
-          <Accordion styled>{this.getComunityAccordions()}</Accordion>
+          <Accordion styled>{this.getCommunityAccordions()}</Accordion>
         </React.Fragment>
       </Window>
     );

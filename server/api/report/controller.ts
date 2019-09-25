@@ -3,7 +3,7 @@ import { connection } from 'mongoose';
 import { getChannel } from '../../core/mq';
 import { Logger } from '../../core/util';
 import { Action, Analysis, Promotion, Report } from '../../models';
-import { ReportInterface } from '../../models/Report';
+import { ReportInterface, Community } from '../../models/Report';
 import { FieldSchemaInterface } from '../../models/ImportSchema';
 import { UserSchemaInterface } from '../../models/User';
 
@@ -19,7 +19,7 @@ export interface SearchItemResponseBody {
  * Search item by name.
  * @api /report/searchItem
  * @method GET
- * @query items {string}
+ * @query {string} items
  * @apiName SearchItem
  * @apiGroup Report
  */
@@ -230,4 +230,45 @@ export async function DeleteReport(req: e.Request, res: e.Response): Promise<voi
     Logger.error(err);
     res.status(500).end();
   }
+}
+
+interface CommunityInfo extends Community {
+  averagePrice: number;
+  tags: string[];
+}
+
+export async function GetCommunityInfo(req: e.Request, res: e.Response): Promise<void> {
+  const object = req.object as ReportInterface;
+  const { communityId } = req.params;
+  const filterCommunities = object.communities.filter(
+    (community) => community.id === parseInt(communityId),
+  );
+  if (!filterCommunities.length) {
+    res.status(404).end();
+    return;
+  }
+  const [community] = filterCommunities;
+  const items = await connection.db
+    .collection('items')
+    .find({
+      單品名稱: {
+        $in: Array.from(community.items.map((item) => item['name'])),
+      },
+    })
+    .toArray();
+  const averagePrice =
+    items.reduce<number>((current, prev) => {
+      return current + prev['銷售單價'];
+    }, 0) / items.length;
+  const tagsArr = items.map((item) => item['群號-群名稱']);
+  const tagsSet = new Set<string>(tagsArr);
+  const tags = Array.from(tagsSet);
+  res.send({
+    id: community.id,
+    items: community.items,
+    core: community.core,
+    weight: community.weight,
+    averagePrice,
+    tags,
+  });
 }

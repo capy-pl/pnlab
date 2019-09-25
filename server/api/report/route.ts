@@ -1,10 +1,11 @@
 import { Router } from 'express';
 import { loginRequired } from '../../core/auth';
 import Report from '../../models/Report';
-import { httpMethodNotSupport, Pager } from '../../core/middleware';
+import { checkExist, httpMethodNotSupport, Pager } from '../../core/middleware';
 import {
   AddReport,
   GetConditions,
+  GetCommunityInfo,
   GetReport,
   GetReports,
   SearchItem,
@@ -34,6 +35,12 @@ router
   .all(loginRequired)
   .get(GetReport)
   .delete(DeleteReport)
+  .all(httpMethodNotSupport);
+
+router
+  .route('/:id/community/:communityId')
+  .all(loginRequired, checkExist(Report))
+  .get(GetCommunityInfo)
   .all(httpMethodNotSupport);
 
 export default router;
