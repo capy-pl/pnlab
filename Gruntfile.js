@@ -1,7 +1,6 @@
 module.exports = function (grunt) {
   const devConfig = require('./config/webpack.dev');
   const prodConfig = require('./config/webpack.prod');
-  const templateConfig = require('./config/webpack.template');
 
   const eslintConfig = {
     options: {
@@ -34,7 +33,6 @@ module.exports = function (grunt) {
     ),
     server: devConfig.serverConfig,
     client: devConfig.clientConfig,
-    template: templateConfig,
     prodServer: prodConfig.serverConfig,
     prodClient: prodConfig.clientConfig,
   };
