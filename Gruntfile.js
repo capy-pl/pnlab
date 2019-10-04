@@ -9,30 +9,27 @@ module.exports = function (grunt) {
     },
     client: {
       files: {
-        src: [
-          'client/ts/**/*.ts',
-          'client/ts/**/*.tsx',
-          'spec/client/**/*.ts'
-        ]
-      }
+        src: ['client/ts/**/*.ts', 'client/ts/**/*.tsx', 'spec/client/**/*.ts'],
+      },
     },
     server: {
       files: {
-        src: [
-          'server/**/*.ts',
-          'spec/server/**/*.ts'
-        ]
-      }
+        src: ['server/**/*.ts', 'spec/server/**/*.ts'],
+      },
     },
   };
 
   const webpackConfig = {
     serverWatch: Object.assign({
-      watch: true
-    }, devConfig.serverConfig),
+        watch: true,
+      },
+      devConfig.serverConfig,
+    ),
     clientWatch: Object.assign({
-      watch: true
-    }, devConfig.clientConfig),
+        watch: true,
+      },
+      devConfig.clientConfig,
+    ),
     server: devConfig.serverConfig,
     client: devConfig.clientConfig,
     prodServer: prodConfig.serverConfig,
@@ -49,7 +46,7 @@ module.exports = function (grunt) {
       command: 'nodemon',
     },
     prodRun: {
-      command: 'node dist/server/server.bundle.js'
+      command: 'node dist/server/server.bundle.js',
     },
     testClient: {
       command: 'jest spec/client',
@@ -71,11 +68,11 @@ module.exports = function (grunt) {
       stdout: true,
       exitCode: 0,
     },
-    clean: {
-      command: 'ts-node scripts/clean.ts',
+    cleandb: {
+      command: 'ts-node scripts/cleandb.ts',
       stdout: true,
       exitCode: 0,
-    }
+    },
   };
 
   grunt.initConfig({
@@ -93,13 +90,13 @@ module.exports = function (grunt) {
   grunt.task.registerTask('test', ['eslint', 'exec:test']);
   grunt.task.registerTask('test:client', ['eslint:client', 'exec:testClient']);
   grunt.task.registerTask('test:server', ['eslint:server', 'exec:testServer']);
-  grunt.task.registerTask('cleandb', ['exec:clean']);
+  grunt.task.registerTask('cleandb', ['exec:cleandb']);
   grunt.task.registerTask('initdb', ['exec:initdb']);
   grunt.task.registerTask('populate', ['exec:populate']);
-  grunt.task.registerTask('upgrade', ['exec:initdb', 'exec:populate'])
+  grunt.task.registerTask('upgrade', ['exec:initdb', 'exec:populate']);
   grunt.task.registerTask('run', ['build:client', 'exec:run']);
   grunt.task.registerTask('prodRun', ['build', 'exec:prodRun']);
   grunt.loadNpmTasks('grunt-eslint');
   grunt.loadNpmTasks('grunt-webpack');
   grunt.loadNpmTasks('grunt-exec');
-}
+};

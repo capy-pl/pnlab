@@ -10,7 +10,13 @@ interface AnalysisItemProps {
   compareList: string[];
 }
 
-const Item = ({ compareList, item, onButtonClick, onCheck, selected }: AnalysisItemProps) => {
+const Item = ({
+  compareList,
+  item,
+  onButtonClick,
+  onCheck,
+  selected,
+}: AnalysisItemProps) => {
   return (
     <Table.Row style={{ clear: 'both' }} textAlign='center' positive={selected}>
       <Table.Cell textAlign='center'>{item.title}</Table.Cell>

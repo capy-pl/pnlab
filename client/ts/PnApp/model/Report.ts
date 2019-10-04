@@ -1,6 +1,6 @@
 import axios from 'axios';
 import Jgraph from '../Jgraph';
-import { appendQuery, Query } from '../Helper';
+import { appendQuery } from '../Helper';
 
 type MethodType = 'frequency' | 'adjust-frequency' | 'adjust-price';
 
