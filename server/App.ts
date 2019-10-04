@@ -31,6 +31,10 @@ if (process.env.NODE_ENV === 'development') {
   const webpack = require('webpack');
   const devMiddleware = require('webpack-dev-middleware');
   const { clientConfig } = require('../config/webpack.dev');
+  if (typeof BUILDED !== 'undefined') {
+    clientConfig.entry.client[0] = CLIENT_PATH;
+    clientConfig.resolve.alias.Component = COMPNENT_PATH;
+  }
   const compiler = webpack(clientConfig);
   app.use(
     devMiddleware(compiler, {
@@ -51,7 +55,11 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 // Serve static files.
-app.use('/static/', express.static(path.resolve(__dirname, '..', 'dist', 'client')));
+if (typeof STATIC === 'undefined') {
+  app.use('/static/', express.static(path.resolve(__dirname, '..', 'dist', 'client')));
+} else {
+  app.use('/static/', express.static(STATIC));
+}
 
 // // Serve media files.
 app.use(

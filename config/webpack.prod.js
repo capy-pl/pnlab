@@ -3,23 +3,26 @@ const path = require('path');
 const nodeExternals = require('webpack-node-externals');
 const webpack = require('webpack');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 
 dotenv.config();
 
 const baseConfig = {
   mode: 'production',
-  devtool: "cheap-module-eval-source-map",
+  devtool: 'cheap-module-eval-source-map',
   stats: {
     errors: true,
   },
   optimization: {
-    minimizer: [new UglifyJsPlugin({
-      parallel: true,
-    })],
+    minimizer: [
+      new UglifyJsPlugin({
+        parallel: true,
+      }),
+    ],
     splitChunks: {
-      chunks: 'all'
-    }
-  }
+      chunks: 'all',
+    },
+  },
 };
 
 const clientConfig = {
@@ -27,7 +30,7 @@ const clientConfig = {
     client: [
       path.resolve(__dirname, '..', 'client', 'ts', 'index.tsx'),
       'webpack-hot-middleware/client?reload=true&&noInfo=true',
-    ]
+    ],
   },
   resolve: {
     alias: {
@@ -38,20 +41,17 @@ const clientConfig = {
   output: {
     path: path.resolve(__dirname, '..', 'dist', 'client'),
     filename: '[name].bundle.js',
-    publicPath: '/static'
+    publicPath: '/static',
   },
   module: {
     rules: [{
         test: /\.tsx?/,
         loader: 'babel-loader',
         exclude: /node_modules/,
-      }, {
+      },
+      {
         test: /\.s?css$/,
-        use: [
-          'style-loader',
-          'css-loader',
-          'sass-loader'
-        ]
+        use: ['style-loader', 'css-loader', 'sass-loader'],
       },
       {
         test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
@@ -59,13 +59,13 @@ const clientConfig = {
         options: {
           // This equals to 512 KB.
           limit: 524288,
-        }
+        },
       },
       {
         test: [/\.eot$/, /\.ttf$/, /\.svg$/, /\.woff$/, /\.woff2$/],
         loader: 'file-loader',
       },
-    ]
+    ],
   },
   externals: {
     jquery: 'jQuery',
@@ -76,14 +76,18 @@ const clientConfig = {
     new webpack.NoEmitOnErrorsPlugin(),
     new webpack.DefinePlugin({
       ENV: JSON.stringify(process.env.NODE_ENV),
-    })
-  ]
+    }),
+  ],
 };
 
 const serverConfig = {
   target: 'node',
+  node: {
+    __dirname: false,
+    __filename: false,
+  },
   entry: {
-    server: path.resolve(__dirname, '..', 'server', 'index.ts')
+    server: path.resolve(__dirname, '..', 'server', 'index.ts'),
   },
   resolve: {
     extensions: ['.ts', '.js', '.json'],
@@ -99,10 +103,16 @@ const serverConfig = {
     path: path.resolve(__dirname, '..', 'dist', 'server'),
     filename: '[name].bundle.js',
   },
-  externals: [nodeExternals()]
+  externals: [nodeExternals()],
+  plugins: [
+    new CopyPlugin([{
+      from: path.resolve(__dirname, '..', 'server', 'templates', 'index.html'),
+      to: path.resolve(__dirname, '..', 'dist', 'server', 'templates', 'index.html'),
+    }, ]),
+  ],
 };
 
 module.exports = {
   clientConfig: Object.assign({}, baseConfig, clientConfig),
-  serverConfig: Object.assign({}, baseConfig, serverConfig)
+  serverConfig: Object.assign({}, baseConfig, serverConfig),
 };

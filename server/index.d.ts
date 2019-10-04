@@ -1,5 +1,6 @@
 import * as express from 'express';
 import * as mongoose from 'mongoose';
+import { string } from 'prop-types';
 
 declare module 'express' {
   interface Request {
@@ -20,4 +21,8 @@ declare global {
       HOME: string;
     }
   }
+  const STATIC: string;
+  const BUILDED: boolean;
+  const CLIENT_PATH: string;
+  const COMPNENT_PATH: string;
 }
