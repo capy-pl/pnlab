@@ -33,7 +33,7 @@ if (command.watch) {
   const webpack = require('webpack');
   const devMiddleware = require('webpack-dev-middleware');
   const { clientConfig } = require('../config/webpack.dev');
-  if (typeof BUILDED !== 'undefined') {
+  if (typeof BUNDLED !== 'undefined') {
     clientConfig.entry.client[0] = CLIENT_PATH;
     clientConfig.resolve.alias.Component = COMPNENT_PATH;
   }
@@ -57,10 +57,10 @@ if (command.watch) {
 }
 
 // Serve static files.
-if (typeof STATIC === 'undefined') {
+if (typeof BUNDLED === 'undefined') {
   app.use('/static/', express.static(path.resolve(__dirname, '..', 'dist', 'client')));
 } else {
-  app.use('/static/', express.static(STATIC));
+  app.use('/static/', express.static(path.resolve(__dirname, '..', 'client')));
 }
 
 // // Serve media files.

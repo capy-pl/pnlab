@@ -104,7 +104,7 @@ const serverConfig = {
       to: path.resolve(__dirname, '..', 'dist', 'server', 'templates', 'index.html'),
     }, ]),
     new webpack.DefinePlugin({
-      BUILDED: JSON.stringify(true),
+      BUNDLED: JSON.stringify(true),
       CLIENT_PATH: JSON.stringify(
         path.resolve(__dirname, '..', 'client', 'ts', 'index.tsx'),
       ),

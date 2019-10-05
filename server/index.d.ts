@@ -22,7 +22,7 @@ declare global {
     }
   }
   const STATIC: string;
-  const BUILDED: boolean;
+  const BUNDLED: boolean;
   const CLIENT_PATH: string;
   const COMPNENT_PATH: string;
 }
