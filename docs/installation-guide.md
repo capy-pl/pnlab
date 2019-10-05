@@ -141,7 +141,7 @@ grunt initdb
 #### 8. 開啟 development server。
 
 ```bash=
-yarn start
+yarn dev
 ```
 
 #### 9. 打開瀏覽器，然後在網址列輸入 `localhost:3000`。
