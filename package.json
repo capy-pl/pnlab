@@ -5,10 +5,11 @@
 	"scripts": {
 		"lint": "tslint",
 		"test": "jest",
-		"start": "nodemon",
-		"nstart": "node dist/server/server.bundle.js",
-		"fdev": "ts-node server/index.ts -d",
-		"storybook": "start-storybook"
+		"dev": "nodemon",
+		"ndev": "node dist/server/server.bundle.js -p -w",
+		"start": "node dist/server/server.bundle.js",
+		"storybook": "start-storybook",
+		"build": "grunt build"
 	},
 	"nodemonConfig": {
 		"watch": [
@@ -18,7 +19,7 @@
 		"ignore": [
 			"spec/**/*.spec.ts"
 		],
-		"exec": "ts-node ./server/index.ts"
+		"exec": "ts-node ./server/index.ts -p -w"
 	},
 	"jest": {
 		"preset": "ts-jest",

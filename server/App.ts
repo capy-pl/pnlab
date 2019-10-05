@@ -4,10 +4,10 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import nunjucks from 'nunjucks';
 import path from 'path';
+import { command, Logger } from './core/util';
 
 // import routes
 import API from './api';
-import { Logger } from './core/util';
 
 const app = express();
 
@@ -26,8 +26,10 @@ nunjucks.configure(path.resolve(__dirname, 'templates'), {
   express: app,
 });
 
+command.parse(process.argv);
+
 // Use webpack-dev-middleware to watch on client files.
-if (process.env.NODE_ENV === 'development') {
+if (command.watch) {
   const webpack = require('webpack');
   const devMiddleware = require('webpack-dev-middleware');
   const { clientConfig } = require('../config/webpack.dev');

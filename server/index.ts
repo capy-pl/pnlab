@@ -21,7 +21,7 @@ let pyConsumers: ChildProcess;
 server.listen(process.env.PORT, async () => {
   await Promise.all([amqpConnect(), dbConnect(), createFolders()]);
   startSocketServer(server);
-  if (!command.disablePython) {
+  if (!command.python) {
     try {
       pyConsumers = await startPythonWorker();
     } catch (error) {
