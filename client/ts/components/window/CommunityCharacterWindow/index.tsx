@@ -16,21 +16,16 @@ interface State {
 }
 
 export default class CommunityCharacterWindow extends PureComponent<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      activeIndex: 0,
-    };
+  public state: State = {
+    activeIndex: 0,
+  };
 
-    this.onClickMenu = this.onClickMenu.bind(this);
-  }
-
-  public onClickMenu(e, props: MenuItemProps) {
+  public onClickMenu = (e, props: MenuItemProps) => {
     const { index } = props;
     this.setState({
       activeIndex: index as number,
     });
-  }
+  };
 
   public getCoreList(): JSX.Element[] {
     return this.props.report.communities

@@ -6,7 +6,7 @@ import { Report } from '../../../PnApp/model';
 import { SimpleNode } from '../../../PnApp/model/Report';
 
 interface Props {
-  selectedProduct: number;
+  selectedProduct?: number;
   model: Report;
   back?: () => void;
 }

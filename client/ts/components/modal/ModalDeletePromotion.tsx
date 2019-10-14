@@ -3,47 +3,37 @@ import { Button, Header, Modal } from 'semantic-ui-react';
 
 import Promotion from '../../PnApp/model/Promotion';
 
-interface ModalDeletePromotionState {
+interface State {
   show: boolean;
   loading: boolean;
   error: boolean;
 }
 
-interface ModalDeletePromotionProps {
+interface Props {
   onSave: () => Promise<void>;
   model: Promotion;
 }
 
-export default class ModalDeletePromotion extends React.PureComponent<
-  ModalDeletePromotionProps,
-  ModalDeletePromotionState
-> {
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      show: false,
-      loading: false,
-      error: false,
-    };
+export default class ModalDeletePromotion extends React.PureComponent<Props, State> {
+  public state: State = {
+    show: false,
+    loading: false,
+    error: false,
+  };
 
-    this.delete = this.delete.bind(this);
-    this.show = this.show.bind(this);
-    this.close = this.close.bind(this);
-  }
-
-  public show(): void {
+  public show = () => {
     this.setState({
       show: true,
     });
-  }
+  };
 
-  public close(): void {
+  public close = () => {
     this.setState({
       show: false,
     });
-  }
+  };
 
-  public async delete(): Promise<void> {
+  public delete = () => {
     this.setState(
       {
         loading: true,
@@ -54,7 +44,7 @@ export default class ModalDeletePromotion extends React.PureComponent<
         this.close();
       },
     );
-  }
+  };
 
   public render() {
     return (

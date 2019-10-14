@@ -4,7 +4,7 @@ import { Button, DropdownProps, Header, Icon, Modal } from 'semantic-ui-react';
 import { AnalysisPreview } from '../../PnApp/model/Analysis';
 import FormAnalysis from '../form/FormAnalysis';
 
-interface ModalAddCompareProps {
+interface Props {
   header: string;
   open: boolean;
   onConfirm?: () => void;
@@ -30,7 +30,7 @@ const ModalAddCompare = ({
   analyses,
   dropChangeA,
   dropChangeB,
-}: ModalAddCompareProps) => {
+}: Props) => {
   return (
     <React.Fragment>
       {children}

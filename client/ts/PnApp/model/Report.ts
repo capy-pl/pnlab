@@ -42,7 +42,7 @@ interface CommunityDetail {
   tags: string[];
 }
 
-type Community = Pick<CommunityDetail, 'id' | 'core' | 'items' | 'weight'>;
+export type Community = Pick<CommunityDetail, 'id' | 'core' | 'items' | 'weight'>;
 
 export interface Hook {
   name: string;

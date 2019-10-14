@@ -45,10 +45,9 @@ class FormEditPromotion extends React.PureComponent<
   FormEditPromotionProps,
   FormEditPromotionState
 > {
-  private prodcutPool: Set<string>;
+  private prodcutPool: Set<string> = new Set<string>();
   constructor(props: FormEditPromotionProps) {
     super(props);
-    this.prodcutPool = new Set<string>();
     this.productSearchChange = this.productSearchChange.bind(this);
     const options: Option[] = new Array<string>()
       .concat(this.props.model.groupOne)

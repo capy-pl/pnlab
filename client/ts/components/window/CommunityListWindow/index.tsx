@@ -26,17 +26,11 @@ const iconStyle = {
 };
 
 export default class CommunityListWindow extends PureComponent<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      activeIndex: -1,
-      loadedCommunities: [],
-      communityLoading: false,
-    };
-
-    this.onClick = this.onClick.bind(this);
-    this.onClickShow = this.onClickShow.bind(this);
-  }
+  public state: State = {
+    activeIndex: -1,
+    loadedCommunities: [],
+    communityLoading: false,
+  };
 
   public updateLoadedCommunities = async (index: number) => {
     if (!this.state.loadedCommunities.some((community) => community.id === index)) {
@@ -49,20 +43,20 @@ export default class CommunityListWindow extends PureComponent<Props, State> {
     }
   };
 
-  public onClick(e, titleProps: AccordionTitleProps) {
+  public onClick = (e, titleProps: AccordionTitleProps) => {
     const { index } = titleProps;
     this.setState({
       activeIndex: index === this.state.activeIndex ? -1 : (index as number),
     });
     this.updateLoadedCommunities(index as number);
-  }
+  };
 
-  public onClickShow(id: number): (e: React.SyntheticEvent<HTMLDivElement>) => void {
+  public onClickShow = (id: number) => {
     return (e: React.SyntheticEvent<HTMLDivElement>) => {
       e.stopPropagation();
       this.props.selectCommunity(id);
     };
-  }
+  };
 
   public getCommunityAccordions(): React.ReactNode {
     return this.props.communities.map((community) => {

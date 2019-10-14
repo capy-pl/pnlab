@@ -15,29 +15,23 @@ interface FormLoginState {
 }
 
 class FormLogin extends PureComponent<{}, FormLoginState> {
-  constructor(props) {
-    super(props);
-    this.state = {
-      email: '',
-      error: false,
-      loading: false,
-      password: '',
-      redirect: false,
-    };
+  state = {
+    email: '',
+    error: false,
+    loading: false,
+    password: '',
+    redirect: false,
+  };
 
-    this.handleChange = this.handleChange.bind(this);
-    this.onClick = this.onClick.bind(this);
-  }
-
-  public handleChange(keyName: 'email' | 'password', value: string): void {
+  public handleChange = (keyName: 'email' | 'password', value: string) => {
     if (keyName === 'email') {
       this.setState({ email: value });
     } else {
       this.setState({ password: value });
     }
-  }
+  };
 
-  public async onClick() {
+  public onClick = async () => {
     this.setState({ loading: true });
     try {
       const token = await Auth.login(this.state.email, this.state.password);
@@ -52,7 +46,7 @@ class FormLogin extends PureComponent<{}, FormLoginState> {
         loading: false,
       });
     }
-  }
+  };
 
   public render() {
     if (this.state.redirect) {
