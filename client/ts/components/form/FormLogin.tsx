@@ -63,7 +63,7 @@ class FormLogin extends PureComponent<{}, FormLoginState> {
           <Grid textAlign='center' style={{ height: '100%' }} verticalAlign='middle'>
             <Grid.Column style={{ maxWidth: 450 }}>
               <Header as='h2' color='teal' textAlign='center'>
-                Login
+                登入
               </Header>
               <Form size='large' loading={this.state.loading} error={this.state.error}>
                 <Segment stacked>
@@ -71,8 +71,7 @@ class FormLogin extends PureComponent<{}, FormLoginState> {
                     fluid
                     icon='user'
                     iconPosition='left'
-                    placeholder='E-mail address'
-                    // tslint:disable-next-line:jsx-no-lambda
+                    placeholder='電子信箱'
                     onChange={(e, { value }) => {
                       this.handleChange('email', value as string);
                     }}
@@ -81,7 +80,7 @@ class FormLogin extends PureComponent<{}, FormLoginState> {
                     fluid
                     icon='lock'
                     iconPosition='left'
-                    placeholder='Password'
+                    placeholder='密碼'
                     type='password'
                     // tslint:disable-next-line:jsx-no-lambda
                     onChange={(e, { value }) => {
@@ -95,14 +94,14 @@ class FormLogin extends PureComponent<{}, FormLoginState> {
                     disabled={this.state.loading}
                     onClick={this.onClick}
                   >
-                    Login
+                    登入
                   </Button>
                 </Segment>
-                <Message error header='Error' content='Wrong email or password.' />
+                <Message error header='Error' content='信箱或是密碼錯誤' />
               </Form>
-              <Message>
+              {/* <Message>
                 New to us? <a href='#'>Sign Up</a>
-              </Message>
+              </Message> */}
             </Grid.Column>
           </Grid>
         </Segment>
