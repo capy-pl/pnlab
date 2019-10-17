@@ -41,29 +41,19 @@ export default class ModalAddPromotion extends React.PureComponent<
       endTime: model.endTime,
       errorMessage: '',
     };
-
-    this.save = this.save.bind(this);
-    this.show = this.show.bind(this);
-    this.close = this.close.bind(this);
-    this.nameChange = this.nameChange.bind(this);
-    this.typeChange = this.typeChange.bind(this);
-    this.groupOneChange = this.groupOneChange.bind(this);
-    this.groupTwoChange = this.groupTwoChange.bind(this);
-    this.startTimeChange = this.startTimeChange.bind(this);
-    this.endTimeChange = this.endTimeChange.bind(this);
   }
 
-  public show() {
+  public show = () => {
     this.setState({
       show: true,
     });
-  }
+  };
 
-  public close() {
+  public close = () => {
     this.setState({
       show: false,
     });
-  }
+  };
 
   public validate(): boolean {
     const keys = {
@@ -114,44 +104,44 @@ export default class ModalAddPromotion extends React.PureComponent<
     return true;
   }
 
-  public typeChange(e, data: { [key: string]: any }): void {
+  public typeChange = (e, data: { [key: string]: any }) => {
     this.setState({
       type: data.value,
       groupTwo: [],
     });
-  }
+  };
 
-  public nameChange(e, data: { [key: string]: any }): void {
+  public nameChange = (e, data: { [key: string]: any }) => {
     this.setState({
       name: data.value,
     });
-  }
+  };
 
-  public groupOneChange(e, data: { [key: string]: any }): void {
+  public groupOneChange = (e, data: { [key: string]: any }) => {
     this.setState({
       groupOne: data.value,
     });
-  }
+  };
 
-  public groupTwoChange(e, data: { [key: string]: any }): void {
+  public groupTwoChange = (e, data: { [key: string]: any }) => {
     this.setState({
       groupTwo: data.value,
     });
-  }
+  };
 
-  public startTimeChange(e, dateTime: Date): void {
+  public startTimeChange = (e, dateTime: Date) => {
     this.setState({
       startTime: dateTime,
     });
-  }
+  };
 
-  public endTimeChange(e, dateTime: Date): void {
+  public endTimeChange = (e, dateTime: Date) => {
     this.setState({
       endTime: dateTime,
     });
-  }
+  };
 
-  public save(): void {
+  public save = () => {
     if (this.validate()) {
       this.setState({ loading: true }, async () => {
         try {
@@ -178,7 +168,7 @@ export default class ModalAddPromotion extends React.PureComponent<
         }
       });
     }
-  }
+  };
 
   public render() {
     return (

@@ -21,24 +21,17 @@ interface Props {
 }
 
 export default class ProductRankWindow extends PureComponent<Props> {
-  constructor(props: Props) {
-    super(props);
-
-    this.displayDirectRelation = this.displayDirectRelation.bind(this);
-    this.displayIndirectRelation = this.displayIndirectRelation.bind(this);
-  }
-
-  public displayDirectRelation(id: number): () => void {
+  public displayDirectRelation = (id: number) => {
     return () => {
       this.props.selectProduct(id, true);
     };
-  }
+  };
 
-  public displayIndirectRelation(id: number): () => void {
+  public displayIndirectRelation = (id: number) => {
     return () => {
       this.props.selectProduct(id, false);
     };
-  }
+  };
 
   get title(): string {
     if (!isNumber(this.props.selectedProduct)) {

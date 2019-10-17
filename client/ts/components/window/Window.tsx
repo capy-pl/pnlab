@@ -24,27 +24,20 @@ const closeIconStyle: React.CSSProperties = {
 };
 
 export default class Window extends React.PureComponent<WindowProps, WindowState> {
-  public windowRef: React.RefObject<HTMLDivElement>;
-  constructor(props: WindowProps) {
-    super(props);
-    this.state = {
-      focus: true,
-      zIndex: 199,
-    };
+  public windowRef: React.RefObject<HTMLDivElement> = React.createRef();
+  public state: WindowState = {
+    focus: true,
+    zIndex: 199,
+  };
 
-    this.windowRef = React.createRef();
-    this.isInsideCurrentWindow = this.isInsideCurrentWindow.bind(this);
-    this.focusWindow = this.focusWindow.bind(this);
-  }
-
-  public isInsideCurrentWindow(e: MouseEvent): boolean {
+  public isInsideCurrentWindow = (e: MouseEvent) => {
     const { top, left, right, bottom } = (this.windowRef
       .current as HTMLDivElement).getBoundingClientRect();
     const { clientX, clientY } = e;
     return clientX <= right && clientX >= left && (clientY >= top && clientY <= bottom);
-  }
+  };
 
-  public focusWindow(e: MouseEvent) {
+  public focusWindow = (e: MouseEvent) => {
     if (this.isInsideCurrentWindow(e)) {
       this.setState({
         focus: true,
@@ -56,7 +49,7 @@ export default class Window extends React.PureComponent<WindowProps, WindowState
         zIndex: 199,
       });
     }
-  }
+  };
 
   public componentDidMount(): void {
     document.addEventListener('mousedown', this.focusWindow);

@@ -19,35 +19,27 @@ interface State {
 }
 
 class ModalAddAnalysis extends React.PureComponent<Props, State> {
-  constructor(props: Props) {
-    super(props);
+  public state: State = {
+    loading: false,
+    title: '',
+    description: '',
+  };
 
-    this.state = {
-      loading: false,
-      title: '',
-      description: '',
-    };
-
-    this.add = this.add.bind(this);
-    this.onTitleChange = this.onTitleChange.bind(this);
-    this.onDescriptionChange = this.onDescriptionChange.bind(this);
-  }
-
-  public onTitleChange(e, data: InputOnChangeData): void {
+  public onTitleChange = (e, data: InputOnChangeData) => {
     const { value } = data;
     this.setState({
       title: value,
     });
-  }
+  };
 
-  public onDescriptionChange(e, data: TextAreaProps): void {
+  public onDescriptionChange = (e, data: TextAreaProps) => {
     const { value } = data;
     this.setState({
       description: value as string,
     });
-  }
+  };
 
-  public add(): void {
+  public add = () => {
     this.setState(
       {
         loading: true,
@@ -70,7 +62,7 @@ class ModalAddAnalysis extends React.PureComponent<Props, State> {
         }
       },
     );
-  }
+  };
 
   public render() {
     return (

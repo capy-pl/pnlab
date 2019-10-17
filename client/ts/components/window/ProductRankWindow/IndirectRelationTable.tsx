@@ -23,12 +23,9 @@ interface IndirectNode {
 }
 
 export default class IndirectRelationTalbe extends React.PureComponent<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      loading: true,
-    };
-  }
+  public state: State = {
+    loading: true,
+  };
 
   public getNodeOnPaths(previous: Map<number, number>, start: number): string[] {
     let temp = start;

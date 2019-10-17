@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Header, Icon, Modal } from 'semantic-ui-react';
 
-interface ModalConfirmProps {
+interface Props {
   header: string;
   content: string;
   open: boolean;
@@ -17,7 +17,7 @@ const ModalConfirmReport = ({
   onCancel,
   open,
   children,
-}: ModalConfirmProps) => {
+}: Props) => {
   return (
     <React.Fragment>
       {children}

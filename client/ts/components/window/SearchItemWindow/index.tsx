@@ -14,23 +14,18 @@ interface Props {
 }
 
 export default class SearchItemWindow extends PureComponent<Props> {
-  constructor(props: Props) {
-    super(props);
-
-    this.displayDirectRelation = this.displayDirectRelation.bind(this);
-  }
-
-  public displayDirectRelation(id: number): () => void {
+  public displayDirectRelation = (id: number) => {
     return () => {
       this.props.selectProduct(id, true);
     };
-  }
+  };
 
   get title(): string {
     if (isNumber(this.props.searchItem)) {
       return `${this.props.model.graph.getNode(this.props.searchItem)
         .name as string}(直接)`;
     }
+    return '';
   }
 
   public render() {
