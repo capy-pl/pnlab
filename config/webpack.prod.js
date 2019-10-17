@@ -29,7 +29,6 @@ const clientConfig = {
   entry: {
     client: [
       path.resolve(__dirname, '..', 'client', 'ts', 'index.tsx'),
-      'webpack-hot-middleware/client?reload=true&&noInfo=true',
     ],
   },
   resolve: {
@@ -41,7 +40,7 @@ const clientConfig = {
   output: {
     path: path.resolve(__dirname, '..', 'dist', 'client'),
     filename: '[name].bundle.js',
-    publicPath: '/static',
+    publicPath: '/static/',
   },
   module: {
     rules: [{
@@ -72,8 +71,6 @@ const clientConfig = {
   },
   plugins: [
     new webpack.optimize.OccurrenceOrderPlugin(),
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoEmitOnErrorsPlugin(),
     new webpack.DefinePlugin({
       ENV: JSON.stringify(process.env.NODE_ENV),
     }),
@@ -106,9 +103,28 @@ const serverConfig = {
   externals: [nodeExternals()],
   plugins: [
     new CopyPlugin([{
-      from: path.resolve(__dirname, '..', 'server', 'templates', 'index.html'),
-      to: path.resolve(__dirname, '..', 'dist', 'server', 'templates', 'index.html'),
-    }, ]),
+        from: path.resolve(__dirname, '..', 'server', 'templates', 'index.html'),
+        to: path.resolve(__dirname, '..', 'dist', 'server', 'templates', 'index.html'),
+      },
+      {
+        from: path.resolve(__dirname, '..', '.env'),
+        to: path.resolve(__dirname, '..', 'dist'),
+      },
+      {
+        from: path.resolve(__dirname, '..', 'package.json'),
+        to: path.resolve(__dirname, '..', 'dist', 'package.json'),
+      },
+    ]),
+    new webpack.DefinePlugin({
+      BUNDLED: JSON.stringify(true),
+      CLIENT_PATH: JSON.stringify(
+        path.resolve(__dirname, '..', 'client', 'ts', 'index.tsx'),
+      ),
+      COMPNENT_PATH: JSON.stringify(
+        path.resolve(__dirname, '..', 'client', 'ts', 'components'),
+      ),
+      STATIC: JSON.stringify(path.resolve(__dirname, '..', 'dist', 'client')),
+    }),
   ],
 };
 

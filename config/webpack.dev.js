@@ -35,7 +35,7 @@ const clientConfig = {
   output: {
     path: path.resolve(__dirname, '..', 'dist', 'client'),
     filename: '[name].bundle.js',
-    publicPath: '/static',
+    publicPath: '/static/',
   },
   module: {
     rules: [{

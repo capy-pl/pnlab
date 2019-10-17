@@ -74,6 +74,9 @@ module.exports = function (grunt) {
       stdout: true,
       exitCode: 0,
     },
+    clean: {
+      command: 'rm -rf dist',
+    },
   };
 
   grunt.initConfig({
@@ -88,10 +91,16 @@ module.exports = function (grunt) {
   grunt.task.registerTask('build:prodServer', ['webpack:prodServer']);
   grunt.task.registerTask('build:prodClient', ['webpack:prodClient']);
   grunt.task.registerTask('build', ['eslint', 'webpack:client', 'webpack:server']);
+  grunt.task.registerTask('build:prod', [
+    'eslint',
+    'build:prodServer',
+    'build:prodClient',
+  ]);
   grunt.task.registerTask('test', ['eslint', 'exec:test']);
   grunt.task.registerTask('test:client', ['eslint:client', 'exec:testClient']);
   grunt.task.registerTask('test:server', ['eslint:server', 'exec:testServer']);
   grunt.task.registerTask('cleandb', ['exec:cleandb']);
+  grunt.task.registerTask('clean', ['exec:clean']);
   grunt.task.registerTask('initdb', ['exec:initdb']);
   grunt.task.registerTask('populate', ['exec:populate']);
   grunt.task.registerTask('upgrade', ['exec:initdb', 'exec:populate']);
