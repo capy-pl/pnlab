@@ -1,13 +1,16 @@
-from .logger import config_logger
-from .task import network_analysis, import_from_histories
 from .mongo_client import db
-
+from .task import network_analysis, import_from_histories
+from .logger import config_logger
 import pika
 import time
 import logging
 from bson.objectid import ObjectId
 import sys
 from datetime import datetime
+from dotenv import load_dotenv
+from os import getenv
+
+load_dotenv()
 
 
 def receive(action_id):
@@ -47,7 +50,7 @@ def receive(action_id):
 
 def main():
     connection = pika.BlockingConnection(
-        pika.ConnectionParameters('localhost'))
+        pika.ConnectionParameters(getenv('RABBIT_MQ_ADDRESS')))
     channel = connection.channel()
     channel.queue_declare(queue='pn', durable=True)
     config_logger()
@@ -68,6 +71,7 @@ def main():
 
 
 def worker():
+    load_dotenv()
     main()
 
 

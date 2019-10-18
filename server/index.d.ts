@@ -1,6 +1,5 @@
 import * as express from 'express';
 import * as mongoose from 'mongoose';
-import { string } from 'prop-types';
 
 declare module 'express' {
   interface Request {
@@ -15,6 +14,8 @@ declare global {
       VERSION: string;
       MONGO_DB_NAME: string;
       MONGO_PORT: number;
+      MONGO_DB_ADDRESS: string;
+      RABBIT_MQ_ADDRESS: string;
       PORT: number;
       SECRET_KEY: string;
       EXPIRED_IN: string;

@@ -60,17 +60,17 @@ module.exports = function (grunt) {
       exitCode: 0,
     },
     initdb: {
-      command: 'ts-node scripts/initdb.ts',
+      command: 'ts-node task/initdb.ts',
       stdout: true,
       exitCode: 0,
     },
     populate: {
-      command: 'ts-node scripts/populateSchemaValue.ts',
+      command: 'ts-node task/populateSchemaValue.ts',
       stdout: true,
       exitCode: 0,
     },
     cleandb: {
-      command: 'ts-node scripts/cleandb.ts',
+      command: 'ts-node task/cleandb.ts',
       stdout: true,
       exitCode: 0,
     },
