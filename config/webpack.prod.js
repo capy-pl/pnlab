@@ -72,7 +72,7 @@ const clientConfig = {
   plugins: [
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.DefinePlugin({
-      ENV: JSON.stringify(process.env.NODE_ENV),
+      ENV: JSON.stringify('production'),
     }),
   ],
 };

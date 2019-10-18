@@ -69,7 +69,7 @@ const clientConfig = {
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
     new webpack.DefinePlugin({
-      ENV: JSON.stringify(process.env.NODE_ENV),
+      ENV: JSON.stringify('development'),
     }),
   ],
 };
