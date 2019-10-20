@@ -1,6 +1,6 @@
-import _ from 'lodash';
+import { isUndefined, isEqual } from 'lodash';
 import React, { PureComponent } from 'react';
-import { DataSet, EdgeOptions, Network, NodeOptions, Options } from 'vis';
+import { DataSet, EdgeOptions, Network, NodeOptions, Options } from 'vis-network';
 
 import Jgraph from '../../PnApp/Jgraph';
 import { Edge, Node } from '../../PnApp/model/Report';
@@ -46,9 +46,6 @@ const graphOption: Options = {
   nodes: {
     scaling: {
       customScalingFunction,
-      label: {
-        enabled: true,
-      },
       max: 100,
       min: 30,
     },
@@ -95,7 +92,7 @@ export default class GraphViewCompare extends PureComponent<GraphProps, {}> {
 
   public componentDidUpdate(prevProps: GraphProps) {
     // Do not call repaint if correspondent props don't change.
-    if (!_.isEqual(this.props.selectedProduct, prevProps.selectedProduct)) {
+    if (!isEqual(this.props.selectedProduct, prevProps.selectedProduct)) {
       this.repaint();
       this.paintSelectedProduct();
     }
@@ -202,12 +199,18 @@ export default class GraphViewCompare extends PureComponent<GraphProps, {}> {
   }
 
   public paintSelectedProduct(): void {
-    if (!_.isUndefined(this.props.selectedProduct)) {
-      let id;
-      this.props.nodes.forEach((node) => {
-        if (node.name === this.props.selectedProduct[0]) {
-          return (id = node.id);
+    if (!isUndefined(this.props.selectedProduct)) {
+      let id: number | undefined = undefined;
+      this.props.nodes.some((node) => {
+        if (
+          this.props.selectedProduct &&
+          this.props.selectedProduct.length &&
+          node.name === this.props.selectedProduct[0]
+        ) {
+          id = node.id;
+          return true;
         }
+        return false;
       });
       if (id !== undefined) {
         const selectedNode: GraphNode = {
@@ -225,10 +228,6 @@ export default class GraphViewCompare extends PureComponent<GraphProps, {}> {
         const updateList = this.nodes
           .map<GraphNode>((node) => {
             if (!connectedNodes.includes(node.id as any) && node.id !== selectedNode.id) {
-              const background =
-                this.props.shareNodes && this.props.shareNodes.includes(node.name)
-                  ? '#ffffc9'
-                  : '#D3E7FF';
               return {
                 id: node.id,
                 hidden: true,
