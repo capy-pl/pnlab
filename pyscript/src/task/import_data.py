@@ -5,10 +5,12 @@ from datetime import datetime
 import logging
 import traceback
 from pymongo.errors import BulkWriteError
+from dateutil import parser
 
 from ..mongo_client import db
 from ..utils import bigger_than_256mb
 from ..preprocessing import TransactionCSVReader, TransactionEncoder
+
 
 def import_from_histories(history_id):
     import_history = db['importHistories'].find_one(
@@ -47,6 +49,7 @@ def import_from_histories(history_id):
         }, {
             '$set': error_update
         })
+
 
 def import_from_file_path(file_path):
     org_data = db['orgs'].find_one()
@@ -105,6 +108,7 @@ def import_from_file_path(file_path):
     print('Db schema updated.')
     return tuple(records.values())
 
+
 def update_schema(fields, items):
     field_value_dict = {}
     for field in fields:
@@ -120,14 +124,16 @@ def update_schema(fields, items):
                 if field['type'] == 'string' and item[field_name] not in field_value_dict[field_name]:
                     field_value_dict[field_name].add(item[field_name])
                 if field['type'] == 'date':
+                    min_time = parser.parse(field_value_dict[field_name][0])
+                    max_time = parser.parse(field_value_dict[field_name][1])
                     if len(field_value_dict[field_name]) == 0:
                         field_value_dict[field_name] = [
                             item[field_name].to_pydatetime(), item[field_name].to_pydatetime()]
                     else:
-                        if item[field_name].to_pydatetime() < field_value_dict[field_name][0]:
+                        if item[field_name].to_pydatetime() < min_time:
                             field_value_dict[field_name][0] = item[field_name].to_pydatetime(
                             )
-                        if item[field_name].to_pydatetime() > field_value_dict[field_name][1]:
+                        if item[field_name].to_pydatetime() > max_time:
                             field_value_dict[field_name][1] = item[field_name].to_pydatetime(
                             )
 

@@ -3,8 +3,12 @@ from pymongo import MongoClient
 from dotenv import load_dotenv
 load_dotenv()
 
-MONGO_PORT = int(getenv('MONGO_PORT'))
-MONGO_DB_NAME = getenv('MONGO_DB_NAME')
+MONGO_DB_NAME = getenv('MONGO_DB_NAME') or 'pn'
+MONGO_PORT = getenv('MONGO_PORT') or 27017
+MONGO_DB_ADDRESS = getenv('MONGO_DB_ADDRESS') or 'localhost'
 
-mongo_client = MongoClient('localhost', MONGO_PORT)
+if type(MONGO_PORT) is str:
+    MONGO_PORT = int(MONGO_PORT)
+
+mongo_client = MongoClient(MONGO_DB_ADDRESS, MONGO_PORT)
 db = mongo_client[MONGO_DB_NAME]

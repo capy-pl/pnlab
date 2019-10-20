@@ -138,6 +138,20 @@ dotenv.config();
       Logger.info('Index exist.');
     }
 
+    try {
+      Logger.info('Create unique index for transactions id.');
+      await connection.db.collection('items').createIndex(
+        defaultSchema.transactionName,
+        {
+          unique: true,
+          dropDups: true,
+        },
+        () => {},
+      );
+    } catch (err) {
+      Logger.info('Index exist.');
+    }
+
     const admin = new User({
       email: 'admin@gmail.com',
       name: 'admin',
