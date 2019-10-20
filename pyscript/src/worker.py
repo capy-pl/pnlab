@@ -50,7 +50,7 @@ def receive(action_id):
 
 def main():
     connection = pika.BlockingConnection(
-        pika.ConnectionParameters(getenv('RABBIT_MQ_ADDRESS')))
+        pika.ConnectionParameters(getenv('RABBIT_MQ_ADDRESS' or 'localhost')))
     channel = connection.channel()
     channel.queue_declare(queue='pn', durable=True)
     config_logger()

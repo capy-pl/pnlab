@@ -5,10 +5,12 @@ from datetime import datetime
 import logging
 import traceback
 from pymongo.errors import BulkWriteError
+from dateutil import parser
 
 from ..mongo_client import db
 from ..utils import bigger_than_256mb
 from ..preprocessing import TransactionCSVReader, TransactionEncoder
+
 
 def import_from_histories(history_id):
     import_history = db['importHistories'].find_one(
@@ -48,6 +50,7 @@ def import_from_histories(history_id):
             '$set': error_update
         })
 
+
 def import_from_file_path(file_path):
     org_data = db['orgs'].find_one()
     org_schema = org_data['importSchema']
@@ -69,30 +72,36 @@ def import_from_file_path(file_path):
             update_schema(org_schema['itemFields'], items)
             update_schema(org_schema['transactionFields'], transactions)
             try:
-                db.transactions.insert_many(transactions)
-                db.items.insert_many(items)
-                print('{} transactions processed.'.format(
-                    len(transactions)), flush=True)
-                logging.info(
-                    '{} transactions processed.'.format(len(transactions)))
+                transaction_insert_result = db.transactions.insert_many(
+                    transactions, ordered=False)
+                item_insert_result = db.items.insert_many(items, ordered=False)
             except BulkWriteError:
                 pass
+            transaction_num = len(transaction_insert_result.inserted_ids)
+            print('{} transactions processed.'.format(
+                transaction_num), flush=True)
+            logging.info(
+                '{} transactions processed.'.format(transaction_num))
 
     else:
         df = reader.read_csv(file_path)
         transactions, items = transformer.transform(df)
-        records['transaction_num'] = len(transactions)
         update_schema(org_schema['itemFields'], items)
         update_schema(org_schema['transactionFields'], transactions)
         try:
-            db.transactions.insert_many(transactions)
-            db.items.insert_many(items)
-            print('{} transactions processed.'.format(
-                len(transactions)), flush=True)
-            logging.info(
-                '{} transactions processed.'.format(len(transactions)))
+            transaction_insert_result = db.transactions.insert_many(
+                transactions, ordered=False)
+            item_insert_result = db.items.insert_many(items, ordered=False)
         except BulkWriteError:
             pass
+
+        transaction_num = len(transaction_insert_result.inserted_ids)
+        records['transaction_num'] = len(transaction_num)
+        print('{} transactions processed.'.format(
+            transaction_num), flush=True)
+        logging.info(
+            '{} transactions processed.'.format(transaction_num))
+
     db['orgs'].update_one({
         '_id': org_data['_id']
     },
@@ -104,6 +113,7 @@ def import_from_file_path(file_path):
     logging.info('Db schema updated.')
     print('Db schema updated.')
     return tuple(records.values())
+
 
 def update_schema(fields, items):
     field_value_dict = {}
@@ -124,10 +134,16 @@ def update_schema(fields, items):
                         field_value_dict[field_name] = [
                             item[field_name].to_pydatetime(), item[field_name].to_pydatetime()]
                     else:
-                        if item[field_name].to_pydatetime() < field_value_dict[field_name][0]:
+                        min_time = parser.parse(
+                            field_value_dict[field_name][0]) \
+                            if type(field_value_dict[field_name][0]) is str else field_value_dict[field_name][0]
+                        max_time = parser.parse(
+                            field_value_dict[field_name][1]) \
+                            if type(field_value_dict[field_name][1]) is str else field_value_dict[field_name][1]
+                        if item[field_name].to_pydatetime() < min_time:
                             field_value_dict[field_name][0] = item[field_name].to_pydatetime(
                             )
-                        if item[field_name].to_pydatetime() > field_value_dict[field_name][1]:
+                        if item[field_name].to_pydatetime() > max_time:
                             field_value_dict[field_name][1] = item[field_name].to_pydatetime(
                             )
 

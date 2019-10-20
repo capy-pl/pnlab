@@ -123,7 +123,7 @@
 		"semantic-ui-css": "2.4.1",
 		"semantic-ui-react": "0.87.3",
 		"url-loader": "1.1.2",
-		"vis": "4.21.0",
+		"vis-network": "^6.1.1",
 		"webpack-cli": "3.2.0",
 		"ws": "7.0.0"
 	},
@@ -152,7 +152,6 @@
 		"@types/react-router-dom": "4.3.1",
 		"@types/storybook__react": "4.0.1",
 		"@types/supertest": "2.0.7",
-		"@types/vis": "4.21.11",
 		"@types/ws": "6.0.1",
 		"@typescript-eslint/eslint-plugin": "2.0.0",
 		"@typescript-eslint/parser": "2.0.0",

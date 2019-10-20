@@ -1,6 +1,6 @@
 import { isEqual, isNumber, isUndefined } from 'lodash';
 import React, { PureComponent } from 'react';
-import { DataSet, EdgeOptions, Network, NodeOptions, Options } from 'vis';
+import { DataSet, EdgeOptions, Network, NodeOptions, Options } from 'vis-network';
 
 import Jgraph from '../../PnApp/Jgraph';
 import { Edge, Node } from '../../PnApp/model/Report';
@@ -51,9 +51,6 @@ const graphOption: Options = {
   nodes: {
     scaling: {
       customScalingFunction,
-      label: {
-        enabled: true,
-      },
       max: 100,
       min: 30,
     },
@@ -86,7 +83,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
     super(props);
     this.graphRef = React.createRef();
     this.nodes = new DataSet();
-    this.edges = new DataSet();
+    this.edges = new DataSet<GraphEdge>();
   }
 
   public componentDidMount() {
