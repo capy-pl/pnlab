@@ -47,7 +47,7 @@ def receive(action_id):
 
 def main():
     connection = pika.BlockingConnection(
-        pika.ConnectionParameters('localhost'))
+        pika.ConnectionParameters(host='localhost'))
     channel = connection.channel()
     channel.queue_declare(queue='pn', durable=True)
     config_logger()

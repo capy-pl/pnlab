@@ -72,30 +72,36 @@ def import_from_file_path(file_path):
             update_schema(org_schema['itemFields'], items)
             update_schema(org_schema['transactionFields'], transactions)
             try:
-                db.transactions.insert_many(transactions)
-                db.items.insert_many(items)
-                print('{} transactions processed.'.format(
-                    len(transactions)), flush=True)
-                logging.info(
-                    '{} transactions processed.'.format(len(transactions)))
+                transaction_insert_result = db.transactions.insert_many(
+                    transactions, ordered=False)
+                item_insert_result = db.items.insert_many(items, ordered=False)
             except BulkWriteError:
                 pass
+            transaction_num = len(transaction_insert_result.inserted_ids)
+            print('{} transactions processed.'.format(
+                transaction_num), flush=True)
+            logging.info(
+                '{} transactions processed.'.format(transaction_num))
 
     else:
         df = reader.read_csv(file_path)
         transactions, items = transformer.transform(df)
-        records['transaction_num'] = len(transactions)
         update_schema(org_schema['itemFields'], items)
         update_schema(org_schema['transactionFields'], transactions)
         try:
-            db.transactions.insert_many(transactions)
-            db.items.insert_many(items)
-            print('{} transactions processed.'.format(
-                len(transactions)), flush=True)
-            logging.info(
-                '{} transactions processed.'.format(len(transactions)))
+            transaction_insert_result = db.transactions.insert_many(
+                transactions, ordered=False)
+            item_insert_result = db.items.insert_many(items, ordered=False)
         except BulkWriteError:
             pass
+
+        transaction_num = len(transaction_insert_result.inserted_ids)
+        records['transaction_num'] = len(transaction_num)
+        print('{} transactions processed.'.format(
+            transaction_num), flush=True)
+        logging.info(
+            '{} transactions processed.'.format(transaction_num))
+
     db['orgs'].update_one({
         '_id': org_data['_id']
     },
@@ -124,12 +130,16 @@ def update_schema(fields, items):
                 if field['type'] == 'string' and item[field_name] not in field_value_dict[field_name]:
                     field_value_dict[field_name].add(item[field_name])
                 if field['type'] == 'date':
-                    min_time = parser.parse(field_value_dict[field_name][0])
-                    max_time = parser.parse(field_value_dict[field_name][1])
                     if len(field_value_dict[field_name]) == 0:
                         field_value_dict[field_name] = [
                             item[field_name].to_pydatetime(), item[field_name].to_pydatetime()]
                     else:
+                        min_time = parser.parse(
+                            field_value_dict[field_name][0]) \
+                            if type(field_value_dict[field_name][0]) is str else field_value_dict[field_name][0]
+                        max_time = parser.parse(
+                            field_value_dict[field_name][1]) \
+                            if type(field_value_dict[field_name][1]) is str else field_value_dict[field_name][1]
                         if item[field_name].to_pydatetime() < min_time:
                             field_value_dict[field_name][0] = item[field_name].to_pydatetime(
                             )
