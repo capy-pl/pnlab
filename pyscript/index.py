@@ -15,7 +15,13 @@ def main():
 
     worker_pool.close()
     print('Waiting for incoming messages.', flush=True)
-    worker_pool.join()
+
+    try:
+        worker_pool.join()
+    except KeyboardInterrupt:
+        logging.info('Close Python services due to KeyboardInterrupt.')
+        print('Close Python services due to KeyboardInterrupt.')
+        exit(0)
 
 
 if __name__ == '__main__':
