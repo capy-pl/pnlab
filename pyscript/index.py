@@ -25,13 +25,14 @@ def main():
             try:
                 pool.join()
             except KeyboardInterrupt:
-                logging.info('Close Python services due to KeyboardInterrupt.')
-                print('Close Python services due to KeyboardInterrupt.')
+                logging.info('Close Python service due to KeyboardInterrupt.')
+                print('Close Python service due to KeyboardInterrupt.')
                 break
             except:
                 logging.info(
-                    'Program exit unexpected. Will restart services in 5 seconds.')
+                    'Program exit unexpectally. Restart service in 5 seconds.')
                 sleep(5)
+                continue
 
 
 if __name__ == '__main__':

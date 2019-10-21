@@ -68,6 +68,10 @@ def import_from_file_path(file_path):
             file_path), flush=True)
         chunks = reader.read_csv_by_chunk(file_path, 1000000)
         for transactions, items in transformer.transform_by_chunk(chunks):
+            records['transaction_num'] += len(transactions)
+            update_schema(org_schema['itemFields'], items)
+            update_schema(org_schema['transactionFields'], transactions)
+
             try:
                 transaction_insert_result = db.transactions.insert_many(
                     transactions, ordered=False)
