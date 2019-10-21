@@ -6,7 +6,7 @@ import { Switch } from 'Component/route';
 import Add from './Add';
 import List from './List';
 
-const Router = (props) => {
+const Router = () => {
   return (
     <Switch>
       <Route exact path='/upload/add' component={Add} />

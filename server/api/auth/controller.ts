@@ -29,7 +29,6 @@ interface SignUpRequestBody {
 export async function SignUp(
   req: e.Request,
   res: e.Response,
-  next: e.NextFunction,
 ): Promise<void | e.Response> {
   const { email, password } = req.body as SignUpRequestBody;
   if (!(email && password)) {
@@ -62,11 +61,7 @@ interface LogInRequestBody {
  * @apiParam email {String} User's email.
  * @apiParam password {String} User's password.
  */
-export async function LogIn(
-  req: e.Request,
-  res: e.Response,
-  next: e.NextFunction,
-): Promise<void> {
+export async function LogIn(req: e.Request, res: e.Response): Promise<void> {
   const { email, password } = req.body as LogInRequestBody;
   if (!(email && password)) {
     res.status(422).json({ message: 'email or password not provided.' });
@@ -100,6 +95,6 @@ export async function LogIn(
  * @apiName Validate
  * @apiGroup Auth
  */
-export function Validation(req: e.Request, res: e.Response, next: e.NextFunction): void {
+export function Validation(req: e.Request, res: e.Response): void {
   res.status(204).send();
 }

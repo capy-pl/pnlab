@@ -68,39 +68,50 @@ def import_from_file_path(file_path):
             file_path), flush=True)
         chunks = reader.read_csv_by_chunk(file_path, 1000000)
         for transactions, items in transformer.transform_by_chunk(chunks):
-            records['transaction_num'] += len(transactions)
-            update_schema(org_schema['itemFields'], items)
-            update_schema(org_schema['transactionFields'], transactions)
             try:
                 transaction_insert_result = db.transactions.insert_many(
                     transactions, ordered=False)
+            except BulkWriteError as err:
+                duplicate_transaction_num = list(filter(
+                    lambda x: x['code'] == 11000, err.details['writeErrors']))
+                records['transaction_num'] -= len(duplicate_transaction_num)
+                logging.info(
+                    '{} has {} duplicate transactions. Automatically dropped.'.format(file_path, len(duplicate_transaction_num)))
+            try:
                 item_insert_result = db.items.insert_many(items, ordered=False)
-            except BulkWriteError:
+            except BulkWriteError as err:
                 pass
-            transaction_num = len(transaction_insert_result.inserted_ids)
-            print('{} transactions processed.'.format(
-                transaction_num), flush=True)
+
+            print('{} transactions were inserted into database.'.format(
+                records['transaction_num']), flush=True)
             logging.info(
-                '{} transactions processed.'.format(transaction_num))
+                '{} transactions were inserted into database.'.format(records['transaction_num']))
 
     else:
         df = reader.read_csv(file_path)
         transactions, items = transformer.transform(df)
+        records['transaction_num'] += len(transactions)
         update_schema(org_schema['itemFields'], items)
         update_schema(org_schema['transactionFields'], transactions)
+
         try:
             transaction_insert_result = db.transactions.insert_many(
                 transactions, ordered=False)
+        except BulkWriteError as err:
+            duplicate_transaction_num = list(filter(
+                lambda x: x['code'] == 11000, err.details['writeErrors']))
+            records['transaction_num'] -= len(duplicate_transaction_num)
+            logging.info(
+                '{} has {} duplicate transactions. Automatically dropped.'.format(file_path, len(duplicate_transaction_num)))
+        try:
             item_insert_result = db.items.insert_many(items, ordered=False)
-        except BulkWriteError:
+        except BulkWriteError as err:
             pass
 
-        transaction_num = len(transaction_insert_result.inserted_ids)
-        records['transaction_num'] = len(transaction_num)
-        print('{} transactions processed.'.format(
-            transaction_num), flush=True)
+        print('{} transactions were inserted into database.'.format(
+            records['transaction_num']), flush=True)
         logging.info(
-            '{} transactions processed.'.format(transaction_num))
+            '{} transactions were inserted.'.format(records['transaction_num']))
 
     db['orgs'].update_one({
         '_id': org_data['_id']

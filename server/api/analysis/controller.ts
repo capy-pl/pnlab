@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 
-import { isNumber } from 'util';
 import { Logger } from '../../core/util';
 import { Analysis, Report } from '../../models';
 import { AnalysisInterface, Comment } from '../../models/Analysis';

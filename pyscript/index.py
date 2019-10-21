@@ -1,27 +1,37 @@
 import os
-from .src import worker
 from multiprocessing.pool import Pool
 import logging
+from time import sleep
+
+from .src import worker
+from .src.logger import config_logger
 
 
 def main():
     # No need for that much processes. It will cost lots memory.
     # worker_number = os.cpu_count()
     worker_number = 2
-    worker_pool = Pool(worker_number)
+    config_logger()
 
-    for _ in range(worker_number):
-        worker_pool.apply_async(worker, [])
+    while True:
+        with Pool(worker_number) as pool:
+            for _ in range(worker_number):
+                pool.apply_async(worker, [])
 
-    worker_pool.close()
-    print('Waiting for incoming messages.', flush=True)
+            pool.close()
+            print('Python services started.', flush=True)
+            logging.info('Python services started.')
 
-    try:
-        worker_pool.join()
-    except KeyboardInterrupt:
-        logging.info('Close Python services due to KeyboardInterrupt.')
-        print('Close Python services due to KeyboardInterrupt.')
-        exit(0)
+            try:
+                pool.join()
+            except KeyboardInterrupt:
+                logging.info('Close Python services due to KeyboardInterrupt.')
+                print('Close Python services due to KeyboardInterrupt.')
+                break
+            except:
+                logging.info(
+                    'Program exit unexpected. Will restart services in 5 seconds.')
+                sleep(5)
 
 
 if __name__ == '__main__':

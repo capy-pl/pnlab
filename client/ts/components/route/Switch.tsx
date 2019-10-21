@@ -15,14 +15,6 @@ function mapStyles(styles: { opacity: number; scale: any }) {
   };
 }
 
-// wrap the `spring` helper to use a bouncy config
-function bounce(val: any) {
-  return spring(val, {
-    stiffness: 330,
-    damping: 22,
-  });
-}
-
 // child matches will...
 const fadeTransition = {
   // start in a transparent, upscaled state

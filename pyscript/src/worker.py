@@ -1,6 +1,5 @@
 from .logger import config_logger
 from .task import network_analysis, import_from_histories, test_connection
-from .mongo_client import db
 
 import pika
 import time
@@ -11,6 +10,8 @@ from datetime import datetime
 
 
 def receive(action_id):
+    from .mongo_client import db
+
     logging.info('Receive Action {}.'.format(action_id))
     if action_id == 'test':
         test_connection()
@@ -95,8 +96,4 @@ def main():
 
 
 def worker():
-    main()
-
-
-if __name__ == "__main__":
     main()
