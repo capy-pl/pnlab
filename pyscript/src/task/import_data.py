@@ -68,9 +68,10 @@ def import_from_file_path(file_path):
             file_path), flush=True)
         chunks = reader.read_csv_by_chunk(file_path, 1000000)
         for transactions, items in transformer.transform_by_chunk(chunks):
-            records['transaction_num'] += len(transactions)
-            update_schema(org_schema['itemFields'], items)
-            update_schema(org_schema['transactionFields'], transactions)
+            transactions_num = len(transactions)
+            records['transaction_num'] += transactions_num
+
+            update_org_schema(transactions, items)
 
             try:
                 transaction_insert_result = db.transactions.insert_many(
@@ -78,6 +79,7 @@ def import_from_file_path(file_path):
             except BulkWriteError as err:
                 duplicate_transaction_num = list(filter(
                     lambda x: x['code'] == 11000, err.details['writeErrors']))
+                transactions_num -= len(duplicate_transaction_num)
                 records['transaction_num'] -= len(duplicate_transaction_num)
                 logging.info(
                     '{} has {} duplicate transactions. Automatically dropped.'.format(file_path, len(duplicate_transaction_num)))
@@ -87,16 +89,16 @@ def import_from_file_path(file_path):
                 pass
 
             print('{} transactions were inserted into database.'.format(
-                records['transaction_num']), flush=True)
+                transactions_num), flush=True)
             logging.info(
-                '{} transactions were inserted into database.'.format(records['transaction_num']))
+                '{} transactions were inserted into database.'.format(transactions_num))
 
     else:
         df = reader.read_csv(file_path)
         transactions, items = transformer.transform(df)
         records['transaction_num'] += len(transactions)
-        update_schema(org_schema['itemFields'], items)
-        update_schema(org_schema['transactionFields'], transactions)
+
+        update_org_schema(transactions, items)
 
         try:
             transaction_insert_result = db.transactions.insert_many(
@@ -117,6 +119,19 @@ def import_from_file_path(file_path):
         logging.info(
             '{} transactions were inserted.'.format(records['transaction_num']))
 
+    return tuple(records.values())
+
+
+def update_org_schema(transactions, items):
+    org_data = db['orgs'].find_one()
+    org_schema = org_data['importSchema']
+
+    transaction_fields = org_schema['transactionFields']
+    item_fields = org_schema['itemFields']
+
+    update_fields_value(transaction_fields, transactions)
+    update_fields_value(item_fields, items)
+
     db['orgs'].update_one({
         '_id': org_data['_id']
     },
@@ -126,44 +141,45 @@ def import_from_file_path(file_path):
         }
     })
     logging.info('Db schema updated.')
-    print('Db schema updated.')
-    return tuple(records.values())
+    print('Db schema updated.', flush=True)
 
 
-def update_schema(fields, items):
-    field_value_dict = {}
+def update_fields_value(fields, items):
+    field_name_to_value = {}
+    if fields is None:
+        raise Exception('Unexpected field_type.')
+
     for field in fields:
         if field['type'] == 'string':
-            field_value_dict[field['name']] = set(field['values'])
+            field_name_to_value[field['name']] = set(field['values'])
         if field['type'] == 'date':
-            field_value_dict[field['name']] = list(field['values'])
+            field_name_to_value[field['name']] = list(field['values'])
 
     for item in items:
         for field in fields:
             field_name = field['name']
             if field_name in item:
-                if field['type'] == 'string' and item[field_name] not in field_value_dict[field_name]:
-                    field_value_dict[field_name].add(item[field_name])
+                if field['type'] == 'string' and item[field_name] not in field_name_to_value[field_name]:
+                    field_name_to_value[field_name].add(item[field_name])
                 if field['type'] == 'date':
-                    if len(field_value_dict[field_name]) == 0:
-                        field_value_dict[field_name] = [
+                    if len(field_name_to_value[field_name]) == 0:
+                        field_name_to_value[field_name] = [
                             item[field_name].to_pydatetime(), item[field_name].to_pydatetime()]
                     else:
                         min_time = parser.parse(
-                            field_value_dict[field_name][0]) \
-                            if type(field_value_dict[field_name][0]) is str else field_value_dict[field_name][0]
+                            field_name_to_value[field_name][0], ignoretz=True) \
+                            if type(field_name_to_value[field_name][0]) is str else field_name_to_value[field_name][0]
                         max_time = parser.parse(
-                            field_value_dict[field_name][1]) \
-                            if type(field_value_dict[field_name][1]) is str else field_value_dict[field_name][1]
+                            field_name_to_value[field_name][1], ignoretz=True) \
+                            if type(field_name_to_value[field_name][1]) is str else field_name_to_value[field_name][1]
                         if item[field_name].to_pydatetime() < min_time:
-                            field_value_dict[field_name][0] = item[field_name].to_pydatetime(
+                            field_name_to_value[field_name][0] = item[field_name].to_pydatetime(
                             )
                         if item[field_name].to_pydatetime() > max_time:
-                            field_value_dict[field_name][1] = item[field_name].to_pydatetime(
+                            field_name_to_value[field_name][1] = item[field_name].to_pydatetime(
                             )
-
-    for field in fields:
-        if field['type'] == 'string':
-            field['values'] = list(field_value_dict[field['name']])
-        if field['type'] == 'date':
-            field['values'] = field_value_dict[field['name']]
+        for field in fields:
+            if field['type'] == 'string':
+                field['values'] = list(field_name_to_value[field['name']])
+            if field['type'] == 'date':
+                field['values'] = field_name_to_value[field['name']]

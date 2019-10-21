@@ -13,7 +13,8 @@
 	},
 	"nodemonConfig": {
 		"watch": [
-			"server"
+			"server",
+			"pyscript"
 		],
 		"ext": "ts",
 		"ignore": [
