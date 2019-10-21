@@ -9,8 +9,8 @@ from .src.logger import config_logger
 
 def main():
     # No need for that much processes. It will cost lots memory.
-    # worker_number = os.cpu_count()
-    worker_number = 2
+    worker_number = os.cpu_count()
+    # worker_number = 2
     config_logger()
 
     while True:
