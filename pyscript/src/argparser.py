@@ -32,3 +32,11 @@ parser.add_argument(
     metavar='file path',
     help='Create a new user.'
 )
+
+parser.add_argument(
+    '-t',
+    '--test-mq',
+    help='test mq connection',
+    action='store_true',
+    required=False
+)

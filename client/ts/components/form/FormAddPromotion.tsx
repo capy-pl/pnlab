@@ -29,12 +29,12 @@ interface Option {
 const TYPE_OPTIONS = [
   {
     key: 'combination',
-    text: 'combination',
+    text: '合併刪除',
     value: 'combination',
   },
   {
     key: 'direct',
-    text: 'direct',
+    text: '直接刪除',
     value: 'direct',
   },
 ];

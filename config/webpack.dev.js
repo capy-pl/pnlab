@@ -76,6 +76,7 @@ const clientConfig = {
 
 const serverConfig = {
   target: 'node',
+  devtool: 'inline-source-map',
   node: {
     __dirname: false,
     __filename: false,
@@ -88,7 +89,7 @@ const serverConfig = {
   },
   module: {
     rules: [{
-      test: /\.ts/,
+      test: /\.[jt]s/,
       loader: 'babel-loader',
       exclude: /node_modules/,
     }, ],

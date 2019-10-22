@@ -1,5 +1,5 @@
 #! ./env/bin/python
-from pyscript.src.task import import_from_file_path, network_analysis
+from pyscript.src.task import import_from_file_path, network_analysis, test_send_message
 from pyscript.src.argparser import parser
 
 
@@ -12,3 +12,5 @@ if args['import']:
 if args['report']:
     network_analysis(args['report'])
 
+if args['test_mq']:
+    test_send_message()

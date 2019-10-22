@@ -6,7 +6,7 @@ import ReportAdd from './Add';
 import ReportDetail from './Detail';
 import ReportList from './List';
 
-const ReportRouter = (props) => {
+const ReportRouter = () => {
   return (
     <Switch>
       <Route path='/report/add' component={ReportAdd} />

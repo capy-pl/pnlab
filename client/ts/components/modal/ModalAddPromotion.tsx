@@ -117,11 +117,11 @@ export default class ModalAddPromotion extends React.PureComponent<Props, State>
     });
   };
 
-  public groupOneChange(e, data: { [key: string]: any }): void {
+  public groupOneChange = (e, data: { [key: string]: any }) => {
     this.setState({
       groupOne: data.value,
     });
-  }
+  };
 
   public groupTwoChange = (e, data: { [key: string]: any }) => {
     this.setState({

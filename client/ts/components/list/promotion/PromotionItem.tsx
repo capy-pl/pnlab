@@ -1,11 +1,22 @@
 import { ModalDeletePromotion, ModalEditPromotion } from 'Component/modal';
 import React from 'react';
 import { Button, Table } from 'semantic-ui-react';
-import Promotion from '../../../PnApp/Model/Promotion';
+import Promotion, { PromotionType } from '../../../PnApp/Model/Promotion';
 
 interface PromotionItemProps {
   promotion: Promotion;
   onSave: () => Promise<void>;
+}
+
+function toVerbose(str: PromotionType) {
+  switch (str) {
+    case 'combination':
+      return '合併刪除';
+    case 'direct':
+      return '直接刪除';
+    default:
+      return '';
+  }
 }
 
 const PromotionItem = ({ promotion, onSave }: PromotionItemProps) => {
@@ -25,7 +36,7 @@ const PromotionItem = ({ promotion, onSave }: PromotionItemProps) => {
           : promotion.endTime.toLocaleDateString()}
       </Table.Cell>
       <Table.Cell textAlign='center' width='3'>
-        {promotion.type}
+        {toVerbose(promotion.type)}
       </Table.Cell>
       <Table.Cell textAlign='center' width='4'>
         <Button.Group>

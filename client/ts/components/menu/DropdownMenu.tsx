@@ -16,10 +16,6 @@ interface DropdownMenuProps {
   showCommunity: boolean;
 }
 
-const onToggleDisable = () => {
-  console.log('a');
-};
-
 const DropdownMenu = ({
   onShowProductNetwork,
   onShowCommunities,

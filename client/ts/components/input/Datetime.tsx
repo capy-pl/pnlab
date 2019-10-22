@@ -24,7 +24,7 @@ interface Option {
 
 type DatetimeKeys = 'year' | 'month' | 'day';
 
-const DEFAULT_MIN_YEAR = new Date(1990, 0, 1, 8);
+const DEFAULT_MIN_YEAR = new Date(2010, 0, 1, 8);
 const DEFAULT_MAX_YEAR = new Date(2040, 11, 31, 8);
 
 class DatetimeInput extends React.PureComponent<DatetimeInputProps, DatetimeInputState> {
