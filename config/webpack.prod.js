@@ -9,7 +9,6 @@ dotenv.config();
 
 const baseConfig = {
   mode: 'production',
-  devtool: 'cheap-module-eval-source-map',
   stats: {
     errors: true,
   },
