@@ -76,6 +76,7 @@ const clientConfig = {
 
 const serverConfig = {
   target: 'node',
+  devtool: 'inline-source-map',
   node: {
     __dirname: false,
     __filename: false,
