@@ -29,6 +29,7 @@ def main():
                 print('Close Python service due to KeyboardInterrupt.')
                 break
             except:
+                logging.exception()
                 logging.info(
                     'Program exit unexpectally. Restart service in 5 seconds.')
                 sleep(5)

@@ -28,6 +28,7 @@ def receive(action_id):
         try:
             if action['type'] == 'report':
                 network_analysis(action['targetId'])
+
             if action['type'] == 'import':
                 import_from_histories(action['targetId'])
 
@@ -39,7 +40,9 @@ def receive(action_id):
                     'modified': datetime.utcnow()
                 }
             })
-        except Exception as err:
+        except:
+            logging.exception('Not expected error.')
+
             db['actions'].update_one({
                 '_id': ObjectId(action['_id'])
             }, {

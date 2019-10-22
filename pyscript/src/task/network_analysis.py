@@ -46,16 +46,24 @@ def network_analysis(report_id):
             '$set': update_expr
         })
         return
-    except Exception as err:
-        logging.exception(err)
-        error_update = {
-            'status': 'error',
-            'errMessage': traceback.format_exc(),
-            'modified': datetime.utcnow()
-        }
-        db['reports'].update_one({
-            '_id': ObjectId(report_id)
-        }, {
-            '$set': error_update
-        })
-        raise err
+    except ZeroTransactionError:
+        logging.exception('No transaction matchs the query.')
+        err_message = '沒有符合的交易資料。'
+    except ZeroNodeError:
+        logging.exception('No node exists after filtering.')
+        err_message = '篩選後沒有商品進入網路資料。'
+    except:
+        logging.exception('Unexpected error.')
+        err_message = '非預期的錯誤。'
+
+    error_update = {
+        'status': 'error',
+        'errMessage': err_message,
+        'modified': datetime.utcnow()
+    }
+
+    db['reports'].update_one({
+        '_id': ObjectId(report_id)
+    }, {
+        '$set': error_update
+    })
