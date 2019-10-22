@@ -18,6 +18,7 @@ def network_analysis(report_id):
         return
     try:
         query = to_query(report['conditions'])
+        raise ZeroTransactionError('Test.')
         method = extract_method(report['conditions'])
         promotions = extract_promotion(report['conditions'])
         org_schema = org_data['importSchema']
@@ -45,6 +46,7 @@ def network_analysis(report_id):
         db['reports'].update_one({'_id': ObjectId(report_id)}, {
             '$set': update_expr
         })
+        logging.info('Processing finished. Report id: {}.'.format(report_id))
         return
     except ZeroTransactionError:
         logging.exception('No transaction matchs the query.')
