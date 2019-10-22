@@ -5,6 +5,9 @@ import morgan from 'morgan';
 import nunjucks from 'nunjucks';
 import path from 'path';
 import { command, Logger } from './core/util';
+import webpack from 'webpack';
+import devMiddleware from 'webpack-dev-middleware';
+import { clientConfig } from '../config/webpack.dev';
 
 // import routes
 import API from './api';
@@ -30,9 +33,6 @@ command.parse(process.argv);
 
 // Use webpack-dev-middleware to watch on client files.
 if (command.watch) {
-  const webpack = require('webpack');
-  const devMiddleware = require('webpack-dev-middleware');
-  const { clientConfig } = require('../config/webpack.dev');
   if (typeof BUNDLED !== 'undefined') {
     clientConfig.entry.client[0] = CLIENT_PATH;
     clientConfig.resolve.alias.Component = COMPNENT_PATH;

@@ -93,8 +93,8 @@ module.exports = function (grunt) {
   grunt.task.registerTask('build', ['eslint', 'webpack:client', 'webpack:server']);
   grunt.task.registerTask('build:prod', [
     'eslint',
-    'build:prodServer',
     'build:prodClient',
+    'build:prodServer',
   ]);
   grunt.task.registerTask('test', ['eslint', 'exec:test']);
   grunt.task.registerTask('test:client', ['eslint:client', 'exec:testClient']);

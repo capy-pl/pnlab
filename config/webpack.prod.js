@@ -26,9 +26,7 @@ const baseConfig = {
 
 const clientConfig = {
   entry: {
-    client: [
-      path.resolve(__dirname, '..', 'client', 'ts', 'index.tsx'),
-    ],
+    client: path.resolve(__dirname, '..', 'client', 'ts', 'index.tsx'),
   },
   resolve: {
     alias: {
@@ -90,10 +88,10 @@ const serverConfig = {
   },
   module: {
     rules: [{
-      test: /\.ts/,
+      test: /\.[jt]s/,
       loader: 'babel-loader',
       exclude: /node_modules/,
-    }, ],
+    }],
   },
   output: {
     path: path.resolve(__dirname, '..', 'dist', 'server'),

@@ -89,7 +89,7 @@ const serverConfig = {
   },
   module: {
     rules: [{
-      test: /\.ts/,
+      test: /\.[jt]s/,
       loader: 'babel-loader',
       exclude: /node_modules/,
     }, ],
