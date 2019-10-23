@@ -41,8 +41,9 @@ const Item = ({
         <Button
           icon='right arrow'
           color='blue'
+          inverted
           labelPosition='right'
-          content='View Detail'
+          content='查看詳細資訊'
           onClick={onButtonClick}
         />
       </Table.Cell>

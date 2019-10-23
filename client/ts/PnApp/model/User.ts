@@ -1,28 +1,23 @@
 import axios from 'axios';
+import Organization from './Organization';
 
-export interface OrganizationModel {
-  _id: string;
-  dbName: string;
-  name: string;
-}
-
-export interface UserModel {
+export interface UserAjaxResponse {
   _id: string;
   email: string;
-  org: OrganizationModel;
+  org: Organization;
 }
 
 class User {
   public static async get(): Promise<User> {
-    const response = await axios.get<UserModel>('/api/user/info');
+    const response = await axios.get<UserAjaxResponse>('/api/user/info');
     return new User(response.data);
   }
 
   public id: string;
   public email: string;
-  public org: OrganizationModel;
+  public org: Organization;
 
-  constructor(obj: UserModel) {
+  constructor(obj: UserAjaxResponse) {
     this.id = obj._id;
     this.email = obj.email;
     this.org = obj.org;

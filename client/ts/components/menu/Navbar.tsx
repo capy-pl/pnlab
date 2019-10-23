@@ -65,7 +65,7 @@ class Navbar extends PureComponent<RouteComponentProps, MenuState> {
                 <Dropdown.Item as={Link} to='/upload'>
                   上傳資料
                 </Dropdown.Item>
-                <Dropdown.Item as={Link} to='/settings'>
+                <Dropdown.Item as={Link} to='/settings/profile'>
                   設定
                 </Dropdown.Item>
                 <Dropdown.Item onClick={this.logout}>登出</Dropdown.Item>
