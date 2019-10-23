@@ -11,6 +11,8 @@ import {
   Popup,
   Sidebar,
   Table,
+  Message,
+  Container,
 } from 'semantic-ui-react';
 import { isBoolean, isNumber } from 'lodash';
 
@@ -234,6 +236,10 @@ export default class Report extends PureComponent<
     this.props.history.push(`/analysis/${id}`);
   };
 
+  public backToPreviousPage = () => {
+    this.props.history.push(`/report`);
+  };
+
   public getDropdownOption = () => {
     const dropdownOption = this.state.report.nodes.map((node) => {
       return {
@@ -259,6 +265,26 @@ export default class Report extends PureComponent<
   public render() {
     if (this.state.loading) {
       return <Loader size='huge' />;
+    } else if (this.state.report && this.state.report.status === 'error') {
+      return (
+        <Container>
+          <Message
+            icon='exclamation'
+            header='錯誤訊息'
+            content={this.state.report.errMessage}
+            error
+          />
+          <Button
+            labelPosition='left'
+            icon
+            color='blue'
+            onClick={this.backToPreviousPage}
+          >
+            <Icon name='arrow left'></Icon>
+            返回上一頁
+          </Button>
+        </Container>
+      );
     } else {
       if (this.state.report) {
         const dropdownOption = this.getDropdownOption();
