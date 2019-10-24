@@ -47,10 +47,7 @@ export default class UploadForamt extends React.PureComponent<{}, State> {
   public render() {
     return (
       <React.Fragment>
-        <Header size='large' dividing>
-          上傳格式
-        </Header>
-        <Header>必要欄位名稱</Header>
+        <Header dividing>必要欄位名稱</Header>
         <Form>
           <Form.Field>
             <Form.Input
@@ -82,7 +79,7 @@ export default class UploadForamt extends React.PureComponent<{}, State> {
           </Form.Field>
         </Form>
         <Divider />
-        <Header>其餘交易欄位名稱</Header>
+        <Header dividing>其餘交易欄位名稱</Header>
         <Table>
           <Table.Header>
             <Table.Row>
@@ -93,7 +90,7 @@ export default class UploadForamt extends React.PureComponent<{}, State> {
           <Table.Body>{this.getTransactionFieldRows()}</Table.Body>
         </Table>
         <Divider />
-        <Header>其餘商品欄位名稱</Header>
+        <Header dividing>其餘商品欄位名稱</Header>
         <Table>
           <Table.Header>
             <Table.Row>

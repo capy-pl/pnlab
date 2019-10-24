@@ -67,7 +67,6 @@ const Item = ({ item, onLinkClick }: ItemProps) => {
           content='查看詳細資訊'
           icon='right arrow'
           color='teal'
-          inverted
           labelPosition='right'
           disabled={item.status === 'pending'}
           onClick={onLinkClick}
