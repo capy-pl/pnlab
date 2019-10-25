@@ -71,8 +71,9 @@ def callback(ch, method, properties, body: bytes):
 def main():
     while True:
         try:
+            rabbitmq_addr = getenv('RABBIT_MQ_ADDRESS')
             connection = pika.BlockingConnection(
-                pika.ConnectionParameters(host='localhost'))
+                pika.ConnectionParameters(host=rabbitmq_addr))
             channel = connection.channel()
             channel.queue_declare(queue='pn', durable=True)
 

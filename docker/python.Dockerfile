@@ -8,5 +8,8 @@ ADD pyscripts /var/pnlab
 WORKDIR /var/pnlab
 
 RUN pip install -r requirements.txt
+RUN mkdir ~/pnlab\
+    && mkdir ~/pnlab/logs\
+    && mkdir ~/pnlab/temp
 
 CMD [ "python", 'index.py']

@@ -1,0 +1,23 @@
+version: '3.7'
+
+services:
+  webapp:
+    image: pnlab-server:1.0.0
+    build:
+      context: ..
+      dockerfile: server.Dockerfile
+    depends_on:
+      - db
+      - mq
+  py-service:
+    image: pnlab-service:1.0.0
+    depends_on:
+      - db
+      - mq
+  db:
+    image: mongo:latest
+  mq:
+    image: rabbitmq:latest
+
+networks:
+volume:
