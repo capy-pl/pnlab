@@ -64,10 +64,11 @@ const Item = ({ item, onLinkClick }: ItemProps) => {
       <Table.Cell textAlign='center'>{item.created.toLocaleString()}</Table.Cell>
       <Table.Cell textAlign='center'>
         <Button
-          content='View Detail'
+          content='查看詳細資訊'
           icon='right arrow'
+          color='teal'
           labelPosition='right'
-          disabled={item.status === 'success' ? false : true}
+          disabled={item.status === 'pending'}
           onClick={onLinkClick}
         />
       </Table.Cell>

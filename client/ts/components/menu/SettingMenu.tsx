@@ -9,7 +9,7 @@ export default class SettingMenu extends PureComponent<{}, SettingMenuState> {
   constructor(props) {
     super(props);
     this.state = {
-      activeItem: 'Setting',
+      activeItem: 'Profile',
     };
     this.onClick = this.onClick.bind(this);
   }
@@ -24,15 +24,6 @@ export default class SettingMenu extends PureComponent<{}, SettingMenuState> {
   public render() {
     return (
       <Menu vertical tabular fluid>
-        {/* <Menu.Item
-          name='Setting'
-          as={Link}
-          to={'/settings'}
-          active={this.state.activeItem === 'Setting'}
-          onClick={this.onClick}
-        >
-          設定
-        </Menu.Item> */}
         <Menu.Item
           name='Profile'
           active={this.state.activeItem === 'Profile'}
@@ -41,6 +32,15 @@ export default class SettingMenu extends PureComponent<{}, SettingMenuState> {
           as={Link}
         >
           個人資訊
+        </Menu.Item>
+        <Menu.Item
+          name='UploadFormat'
+          active={this.state.activeItem === 'UploadFormat'}
+          onClick={this.onClick}
+          to='/settings/uploadformat'
+          as={Link}
+        >
+          上傳格式
         </Menu.Item>
         <Menu.Item
           name='Promotion'

@@ -210,7 +210,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
           id: node.id,
           label: node.name,
           group: this.props.showCommunity ? node.community : undefined,
-          color: '#8DC1FF',
+          color: this.props.showCommunity ? undefined : '#8DC1FF',
           borderWidth: this.props.showCommunity && node.core ? 5 : 1,
           hidden: false,
         } as any),

@@ -63,5 +63,4 @@ def extract_method(conditions) -> str:
 
 
 def bigger_than_256mb(file_path):
-    # return os.stat(file_path).st_size > 500 * 2 ** 10
     return os.stat(file_path).st_size > 256 * 2 ** 20

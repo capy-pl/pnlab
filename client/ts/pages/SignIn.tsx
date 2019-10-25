@@ -1,14 +1,14 @@
 import FormLogin from 'Component/form/FormLogin';
 import React, { PureComponent } from 'react';
 
-const outerStyle = {
+const outerStyle: React.CSSProperties = {
   height: '100%',
   position: 'fixed',
   width: '100%',
-  zIndex: '100',
+  zIndex: 100,
 };
 
-const style = {
+const style: React.CSSProperties = {
   alignItems: 'center',
   display: 'flex',
   height: '100%',

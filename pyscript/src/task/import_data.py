@@ -74,7 +74,7 @@ def import_from_file_path(file_path):
             update_org_schema(transactions, items)
 
             try:
-                transaction_insert_result = db.transactions.insert_many(
+                db.transactions.insert_many(
                     transactions, ordered=False)
             except BulkWriteError as err:
                 duplicate_transaction_num = list(filter(
@@ -84,7 +84,7 @@ def import_from_file_path(file_path):
                 logging.info(
                     '{} has {} duplicate transactions. Automatically dropped.'.format(file_path, len(duplicate_transaction_num)))
             try:
-                item_insert_result = db.items.insert_many(items, ordered=False)
+                db.items.insert_many(items, ordered=False)
             except BulkWriteError as err:
                 pass
 
@@ -101,7 +101,7 @@ def import_from_file_path(file_path):
         update_org_schema(transactions, items)
 
         try:
-            transaction_insert_result = db.transactions.insert_many(
+            db.transactions.insert_many(
                 transactions, ordered=False)
         except BulkWriteError as err:
             duplicate_transaction_num = list(filter(
@@ -110,7 +110,7 @@ def import_from_file_path(file_path):
             logging.info(
                 '{} has {} duplicate transactions. Automatically dropped.'.format(file_path, len(duplicate_transaction_num)))
         try:
-            item_insert_result = db.items.insert_many(items, ordered=False)
+            db.items.insert_many(items, ordered=False)
         except BulkWriteError as err:
             pass
 
