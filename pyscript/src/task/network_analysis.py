@@ -18,7 +18,6 @@ def network_analysis(report_id):
         return
     try:
         query = to_query(report['conditions'])
-        raise ZeroTransactionError('Test.')
         method = extract_method(report['conditions'])
         promotions = extract_promotion(report['conditions'])
         org_schema = org_data['importSchema']

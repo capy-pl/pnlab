@@ -3,9 +3,9 @@ FROM node:10-alpine
 ENV NODE_ENV production
 ENV HOME /var
 
-ADD dist/ /var/pnlab
-ADD .env /var/pnlab
-ADD package.json /var/pnlab
+ADD dist/ /var/pnlab/
+ADD .env /var/pnlab/
+ADD package.json /var/pnlab/
 
 WORKDIR /var/pnlab
 

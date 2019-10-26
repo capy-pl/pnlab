@@ -1,7 +1,5 @@
-from .mongo_client import db
 from .logger import config_logger
 from .task import network_analysis, import_from_histories, test_connection
-
 import pika
 import time
 import logging
@@ -105,5 +103,4 @@ def main():
 
 def worker():
     config_logger()
-    load_dotenv()
     main()

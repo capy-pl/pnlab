@@ -74,3 +74,6 @@ __pycache__
 
 # test file
 *.csv
+
+# python cache and lib
+pyscript/lib
