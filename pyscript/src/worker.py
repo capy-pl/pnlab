@@ -13,6 +13,7 @@ def receive(action_id):
     from .mongo_client import db
 
     logging.info('Receive Action {}.'.format(action_id))
+
     if action_id == 'test':
         test_connection()
         return
