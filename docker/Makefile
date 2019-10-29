@@ -5,7 +5,8 @@ build:
 
 build-py:
 	docker build -t pnlab-py:1.0.0 -f python.Dockerfile ..
-
+up:
+	docker-compose up
 run:
 	docker run \
 	--network pnlab \

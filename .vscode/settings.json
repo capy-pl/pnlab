@@ -13,5 +13,6 @@
   "[typescriptreact]": {
     "editor.tabSize": 2
   },
-  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"]
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+  "python.linting.pylintEnabled": true
 }
