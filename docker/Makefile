@@ -41,3 +41,6 @@ run-mq:
 
 create-network:
 	docker network create --driver bridge pnlab
+
+initdb:
+	MONGO_PORT=27018 && grunt initdb
