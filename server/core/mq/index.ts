@@ -4,7 +4,7 @@ let channel: amqplib.Channel;
 
 export default async function amqpConnect(): Promise<void> {
   Logger.info('Connect to RabbitMQ...');
-  const connection = await amqplib.connect('amqp://localhost');
+  const connection = await amqplib.connect(`amqp://${process.env.RABBIT_MQ_ADDRESS}`);
   channel = await connection.createChannel();
   channel.assertQueue('pn', {
     durable: true,

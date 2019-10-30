@@ -60,17 +60,17 @@ module.exports = function (grunt) {
       exitCode: 0,
     },
     initdb: {
-      command: 'ts-node scripts/initdb.ts',
+      command: 'MONGO_PORT=27018 && ts-node task/initdb.ts',
       stdout: true,
       exitCode: 0,
     },
     populate: {
-      command: 'ts-node scripts/populateSchemaValue.ts',
+      command: 'ts-node task/populateSchemaValue.ts',
       stdout: true,
       exitCode: 0,
     },
     cleandb: {
-      command: 'ts-node scripts/cleandb.ts',
+      command: 'ts-node task/cleandb.ts',
       stdout: true,
       exitCode: 0,
     },
@@ -102,6 +102,7 @@ module.exports = function (grunt) {
   grunt.task.registerTask('cleandb', ['exec:cleandb']);
   grunt.task.registerTask('clean', ['exec:clean']);
   grunt.task.registerTask('initdb', ['exec:initdb']);
+  grunt.task.registerTask('initdb:docker', ['exec:initdb:docker']);
   grunt.task.registerTask('populate', ['exec:populate']);
   grunt.task.registerTask('upgrade', ['exec:initdb', 'exec:populate']);
   grunt.task.registerTask('run', ['build:client', 'exec:run']);

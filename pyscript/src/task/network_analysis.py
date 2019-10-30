@@ -45,6 +45,7 @@ def network_analysis(report_id):
         db['reports'].update_one({'_id': ObjectId(report_id)}, {
             '$set': update_expr
         })
+        logging.info('Processing finished. Report id: {}.'.format(report_id))
         return
     except ZeroTransactionError:
         logging.exception('No transaction matchs the query.')

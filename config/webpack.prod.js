@@ -16,6 +16,8 @@ const baseConfig = {
     minimizer: [
       new UglifyJsPlugin({
         parallel: true,
+        extractComments: true,
+        cache: true,
       }),
     ],
     splitChunks: {

@@ -1,0 +1,45 @@
+version: '3.7'
+
+services:
+  pn-server:
+    image: pnlab-server:1.0.0
+    build:
+      context: ..
+      dockerfile: docker/server.Dockerfile
+    ports:
+      - '3000:3000'
+    depends_on:
+      - db
+      - mq
+    volumes:
+      - 'temp:/var/pnlab/temp'
+    networks:
+      - pn-net
+  pn-python:
+    image: pnlab-service:1.0.0
+    build:
+      context: ..
+      dockerfile: docker/python.Dockerfile
+    depends_on:
+      - db
+      - mq
+    volumes:
+      - 'temp:/var/pnlab/temp'
+    networks:
+      - pn-net
+  db:
+    image: mongo:latest
+    container_name: pn-db
+    networks:
+      - pn-net
+    ports:
+      - '27018:27017'
+  mq:
+    image: rabbitmq:latest
+    container_name: pn-mq
+    networks:
+      - pn-net
+networks:
+  pn-net:
+volumes:
+  temp:

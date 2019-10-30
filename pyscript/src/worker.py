@@ -1,12 +1,15 @@
 from .logger import config_logger
 from .task import network_analysis, import_from_histories, test_connection
-
 import pika
 import time
 import logging
 from bson.objectid import ObjectId
 import sys
 from datetime import datetime
+from dotenv import load_dotenv
+from os import getenv
+
+load_dotenv()
 
 
 def receive(action_id):
@@ -67,11 +70,11 @@ def callback(ch, method, properties, body: bytes):
 def main():
     while True:
         try:
+            rabbitmq_addr = getenv('RABBIT_MQ_ADDRESS')
             connection = pika.BlockingConnection(
-                pika.ConnectionParameters(host='localhost'))
+                pika.ConnectionParameters(host=rabbitmq_addr))
             channel = connection.channel()
             channel.queue_declare(queue='pn', durable=True)
-            config_logger()
 
             try:
                 channel.basic_consume(queue='pn', on_message_callback=callback)
@@ -100,4 +103,5 @@ def main():
 
 
 def worker():
+    config_logger()
     main()

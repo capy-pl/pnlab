@@ -12,11 +12,6 @@ const baseConfig = {
   stats: {
     errors: true,
   },
-  optimization: {
-    splitChunks: {
-      chunks: 'all',
-    },
-  },
 };
 
 const clientConfig = {
@@ -72,6 +67,11 @@ const clientConfig = {
       ENV: JSON.stringify('development'),
     }),
   ],
+  optimization: {
+    splitChunks: {
+      chunks: 'all',
+    },
+  },
 };
 
 const serverConfig = {
