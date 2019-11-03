@@ -1,8 +1,5 @@
 import React from 'react';
-import {
-  Dropdown,
-  Form,
-} from 'semantic-ui-react';
+import { Dropdown, Form } from 'semantic-ui-react';
 import { searchItem } from '../../PnApp/Helper';
 
 import { DatetimeInput } from 'Component/';
@@ -44,13 +41,15 @@ const TYPE_OPTIONS = [
   },
 ];
 
-class FormEditPromotion extends React.PureComponent<FormEditPromotionProps, FormEditPromotionState> {
-  private prodcutPool: Set<string>;
+class FormEditPromotion extends React.PureComponent<
+  FormEditPromotionProps,
+  FormEditPromotionState
+> {
+  private prodcutPool: Set<string> = new Set<string>();
   constructor(props: FormEditPromotionProps) {
     super(props);
-    this.prodcutPool = new Set<string>();
     this.productSearchChange = this.productSearchChange.bind(this);
-    const options: Option[]  = new Array<string>()
+    const options: Option[] = new Array<string>()
       .concat(this.props.model.groupOne)
       .concat(this.props.model.groupTwo)
       .map((value) => {
@@ -66,7 +65,7 @@ class FormEditPromotion extends React.PureComponent<FormEditPromotionProps, Form
     };
   }
 
-  public componentWillReceiveProps(nextProps: FormEditPromotionProps) {
+  public UNSAFE_componentWillReceiveProps(nextProps: FormEditPromotionProps) {
     if (nextProps.groupOne) {
       for (const product of nextProps.groupOne) {
         if (!this.prodcutPool.has(product)) {
@@ -87,7 +86,7 @@ class FormEditPromotion extends React.PureComponent<FormEditPromotionProps, Form
     const searchString = data.searchQuery as string;
     const { items } = await searchItem(searchString);
     const options = items
-      .filter((item) => (!this.prodcutPool.has(item)))
+      .filter((item) => !this.prodcutPool.has(item))
       .concat(this.props.groupOne || [])
       .concat(this.props.groupTwo || [])
       .map((item) => ({
@@ -101,7 +100,6 @@ class FormEditPromotion extends React.PureComponent<FormEditPromotionProps, Form
   }
 
   public render() {
-
     return (
       <Form>
         <Form.Field>

@@ -13,49 +13,41 @@ interface FormProfileState {
   errorMessage: string;
 }
 
-export default class FormProfile extends PureComponent<FormProfileProps, FormProfileState> {
-  constructor(props: FormProfileProps) {
-    super(props);
-    this.state = {
-      email: '',
-      errorMessage: 'test',
-      isError: false,
-    };
-
-    this.onChange = this.onChange.bind(this);
-    this.onClick = this.onClick.bind(this);
-  }
+export default class FormProfile extends PureComponent<
+  FormProfileProps,
+  FormProfileState
+> {
+  state = {
+    email: '',
+    errorMessage: 'test',
+    isError: false,
+  };
 
   public componentDidMount() {
     this.setState({ email: this.props.user.email });
   }
 
-  public onChange(event: ChangeEvent<HTMLInputElement>) {
+  public onChange = (event: ChangeEvent<HTMLInputElement>) => {
     this.setState({ email: event.target.value });
-  }
+  };
 
-  public onClick() {
+  public onClick = () => {
     this.setState({ isError: !this.state.isError });
-  }
+  };
 
   public render() {
     return (
       <Form error={this.state.isError}>
         <Form.Field width={10}>
           <label>Email</label>
-          <input placeholder='Email' value={this.state.email} onChange={this.onChange}/>
+          <input placeholder='Email' value={this.state.email} onChange={this.onChange} />
         </Form.Field>
-        <Message
-          error
-          content={this.state.errorMessage}
-        />
+        <Message error content={this.state.errorMessage} />
         <Form.Field width={10}>
           <label>Organization</label>
           <input disabled={true} value={this.props.user.org.name} />
         </Form.Field>
-        <Button onClick={this.onClick}>
-          Update
-        </Button>
+        <Button onClick={this.onClick}>Update</Button>
       </Form>
     );
   }

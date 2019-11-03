@@ -1,49 +1,92 @@
 import React from 'react';
-import { Button, Header, Icon, Modal } from 'semantic-ui-react';
+import { Button, Modal, TextAreaProps, InputOnChangeData } from 'semantic-ui-react';
 
-import SaveGraphForm from '../form/FormAddAnalysis';
+import FormAddAnalysis from '../form/FormAddAnalysis';
+import { Report } from '../../PnApp/model';
+import { Analysis } from '../../PnApp/model';
 
-interface ModalAddAnalysisProps {
-  header: string;
-  content?: string;
-  open: boolean;
-  onConfirm?: () => void;
-  onCancel?: () => void;
-  children?: React.ReactNode;
+interface Props {
+  show: boolean;
+  report: Report;
+  onSuccess?: (id: string) => void;
+  close: () => void;
 }
 
-const ModalAddAnalysis = ({ header, onConfirm, onCancel, open, children }: ModalAddAnalysisProps) => {
-  return (
-    <React.Fragment>
-      {children}
-      <Modal
-        basic
-        size='small'
-        open={open}
-      >
-        <Header content={header} />
+interface State {
+  loading: boolean;
+  title: string;
+  description: string;
+}
+
+class ModalAddAnalysis extends React.PureComponent<Props, State> {
+  public state: State = {
+    loading: false,
+    title: '',
+    description: '',
+  };
+
+  public onTitleChange = (e, data: InputOnChangeData) => {
+    const { value } = data;
+    this.setState({
+      title: value,
+    });
+  };
+
+  public onDescriptionChange = (e, data: TextAreaProps) => {
+    const { value } = data;
+    this.setState({
+      description: value as string,
+    });
+  };
+
+  public add = () => {
+    this.setState(
+      {
+        loading: true,
+      },
+      async () => {
+        const { id } = await Analysis.add({
+          report: this.props.report.id,
+          title: this.state.title,
+          description: this.state.description,
+        });
+        this.setState({
+          loading: false,
+          description: '',
+          title: '',
+        });
+        this.props.close();
+        if (this.props.onSuccess) {
+          this.props.onSuccess(id);
+          return;
+        }
+      },
+    );
+  };
+
+  public render() {
+    return (
+      <Modal open={this.props.show}>
+        <Modal.Header>另存圖片</Modal.Header>
         <Modal.Content>
-          <SaveGraphForm />
+          <FormAddAnalysis
+            onDescriptionChange={this.onDescriptionChange}
+            onTitleChange={this.onTitleChange}
+            description={this.state.description}
+            title={this.state.title}
+          />
         </Modal.Content>
         <Modal.Actions>
-          <Button
-            basic
-            color='red'
-            inverted
-            onClick={onCancel}
-          >
-            <Icon name='remove' /> 取消
+          <Button loading={this.state.loading} onClick={this.props.close} color='red'>
+            取消
           </Button>
-          <Button
-            color='green'
-            inverted
-            onClick={onConfirm}
-          >
-            <Icon name='checkmark' /> 確定儲存
+          <Button onClick={this.add} loading={this.state.loading} color='blue'>
+            新增
           </Button>
         </Modal.Actions>
       </Modal>
-    </React.Fragment>);
-};
+    );
+  }
+}
 
 export default ModalAddAnalysis;

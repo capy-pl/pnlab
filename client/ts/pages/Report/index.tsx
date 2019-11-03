@@ -6,7 +6,7 @@ import ReportAdd from './Add';
 import ReportDetail from './Detail';
 import ReportList from './List';
 
-const ReportRouter = (props) => {
+const ReportRouter = () => {
   return (
     <Switch>
       <Route path='/report/add' component={ReportAdd} />
@@ -16,9 +16,4 @@ const ReportRouter = (props) => {
   );
 };
 
-export {
-  ReportRouter as default,
-  ReportList,
-  ReportDetail,
-  ReportAdd,
-};
+export { ReportRouter as default, ReportList, ReportDetail, ReportAdd };

@@ -1,26 +1,37 @@
 import React from 'react';
 import { Dropdown, DropdownProps, Form, Segment } from 'semantic-ui-react';
 
-import Analysis from '../../PnApp/model/Analysis';
+import { AnalysisPreview } from '../../PnApp/model/Analysis';
 
 interface FormAnalysisProps {
-  analysesA: Analysis[];
-  analysesB: Analysis[];
-  dropChangeA?: (event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => void;
-  dropChangeB?: (event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => void;
+  analysesA: AnalysisPreview[];
+  analysesB: AnalysisPreview[];
+  dropChangeA?: (
+    event: React.SyntheticEvent<HTMLElement, Event>,
+    data: DropdownProps,
+  ) => void;
+  dropChangeB?: (
+    event: React.SyntheticEvent<HTMLElement, Event>,
+    data: DropdownProps,
+  ) => void;
 }
 
-const FormAnalysis = ({ analysesA, analysesB, dropChangeA, dropChangeB }: FormAnalysisProps) => {
+const FormAnalysis = ({
+  analysesA,
+  analysesB,
+  dropChangeA,
+  dropChangeB,
+}: FormAnalysisProps) => {
   const inputsA = analysesA.map((value) => {
     return {
       text: value.title,
-      value: value.id,
+      value: value._id,
     };
   });
   const inputsB = analysesB.map((value) => {
     return {
       text: value.title,
-      value: value.id,
+      value: value._id,
     };
   });
 
@@ -37,7 +48,7 @@ const FormAnalysis = ({ analysesA, analysesB, dropChangeA, dropChangeB }: FormAn
             selection
             options={inputsA}
           />
-          <br/>
+          <br />
           <Dropdown
             onChange={dropChangeB}
             placeholder={`Please select Report B`}

@@ -7,6 +7,7 @@ import SelectedCommunities from './SelectedCommunities';
 interface CommunitiesMessageProps {
   communitiesInfo: Community[];
   updateCommunitiesGraph: (communitiesList) => void;
+  getCurrentContent: (content) => void;
 }
 
 interface CommunitiesMessageState {
@@ -17,7 +18,10 @@ interface CommunitiesMessageState {
   backTo?: string;
 }
 
-export default class CommunitiesMessage extends PureComponent<CommunitiesMessageProps, CommunitiesMessageState> {
+export default class CommunitiesMessage extends PureComponent<
+  CommunitiesMessageProps,
+  CommunitiesMessageState
+> {
   constructor(props) {
     super(props);
     this.state = {
@@ -35,35 +39,43 @@ export default class CommunitiesMessage extends PureComponent<CommunitiesMessage
     this.goToCommunityDetail = this.goToCommunityDetail.bind(this);
   }
 
-  public handleDismiss() {
-    this.setState({ visible: false });
+  public async handleDismiss() {
+    await this.setState({ visible: false, content: '' });
+    this.props.getCurrentContent(this.state.content);
   }
 
   public goToCommunityDetail(community: Community) {
-    this.setState({content: 'communityDetail'});
-    this.setState({clickedCommunity: community}, () => {
+    this.setState({ content: 'communityDetail' });
+    this.setState({ clickedCommunity: community }, () => {
       this.props.updateCommunitiesGraph([this.state.clickedCommunity]);
     });
   }
 
   public handleCommClick(community: Community) {
     this.goToCommunityDetail(community);
-    this.setState({backTo: 'communitiesRankList'});
+    this.setState({ backTo: 'communitiesRankList' });
   }
 
   public handleCommDetailClick(community: Community) {
     this.goToCommunityDetail(community);
-    this.setState({backTo: 'selectedCommunities'});
+    this.setState({ backTo: 'selectedCommunities' });
   }
 
   public handleCommCheck(community: Community) {
     if (this.state.checkedCommunities) {
-      this.state.checkedCommunities.some((checkedCommunity) => checkedCommunity.id === community.id) ?
-        this.setState({checkedCommunities: [...this.state.checkedCommunities]
-          .filter((checkedCommunity) => checkedCommunity.id !== community.id)}) :
-        this.setState({checkedCommunities: [...this.state.checkedCommunities, community]});
+      this.state.checkedCommunities.some(
+        (checkedCommunity) => checkedCommunity.id === community.id,
+      )
+        ? this.setState({
+            checkedCommunities: [...this.state.checkedCommunities].filter(
+              (checkedCommunity) => checkedCommunity.id !== community.id,
+            ),
+          })
+        : this.setState({
+            checkedCommunities: [...this.state.checkedCommunities, community],
+          });
     } else {
-      this.setState({checkedCommunities: [community]});
+      this.setState({ checkedCommunities: [community] });
     }
   }
 
@@ -72,15 +84,18 @@ export default class CommunitiesMessage extends PureComponent<CommunitiesMessage
   }
 
   public goToSelectedCommunities() {
-    this.setState({content: 'selectedCommunities'});
+    this.setState({ content: 'selectedCommunities' });
     this.updateGraph();
-    this.setState({backTo: 'communitiesRankList'});
+    this.setState({ backTo: 'communitiesRankList' });
   }
 
   public handleBacktoCommunitiesRank() {
-    this.setState({content: 'communitiesRank'});
-    this.setState({checkedCommunities: undefined, clickedCommunity: undefined}, this.updateGraph);
-    this.setState({backTo: ''});
+    this.setState({ content: 'communitiesRank' });
+    this.setState(
+      { checkedCommunities: undefined, clickedCommunity: undefined },
+      this.updateGraph,
+    );
+    this.setState({ backTo: '' });
   }
 
   public render() {
@@ -120,19 +135,11 @@ export default class CommunitiesMessage extends PureComponent<CommunitiesMessage
           );
           break;
         default:
-          message = (
-            <React.Fragment>
-              No Result
-            </React.Fragment>
-          );
+          message = <React.Fragment>No Result</React.Fragment>;
       }
-      return (
-        message
-      );
+      return message;
     }
 
-    return (
-      <React.Fragment />
-    );
+    return <React.Fragment />;
   }
 }

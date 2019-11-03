@@ -10,7 +10,10 @@ interface Option {
 interface DropdownSearchProps {
   options: Option[];
   placeholder: string;
-  onChange: (event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => void;
+  onChange: (
+    event: React.SyntheticEvent<HTMLElement, Event>,
+    data: DropdownProps,
+  ) => void;
 }
 
 const DropdownSearch = ({ placeholder, options, onChange }: DropdownSearchProps) => (

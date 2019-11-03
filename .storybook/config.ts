@@ -9,6 +9,7 @@ function loadStories() {
   require('../client/ts/stories/Message.stories');
   require('../client/ts/stories/Input.stories');
   require('../client/ts/stories/Sidebar.stories');
+  require('../client/ts/stories/Window.stories');
 }
 
 configure(loadStories, module);

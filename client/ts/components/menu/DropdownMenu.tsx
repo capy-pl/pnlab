@@ -16,13 +16,15 @@ interface DropdownMenuProps {
   showCommunity: boolean;
 }
 
-const DropdownMenu =
-({onShowProductNetwork, onShowCommunities, onShowProductRank, onShowCommunitiesRank,
-  onShowCharacter, showCommunity}: DropdownMenuProps) => (
-  <Menu
-    style={style}
-    compact
-  >
+const DropdownMenu = ({
+  onShowProductNetwork,
+  onShowCommunities,
+  onShowProductRank,
+  onShowCommunitiesRank,
+  onShowCharacter,
+  showCommunity,
+}: DropdownMenuProps) => (
+  <Menu style={style} compact>
     <Dropdown.Item>
       <Checkbox
         toggle

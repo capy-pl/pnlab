@@ -1,5 +1,3 @@
 import PromotionItem from './PromotionItem';
 
-export {
-  PromotionItem,
-};
+export { PromotionItem };

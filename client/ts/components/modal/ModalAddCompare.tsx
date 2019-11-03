@@ -1,31 +1,40 @@
 import React from 'react';
 import { Button, DropdownProps, Header, Icon, Modal } from 'semantic-ui-react';
 
-import Analysis from '../../PnApp/model/Analysis';
+import { AnalysisPreview } from '../../PnApp/model/Analysis';
 import FormAnalysis from '../form/FormAnalysis';
 
-interface ModalAddCompareProps {
+interface Props {
   header: string;
   open: boolean;
   onConfirm?: () => void;
   onCancel?: () => void;
   children?: React.ReactNode;
-  analyses: Analysis[];
-  dropChangeA?: (event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => void;
-  dropChangeB?: (event: React.SyntheticEvent<HTMLElement, Event>, data: DropdownProps) => void;
+  analyses: AnalysisPreview[];
+  dropChangeA?: (
+    event: React.SyntheticEvent<HTMLElement, Event>,
+    data: DropdownProps,
+  ) => void;
+  dropChangeB?: (
+    event: React.SyntheticEvent<HTMLElement, Event>,
+    data: DropdownProps,
+  ) => void;
 }
 
-const ModalAddCompare = ({ header, onConfirm, onCancel, open, children, analyses, dropChangeA,
-  dropChangeB }: ModalAddCompareProps) => {
-
+const ModalAddCompare = ({
+  header,
+  onConfirm,
+  onCancel,
+  open,
+  children,
+  analyses,
+  dropChangeA,
+  dropChangeB,
+}: Props) => {
   return (
     <React.Fragment>
       {children}
-      <Modal
-        basic
-        size='small'
-        open={open}
-      >
+      <Modal basic size='small' open={open}>
         <Header content={header} />
         <Modal.Content>
           <FormAnalysis
@@ -36,24 +45,16 @@ const ModalAddCompare = ({ header, onConfirm, onCancel, open, children, analyses
           />
         </Modal.Content>
         <Modal.Actions>
-          <Button
-            basic
-            color='red'
-            inverted
-            onClick={onCancel}
-          >
-            <Icon name='remove' /> No
+          <Button color='red' inverted onClick={onCancel}>
+            <Icon name='remove' /> 取消
           </Button>
-          <Button
-            color='green'
-            inverted
-            onClick={onConfirm}
-          >
-            <Icon name='checkmark' /> Yes
+          <Button inverted onClick={onConfirm}>
+            <Icon name='checkmark' /> 繼續
           </Button>
         </Modal.Actions>
       </Modal>
-    </React.Fragment>);
+    </React.Fragment>
+  );
 };
 
 export default ModalAddCompare;

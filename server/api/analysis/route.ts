@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { loginRequired } from '../../core/auth';
-import { checkExist } from '../../core/middleware';
+import { checkExist, httpMethodNotSupport, Pager } from '../../core/middleware';
 import { Analysis } from '../../models';
 import {
   AddAnalysis,
@@ -20,25 +20,35 @@ router
   .route('/')
   .all(loginRequired)
   .get(GetAnalyses)
-  .post(AddAnalysis);
+  .post(AddAnalysis)
+  .all(httpMethodNotSupport);
+
+router
+  .route('/page')
+  .all(loginRequired)
+  .get(Pager(Analysis))
+  .all(httpMethodNotSupport);
 
 router
   .route('/:id')
   .all(loginRequired, checkExist(Analysis))
   .get(GetAnalysis)
   .put(ModifyAnalysis)
-  .delete(DeleteAnalysis);
+  .delete(DeleteAnalysis)
+  .all(httpMethodNotSupport);
 
 router
   .route('/:id/comment/')
   .all(loginRequired, checkExist(Analysis))
-  .post(AddAnalysisComment);
+  .post(AddAnalysisComment)
+  .all(httpMethodNotSupport);
 
 router
   .route('/:id/comment/:comment_id')
   .all(loginRequired, checkExist(Analysis))
   .get(GetAnalysisComment)
   .put(ModifyAnalysisComment)
-  .delete(DeleteAnalysisComment);
+  .delete(DeleteAnalysisComment)
+  .all(httpMethodNotSupport);
 
 export default router;

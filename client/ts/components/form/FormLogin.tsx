@@ -15,29 +15,23 @@ interface FormLoginState {
 }
 
 class FormLogin extends PureComponent<{}, FormLoginState> {
-  constructor(props) {
-    super(props);
-    this.state = {
-      email: '',
-      error: false,
-      loading: false,
-      password: '',
-      redirect: false,
-    };
+  state = {
+    email: '',
+    error: false,
+    loading: false,
+    password: '',
+    redirect: false,
+  };
 
-    this.handleChange = this.handleChange.bind(this);
-    this.onClick = this.onClick.bind(this);
-  }
-
-  public handleChange(keyName: 'email' | 'password', value: string): void {
+  public handleChange = (keyName: 'email' | 'password', value: string) => {
     if (keyName === 'email') {
       this.setState({ email: value });
     } else {
       this.setState({ password: value });
     }
-  }
+  };
 
-  public async onClick() {
+  public onClick = async () => {
     this.setState({ loading: true });
     try {
       const token = await Auth.login(this.state.email, this.state.password);
@@ -52,7 +46,7 @@ class FormLogin extends PureComponent<{}, FormLoginState> {
         loading: false,
       });
     }
-  }
+  };
 
   public render() {
     if (this.state.redirect) {
@@ -63,40 +57,45 @@ class FormLogin extends PureComponent<{}, FormLoginState> {
           <Grid textAlign='center' style={{ height: '100%' }} verticalAlign='middle'>
             <Grid.Column style={{ maxWidth: 450 }}>
               <Header as='h2' color='teal' textAlign='center'>
-                Login
-            </Header>
+                登入
+              </Header>
               <Form size='large' loading={this.state.loading} error={this.state.error}>
                 <Segment stacked>
                   <Form.Input
                     fluid
                     icon='user'
                     iconPosition='left'
-                    placeholder='E-mail address'
-                    // tslint:disable-next-line:jsx-no-lambda
-                    onChange={(e, { value }) => { this.handleChange('email', value as string); }}
+                    placeholder='電子信箱'
+                    onChange={(e, { value }) => {
+                      this.handleChange('email', value as string);
+                    }}
                   />
                   <Form.Input
                     fluid
                     icon='lock'
                     iconPosition='left'
-                    placeholder='Password'
+                    placeholder='密碼'
                     type='password'
                     // tslint:disable-next-line:jsx-no-lambda
-                    onChange={(e, { value }) => { this.handleChange('password', value as string); }}
+                    onChange={(e, { value }) => {
+                      this.handleChange('password', value as string);
+                    }}
                   />
-                  <Button color='teal' fluid size='large' disabled={this.state.loading} onClick={this.onClick}>
-                    Login
+                  <Button
+                    color='teal'
+                    fluid
+                    size='large'
+                    disabled={this.state.loading}
+                    onClick={this.onClick}
+                  >
+                    登入
                   </Button>
                 </Segment>
-                <Message
-                  error
-                  header='Error'
-                  content='Wrong email or password.'
-                />
+                <Message error header='Error' content='信箱或是密碼錯誤' />
               </Form>
-              <Message>
+              {/* <Message>
                 New to us? <a href='#'>Sign Up</a>
-              </Message>
+              </Message> */}
             </Grid.Column>
           </Grid>
         </Segment>

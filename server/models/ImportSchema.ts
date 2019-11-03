@@ -1,7 +1,13 @@
 import { Schema } from 'mongoose';
 
-export type FieldSchemaType = 'string' | 'int' | 'date' | 'float' | 'promotion';
-export type FieldSchemaBelong = 'transaction' | 'item' | 'promotion';
+export type FieldSchemaType =
+  | 'string'
+  | 'int'
+  | 'date'
+  | 'float'
+  | 'promotion'
+  | 'method';
+export type FieldSchemaBelong = 'transaction' | 'item' | 'promotion' | 'method';
 export type FieldSchemaAction = 'delete' | 'reserve';
 
 export interface FieldSchemaInterface {
@@ -19,6 +25,7 @@ export interface ImportSchemaInterface {
   itemName: string;
   itemFields: FieldSchemaInterface[];
   transactionName: string;
+  transactionTime: string;
 }
 
 const FieldSchema = new Schema<FieldSchemaInterface>({
@@ -51,6 +58,10 @@ const ImportSchema = new Schema<ImportSchemaInterface>({
   },
   itemFields: [FieldSchema],
   transactionName: {
+    type: String,
+    required: true,
+  },
+  transactionTime: {
     type: String,
     required: true,
   },

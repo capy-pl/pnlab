@@ -1,14 +1,10 @@
 import React from 'react';
-import {
-  Button,
-  Message,
-  Modal,
-} from 'semantic-ui-react';
+import { Button, Message, Modal } from 'semantic-ui-react';
 
 import Promotion, { PromotionModel, PromotionType } from '../../PnApp/model/Promotion';
 import FormAddPromotion from '../form/FormAddPromotion';
 
-interface ModalAddPromotionState {
+interface State {
   show: boolean;
   loading: boolean;
   name: string;
@@ -21,44 +17,31 @@ interface ModalAddPromotionState {
   errorMessage: string;
 }
 
-interface ModalAddPromotionProps {
+interface Props {
   onAdd: () => Promise<void>;
 }
 
-export default class ModalAddPromotion extends React.PureComponent<ModalAddPromotionProps, ModalAddPromotionState> {
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      show: false,
-      loading: false,
-      error: false,
-      name: '',
-      type: 'direct',
-      groupOne: [],
-      groupTwo: [],
-      startTime: new Date(1990, 1, 1, 8),
-      endTime: new Date(1990, 1, 1, 8),
-      errorMessage: '',
-    };
+export default class ModalAddPromotion extends React.PureComponent<Props, State> {
+  public state: State = {
+    show: false,
+    loading: false,
+    error: false,
+    name: '',
+    type: 'direct',
+    groupOne: [],
+    groupTwo: [],
+    startTime: new Date(1990, 1, 1, 8),
+    endTime: new Date(1990, 1, 1, 8),
+    errorMessage: '',
+  };
 
-    this.add = this.add.bind(this);
-    this.show = this.show.bind(this);
-    this.close = this.close.bind(this);
-    this.nameChange = this.nameChange.bind(this);
-    this.typeChange = this.typeChange.bind(this);
-    this.groupOneChange = this.groupOneChange.bind(this);
-    this.groupTwoChange = this.groupTwoChange.bind(this);
-    this.startTimeChange = this.startTimeChange.bind(this);
-    this.endTimeChange = this.endTimeChange.bind(this);
-  }
-
-  public show() {
+  public show = () => {
     this.setState({
       show: true,
     });
-  }
+  };
 
-  public close() {
+  public close = () => {
     this.setState({
       show: false,
       name: '',
@@ -70,9 +53,9 @@ export default class ModalAddPromotion extends React.PureComponent<ModalAddPromo
       error: false,
       errorMessage: '',
     });
-  }
+  };
 
-  public validate(): boolean {
+  public validate = () => {
     const keys = {
       name: '名稱',
       type: '種類',
@@ -82,7 +65,7 @@ export default class ModalAddPromotion extends React.PureComponent<ModalAddPromo
       endTime: '結束時間',
     };
     for (const key in keys) {
-      if (!(this.state[key])) {
+      if (!this.state[key]) {
         this.setState({
           error: true,
           errorMessage: `${keys[key]}尚未填寫。`,
@@ -107,7 +90,10 @@ export default class ModalAddPromotion extends React.PureComponent<ModalAddPromo
       return false;
     }
 
-    if (this.state.type === 'combination' && (!this.state.groupTwo || !this.state.groupTwo.length)) {
+    if (
+      this.state.type === 'combination' &&
+      (!this.state.groupTwo || !this.state.groupTwo.length)
+    ) {
       this.setState({
         error: true,
         errorMessage: `產品群2為空。`,
@@ -116,46 +102,46 @@ export default class ModalAddPromotion extends React.PureComponent<ModalAddPromo
     }
 
     return true;
-  }
+  };
 
-  public typeChange(e, data: {[key: string]: any}): void {
+  public typeChange = (e, data: { [key: string]: any }) => {
     this.setState({
       type: data.value,
       groupTwo: [],
     });
-  }
+  };
 
-  public nameChange(e, data: { [key: string]: any }): void {
+  public nameChange = (e, data: { [key: string]: any }) => {
     this.setState({
       name: data.value,
     });
-  }
+  };
 
-  public groupOneChange(e, data: { [key: string]: any }): void {
+  public groupOneChange = (e, data: { [key: string]: any }) => {
     this.setState({
       groupOne: data.value,
     });
-  }
+  };
 
-  public groupTwoChange(e, data: { [key: string]: any }): void {
+  public groupTwoChange = (e, data: { [key: string]: any }) => {
     this.setState({
       groupTwo: data.value,
     });
-  }
+  };
 
-  public startTimeChange(e, dateTime: Date): void {
+  public startTimeChange = (e, dateTime: Date) => {
     this.setState({
       startTime: dateTime,
     });
-  }
+  };
 
-  public endTimeChange(e, dateTime: Date): void {
+  public endTimeChange = (e, dateTime: Date) => {
     this.setState({
       endTime: dateTime,
     });
-  }
+  };
 
-  public add(): void {
+  public add = () => {
     if (this.validate()) {
       this.setState({ loading: true }, async () => {
         try {
@@ -182,24 +168,20 @@ export default class ModalAddPromotion extends React.PureComponent<ModalAddPromo
         }
       });
     }
-  }
+  };
 
   public render() {
     return (
       <React.Fragment>
         <Button
-          color='blue'
+          color='teal'
           onClick={this.show}
           floated='right'
           style={{ marginBottom: '5px' }}
         >
           新增促銷
         </Button>
-        <Modal
-          open={this.state.show}
-          centered={false}
-          closeOnDimmerClick={false}
-        >
+        <Modal open={this.state.show} centered={false} closeOnDimmerClick={false}>
           <Modal.Header>新增促銷</Modal.Header>
           <Modal.Content>
             <FormAddPromotion
@@ -213,16 +195,17 @@ export default class ModalAddPromotion extends React.PureComponent<ModalAddPromo
               startTimeChange={this.startTimeChange}
               endTimeChange={this.endTimeChange}
             />
-          <Message
-            hidden={!this.state.error}
-            error
-          >
-            {this.state.errorMessage}
-          </Message>
+            <Message hidden={!this.state.error} error>
+              {this.state.errorMessage}
+            </Message>
           </Modal.Content>
           <Modal.Actions>
-            <Button loading={this.state.loading} onClick={this.close} color='red'>取消</Button>
-            <Button loading={this.state.loading} onClick={this.add}>新增</Button>
+            <Button loading={this.state.loading} onClick={this.close} color='red'>
+              取消
+            </Button>
+            <Button loading={this.state.loading} onClick={this.add}>
+              新增
+            </Button>
           </Modal.Actions>
         </Modal>
       </React.Fragment>

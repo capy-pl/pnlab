@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-  Button,
-  Message,
-  Modal,
-} from 'semantic-ui-react';
+import { Button, Message, Modal } from 'semantic-ui-react';
 
 import Promotion, { PromotionModel, PromotionType } from '../../PnApp/model/Promotion';
 import { FormEditPromotion } from '../form';
@@ -26,7 +22,10 @@ interface ModalEditPromotionProps {
   model: Promotion;
 }
 
-export default class ModalAddPromotion extends React.PureComponent<ModalEditPromotionProps, ModalEditPromotionState> {
+export default class ModalAddPromotion extends React.PureComponent<
+  ModalEditPromotionProps,
+  ModalEditPromotionState
+> {
   constructor(props: any) {
     super(props);
     const { model } = this.props;
@@ -42,29 +41,19 @@ export default class ModalAddPromotion extends React.PureComponent<ModalEditProm
       endTime: model.endTime,
       errorMessage: '',
     };
-
-    this.save = this.save.bind(this);
-    this.show = this.show.bind(this);
-    this.close = this.close.bind(this);
-    this.nameChange = this.nameChange.bind(this);
-    this.typeChange = this.typeChange.bind(this);
-    this.groupOneChange = this.groupOneChange.bind(this);
-    this.groupTwoChange = this.groupTwoChange.bind(this);
-    this.startTimeChange = this.startTimeChange.bind(this);
-    this.endTimeChange = this.endTimeChange.bind(this);
   }
 
-  public show() {
+  public show = () => {
     this.setState({
       show: true,
     });
-  }
+  };
 
-  public close() {
+  public close = () => {
     this.setState({
       show: false,
     });
-  }
+  };
 
   public validate(): boolean {
     const keys = {
@@ -76,7 +65,7 @@ export default class ModalAddPromotion extends React.PureComponent<ModalEditProm
       endTime: '結束時間',
     };
     for (const key in keys) {
-      if (!(this.state[key])) {
+      if (!this.state[key]) {
         this.setState({
           error: true,
           errorMessage: `${keys[key]}尚未填寫。`,
@@ -101,7 +90,10 @@ export default class ModalAddPromotion extends React.PureComponent<ModalEditProm
       return false;
     }
 
-    if (this.state.type === 'combination' && (!this.state.groupTwo || !this.state.groupTwo.length)) {
+    if (
+      this.state.type === 'combination' &&
+      (!this.state.groupTwo || !this.state.groupTwo.length)
+    ) {
       this.setState({
         error: true,
         errorMessage: `產品群2為空。`,
@@ -112,44 +104,44 @@ export default class ModalAddPromotion extends React.PureComponent<ModalEditProm
     return true;
   }
 
-  public typeChange(e, data: { [key: string]: any }): void {
+  public typeChange = (e, data: { [key: string]: any }) => {
     this.setState({
       type: data.value,
       groupTwo: [],
     });
-  }
+  };
 
-  public nameChange(e, data: { [key: string]: any }): void {
+  public nameChange = (e, data: { [key: string]: any }) => {
     this.setState({
       name: data.value,
     });
-  }
+  };
 
-  public groupOneChange(e, data: { [key: string]: any }): void {
+  public groupOneChange = (e, data: { [key: string]: any }) => {
     this.setState({
       groupOne: data.value,
     });
-  }
+  };
 
-  public groupTwoChange(e, data: { [key: string]: any }): void {
+  public groupTwoChange = (e, data: { [key: string]: any }) => {
     this.setState({
       groupTwo: data.value,
     });
-  }
+  };
 
-  public startTimeChange(e, dateTime: Date): void {
+  public startTimeChange = (e, dateTime: Date) => {
     this.setState({
       startTime: dateTime,
     });
-  }
+  };
 
-  public endTimeChange(e, dateTime: Date): void {
+  public endTimeChange = (e, dateTime: Date) => {
     this.setState({
       endTime: dateTime,
     });
-  }
+  };
 
-  public save(): void {
+  public save = () => {
     if (this.validate()) {
       this.setState({ loading: true }, async () => {
         try {
@@ -176,23 +168,20 @@ export default class ModalAddPromotion extends React.PureComponent<ModalEditProm
         }
       });
     }
-  }
+  };
 
   public render() {
     return (
       <React.Fragment>
         <Button
-          color='green'
+          color='blue'
+          size='small'
           onClick={this.show}
           icon='edit'
           style={{ marginBottom: '5px' }}
           content='編輯'
         />
-        <Modal
-          open={this.state.show}
-          centered={false}
-          closeOnDimmerClick={false}
-        >
+        <Modal open={this.state.show} centered={false} closeOnDimmerClick={false}>
           <Modal.Header>編輯促銷</Modal.Header>
           <Modal.Content>
             <FormEditPromotion
@@ -207,16 +196,17 @@ export default class ModalAddPromotion extends React.PureComponent<ModalEditProm
               startTimeChange={this.startTimeChange}
               endTimeChange={this.endTimeChange}
             />
-            <Message
-              hidden={!this.state.error}
-              error
-            >
+            <Message hidden={!this.state.error} error>
               {this.state.errorMessage}
             </Message>
           </Modal.Content>
           <Modal.Actions>
-            <Button loading={this.state.loading} onClick={this.close} color='red'>取消</Button>
-            <Button loading={this.state.loading} onClick={this.save}>儲存</Button>
+            <Button loading={this.state.loading} onClick={this.close} color='red'>
+              取消
+            </Button>
+            <Button loading={this.state.loading} onClick={this.save}>
+              儲存
+            </Button>
           </Modal.Actions>
         </Modal>
       </React.Fragment>

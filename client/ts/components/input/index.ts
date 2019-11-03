@@ -1,5 +1,4 @@
+import AddReportTime from './AddReportTime';
 import DatetimeInput from './Datetime';
 
-export {
-  DatetimeInput,
-};
+export { DatetimeInput, AddReportTime };

@@ -4,6 +4,7 @@ import Category from './category';
 import Promotion from './promotion';
 import Report from './report';
 import User from './user';
+import Upload from './upload';
 
 export default {
   Auth,
@@ -12,4 +13,5 @@ export default {
   User,
   Report,
   Promotion,
+  Upload,
 };

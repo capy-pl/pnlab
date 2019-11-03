@@ -1,7 +1,10 @@
 from datetime import datetime
+import os
+
 
 def to_datetime(string):
     return datetime.strptime(string, '%Y-%m-%dT%H:%M:%S.000Z')
+
 
 def to_query(conditions):
     default_query = {
@@ -11,7 +14,6 @@ def to_query(conditions):
     }
     item_query = {
     }
-    promotions = []
     for condition in conditions:
         if condition['type'] == 'string':
             if len(condition['values']) > 0:
@@ -20,27 +22,45 @@ def to_query(conditions):
                         '$in': condition['values']
                     }
                 if condition['belong'] == 'item':
-                    item_query[condition['name']] = {
-                        '$in': condition['values']
-                    }
+                    if '$or' not in item_query:
+                        item_query['$or'] = []
+                    item_query['$or'].append({
+                        condition['name']: {
+                            '$in': condition['values']
+                        }
+                    })
         if condition['type'] == 'date':
             if len(condition['values']) > 0:
                 if len(condition['values']) == 2:
-                    a = to_datetime(condition['values'])
-                    b = to_datetime(condition['values'])
-                    max_time = a if a > b else b
-                    min_time = b if a > b else a
+                    min_time = to_datetime(condition['values'][0])
+                    max_time = to_datetime(condition['values'][1])
                     default_query[condition['name']] = {
                         '$lte': max_time,
                         '$gte': min_time
                     }
                 else:
-                    raise ValueError('Date condition should contain a max and a min value.')
-        if condition['type'] == 'promotion':
-            for promotion in condition['values']:
-                promotions.append(promotion)
+                    raise ValueError(
+                        'Date condition should contain a max and a min value.')
         if len(item_query.keys()) > 0:
             default_query['items'] = {
                 '$elemMatch': item_query
             }
-    return default_query, promotions
+    return default_query
+
+
+def extract_promotion(conditions):
+    for condition in conditions:
+        if condition['type'] == 'promotion':
+            return condition['values']
+    return []
+
+
+def extract_method(conditions) -> str:
+    for condition in conditions:
+        if condition['type'] == 'method':
+            return condition['values'][0]
+    return 'frequency'
+
+
+def bigger_than_256mb(file_path):
+    return os.stat(file_path).st_size > 256 * 2 ** 20

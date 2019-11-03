@@ -8,13 +8,16 @@ import '../../models';
 
 dotenv.config();
 
-const { MONGO_PORT, MONGO_DB_NAME } = process.env;
+const { MONGO_DB_ADDRESS, MONGO_PORT, MONGO_DB_NAME } = process.env;
 
 export default async function connectMongo(): Promise<mongoose.Connection | undefined> {
   try {
-    const connection = await mongoose.connect(`mongodb://127.0.0.1:${MONGO_PORT}/${MONGO_DB_NAME}`, {
-      useNewUrlParser: true,
-    });
+    const connection = await mongoose.connect(
+      `mongodb://${MONGO_DB_ADDRESS}:${MONGO_PORT}/${MONGO_DB_NAME}`,
+      {
+        useNewUrlParser: true,
+      },
+    );
     Logger.info('Successfully connect to mongodb.');
     return connection.connection;
   } catch (err) {
@@ -26,9 +29,12 @@ export default async function connectMongo(): Promise<mongoose.Connection | unde
 
 export async function connectTestMongo(): Promise<mongoose.Connection | undefined> {
   try {
-    const connection = await mongoose.connect(`mongodb://127.0.0.1:${MONGO_PORT}/${MONGO_DB_NAME}_test`, {
-      useNewUrlParser: true,
-    });
+    const connection = await mongoose.connect(
+      `mongodb://${MONGO_DB_ADDRESS}:${MONGO_PORT}/${MONGO_DB_NAME}_test`,
+      {
+        useNewUrlParser: true,
+      },
+    );
     Logger.info('Successfully connect to mongodb.');
     return connection.connection;
   } catch (err) {

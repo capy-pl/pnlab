@@ -1,60 +1,50 @@
 import React from 'react';
-import {
-  Button,
-  Header,
-  Icon,
-  Modal,
-} from 'semantic-ui-react';
+import { Button, Header, Modal } from 'semantic-ui-react';
 
 import Promotion from '../../PnApp/model/Promotion';
 
-interface ModalDeletePromotionState {
+interface State {
   show: boolean;
   loading: boolean;
   error: boolean;
 }
 
-interface ModalDeletePromotionProps {
+interface Props {
   onSave: () => Promise<void>;
   model: Promotion;
 }
 
-export default class ModalDeletePromotion
-  extends React.PureComponent<ModalDeletePromotionProps, ModalDeletePromotionState> {
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      show: false,
-      loading: false,
-      error: false,
-    };
+export default class ModalDeletePromotion extends React.PureComponent<Props, State> {
+  public state: State = {
+    show: false,
+    loading: false,
+    error: false,
+  };
 
-    this.delete = this.delete.bind(this);
-    this.show = this.show.bind(this);
-    this.close = this.close.bind(this);
-  }
-
-  public show(): void {
+  public show = () => {
     this.setState({
       show: true,
     });
-  }
+  };
 
-  public close(): void {
+  public close = () => {
     this.setState({
       show: false,
     });
-  }
+  };
 
-  public async delete(): Promise<void> {
-    this.setState({
-      loading: true,
-    }, async () => {
-      await this.props.model.delete();
-      await this.props.onSave();
-      this.close();
-    });
-  }
+  public delete = () => {
+    this.setState(
+      {
+        loading: true,
+      },
+      async () => {
+        await this.props.model.delete();
+        await this.props.onSave();
+        this.close();
+      },
+    );
+  };
 
   public render() {
     return (
@@ -66,12 +56,8 @@ export default class ModalDeletePromotion
           style={{ marginBottom: '5px' }}
           content='刪除'
         />
-        <Modal
-          open={this.state.show}
-          closeOnDimmerClick={false}
-          basic
-        >
-          <Header content={`刪除促銷「${this.props.model.name}」`}/>
+        <Modal open={this.state.show} closeOnDimmerClick={false} basic>
+          <Header content={`刪除促銷「${this.props.model.name}」`} />
           <Modal.Content>
             <h3>確認是否要刪除促銷{this.props.model.name}?</h3>
           </Modal.Content>

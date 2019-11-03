@@ -28,7 +28,10 @@ class Navbar extends PureComponent<RouteComponentProps, MenuState> {
     history.push('/account/login');
   }
 
-  public onClick(event: React.MouseEvent<HTMLAnchorElement, MouseEvent>, { name }: MenuItemProps): void {
+  public onClick(
+    event: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+    { name }: MenuItemProps,
+  ): void {
     this.setState({ activeItem: name as string });
   }
 
@@ -45,20 +48,27 @@ class Navbar extends PureComponent<RouteComponentProps, MenuState> {
             as={Link}
             active={activeItem === 'home'}
           >
-           首頁
+            首頁
+          </Menu.Item>
+          <Menu.Item
+            name={'analysis'}
+            onClick={this.onClick}
+            to={'/analysis'}
+            as={Link}
+            active={activeItem === 'analysis'}
+          >
+            過去儲存圖庫與比較
           </Menu.Item>
           <Menu.Menu position='right'>
             <Dropdown item text={this.state.user ? this.state.user.email : ''}>
               <Dropdown.Menu>
-                <Dropdown.Item
-                  as={Link}
-                  to='/settings'
-                >
+                <Dropdown.Item as={Link} to='/upload'>
+                  上傳資料
+                </Dropdown.Item>
+                <Dropdown.Item as={Link} to='/settings/profile'>
                   設定
                 </Dropdown.Item>
-                <Dropdown.Item onClick={this.logout}>
-                  登出
-                </Dropdown.Item>
+                <Dropdown.Item onClick={this.logout}>登出</Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
           </Menu.Menu>

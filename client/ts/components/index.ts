@@ -2,28 +2,19 @@ import Auth from './Auth';
 import Loader from './Loader';
 import Switch from './route/Switch';
 
-import {
-  DropdownSearch,
-} from './dropdown';
+import { DropdownSearch } from './dropdown';
 
 import GraphView from './graph';
 
-import {
-  SearchHistoryItem,
-} from './list';
+import { SearchHistoryItem } from './list';
 
-import {
-  Navbar,
-  SettingMenu,
-} from './menu';
+import { Navbar, SettingMenu } from './menu';
 
-import {
-  ModalConfirmReport,
-} from './modal';
+import { ModalConfirmReport } from './modal';
 
-import {
-  DatetimeInput,
-} from './input';
+import { DatetimeInput } from './input';
+
+import { Window } from './window';
 
 export {
   Auth,
@@ -36,4 +27,5 @@ export {
   SettingMenu,
   DatetimeInput,
   ModalConfirmReport,
+  Window,
 };

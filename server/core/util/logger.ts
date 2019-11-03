@@ -11,7 +11,7 @@ const INFO = 20;
 const DEBUG = 10;
 const DEFAULT = 0;
 
-const levelMap: {[key: string]: number} = {
+const levelMap: { [key: string]: number } = {
   critical: CRITICAL,
   error: ERROR,
   warning: WARNING,
@@ -56,7 +56,11 @@ class Logger {
 
   private logError(level: string, message: string): void {
     if (levelMap[this.level] <= levelMap[level]) {
-      console.log(`${Color.FgRed}[${moment().format()}] ${level.toUpperCase()} ${message}${Color.Reset}`);
+      console.log(
+        `${Color.FgRed}[${moment().format()}] ${level.toUpperCase()} ${message}${
+          Color.Reset
+        }`,
+      );
     }
   }
 
