@@ -5,7 +5,7 @@ import { ChildProcess } from 'child_process';
 import app from './App';
 import dbConnect from './core/db';
 import amqpConnect from './core/mq';
-import { createFolders } from './core/tasks';
+import { createFolders, syncdb } from './core/tasks';
 import { startPythonWorker } from './core/process';
 import { command, Logger } from './core/util';
 import startSocketServer from './core/ws';
@@ -20,6 +20,7 @@ let pyConsumers: ChildProcess;
 
 server.listen(process.env.PORT, async () => {
   await Promise.all([amqpConnect(), dbConnect(), createFolders()]);
+  await syncdb();
   startSocketServer(server);
   if (command.python) {
     try {

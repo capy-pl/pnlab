@@ -21,12 +21,14 @@ brew install python3
 ### 安裝 Node.js 和 yarn
 
 1. [Node.js下載連結](https://nodejs.org/en/)。安裝LTS版本即可。
+
 ```bash=
 # For mac user
 brew install node@10
 ```
 
 2. [yarn下載連結](https://yarnpkg.com/lang/en/docs/install/#mac-stable)。這是一個Node.js管理套件的工具，可以用於取代npm。
+3. 
 ```bash=
 brew install yarn
 ```
@@ -38,9 +40,9 @@ brew install yarn
 # For mac user
 brew install mongodb-community
 ```
+
 2. 如果你是windows的使用者，下載完安裝檔安裝後，MongoDB應該會自動在背景執行，不需要其他動作。可以打開工作管理員確定是否有在執行。
 3. 如果你是mac的使用者而且利用`homebrew`來管理套件時，可能需要另外打以下指令開啟服務。
-
 
 ```bash=
 brew services start  mongodb-community
@@ -49,7 +51,27 @@ brew services start  mongodb-community
 brew services list
 ```
 
-### Install RabbitMQ
+4. 創造測試用的db使用者
+
+```bash=
+# 用command line tool連進mongo shell。
+mongo
+
+# 複製下面這兩個指令，貼進mongo shell裡面。
+use pn;
+db.createUser({
+    user: 'test',
+    pwd: 'test',
+    roles: [
+        {
+            role: 'readWrite',
+            db: 'pn'
+        },
+    ]
+});
+```
+
+### 安裝 RabbitMQ
 
 1. [RabbitMQ下載連結](https://www.rabbitmq.com/download.html).
 
@@ -130,25 +152,17 @@ yarn
 git checkout dev
 ```
 
-#### 7. 初始化database.
-
-這個指令會將default的系統使用者，和用來寫入資料的schema寫進資料庫裡面。
-
-```bash=
-grunt initdb
-```
-
-#### 8. 開啟 development server。
+#### 7. 開啟 development server。
 
 ```bash=
 yarn dev
 ```
 
-#### 9. 打開瀏覽器，然後在網址列輸入 `localhost:3000`。
+#### 8. 打開瀏覽器，然後在網址列輸入 `localhost:3000`。
 
 應該會看到一個登入畫面，要輸入帳號跟密碼才能登入，請聯絡系統開發（系統管理）者取得帳號密碼。
 
-#### 10. 上傳資料。
+#### 9. 上傳資料。
 
 一開始資料庫裡面沒有任何交易資料，所以需要將交易資料上傳。
 

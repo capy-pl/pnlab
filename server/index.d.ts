@@ -14,6 +14,8 @@ declare global {
       VERSION: string;
       MONGO_DB_NAME: string;
       MONGO_PORT: number;
+      MONGO_DB_USER: string;
+      MONGO_DB_PASS: string;
       MONGO_DB_ADDRESS: string;
       RABBIT_MQ_ADDRESS: string;
       PORT: number;

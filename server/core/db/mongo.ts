@@ -8,7 +8,13 @@ import '../../models';
 
 dotenv.config();
 
-const { MONGO_DB_ADDRESS, MONGO_PORT, MONGO_DB_NAME } = process.env;
+const {
+  MONGO_DB_ADDRESS,
+  MONGO_PORT,
+  MONGO_DB_NAME,
+  MONGO_DB_PASS,
+  MONGO_DB_USER,
+} = process.env;
 
 export default async function connectMongo(): Promise<mongoose.Connection | undefined> {
   try {
@@ -16,6 +22,8 @@ export default async function connectMongo(): Promise<mongoose.Connection | unde
       `mongodb://${MONGO_DB_ADDRESS}:${MONGO_PORT}/${MONGO_DB_NAME}`,
       {
         useNewUrlParser: true,
+        user: MONGO_DB_USER,
+        pass: MONGO_DB_PASS,
       },
     );
     Logger.info('Successfully connect to mongodb.');
@@ -33,6 +41,8 @@ export async function connectTestMongo(): Promise<mongoose.Connection | undefine
       `mongodb://${MONGO_DB_ADDRESS}:${MONGO_PORT}/${MONGO_DB_NAME}_test`,
       {
         useNewUrlParser: true,
+        user: MONGO_DB_USER,
+        pass: MONGO_DB_PASS,
       },
     );
     Logger.info('Successfully connect to mongodb.');
