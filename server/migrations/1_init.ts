@@ -9,50 +9,6 @@ export default class MigrationInit1 implements Migration {
   public async apply() {
     const { connection } = mongoose;
     if (connection) {
-      // drop users
-      try {
-        await connection.dropCollection('users');
-      } catch (err) {
-        Logger.info('No default users collection, continue.');
-      }
-
-      // drop organization
-      try {
-        await connection.dropCollection('orgs');
-      } catch (err) {
-        Logger.info('No default users collection, continue.');
-      }
-
-      try {
-        await connection.dropCollection('reports');
-      } catch (err) {
-        Logger.info('No default report collection, continue.');
-      }
-
-      try {
-        await connection.dropCollection('analyses');
-      } catch (err) {
-        Logger.info('No default analyses collection, continue.');
-      }
-
-      try {
-        await connection.dropCollection('promotions');
-      } catch (err) {
-        Logger.info('No default promotions collection, continue.');
-      }
-
-      try {
-        await connection.dropCollection('importHistories');
-      } catch (err) {
-        Logger.info('No default import histories collection, continue.');
-      }
-
-      try {
-        await connection.dropCollection('actions');
-      } catch (err) {
-        Logger.info('No default actions collection, continue.');
-      }
-
       const defaultSchema: ImportSchemaInterface = {
         transactionTime: '資料日期',
         transactionFields: [
@@ -135,27 +91,27 @@ export default class MigrationInit1 implements Migration {
         Logger.info('Collection items alread exist.');
       }
 
-      // try {
-      //   Logger.info('Create unique index for item name.');
-      //   await connection.db.collection('items').createIndex(defaultSchema.itemName, {
-      //     unique: true,
-      //     dropDups: true,
-      //   });
-      // } catch (err) {
-      //   Logger.error(err);
-      // }
+      try {
+        Logger.info('Create unique index for item name.');
+        await connection.db.collection('items').createIndex(defaultSchema.itemName, {
+          unique: true,
+          dropDups: true,
+        });
+      } catch (err) {
+        Logger.error(err);
+      }
 
-      // try {
-      //   Logger.info('Create unique index for transactions id.');
-      //   await connection.db
-      //     .collection('transactions')
-      //     .createIndex(defaultSchema.transactionName, {
-      //       unique: true,
-      //       dropDups: true,
-      //     });
-      // } catch (err) {
-      //   Logger.error(err);
-      // }
+      try {
+        Logger.info('Create unique index for transactions id.');
+        await connection.db
+          .collection('transactions')
+          .createIndex(defaultSchema.transactionName, {
+            unique: true,
+            dropDups: true,
+          });
+      } catch (err) {
+        Logger.error(err);
+      }
 
       const admin = new User({
         email: 'admin@gmail.com',
