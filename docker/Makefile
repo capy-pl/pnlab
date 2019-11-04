@@ -1,10 +1,10 @@
 .PHONY: build
 
 build:
-	docker build -t pnlab:1.0.0 -f server.Dockerfile ..
+	docker build -t pnlab:1.0.1 -f server.Dockerfile ..
 
 build-py:
-	docker build -t pnlab-py:1.0.0 -f python.Dockerfile ..
+	docker build -t pnlab-py:1.0.1 -f python.Dockerfile ..
 up:
 	docker-compose up
 run:
@@ -14,7 +14,7 @@ run:
 	--mount source=pnlab,target=/var/pnlab/temp \
 	-p 3000:3000 \
 	--name pn-server \
-	pnlab:1.0.0
+	pnlab:1.0.1
 
 run-py:
 	docker run \
@@ -22,7 +22,7 @@ run-py:
 	-d \
 	--mount source=pnlab,target=/var/pnlab/temp \
 	--name pn-python \
-	pnlab-py:1.0.0
+	pnlab-py:1.0.1
 
 run-db:
 	docker run \

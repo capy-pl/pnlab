@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   pn-server:
-    image: pnlab-server:1.0.0
+    image: pnlab-server:1.0.1
     build:
       context: ..
       dockerfile: docker/server.Dockerfile
@@ -16,7 +16,7 @@ services:
     networks:
       - pn-net
   pn-python:
-    image: pnlab-service:1.0.0
+    image: pnlab-service:1.0.1
     build:
       context: ..
       dockerfile: docker/python.Dockerfile
@@ -34,6 +34,10 @@ services:
       - pn-net
     ports:
       - '27018:27017'
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=test
+      - MONGO_INITDB_ROOT_PASSWORD=test
+      - MONGO_INITDB_DATABASE=pn
   mq:
     image: rabbitmq:latest
     container_name: pn-mq
