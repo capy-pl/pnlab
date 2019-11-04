@@ -28,8 +28,11 @@ services:
     networks:
       - pn-net
   db:
-    image: mongo:latest
+    image: mongo:pnlab
     container_name: pn-db
+    build:
+      context: ..
+      dockerfile: docker/mongo.Dockerfile
     networks:
       - pn-net
     ports:

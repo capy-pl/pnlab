@@ -26,12 +26,6 @@ cd docker
 docker-compose up
 ```
 
-5. 初始化資料庫。
-
-```shell
-grunt initdb:docker
-```
-
 6. 打開瀏覽器，輸入 `localhost:3000`，應該可以看到登入畫面。請詢問其他人帳號密碼，可以開始上傳資料。
 
 ## 附註

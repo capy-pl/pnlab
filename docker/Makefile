@@ -24,13 +24,15 @@ run-py:
 	--name pn-python \
 	pnlab-py:1.0.1
 
+build-db:
+	docker build -t mongo:pnlab -f mongo.Dockerfile ..
+
 run-db:
 	docker run \
 	--network pnlab \
-	-d \
 	-p 27018:27017 \
 	--name pn-db \
-	mongo:latest
+	mongo:pnlab
 
 run-mq:
 	docker run \

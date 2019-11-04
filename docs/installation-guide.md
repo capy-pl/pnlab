@@ -64,8 +64,8 @@ db.createUser({
     pwd: 'test',
     roles: [
         {
-            role: "readWrite",
-            db: "pn"
+            role: 'readWrite',
+            db: 'pn'
         },
     ]
 });
@@ -152,25 +152,17 @@ yarn
 git checkout dev
 ```
 
-#### 7. 初始化database.
-
-這個指令會將default的系統使用者，和用來寫入資料的schema寫進資料庫裡面。
-
-```bash=
-grunt initdb
-```
-
-#### 8. 開啟 development server。
+#### 7. 開啟 development server。
 
 ```bash=
 yarn dev
 ```
 
-#### 9. 打開瀏覽器，然後在網址列輸入 `localhost:3000`。
+#### 8. 打開瀏覽器，然後在網址列輸入 `localhost:3000`。
 
 應該會看到一個登入畫面，要輸入帳號跟密碼才能登入，請聯絡系統開發（系統管理）者取得帳號密碼。
 
-#### 10. 上傳資料。
+#### 9. 上傳資料。
 
 一開始資料庫裡面沒有任何交易資料，所以需要將交易資料上傳。
 
