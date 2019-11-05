@@ -39,7 +39,7 @@ router
 
 router
   .route('/:id/community/:communityId')
-  .all(loginRequired, checkExist(Report))
+  .all(loginRequired, checkExist(Report, { communities: 1 }))
   .get(GetCommunityInfo)
   .all(httpMethodNotSupport);
 
