@@ -146,7 +146,6 @@ export default class ModalUpload extends React.PureComponent<Props, State> {
 
   public onProgress = (event: ProgressEvent) => {
     if (event.lengthComputable) {
-      console.log(Math.ceil((event.loaded / event.total) * 100));
       this.setState({
         progress: Math.ceil((event.loaded / event.total) * 100),
       });

@@ -157,7 +157,6 @@ class ReportList extends PureComponent<RouteComponentProps, State> {
 
   public dbclick(id: string): () => void {
     return () => {
-      console.log('dbclick');
       if (this.clickTimeout) {
         window.clearTimeout(this.clickTimeout);
         this.clickTimeout = undefined;

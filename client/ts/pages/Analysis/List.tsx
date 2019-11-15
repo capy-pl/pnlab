@@ -133,8 +133,7 @@ class AnalysisList extends PureComponent<RouteComponentProps, State> {
   };
 
   public dbclick(id: string): (event: React.MouseEvent) => void {
-    return (event: React.MouseEvent) => {
-      console.log(event);
+    return () => {
       if (this.clickTimeout) {
         window.clearTimeout(this.clickTimeout);
         this.clickTimeout = undefined;

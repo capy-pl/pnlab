@@ -59,7 +59,7 @@ const Item = ({ active, item, click, dbclick }: ItemProps) => {
     <Table.Row
       active={!(item.status === 'error') && active}
       onClick={click}
-      onDoubleClick={dbclick}
+      onDoubleClick={item.status !== 'pending' ? dbclick : () => {}}
       style={{ clear: 'both' }}
       error={item.status === 'error'}
     >
