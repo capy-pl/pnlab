@@ -5,7 +5,6 @@ import Promotion, { PromotionModel, PromotionType } from '../../PnApp/model/Prom
 import { FormEditPromotion } from '../form';
 
 interface ModalEditPromotionState {
-  show: boolean;
   loading: boolean;
   name: string;
   type: PromotionType;
@@ -20,6 +19,8 @@ interface ModalEditPromotionState {
 interface ModalEditPromotionProps {
   onSave: () => Promise<void>;
   model: Promotion;
+  show: boolean;
+  close: () => void;
 }
 
 export default class ModalAddPromotion extends React.PureComponent<
@@ -30,7 +31,6 @@ export default class ModalAddPromotion extends React.PureComponent<
     super(props);
     const { model } = this.props;
     this.state = {
-      show: false,
       loading: false,
       error: false,
       name: model.name,
@@ -42,18 +42,6 @@ export default class ModalAddPromotion extends React.PureComponent<
       errorMessage: '',
     };
   }
-
-  public show = () => {
-    this.setState({
-      show: true,
-    });
-  };
-
-  public close = () => {
-    this.setState({
-      show: false,
-    });
-  };
 
   public validate(): boolean {
     const keys = {
@@ -155,11 +143,11 @@ export default class ModalAddPromotion extends React.PureComponent<
           };
 
           await this.props.model.update(promotion);
+          await this.props.onSave();
           this.setState({
             loading: false,
-            show: false,
           });
-          this.props.onSave();
+          this.props.close();
         } catch (error) {
           this.setState({
             error: true,
@@ -173,15 +161,7 @@ export default class ModalAddPromotion extends React.PureComponent<
   public render() {
     return (
       <React.Fragment>
-        <Button
-          color='blue'
-          size='small'
-          onClick={this.show}
-          icon='edit'
-          style={{ marginBottom: '5px' }}
-          content='編輯'
-        />
-        <Modal open={this.state.show} centered={false} closeOnDimmerClick={false}>
+        <Modal open={this.props.show} centered={false} closeOnDimmerClick={false}>
           <Modal.Header>編輯促銷</Modal.Header>
           <Modal.Content>
             <FormEditPromotion
@@ -201,7 +181,7 @@ export default class ModalAddPromotion extends React.PureComponent<
             </Message>
           </Modal.Content>
           <Modal.Actions>
-            <Button loading={this.state.loading} onClick={this.close} color='red'>
+            <Button loading={this.state.loading} onClick={this.props.close} color='red'>
               取消
             </Button>
             <Button loading={this.state.loading} onClick={this.save}>

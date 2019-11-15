@@ -1,11 +1,15 @@
 import { ModalDeletePromotion, ModalEditPromotion } from 'Component/modal';
 import React from 'react';
-import { Button, Table } from 'semantic-ui-react';
+import { Button, Table, Icon, Popup } from 'semantic-ui-react';
 import Promotion, { PromotionType } from '../../../PnApp/Model/Promotion';
 
-interface PromotionItemProps {
+interface Props {
   promotion: Promotion;
   onSave: () => Promise<void>;
+}
+
+interface State {
+  modal: string;
 }
 
 function toVerbose(str: PromotionType) {
@@ -18,34 +22,89 @@ function toVerbose(str: PromotionType) {
       return '';
   }
 }
+export default class PromotionItem extends React.PureComponent<Props, State> {
+  public state = {
+    modal: '',
+  };
 
-const PromotionItem = ({ promotion, onSave }: PromotionItemProps) => {
-  return (
-    <Table.Row style={{ clear: 'both' }}>
-      <Table.Cell textAlign='center' width='3'>
-        {promotion.name}
-      </Table.Cell>
-      <Table.Cell textAlign='center' width='3'>
-        {promotion.startTime.toLocaleDateString() === 'Invalid Date'
-          ? 'All'
-          : promotion.startTime.toLocaleDateString()}
-      </Table.Cell>
-      <Table.Cell textAlign='center' width='3'>
-        {promotion.endTime.toLocaleDateString() === 'Invalid Date'
-          ? 'All'
-          : promotion.endTime.toLocaleDateString()}
-      </Table.Cell>
-      <Table.Cell textAlign='center' width='3'>
-        {toVerbose(promotion.type)}
-      </Table.Cell>
-      <Table.Cell textAlign='center' width='4'>
-        <Button.Group>
-          <ModalEditPromotion onSave={onSave} model={promotion} />
-          <ModalDeletePromotion onSave={onSave} model={promotion} />
-        </Button.Group>
-      </Table.Cell>
-    </Table.Row>
-  );
-};
+  private close = () => {
+    this.setState({
+      modal: '',
+    });
+  };
 
-export default PromotionItem;
+  private open(name: string): () => void {
+    return () => {
+      document.body.click();
+      this.setState({
+        modal: name,
+      });
+    };
+  }
+
+  public render() {
+    return (
+      <Table.Row style={{ clear: 'both' }}>
+        <Table.Cell textAlign='center' width='4'>
+          {this.props.promotion.name}
+        </Table.Cell>
+        <Table.Cell textAlign='center' width='3'>
+          {this.props.promotion.startTime.toLocaleDateString() === 'Invalid Date'
+            ? 'All'
+            : this.props.promotion.startTime.toLocaleDateString()}
+        </Table.Cell>
+        <Table.Cell textAlign='center' width='3'>
+          {this.props.promotion.endTime.toLocaleDateString() === 'Invalid Date'
+            ? 'All'
+            : this.props.promotion.endTime.toLocaleDateString()}
+        </Table.Cell>
+        <Table.Cell textAlign='center' width='3'>
+          {toVerbose(this.props.promotion.type)}
+        </Table.Cell>
+        <Table.Cell textAlign='center' width='3'>
+          <Popup
+            on='click'
+            hideOnScroll
+            hoverable
+            trigger={
+              <Button basic size='tiny' icon>
+                <Icon name='ellipsis horizontal' />
+              </Button>
+            }
+          >
+            <Button.Group vertical basic>
+              <Button
+                color='blue'
+                size='mini'
+                onClick={this.open('edit')}
+                icon='edit'
+                style={{ marginBottom: '5px' }}
+                content='編輯'
+              />
+              <Button
+                color='red'
+                size='mini'
+                onClick={this.open('delete')}
+                icon='delete'
+                style={{ marginBottom: '5px' }}
+                content='刪除'
+              />
+            </Button.Group>
+          </Popup>
+          <ModalEditPromotion
+            close={this.close}
+            show={this.state.modal === 'edit'}
+            onSave={this.props.onSave}
+            model={this.props.promotion}
+          />
+          <ModalDeletePromotion
+            show={this.state.modal === 'delete'}
+            onSave={this.props.onSave}
+            model={this.props.promotion}
+            close={this.close}
+          />
+        </Table.Cell>
+      </Table.Row>
+    );
+  }
+}

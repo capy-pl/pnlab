@@ -11,34 +11,34 @@ import {
 } from 'semantic-ui-react';
 
 import Pager, { PagerState } from '../../PnApp/Pager';
-import { SearchHistoryItem } from 'Component/list';
+import { ReportItem } from 'Component/list';
 import { Report } from '../../PnApp/model';
 import { ReportPreview, ReportStatus } from '../../PnApp/model/Report';
 
-interface ReportListState extends PagerState {
+interface State extends PagerState {
   loading: boolean;
   reports: ReportPreview[];
+  active: string;
 }
 
-class ReportList extends PureComponent<RouteComponentProps, ReportListState> {
-  public listeningMap: Map<string, WebSocket>;
-  public pager: Pager;
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      loading: true,
-      reports: [],
-      startPage: 1,
-      pageLimit: 10,
-      limit: 15,
-      currentPage: 1,
-    };
+class ReportList extends PureComponent<RouteComponentProps, State> {
+  public state: State = {
+    loading: true,
+    reports: [],
+    startPage: 1,
+    pageLimit: 10,
+    limit: 15,
+    currentPage: 1,
+    active: '',
+  };
 
-    this.listeningMap = new Map<string, WebSocket>();
-
-    this.onFinish = this.onFinish.bind(this);
-    this.pager = new Pager('/api/report/page', this.state.pageLimit, this.state.limit);
-  }
+  private clickTimeout?: number;
+  private listeningMap: Map<string, WebSocket> = new Map<string, WebSocket>();
+  private pager: Pager = new Pager(
+    '/api/report/page',
+    this.state.pageLimit,
+    this.state.limit,
+  );
 
   public onFinish(id: string): (event: MessageEvent) => void {
     return (event) => {
@@ -155,11 +155,33 @@ class ReportList extends PureComponent<RouteComponentProps, ReportListState> {
     );
   };
 
-  public onLinkClick(path: string): () => void {
+  public dbclick(id: string): () => void {
     return () => {
-      this.props.history.push(`/report/${path}`);
+      console.log('dbclick');
+      if (this.clickTimeout) {
+        window.clearTimeout(this.clickTimeout);
+        this.clickTimeout = undefined;
+      }
+      this.props.history.push(`/report/${id}`);
     };
   }
+
+  public click(id: string): () => void {
+    return () => {
+      if (!this.clickTimeout) {
+        this.clickTimeout = window.setTimeout(() => {
+          this.setState({
+            active: this.state.active === id ? '' : id,
+          });
+          this.clickTimeout = undefined;
+        }, 100);
+      }
+    };
+  }
+
+  private add = () => {
+    this.props.history.push('/report/add');
+  };
 
   public getPageItems(): JSX.Element[] {
     const items: JSX.Element[] = [];
@@ -214,10 +236,12 @@ class ReportList extends PureComponent<RouteComponentProps, ReportListState> {
   public render() {
     const history = this.state.reports.map((report) => {
       return (
-        <SearchHistoryItem
+        <ReportItem
           key={report._id}
+          active={this.state.active === report._id}
           item={report}
-          onLinkClick={this.onLinkClick(report._id)}
+          click={this.click(report._id)}
+          dbclick={this.dbclick(report._id)}
         />
       );
     });
@@ -229,12 +253,12 @@ class ReportList extends PureComponent<RouteComponentProps, ReportListState> {
           icon
           labelPosition='right'
           style={{ margin: '10px' }}
-          onClick={this.onLinkClick('add')}
+          onClick={this.add}
         >
           <Icon name='add circle' />
           新增Report
         </Button>
-        <Table selectable color='teal'>
+        <Table color='teal'>
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell textAlign='right' colSpan='16'>
@@ -250,22 +274,21 @@ class ReportList extends PureComponent<RouteComponentProps, ReportListState> {
               </Table.HeaderCell>
             </Table.Row>
             <Table.Row>
-              <Table.HeaderCell width='1' textAlign='center'>
+              <Table.HeaderCell width='2' textAlign='center'>
                 狀態
               </Table.HeaderCell>
-              <Table.HeaderCell width='1' textAlign='center'>
+              <Table.HeaderCell width='3' textAlign='center'>
                 開始時間
               </Table.HeaderCell>
-              <Table.HeaderCell width='1' textAlign='center'>
+              <Table.HeaderCell width='3' textAlign='center'>
                 結束時間
               </Table.HeaderCell>
               <Table.HeaderCell width='5' textAlign='center'>
                 條件
               </Table.HeaderCell>
-              <Table.HeaderCell width='2' textAlign='center'>
+              <Table.HeaderCell width='3' textAlign='center'>
                 建立時間
               </Table.HeaderCell>
-              <Table.HeaderCell width='2' textAlign='center' />
             </Table.Row>
           </Table.Header>
           <Table.Body>{history}</Table.Body>

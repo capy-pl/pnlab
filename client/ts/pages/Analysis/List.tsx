@@ -16,38 +16,41 @@ import { AnalysisItem } from '../../components/list';
 import ModalAddCompare from '../../components/modal/ModalAddCompare';
 import Analysis, { AnalysisPreview } from '../../PnApp/model/Analysis';
 
-interface AnalysisListState extends PagerState {
+interface State extends PagerState {
   loading: boolean;
   modalOpen: boolean;
   analyses: AnalysisPreview[];
   analysisA?: Analysis;
   analysisB?: Analysis;
   compareList: string[];
+  active: string;
 }
 
-class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState> {
-  public pager: Pager;
-  constructor(props: RouteComponentProps) {
-    super(props);
-    this.state = {
-      modalOpen: false,
-      loading: true,
-      analyses: [],
-      startPage: 1,
-      pageLimit: 10,
-      limit: 15,
-      currentPage: 1,
-      compareList: [],
-    };
+class AnalysisList extends PureComponent<RouteComponentProps, State> {
+  public state: State = {
+    modalOpen: false,
+    loading: true,
+    analyses: [],
+    startPage: 1,
+    pageLimit: 10,
+    limit: 15,
+    currentPage: 1,
+    compareList: [],
+    active: '',
+  };
 
-    this.pager = new Pager('/api/analysis/page', this.state.pageLimit, this.state.limit);
-  }
+  private pager: Pager = new Pager(
+    '/api/analysis/page',
+    this.state.pageLimit,
+    this.state.limit,
+  );
+  private clickTimeout?: number;
 
   public async componentDidMount() {
     await this.setStartPage(1);
   }
 
-  public load = async () => {
+  private load = async () => {
     const analyses = await Analysis.getAll({
       limit: this.state.limit,
       page: this.state.currentPage,
@@ -58,7 +61,7 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
     });
   };
 
-  public setStartPage = async (start: number) => {
+  private setStartPage = async (start: number) => {
     await this.pager.setStartPage(start);
     this.setState(
       {
@@ -73,7 +76,7 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
     );
   };
 
-  public getPageItems(): JSX.Element[] {
+  private getPageItems(): JSX.Element[] {
     const items: JSX.Element[] = [];
     const max: number = this.state.hasNext
       ? this.state.startPage + this.state.pageLimit
@@ -129,11 +132,29 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
     );
   };
 
-  public onLinkClick = (path: string) => {
-    return () => {
-      this.props.history.push(`/analysis/${path}`);
+  public dbclick(id: string): (event: React.MouseEvent) => void {
+    return (event: React.MouseEvent) => {
+      console.log(event);
+      if (this.clickTimeout) {
+        window.clearTimeout(this.clickTimeout);
+        this.clickTimeout = undefined;
+      }
+      this.props.history.push(`/analysis/${id}`);
     };
-  };
+  }
+
+  public click(id: string): () => void {
+    return () => {
+      if (!this.clickTimeout) {
+        this.clickTimeout = window.setTimeout(() => {
+          this.setState({
+            active: this.state.active === id ? '' : id,
+          });
+          this.clickTimeout = undefined;
+        }, 100);
+      }
+    };
+  }
 
   public onClick = () => {
     this.setState({
@@ -220,21 +241,18 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
   };
 
   public handleCheck = (id: string) => {
-    let compareList;
-    if (this.state.compareList.length) {
-      if (!this.state.compareList.includes(id)) {
-        if (this.state.compareList.length < 2) {
-          compareList = [...this.state.compareList, id];
-        } else {
-          compareList = [...this.state.compareList];
-        }
+    return (event: React.MouseEvent) => {
+      event.stopPropagation();
+      let compareList;
+      if (this.state.compareList.includes(id)) {
+        compareList = this.state.compareList.filter((value) => value !== id);
+      } else if (this.state.compareList.length < 2) {
+        compareList = [...this.state.compareList, id];
       } else {
-        compareList = [...this.state.compareList].filter((item) => item !== id);
+        return;
       }
-    } else {
-      compareList = [id];
-    }
-    return () => this.setState({ compareList });
+      this.setState({ compareList });
+    };
   };
 
   public clearSelected = () => {
@@ -247,10 +265,12 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
         <AnalysisItem
           key={analysis._id}
           item={analysis}
-          onButtonClick={this.onLinkClick(analysis._id)}
           onCheck={this.handleCheck(analysis._id)}
           selected={this.state.compareList.includes(analysis._id)}
           compareList={this.state.compareList}
+          click={this.click(analysis._id)}
+          dbclick={this.dbclick(analysis._id)}
+          active={this.state.active === analysis._id}
         />
       );
     });
@@ -278,7 +298,7 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
             <span>比較圖片（已勾選{this.state.compareList.length} / 2）</span>
             <Icon name='clone outline' />
           </Button>
-          <Table selectable color='blue'>
+          <Table color='blue'>
             <Table.Header>
               <Table.Row>
                 <Table.HeaderCell textAlign='right' colSpan='16'>
@@ -319,7 +339,6 @@ class AnalysisList extends PureComponent<RouteComponentProps, AnalysisListState>
                     }
                   />
                 </Table.HeaderCell>
-                <Table.HeaderCell width='3' textAlign='center' />
               </Table.Row>
             </Table.Header>
             <Table.Body>{history}</Table.Body>

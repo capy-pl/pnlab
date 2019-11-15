@@ -1,13 +1,17 @@
 import React from 'react';
-import { Button, Label, SemanticCOLORS, Table } from 'semantic-ui-react';
-import { dateToString, stringToDate } from '../../PnApp/Helper';
-import { Condition, ReportPreview } from '../../PnApp/model/Report';
+import { Label, SemanticCOLORS, Table } from 'semantic-ui-react';
+import { dateToString, stringToDate } from '../../../PnApp/Helper';
+import { Condition, ReportPreview } from '../../../PnApp/model/Report';
 
 import { StatusIcon } from 'Component/icon';
 
+import './ReportItem.scss';
+
 interface ItemProps {
   item: ReportPreview;
-  onLinkClick: () => void;
+  dbclick: () => void;
+  click: () => void;
+  active: boolean;
 }
 
 const COLORS = [
@@ -32,7 +36,7 @@ function extractDate(conditions: Condition[]): string[] | undefined {
   }
 }
 
-const Item = ({ item, onLinkClick }: ItemProps) => {
+const Item = ({ active, item, click, dbclick }: ItemProps) => {
   const tagList = item.conditions
     // flatten all string condition values into single array.
     .reduce<string[]>((previous, currentValue) => {
@@ -48,9 +52,17 @@ const Item = ({ item, onLinkClick }: ItemProps) => {
         </Label>
       );
     });
+
   const dateCondition = extractDate(item.conditions);
+
   return (
-    <Table.Row style={{ clear: 'both' }} error={item.status === 'error'}>
+    <Table.Row
+      active={!(item.status === 'error') && active}
+      onClick={click}
+      onDoubleClick={dbclick}
+      style={{ clear: 'both' }}
+      error={item.status === 'error'}
+    >
       <Table.Cell textAlign='center'>
         <StatusIcon status={item.status} />
       </Table.Cell>
@@ -62,16 +74,6 @@ const Item = ({ item, onLinkClick }: ItemProps) => {
       </Table.Cell>
       <Table.Cell>{tagList}</Table.Cell>
       <Table.Cell textAlign='center'>{item.created.toLocaleString()}</Table.Cell>
-      <Table.Cell textAlign='center'>
-        <Button
-          content='查看詳細資訊'
-          icon='right arrow'
-          color='teal'
-          labelPosition='right'
-          disabled={item.status === 'pending'}
-          onClick={onLinkClick}
-        />
-      </Table.Cell>
     </Table.Row>
   );
 };
