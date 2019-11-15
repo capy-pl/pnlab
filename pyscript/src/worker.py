@@ -1,5 +1,5 @@
 from .logger import config_logger
-from .task import network_analysis, import_from_histories, test_connection
+
 import pika
 import time
 import logging
@@ -14,6 +14,7 @@ load_dotenv()
 
 def receive(action_id):
     from .mongo_client import db
+    from .task import network_analysis, import_from_histories, test_connection
 
     logging.info('Receive Action {}.'.format(action_id))
 
