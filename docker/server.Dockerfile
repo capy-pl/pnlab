@@ -6,6 +6,7 @@ ENV HOME /var
 ADD dist/ /var/pnlab/
 ADD .env /var/pnlab/
 ADD package.json /var/pnlab/
+ADD ecosystem.config.js /var/pnlab/
 ADD docker/scripts/docker-entrypoint-node.sh /bin/
 ADD docker/scripts/wait-for-it.sh /bin/
 

@@ -65,8 +65,8 @@ if (typeof BUNDLED === 'undefined') {
 
 // // Serve media files.
 app.use(
-  '/',
-  express.static('static', {
+  '/static',
+  express.static(path.resolve(__dirname, 'static'), {
     immutable: true,
     maxAge: '0.5y',
   }),

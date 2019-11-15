@@ -8,7 +8,6 @@ import {
   Menu,
   Segment,
   Table,
-  Container,
 } from 'semantic-ui-react';
 
 import Pager, { PagerState } from '../../PnApp/Pager';

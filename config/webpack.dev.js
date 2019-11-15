@@ -33,7 +33,8 @@ const clientConfig = {
     publicPath: '/static/',
   },
   module: {
-    rules: [{
+    rules: [
+      {
         test: /\.tsx?/,
         loader: 'babel-loader',
         exclude: /node_modules/,
@@ -88,11 +89,13 @@ const serverConfig = {
     extensions: ['.ts', '.js', '.json'],
   },
   module: {
-    rules: [{
-      test: /\.[jt]s/,
-      loader: 'babel-loader',
-      exclude: /node_modules/,
-    }, ],
+    rules: [
+      {
+        test: /\.[jt]s/,
+        loader: 'babel-loader',
+        exclude: /node_modules/,
+      },
+    ],
   },
   output: {
     path: path.resolve(__dirname, '..', 'dist', 'server'),
@@ -100,10 +103,16 @@ const serverConfig = {
   },
   externals: [nodeExternals()],
   plugins: [
-    new CopyPlugin([{
-      from: path.resolve(__dirname, '..', 'server', 'templates', 'index.html'),
-      to: path.resolve(__dirname, '..', 'dist', 'server', 'templates', 'index.html'),
-    }, ]),
+    new CopyPlugin([
+      {
+        from: path.resolve(__dirname, '..', 'server', 'templates', 'index.html'),
+        to: path.resolve(__dirname, '..', 'dist', 'server', 'templates', 'index.html'),
+      },
+      {
+        from: path.resolve(__dirname, '..', 'server', 'static'),
+        to: path.resolve(__dirname, '..', 'dist', 'server'),
+      },
+    ]),
     new webpack.DefinePlugin({
       BUNDLED: JSON.stringify(true),
       CLIENT_PATH: JSON.stringify(

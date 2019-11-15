@@ -94,8 +94,7 @@ def import_from_file_path(file_path):
                 '{} transactions were inserted into database.'.format(transactions_num))
 
     else:
-        df = reader.read_csv(file_path)
-        transactions, items = transformer.transform(df)
+        transactions, items = transformer.transform(reader.read_csv(file_path))
         records['transaction_num'] += len(transactions)
 
         update_org_schema(transactions, items)
