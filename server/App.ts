@@ -5,9 +5,6 @@ import morgan from 'morgan';
 import nunjucks from 'nunjucks';
 import path from 'path';
 import { command, Logger } from './core/util';
-import webpack from 'webpack';
-import devMiddleware from 'webpack-dev-middleware';
-import { clientConfig } from '../config/webpack.dev';
 
 // import routes
 import API from './api';
@@ -33,27 +30,33 @@ command.parse(process.argv);
 
 // Use webpack-dev-middleware to watch on client files.
 if (command.watch) {
-  if (typeof BUNDLED !== 'undefined') {
-    clientConfig.entry.client[0] = CLIENT_PATH;
-    clientConfig.resolve.alias.Component = COMPNENT_PATH;
-  }
-  const compiler = webpack(clientConfig);
-  app.use(
-    devMiddleware(compiler, {
-      logLevel: 'error',
-      publicPath: clientConfig.output.publicPath,
-      stats: {
-        colors: true,
-      },
-    }),
-  );
+  (async function() {
+    const webpack = await import('webpack');
+    const devMiddleware = await import('webpack-dev-middleware');
+    const { clientConfig } = await import('../config/webpack.dev');
+    const hotModuleMiddleware = await import('webpack-hot-middleware');
 
-  const hotModuleMiddleware = require('webpack-hot-middleware');
-  app.use(
-    hotModuleMiddleware(compiler, {
-      publicPath: clientConfig.output.publicPath,
-    }),
-  );
+    if (typeof BUNDLED !== 'undefined') {
+      clientConfig.entry.client[0] = CLIENT_PATH;
+      clientConfig.resolve.alias.Component = COMPNENT_PATH;
+    }
+    const compiler = webpack.default(clientConfig);
+    app.use(
+      devMiddleware.default(compiler, {
+        logLevel: 'error',
+        publicPath: clientConfig.output.publicPath,
+        stats: {
+          colors: true,
+        },
+      }),
+    );
+
+    app.use(
+      hotModuleMiddleware.default(compiler, {
+        publicPath: clientConfig.output.publicPath,
+      }),
+    );
+  })();
 }
 
 // Serve static files.
