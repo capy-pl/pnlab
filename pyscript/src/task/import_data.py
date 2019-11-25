@@ -65,7 +65,7 @@ def import_from_file_path(file_path):
         logging.info(
             '{} is larger than 256MB. It will be processed by chunk.'.format(file_path))
         print('{} is larger than 256MB. It will be processed by chunk.'.format(
-            file_path), flush=True)
+            file_path))
         chunks = reader.read_csv_by_chunk(file_path, 1000000)
         for transactions, items in transformer.transform_by_chunk(chunks):
             transactions_num = len(transactions)
@@ -89,7 +89,7 @@ def import_from_file_path(file_path):
                 pass
 
             print('{} transactions were inserted into database.'.format(
-                transactions_num), flush=True)
+                transactions_num))
             logging.info(
                 '{} transactions were inserted into database.'.format(transactions_num))
 
@@ -114,7 +114,7 @@ def import_from_file_path(file_path):
             pass
 
         print('{} transactions were inserted into database.'.format(
-            records['transaction_num']), flush=True)
+            records['transaction_num']))
         logging.info(
             '{} transactions were inserted.'.format(records['transaction_num']))
 
@@ -140,7 +140,7 @@ def update_org_schema(transactions, items):
         }
     })
     logging.info('Db schema updated.')
-    print('Db schema updated.', flush=True)
+    print('Db schema updated.')
 
 
 def update_fields_value(fields, items):
