@@ -43,6 +43,7 @@ export async function UploadFile(req: e.Request, res: e.Response): Promise<void>
       filename: name,
       fileSize: file.size,
       originFilename: file.name,
+      md5,
       status: 'pending',
       created: new Date(),
       modified: new Date(),
