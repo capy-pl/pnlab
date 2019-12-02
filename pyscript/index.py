@@ -19,7 +19,7 @@ def main():
                 pool.apply_async(worker, [])
 
             pool.close()
-            print('Python services started.', flush=True)
+            print('Python services started.')
             logging.info('Python services started.')
 
             try:

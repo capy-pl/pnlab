@@ -77,3 +77,6 @@ dist
 
 # test file
 *.csv
+
+# https test file
+certificates

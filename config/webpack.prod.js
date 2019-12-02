@@ -40,6 +40,7 @@ const clientConfig = {
     path: path.resolve(__dirname, '..', 'dist', 'client'),
     filename: '[name].bundle.js',
     publicPath: '/static/',
+    chunkFilename: '[name].chunk.js',
   },
   module: {
     rules: [{

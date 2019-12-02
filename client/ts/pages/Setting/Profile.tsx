@@ -26,11 +26,11 @@ export default class Profile extends PureComponent<{}, State> {
           <Form>
             <Form.Field width={10}>
               <label>電子信箱</label>
-              <input placeholder='電子信箱' value={this.state.user.email} />
+              <input placeholder='電子信箱' readOnly value={this.state.user.email} />
             </Form.Field>
             <Form.Field width={10}>
               <label>組織名稱</label>
-              <input value={this.state.user.org.name} />
+              <input readOnly value={this.state.user.org.name} />
             </Form.Field>
           </Form>
         </React.Fragment>

@@ -71,22 +71,22 @@ export default class GraphViewCompare extends PureComponent<GraphProps, {}> {
   public graphRef: React.RefObject<HTMLDivElement>;
   public network?: Network;
   public jgraph?: Jgraph;
-  public nodes: DataSet<GraphNode>;
-  public edges: DataSet<GraphEdge>;
+  public nodes?: DataSet<GraphNode>;
+  public edges?: DataSet<GraphEdge>;
   constructor(props: GraphProps) {
     super(props);
     this.graphRef = React.createRef();
-    this.nodes = new DataSet();
-    this.edges = new DataSet();
-
     this.paintSelectedProduct = this.paintSelectedProduct.bind(this);
     this.repaint = this.repaint.bind(this);
   }
 
-  public componentDidMount() {
+  public async componentDidMount() {
     if (this.graphRef.current) {
       this.graphRef.current.style.height = this.getHeight();
     }
+    const { DataSet } = await import(/* webpackChunkName: "vis" */ 'vis-network');
+    this.nodes = new DataSet();
+    this.edges = new DataSet();
     this.initializeGraph();
   }
 
@@ -150,7 +150,7 @@ export default class GraphViewCompare extends PureComponent<GraphProps, {}> {
   }
 
   public repaint(): void {
-    const updateList: GraphNode[] = this.nodes.map((node) => {
+    const updateList: GraphNode[] = (this.nodes as DataSet<GraphNode>).map((node) => {
       let color;
       if (this.props.shareNodes) {
         this.props.shareNodes.includes(node.name)
@@ -189,9 +189,9 @@ export default class GraphViewCompare extends PureComponent<GraphProps, {}> {
         hidden: false,
       } as any;
     });
-    this.nodes.update(updateList);
+    (this.nodes as DataSet<GraphNode>).update(updateList);
     (this.network as Network).fit({
-      nodes: this.nodes.map((node) => {
+      nodes: (this.nodes as DataSet<GraphNode>).map((node) => {
         return node.id.toString();
       }),
       animation: false,
@@ -225,7 +225,7 @@ export default class GraphViewCompare extends PureComponent<GraphProps, {}> {
         const connectedNodes = (this.network as Network).getConnectedNodes(
           selectedNode.id,
         );
-        const updateList = this.nodes
+        const updateList = (this.nodes as DataSet<GraphNode>)
           .map<GraphNode>((node) => {
             if (!connectedNodes.includes(node.id as any) && node.id !== selectedNode.id) {
               return {
@@ -236,12 +236,12 @@ export default class GraphViewCompare extends PureComponent<GraphProps, {}> {
           })
           .filter((node) => node);
         updateList.push(selectedNode);
-        this.nodes.update(updateList);
+        (this.nodes as DataSet<GraphNode>).update(updateList);
         (this.network as Network).focus(selectedNode.id, {
           scale: 0.6,
         });
       } else {
-        const updateList = this.nodes
+        const updateList = (this.nodes as DataSet<GraphNode>)
           .map<GraphNode>((node) => {
             const background =
               this.props.shareNodes && this.props.shareNodes.includes(node.name)
@@ -257,18 +257,18 @@ export default class GraphViewCompare extends PureComponent<GraphProps, {}> {
             } as any;
           })
           .filter((node) => node);
-        this.nodes.update(updateList);
+        (this.nodes as DataSet<GraphNode>).update(updateList);
       }
     }
   }
 
   public initializeGraph(): void {
     for (const node of this.props.nodes) {
-      this.nodes.add(this.toNode(node));
+      (this.nodes as DataSet<GraphNode>).add(this.toNode(node));
     }
 
     for (const edge of this.props.edges) {
-      this.edges.add(this.toEdge(edge));
+      (this.edges as DataSet<GraphEdge>).add(this.toEdge(edge));
     }
 
     if (this.graphRef.current) {

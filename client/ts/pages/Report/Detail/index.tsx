@@ -18,7 +18,6 @@ import { isBoolean, isNumber } from 'lodash';
 
 import { ModalAddAnalysis } from 'Component/modal';
 import { DropdownSearchSingleItem } from '../../../components/dropdown';
-import Graph from '../../../components/graph';
 import Loader from '../../../components/Loader';
 import {
   CommunityCharacterWindow,
@@ -49,6 +48,10 @@ interface ReportState {
   infoOpen: boolean;
   windowSearchItemProduct: boolean;
 }
+
+const Graph = React.lazy(() =>
+  import(/* webpackChunkName: "graph" */ '../../../components/graph'),
+);
 
 export default class Report extends PureComponent<
   RouteComponentProps<{ id: string }>,
@@ -438,15 +441,17 @@ export default class Report extends PureComponent<
                   }}
                   onClick={this.toggleSidebar}
                 />
-                <Graph
-                  nodes={this.state.report.nodes}
-                  edges={this.state.report.edges}
-                  showCommunity={this.state.showCommunity}
-                  selectedCommunities={this.state.selectedCommunities}
-                  selectedProduct={this.state.selectedProduct}
-                  selectedProductMode={this.state.selectedProductMode}
-                  searchItem={this.state.searchItem}
-                />
+                <React.Suspense fallback={<div>Loading...</div>}>
+                  <Graph
+                    nodes={this.state.report.nodes}
+                    edges={this.state.report.edges}
+                    showCommunity={this.state.showCommunity}
+                    selectedCommunities={this.state.selectedCommunities}
+                    selectedProduct={this.state.selectedProduct}
+                    selectedProductMode={this.state.selectedProductMode}
+                    searchItem={this.state.searchItem}
+                  />
+                </React.Suspense>
               </Sidebar.Pusher>
             </Sidebar.Pushable>
           </React.Fragment>

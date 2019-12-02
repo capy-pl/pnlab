@@ -15,7 +15,6 @@ import {
 } from 'semantic-ui-react';
 import { isBoolean, isNumber } from 'lodash';
 
-import Graph from '../../../components/graph';
 import Loader from '../../../components/Loader';
 import {
   CommunityCharacterWindow,
@@ -52,6 +51,11 @@ interface State {
   searchItem?: number;
   windowSearchItemProduct: boolean;
 }
+
+const Graph = React.lazy(() =>
+  import(/* webpackChunkName: "graph" */ '../../../components/graph'),
+);
+
 export default class Detail extends PureComponent<
   RouteComponentProps<{ id: string }>,
   State
@@ -423,15 +427,17 @@ export default class Detail extends PureComponent<
                   }}
                   onClick={this.toggleSidebar}
                 />
-                <Graph
-                  nodes={this.state.report.nodes}
-                  edges={this.state.report.edges}
-                  showCommunity={this.state.showCommunity}
-                  selectedCommunities={this.state.selectedCommunities}
-                  selectedProduct={this.state.selectedProduct}
-                  selectedProductMode={this.state.selectedProductMode}
-                  searchItem={this.state.searchItem}
-                />
+                <React.Suspense fallback={<div>Loading...</div>}>
+                  <Graph
+                    nodes={this.state.report.nodes}
+                    edges={this.state.report.edges}
+                    showCommunity={this.state.showCommunity}
+                    selectedCommunities={this.state.selectedCommunities}
+                    selectedProduct={this.state.selectedProduct}
+                    selectedProductMode={this.state.selectedProductMode}
+                    searchItem={this.state.searchItem}
+                  />
+                </React.Suspense>
               </Sidebar.Pusher>
             </Sidebar.Pushable>
           </React.Fragment>

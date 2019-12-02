@@ -1,6 +1,9 @@
 /// <reference path="./index.d.ts" /> #
 import dotenv from 'dotenv';
+import fs from 'fs';
 import http from 'http';
+import https from 'https';
+import path from 'path';
 import { ChildProcess } from 'child_process';
 import app from './App';
 import dbConnect from './core/db';
@@ -15,29 +18,51 @@ dotenv.config();
 
 command.parse(process.argv);
 
-const server = http.createServer(app);
+const httpServer = http.createServer(app);
+
+// const httpsServer = https.createServer(
+//   {
+//     key: fs.readFileSync(path.resolve(__dirname, '..', 'certificates', 'rootCA.key')),
+//     cert: fs.readFileSync(path.resolve(__dirname, '..', 'certificates', 'rootCA.pem')),
+//   },
+//   app,
+// );
+
 let pyConsumers: ChildProcess;
 
-server.listen(process.env.PORT, async () => {
+(async function() {
   await Promise.all([amqpConnect(), dbConnect(), createFolders()]);
   await syncdb();
-  startSocketServer(server);
+
   if (command.python) {
     try {
-      pyConsumers = await startPythonWorker();
+      pyConsumers = startPythonWorker();
     } catch (error) {
       Logger.error(error);
       process.exit(1);
     }
   }
-  Logger.info(`Server is available on 127.0.0.1:${process.env.PORT}`);
-});
 
-server.on('error', (err) => {
-  Logger.error(err);
-});
+  httpServer.listen(process.env.PORT, () => {
+    startSocketServer(httpServer);
+    Logger.info(`HTTP server is available on 127.0.0.1:${process.env.PORT}`);
+  });
 
-server.on('close', () => {
+  // httpsServer.listen(process.env.HTTPS_PORT, async () => {
+  //   startSocketServer(httpsServer);
+  //   Logger.info(`HTTP server is available on 127.0.0.1:${process.env.HTTPS_PORT}`);
+  // });
+
+  httpServer.on('error', (err) => {
+    Logger.error(err);
+  });
+
+  // httpsServer.on('error', (err) => {
+  //   Logger.error(err);
+  // });
+})();
+
+process.on('exit', () => {
   if (pyConsumers) {
     pyConsumers.kill();
   }

@@ -19,6 +19,7 @@ declare global {
       MONGO_DB_ADDRESS: string;
       RABBIT_MQ_ADDRESS: string;
       PORT: number;
+      HTTPS_PORT: number;
       SECRET_KEY: string;
       EXPIRED_IN: string;
       HOME: string;

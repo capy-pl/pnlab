@@ -3,7 +3,6 @@ import { Button, DropdownProps, Grid, Header, Menu, Popup } from 'semantic-ui-re
 import { RouteComponentProps } from 'react-router-dom';
 
 import { DropdownSearchSingleItem } from '../../../components/dropdown';
-import { GraphViewCompare } from '../../../components/graph/CompareGraph';
 import Loader from '../../../components/Loader';
 import CompareReportWindow from './CompareReportWindow';
 import CompareSingleProductWindow from './CompareSingleProductWindow';
@@ -25,6 +24,10 @@ interface AnalysisState {
   windowCompareReport: boolean;
   windowSingleProductCompare: boolean;
 }
+
+const GraphViewCompare = React.lazy(() =>
+  import(/* webpackChunkName: "compareGraph" */ '../../../components/graph/CompareGraph'),
+);
 
 export default class Compare extends PureComponent<AnalysisProps, AnalysisState> {
   constructor(props: AnalysisProps) {
@@ -177,12 +180,14 @@ export default class Compare extends PureComponent<AnalysisProps, AnalysisState>
                     >
                       {this.state.analysisA.title}
                     </Header>
-                    <GraphViewCompare
-                      nodes={this.state.analysisA.report.nodes}
-                      edges={this.state.analysisA.report.edges}
-                      selectedProduct={this.state.selectedProduct}
-                      shareNodes={this.state.shareNodes}
-                    />
+                    <React.Suspense fallback={<div>Loading...</div>}>
+                      <GraphViewCompare
+                        nodes={this.state.analysisA.report.nodes}
+                        edges={this.state.analysisA.report.edges}
+                        selectedProduct={this.state.selectedProduct}
+                        shareNodes={this.state.shareNodes}
+                      />
+                    </React.Suspense>
                   </Grid.Column>
                   <Grid.Column>
                     <Header

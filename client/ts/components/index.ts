@@ -4,8 +4,6 @@ import Switch from './route/Switch';
 
 import { DropdownSearch } from './dropdown';
 
-import GraphView from './graph';
-
 import { SearchHistoryItem } from './list';
 
 import { Navbar, SettingMenu } from './menu';
@@ -21,7 +19,6 @@ export {
   Loader,
   Switch,
   DropdownSearch,
-  GraphView,
   SearchHistoryItem,
   Navbar,
   SettingMenu,

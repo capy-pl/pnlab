@@ -1,6 +1,5 @@
 // tslint:disable-next-line: no-reference
 /// <reference path="./index.d.ts" /> #
-// import css
 import 'fomantic-ui/dist/semantic.min.css';
 import 'vis-network/dist/vis-network.min.css';
 import '../scss/main';

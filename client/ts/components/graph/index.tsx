@@ -76,20 +76,21 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
   public graphRef: React.RefObject<HTMLDivElement>;
   public network?: Network;
   public jgraph?: Jgraph;
-  public nodes: DataSet<GraphNode>;
-  public edges: DataSet<GraphEdge>;
+  public nodes?: DataSet<GraphNode>;
+  public edges?: DataSet<GraphEdge>;
 
   constructor(props: GraphProps) {
     super(props);
     this.graphRef = React.createRef();
-    this.nodes = new DataSet();
-    this.edges = new DataSet<GraphEdge>();
   }
 
-  public componentDidMount() {
+  public async componentDidMount() {
     if (this.graphRef.current) {
       this.graphRef.current.style.height = this.getHeight();
     }
+    const { DataSet } = await import(/* webpackChunkName: "vis" */ 'vis-network');
+    this.nodes = new DataSet();
+    this.edges = new DataSet();
     this.initializeGraph();
   }
 
@@ -140,7 +141,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
         },
       } as any;
       const connectedNodes = (this.network as Network).getConnectedNodes(selectedNode.id);
-      const updateList = this.nodes
+      const updateList = (this.nodes as DataSet<GraphNode>)
         .map<GraphNode>((node) => {
           if (!connectedNodes.includes(node.id as any) && node.id !== selectedNode.id) {
             return {
@@ -157,8 +158,8 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
           }
         })
         .filter((node) => node);
-      this.nodes.update(updateList);
-      this.nodes.update(selectedNode);
+      (this.nodes as DataSet<GraphNode>).update(updateList);
+      (this.nodes as DataSet<GraphNode>).update(selectedNode);
       this.network.focus(this.props.searchItem, {
         scale: 0.9,
       });
@@ -204,7 +205,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
   }
 
   public repaint(): void {
-    const updateList: GraphNode[] = this.nodes.map(
+    const updateList: GraphNode[] = (this.nodes as DataSet<GraphNode>).map(
       (node) =>
         ({
           id: node.id,
@@ -215,9 +216,9 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
           hidden: false,
         } as any),
     );
-    this.nodes.update(updateList);
+    (this.nodes as DataSet<GraphNode>).update(updateList);
     (this.network as Network).fit({
-      nodes: this.nodes.map((node) => {
+      nodes: (this.nodes as DataSet<GraphNode>).map((node) => {
         return node.id.toString();
       }),
       animation: false,
@@ -239,7 +240,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
         const connectedNodes = (this.network as Network).getConnectedNodes(
           selectedNode.id,
         );
-        const updateList = this.nodes
+        const updateList = (this.nodes as DataSet<GraphNode>)
           .map<GraphNode>((node) => {
             if (!connectedNodes.includes(node.id as any) && node.id !== selectedNode.id) {
               return {
@@ -249,9 +250,9 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
             }
           })
           .filter((node) => node);
-        this.nodes.update(updateList);
+        (this.nodes as DataSet<GraphNode>).update(updateList);
       }
-      this.nodes.update(selectedNode);
+      (this.nodes as DataSet<GraphNode>).update(selectedNode);
       (this.network as Network).focus(selectedNode.id, {
         scale: 0.9,
       });
@@ -261,20 +262,20 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
   public paintSelectedCommunity(): void {
     if (this.props.selectedCommunities && this.props.selectedCommunities.length) {
       const selectedNodes: GraphNode[] = [];
-      this.nodes.forEach((node) => {
+      (this.nodes as DataSet<GraphNode>).forEach((node) => {
         const update: any = {
           id: node.id,
           hidden: !(this.props.selectedCommunities as number[]).includes(node.community),
         };
         selectedNodes.push(update);
       });
-      this.nodes.update(selectedNodes);
+      (this.nodes as DataSet<GraphNode>).update(selectedNodes);
     }
   }
 
   public paintCommunity(): void {
     if (this.props.showCommunity) {
-      const nodes: GraphNode[] = this.nodes.map((node) => {
+      const nodes: GraphNode[] = (this.nodes as DataSet<GraphNode>).map((node) => {
         return {
           id: node.id,
           group: node.community,
@@ -289,9 +290,9 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
           borderWidth: node.core ? 5 : 1,
         } as any;
       });
-      this.nodes.update(nodes);
+      (this.nodes as DataSet<GraphNode>).update(nodes);
     } else {
-      const nodes: GraphNode[] = this.nodes.map((node) => {
+      const nodes: GraphNode[] = (this.nodes as DataSet<GraphNode>).map((node) => {
         return {
           id: node.id,
           group: undefined,
@@ -306,20 +307,21 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
           borderWidth: 1,
         } as any;
       });
-      this.nodes.update(nodes);
+      (this.nodes as DataSet<GraphNode>).update(nodes);
     }
   }
 
-  public initializeGraph(): void {
+  public async initializeGraph(): void {
     for (const node of this.props.nodes) {
-      this.nodes.add(this.toNode(node));
+      (this.nodes as DataSet<GraphNode>).add(this.toNode(node));
     }
 
     for (const edge of this.props.edges) {
-      this.edges.add(this.toEdge(edge));
+      (this.edges as DataSet<GraphEdge>).add(this.toEdge(edge));
     }
 
     if (this.graphRef.current) {
+      const { Network } = await import(/* webpackChunkName: "vis" */ 'vis-network');
       this.network = new Network(
         this.graphRef.current,
         {
