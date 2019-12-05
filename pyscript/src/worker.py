@@ -12,7 +12,7 @@ from os import getenv
 load_dotenv()
 
 
-def receive(action_id):
+def receive(action_id: str):
     from .mongo_client import db
     from .task import network_analysis, import_from_histories, test_connection
 

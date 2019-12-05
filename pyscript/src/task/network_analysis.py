@@ -10,7 +10,7 @@ from ..error import ZeroTransactionError, ZeroNodeError
 from ..mongo_client import db
 
 
-def network_analysis(report_id):
+def network_analysis(report_id: str):
     logging.info('Start processing Report {}.'.format(report_id))
     report = db['reports'].find_one({'_id': ObjectId(report_id)})
     org_data = db['orgs'].find_one()

@@ -79,7 +79,6 @@ app.use(
 app.use('/api/auth', API.Auth);
 app.use('/api/user', API.User);
 app.use('/api/report', API.Report);
-app.use('/api/category', API.Category);
 app.use('/api/promotion', API.Promotion);
 app.use('/api/analysis', API.Analysis);
 app.use('/api/upload', API.Upload);

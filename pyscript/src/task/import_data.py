@@ -12,7 +12,7 @@ from ..utils import bigger_than_256mb
 from ..preprocessing import TransactionCSVReader, TransactionEncoder
 
 
-def import_from_histories(history_id):
+def import_from_histories(history_id: str):
     import_history = db['importHistories'].find_one(
         {'_id': ObjectId(history_id)})
     try:
@@ -51,7 +51,7 @@ def import_from_histories(history_id):
         })
 
 
-def import_from_file_path(file_path):
+def import_from_file_path(file_path: str):
     org_data = db['orgs'].find_one()
     org_schema = org_data['importSchema']
     reader = TransactionCSVReader(org_schema)
