@@ -4,6 +4,9 @@ const nodeExternals = require('webpack-node-externals');
 const webpack = require('webpack');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
 dotenv.config();
 
@@ -43,14 +46,26 @@ const clientConfig = {
     chunkFilename: '[name].chunk.js',
   },
   module: {
-    rules: [{
+    rules: [
+      {
         test: /\.tsx?/,
         loader: 'babel-loader',
         exclude: /node_modules/,
       },
       {
         test: /\.s?css$/,
-        use: ['style-loader', 'css-loader', 'sass-loader'],
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              // you can specify a publicPath here
+              // by default it uses publicPath in webpackOptions.output
+              filename: '[name].css',
+            },
+          },
+          'css-loader',
+          'sass-loader',
+        ],
       },
       {
         test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
@@ -70,6 +85,17 @@ const clientConfig = {
     jquery: 'jQuery',
   },
   plugins: [
+    new OptimizeCSSAssetsPlugin({}),
+    new MiniCssExtractPlugin({
+      // Options similar to the same options in webpackOptions.output
+      // all options are optional
+      filename: '[name].css',
+      chunkFilename: '[id].css',
+    }),
+    new BundleAnalyzerPlugin({
+      analyzerMode: 'static',
+      reportFilename: 'client-report.html',
+    }),
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.DefinePlugin({
       ENV: JSON.stringify('production'),
@@ -90,11 +116,13 @@ const serverConfig = {
     extensions: ['.ts', '.js', '.json'],
   },
   module: {
-    rules: [{
-      test: /\.[jt]s/,
-      loader: 'babel-loader',
-      exclude: /node_modules/,
-    }, ],
+    rules: [
+      {
+        test: /\.[jt]s/,
+        loader: 'babel-loader',
+        exclude: /node_modules/,
+      },
+    ],
   },
   output: {
     path: path.resolve(__dirname, '..', 'dist', 'server'),
@@ -102,7 +130,8 @@ const serverConfig = {
   },
   externals: [nodeExternals()],
   plugins: [
-    new CopyPlugin([{
+    new CopyPlugin([
+      {
         from: path.resolve(__dirname, '..', 'server', 'templates', 'index.html'),
         to: path.resolve(__dirname, '..', 'dist', 'server', 'templates', 'index.html'),
       },

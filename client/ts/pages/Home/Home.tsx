@@ -6,11 +6,16 @@ import Navbar from 'Component/menu/Navbar';
 import { Switch } from 'Component/route';
 import { Auth } from '../../PnApp';
 import { updateCurrentUser } from '../../PnApp/Helper';
-import Analysis from '../Analysis';
-import NotFound from '../NotFound';
-import Report, { ReportList } from '../Report';
-import Setting from '../Setting';
-import Upload from '../Upload';
+
+const Analysis = React.lazy(() =>
+  import(/* webpackChunkName: "analysis" */ '../Analysis'),
+);
+const Report = React.lazy(() => import(/* webpackChunkName: "report" */ '../Report'));
+const ReportList = React.lazy(() =>
+  import(/* webpackChunkName: "reportList" */ '../Report/List'),
+);
+const Setting = React.lazy(() => import(/* webpackChunkName: "setting" */ '../Setting'));
+const Upload = React.lazy(() => import(/* webpackChunkName: "upload" */ '../Upload'));
 
 interface HomeState {
   loading: boolean;
@@ -51,12 +56,13 @@ class Home extends PureComponent<RouteComponentProps, HomeState> {
       <div>
         <Navbar />
         <Switch>
-          <Route path='/report' component={Report} />
-          <Route path='/settings' component={Setting} />
-          <Route path='/analysis' component={Analysis} />
-          <Route path='/upload' component={Upload} />
-          <Route exact path='/' component={ReportList} />
-          <Route component={NotFound} />
+          <React.Suspense fallback={<Loader />}>
+            <Route path='/report' component={Report} />
+            <Route path='/settings' component={Setting} />
+            <Route path='/analysis' component={Analysis} />
+            <Route path='/upload' component={Upload} />
+            <Route exact path='/' component={ReportList} />
+          </React.Suspense>
         </Switch>
       </div>
     );
