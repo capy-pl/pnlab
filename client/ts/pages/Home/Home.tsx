@@ -8,14 +8,40 @@ import { Auth } from '../../PnApp';
 import { updateCurrentUser } from '../../PnApp/Helper';
 
 const Analysis = React.lazy(() =>
-  import(/* webpackChunkName: "analysis" */ '../Analysis'),
+  import(
+    /* webpackPreload: true */
+    /* webpackChunkName: "analysis" */
+    '../Analysis'
+  ),
 );
-const Report = React.lazy(() => import(/* webpackChunkName: "report" */ '../Report'));
+const Report = React.lazy(() =>
+  import(
+    /* webpackPreload: true */
+    /* webpackChunkName: "report" */
+    '../Report'
+  ),
+);
 const ReportList = React.lazy(() =>
-  import(/* webpackChunkName: "reportList" */ '../Report/List'),
+  import(
+    /* webpackPreload: true */
+    /* webpackChunkName: "reportList" */
+    '../Report/List'
+  ),
 );
-const Setting = React.lazy(() => import(/* webpackChunkName: "setting" */ '../Setting'));
-const Upload = React.lazy(() => import(/* webpackChunkName: "upload" */ '../Upload'));
+const Setting = React.lazy(() =>
+  import(
+    /* webpackPreload: true */
+    /* webpackChunkName: "setting" */ '../Setting'
+  ),
+);
+
+const Upload = React.lazy(() =>
+  import(
+    /* webpackPreload: true */
+    /* webpackChunkName: "upload" */
+    '../Upload'
+  ),
+);
 
 interface HomeState {
   loading: boolean;

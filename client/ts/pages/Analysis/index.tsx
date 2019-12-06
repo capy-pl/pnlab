@@ -4,12 +4,28 @@ import { Loader } from 'semantic-ui-react';
 import Switch from '../../components/route/Switch';
 
 const Compare = React.lazy(() =>
-  import(/* webpackChunkName: "analysisCompare" */ './Compare'),
+  import(
+    /* webpackPreload: true */
+    /* webpackChunkName: "analysisCompare" */
+    './Compare'
+  ),
 );
+
 const Detail = React.lazy(() =>
-  import(/* webpackChunkName: "analysisDetail" */ './Detail'),
+  import(
+    /* webpackPreload: true */
+    /* webpackChunkName: "analysisDetail" */
+    './Detail'
+  ),
 );
-const List = React.lazy(() => import(/* webpackChunkName: "analysisList" */ './List'));
+
+const List = React.lazy(() =>
+  import(
+    /* webpackPreload: true */
+    /* webpackChunkName: "analysisList" */
+    './List'
+  ),
+);
 
 const AnalysisRouter = () => {
   return (

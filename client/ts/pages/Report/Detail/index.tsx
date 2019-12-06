@@ -50,7 +50,11 @@ interface ReportState {
 }
 
 const Graph = React.lazy(() =>
-  import(/* webpackChunkName: "graph" */ '../../../components/graph'),
+  import(
+    /* webpackPreload: true */
+    /* webpackChunkName: "graph" */
+    '../../../components/graph'
+  ),
 );
 
 export default class Report extends PureComponent<

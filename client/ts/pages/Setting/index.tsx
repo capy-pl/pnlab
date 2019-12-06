@@ -5,12 +5,26 @@ import { Container, Grid, Segment, Loader } from 'semantic-ui-react';
 import { SettingMenu } from 'Component/menu';
 import { Switch } from 'Component/route';
 
-const Profile = React.lazy(() => import(/* webpackChunkName: "profile" */ './Profile'));
+const Profile = React.lazy(() =>
+  import(
+    /* webpackPreload: true */
+    /* webpackChunkName: "profile" */
+    './Profile'
+  ),
+);
 const Promotion = React.lazy(() =>
-  import(/* webpackChunkName: "promotion" */ './Promotion'),
+  import(
+    /* webpackPreload: true */
+    /* webpackChunkName: "promotion" */
+    './Promotion'
+  ),
 );
 const UploadFormat = React.lazy(() =>
-  import(/* webpackChunkName: "uploadFormat" */ './UploadFormat'),
+  import(
+    /* webpackPreload: true */
+    /* webpackChunkName: "uploadFormat" */
+    './UploadFormat'
+  ),
 );
 
 export default class Setting extends PureComponent {

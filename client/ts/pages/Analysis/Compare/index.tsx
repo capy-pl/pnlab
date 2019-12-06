@@ -26,7 +26,11 @@ interface AnalysisState {
 }
 
 const GraphViewCompare = React.lazy(() =>
-  import(/* webpackChunkName: "compareGraph" */ '../../../components/graph/CompareGraph'),
+  import(
+    /* webpackPreload: true */
+    /* webpackChunkName: "compareGraph" */
+    '../../../components/graph/CompareGraph'
+  ),
 );
 
 export default class Compare extends PureComponent<AnalysisProps, AnalysisState> {

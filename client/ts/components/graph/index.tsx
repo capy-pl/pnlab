@@ -88,7 +88,11 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
     if (this.graphRef.current) {
       this.graphRef.current.style.height = this.getHeight();
     }
-    const { DataSet } = await import(/* webpackChunkName: "vis" */ 'vis-network');
+    const { DataSet } = await import(
+      /* webpackPreload: true */
+      /* webpackChunkName: "vis" */
+      'vis-network'
+    );
     this.nodes = new DataSet();
     this.edges = new DataSet();
     this.initializeGraph();
@@ -321,7 +325,11 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
     }
 
     if (this.graphRef.current) {
-      const { Network } = await import(/* webpackChunkName: "vis" */ 'vis-network');
+      const { Network } = await import(
+        /* webpackChunkName: "vis" */
+        /* webpackPreload: true */
+        'vis-network'
+      );
       this.network = new Network(
         this.graphRef.current,
         {

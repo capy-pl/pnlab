@@ -84,7 +84,11 @@ export default class GraphViewCompare extends PureComponent<GraphProps, {}> {
     if (this.graphRef.current) {
       this.graphRef.current.style.height = this.getHeight();
     }
-    const { DataSet } = await import(/* webpackChunkName: "vis" */ 'vis-network');
+    const { DataSet } = await import(
+      /* webpackPreload: true */
+      /* webpackChunkName: "vis" */
+      'vis-network'
+    );
     this.nodes = new DataSet();
     this.edges = new DataSet();
     this.initializeGraph();

@@ -4,11 +4,25 @@ import { Loader } from 'semantic-ui-react';
 import { Switch } from 'Component/route';
 
 const ReportList = React.lazy(() =>
-  import(/* webpackChunkName: "reportList" */ './List'),
+  import(
+    /* webpackPreload: true */
+    /* webpackChunkName: "reportList" */
+    './List'
+  ),
 );
-const ReportAdd = React.lazy(() => import(/* webpackChunkName: "reportAdd" */ './Add'));
+const ReportAdd = React.lazy(() =>
+  import(
+    /* webpackPreload: true */
+    /* webpackChunkName: "reportAdd" */
+    './Add'
+  ),
+);
 const ReportDetail = React.lazy(() =>
-  import(/* webpackChunkName: "reportDetail" */ './Detail'),
+  import(
+    /* webpackPreload: true */
+    /* webpackChunkName: "reportDetail" */
+    './Detail'
+  ),
 );
 
 const ReportRouter = () => {

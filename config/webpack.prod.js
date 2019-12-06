@@ -2,7 +2,7 @@ const dotenv = require('dotenv');
 const path = require('path');
 const nodeExternals = require('webpack-node-externals');
 const webpack = require('webpack');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
@@ -18,13 +18,10 @@ const baseConfig = {
     errors: true,
   },
   optimization: {
-    minimizer: [
-      new UglifyJsPlugin({
-        parallel: true,
-        extractComments: true,
-        cache: true,
-      }),
-    ],
+    minimizer: [new TerserPlugin({
+
+    })],
+    minimize: true,
     splitChunks: {
       chunks: 'all',
     },
