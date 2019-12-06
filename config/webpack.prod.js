@@ -8,6 +8,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 dotenv.config();
 
@@ -42,9 +43,8 @@ const clientConfig = {
   },
   output: {
     path: path.resolve(__dirname, '..', 'dist', 'client'),
-    filename: '[name].bundle.js',
+    filename: '[contenthash].js',
     publicPath: '/static/',
-    chunkFilename: '[name].chunk.js',
   },
   module: {
     rules: [{
@@ -86,13 +86,26 @@ const clientConfig = {
   plugins: [
     new OptimizeCSSAssetsPlugin({}),
     new MiniCssExtractPlugin({
-      filename: '[name].css',
+      filename: '[name].[contenthash].css',
       chunkFilename: '[id].css',
     }),
     new CompressionPlugin(),
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.DefinePlugin({
       ENV: JSON.stringify('production'),
+    }),
+    new HtmlWebpackPlugin({
+      template: path.resolve(__dirname, '..', 'server', 'templates', 'index.html'),
+      filename: path.resolve(
+        __dirname,
+        '..',
+        'dist',
+        'server',
+        'templates',
+        'index.html',
+      ),
+      inject: 'head',
+      minify: true,
     }),
     new BundleAnalyzerPlugin({
       analyzerMode: 'static',
@@ -127,10 +140,6 @@ const serverConfig = {
   externals: [nodeExternals()],
   plugins: [
     new CopyPlugin([{
-        from: path.resolve(__dirname, '..', 'server', 'templates', 'index.html'),
-        to: path.resolve(__dirname, '..', 'dist', 'server', 'templates', 'index.html'),
-      },
-      {
         from: path.resolve(__dirname, '..', 'server', 'static'),
         to: path.resolve(__dirname, '..', 'dist', 'server', 'static'),
       },

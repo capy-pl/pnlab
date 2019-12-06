@@ -5,6 +5,7 @@ const webpack = require('webpack');
 const CopyPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 dotenv.config();
 
@@ -31,9 +32,8 @@ const clientConfig = {
   },
   output: {
     path: path.resolve(__dirname, '..', 'dist', 'client'),
-    filename: '[name].bundle.js',
+    filename: '[name].[hash].js',
     publicPath: '/static/',
-    chunkFilename: '[name].chunk.js',
   },
   module: {
     rules: [{
@@ -83,17 +83,29 @@ const clientConfig = {
     new MiniCssExtractPlugin({
       // Options similar to the same options in webpackOptions.output
       // all options are optional
-      filename: '[name].css',
+      filename: '[hash].css',
       chunkFilename: '[id].css',
+    }),
+    new HtmlWebpackPlugin({
+      template: path.resolve(__dirname, '..', 'server', 'templates', 'index.html'),
+      filename: path.resolve(
+        __dirname,
+        '..',
+        'dist',
+        'server',
+        'templates',
+        'index.html',
+      ),
+      inject: 'head',
     }),
     new BundleAnalyzerPlugin({
       openAnalyzer: false,
       analyzerMode: 'static',
       reportFilename: 'client-report.html',
-
     }),
   ],
   optimization: {
+    runtimeChunk: 'single',
     splitChunks: {
       chunks: 'all',
     },
@@ -127,14 +139,9 @@ const serverConfig = {
   externals: [nodeExternals()],
   plugins: [
     new CopyPlugin([{
-        from: path.resolve(__dirname, '..', 'server', 'templates', 'index.html'),
-        to: path.resolve(__dirname, '..', 'dist', 'server', 'templates', 'index.html'),
-      },
-      {
-        from: path.resolve(__dirname, '..', 'server', 'static'),
-        to: path.resolve(__dirname, '..', 'dist', 'server', 'static'),
-      },
-    ]),
+      from: path.resolve(__dirname, '..', 'server', 'static'),
+      to: path.resolve(__dirname, '..', 'dist', 'server', 'static'),
+    }, ]),
     new webpack.DefinePlugin({
       BUNDLED: JSON.stringify(true),
       CLIENT_PATH: JSON.stringify(

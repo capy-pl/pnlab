@@ -55,17 +55,27 @@ if (command.watch) {
 }
 
 // Serve static files.
-if (typeof BUNDLED === 'undefined') {
-  const staticPath = path.resolve(__dirname, '..', 'dist', 'client');
-  app.get('*.js', serveGzip('text/javascript', staticPath)); // !
-  app.get('*.css', serveGzip('text/css', staticPath)); // !
-  app.use('/static/', express.static(staticPath));
-} else {
-  const staticPath = path.resolve(__dirname, '..', 'client');
-  app.get('*.js', serveGzip('text/javascript', staticPath)); // !
-  app.get('*.css', serveGzip('text/css', staticPath)); // !
-  app.use('/static/', express.static(staticPath));
-}
+const staticPath =
+  typeof BUNDLED === 'undefined'
+    ? path.resolve(__dirname, '..', 'dist', 'client')
+    : path.resolve(__dirname, '..', 'client');
+
+const templatePath =
+  typeof BUNDLED === 'undefined'
+    ? path.resolve(__dirname, '..', 'dist', 'server', 'templates')
+    : path.resolve(__dirname, 'templates');
+
+app.get('*.js', serveGzip('text/javascript', staticPath)); // !
+app.get('*.css', serveGzip('text/css', staticPath)); // !
+app.use('/static/', express.static(staticPath));
+
+app.set('views', templatePath);
+
+// Configure template engine.
+nunjucks.configure(templatePath, {
+  autoescape: true,
+  express: app,
+});
 
 // // Serve media files.
 app.use(
@@ -77,13 +87,6 @@ app.use(
 );
 
 app.use(compression());
-app.set('views', path.resolve(__dirname, 'templates'));
-
-// Configure template engine.
-nunjucks.configure(path.resolve(__dirname, 'templates'), {
-  autoescape: true,
-  express: app,
-});
 
 // Register Router
 app.use('/api/auth', API.Auth);
