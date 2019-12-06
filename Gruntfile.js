@@ -74,6 +74,12 @@ module.exports = function (grunt) {
       stdout: true,
       exitCode: 0,
     },
+    'clean:client': {
+      command: 'rm -rf dist/client',
+    },
+    'clean:server': {
+      command: 'rm -rf dist/server',
+    },
     clean: {
       command: 'rm -rf dist',
     },
@@ -85,6 +91,8 @@ module.exports = function (grunt) {
     exec: execConfig,
   });
 
+  grunt.task.registerTask('clean:client', ['exec:clean:client']);
+  grunt.task.registerTask('clean:server', ['exec:clean:server']);
   grunt.task.registerTask('watch:client', ['webpack:clientWatch']);
   grunt.task.registerTask('build:client', ['webpack:client']);
   grunt.task.registerTask('build:server', ['webpack:server']);

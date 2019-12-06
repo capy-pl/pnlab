@@ -1,10 +1,12 @@
-import compression from 'compression';
 import express from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import nunjucks from 'nunjucks';
 import path from 'path';
+import compression from 'compression';
+
 import { command, Logger } from './core/util';
+import serveGzip from './core/middleware/serveGzip';
 
 // import routes
 import API from './api';
@@ -12,19 +14,12 @@ import API from './api';
 const app = express();
 
 app.use(helmet());
-app.use(compression());
+
 if (!(process.env.NODE_ENV === 'test')) {
   app.use(morgan('combined'));
 }
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.set('views', path.resolve(__dirname, 'templates'));
-
-// Configure template engine.
-nunjucks.configure(path.resolve(__dirname, 'templates'), {
-  autoescape: true,
-  express: app,
-});
 
 command.parse(process.argv);
 
@@ -61,9 +56,15 @@ if (command.watch) {
 
 // Serve static files.
 if (typeof BUNDLED === 'undefined') {
-  app.use('/static/', express.static(path.resolve(__dirname, '..', 'dist', 'client')));
+  const staticPath = path.resolve(__dirname, '..', 'dist', 'client');
+  app.get('*.js', serveGzip('text/javascript', staticPath)); // !
+  app.get('*.css', serveGzip('text/css', staticPath)); // !
+  app.use('/static/', express.static(staticPath));
 } else {
-  app.use('/static/', express.static(path.resolve(__dirname, '..', 'client')));
+  const staticPath = path.resolve(__dirname, '..', 'client');
+  app.get('*.js', serveGzip('text/javascript', staticPath)); // !
+  app.get('*.css', serveGzip('text/css', staticPath)); // !
+  app.use('/static/', express.static(staticPath));
 }
 
 // // Serve media files.
@@ -74,6 +75,15 @@ app.use(
     maxAge: '0.5y',
   }),
 );
+
+app.use(compression());
+app.set('views', path.resolve(__dirname, 'templates'));
+
+// Configure template engine.
+nunjucks.configure(path.resolve(__dirname, 'templates'), {
+  autoescape: true,
+  express: app,
+});
 
 // Register Router
 app.use('/api/auth', API.Auth);

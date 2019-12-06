@@ -1,6 +1,6 @@
 // tslint:disable-next-line: no-reference
 /// <reference path="./index.d.ts" /> #
-import 'fomantic-ui/dist/semantic.min.css';
+import 'fomantic-ui-css/semantic.min.css';
 import '../scss/main';
 import '../scss/semanticui.override.scss';
 
