@@ -4,6 +4,11 @@ const nodeExternals = require('webpack-node-externals');
 const webpack = require('webpack');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const CompressionPlugin = require('compression-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 dotenv.config();
 
@@ -38,9 +43,8 @@ const clientConfig = {
   },
   output: {
     path: path.resolve(__dirname, '..', 'dist', 'client'),
-    filename: '[name].bundle.js',
+    filename: '[contenthash].js',
     publicPath: '/static/',
-    chunkFilename: '[name].chunk.js',
   },
   module: {
     rules: [{
@@ -50,7 +54,17 @@ const clientConfig = {
       },
       {
         test: /\.s?css$/,
-        use: ['style-loader', 'css-loader', 'sass-loader'],
+        use: [{
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              // you can specify a publicPath here
+              // by default it uses publicPath in webpackOptions.output
+              filename: '[name].css',
+            },
+          },
+          'css-loader',
+          'sass-loader',
+        ],
       },
       {
         test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
@@ -70,9 +84,32 @@ const clientConfig = {
     jquery: 'jQuery',
   },
   plugins: [
+    new OptimizeCSSAssetsPlugin({}),
+    new MiniCssExtractPlugin({
+      filename: '[name].[contenthash].css',
+      chunkFilename: '[id].css',
+    }),
+    new CompressionPlugin(),
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.DefinePlugin({
       ENV: JSON.stringify('production'),
+    }),
+    new HtmlWebpackPlugin({
+      template: path.resolve(__dirname, '..', 'server', 'templates', 'index.html'),
+      filename: path.resolve(
+        __dirname,
+        '..',
+        'dist',
+        'server',
+        'templates',
+        'index.html',
+      ),
+      inject: 'head',
+      minify: true,
+    }),
+    new BundleAnalyzerPlugin({
+      analyzerMode: 'static',
+      reportFilename: 'client-report.html',
     }),
   ],
 };
@@ -103,10 +140,6 @@ const serverConfig = {
   externals: [nodeExternals()],
   plugins: [
     new CopyPlugin([{
-        from: path.resolve(__dirname, '..', 'server', 'templates', 'index.html'),
-        to: path.resolve(__dirname, '..', 'dist', 'server', 'templates', 'index.html'),
-      },
-      {
         from: path.resolve(__dirname, '..', 'server', 'static'),
         to: path.resolve(__dirname, '..', 'dist', 'server', 'static'),
       },
