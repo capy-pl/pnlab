@@ -4,8 +4,6 @@ import Switch from './route/Switch';
 
 import { DropdownSearch } from './dropdown';
 
-import { SearchHistoryItem } from './list';
-
 import { Navbar, SettingMenu } from './menu';
 
 import { ModalConfirmReport } from './modal';
@@ -19,7 +17,6 @@ export {
   Loader,
   Switch,
   DropdownSearch,
-  SearchHistoryItem,
   Navbar,
   SettingMenu,
   DatetimeInput,
