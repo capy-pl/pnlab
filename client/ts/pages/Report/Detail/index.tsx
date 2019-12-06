@@ -14,7 +14,6 @@ import {
   Message,
   Container,
 } from 'semantic-ui-react';
-import { isBoolean, isNumber } from 'lodash';
 
 import { ModalAddAnalysis } from 'Component/modal';
 import { DropdownSearchSingleItem } from '../../../components/dropdown';
@@ -145,7 +144,7 @@ export default class Report extends PureComponent<
   };
 
   public selectProduct = (id?: number, direct?: boolean) => {
-    if (this.state.report && isBoolean(direct)) {
+    if (this.state.report && typeof direct === 'boolean') {
       this.setState({
         selectedProduct: id,
         selectedProductMode: direct ? 'direct' : 'indirect',
@@ -177,7 +176,7 @@ export default class Report extends PureComponent<
     event: React.SyntheticEvent<HTMLElement, Event>,
     data: DropdownProps,
   ) => {
-    if (isNumber(data.value)) {
+    if (typeof data.value === 'number') {
       this.setState({
         searchItem: data.value,
         windowSearchItemProduct: true,

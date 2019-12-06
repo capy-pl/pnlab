@@ -1,4 +1,4 @@
-import { isUndefined, isEqual } from 'lodash';
+import { isEqual } from 'lodash';
 import React, { PureComponent } from 'react';
 import { DataSet, EdgeOptions, Network, NodeOptions, Options } from 'vis-network';
 
@@ -203,7 +203,7 @@ export default class GraphViewCompare extends PureComponent<GraphProps, {}> {
   }
 
   public paintSelectedProduct(): void {
-    if (!isUndefined(this.props.selectedProduct)) {
+    if (!(typeof this.props.selectedProduct === 'undefined')) {
       let id: number | undefined = undefined;
       this.props.nodes.some((node) => {
         if (

@@ -1,7 +1,6 @@
 import React from 'react';
 import { Table } from 'semantic-ui-react';
 
-import { isUndefined } from 'lodash';
 import { Report } from '../../../PnApp/model';
 import { SimpleNode } from '../../../PnApp/model/Report';
 
@@ -45,11 +44,12 @@ export default class DirectRelationTable extends React.PureComponent<Props> {
   }
 
   public render() {
-    const back = isUndefined(this.props.back) ? (
-      <React.Fragment />
-    ) : (
-      <a onClick={this.props.back}> &lt;&lt; 返回</a>
-    );
+    const back =
+      typeof this.props.back === 'undefined' ? (
+        <React.Fragment />
+      ) : (
+        <a onClick={this.props.back}> &lt;&lt; 返回</a>
+      );
     return (
       <React.Fragment>
         {back}

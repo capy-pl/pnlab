@@ -1,6 +1,5 @@
 import React, { PureComponent } from 'react';
 import { Menu, MenuItemProps, Message, Segment, Table } from 'semantic-ui-react';
-import { isUndefined } from 'lodash';
 
 import { Window } from 'Component/';
 import Report from '../../../PnApp/model/Report';
@@ -29,7 +28,7 @@ export default class CommunityCharacterWindow extends PureComponent<Props, State
 
   public getCoreList(): JSX.Element[] {
     return this.props.report.communities
-      .filter((community) => !isUndefined(community.core))
+      .filter((community) => !(typeof community.core === 'undefined'))
       .map((community) => (
         <Table.Row key={community.id}>
           <Table.Cell>{community.core}</Table.Cell>

@@ -1,4 +1,4 @@
-import { isEqual, isNumber, isUndefined } from 'lodash';
+import { isEqual, isUndefined } from 'lodash';
 import React, { PureComponent } from 'react';
 import { DataSet, EdgeOptions, Network, NodeOptions, Options } from 'vis-network';
 
@@ -134,7 +134,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
   }
 
   public paintSearchItem(): void {
-    if (this.network && isNumber(this.props.searchItem)) {
+    if (this.network && typeof this.props.searchItem === 'number') {
       const selectedNode: GraphNode = {
         id: this.props.searchItem,
         group: undefined,
@@ -230,7 +230,7 @@ export default class GraphView extends PureComponent<GraphProps, {}> {
   }
 
   public paintSelectedProduct(): void {
-    if (!isUndefined(this.props.selectedProduct)) {
+    if (!(typeof this.props.selectedProduct === 'undefined')) {
       const selectedNode: GraphNode = {
         id: this.props.selectedProduct,
         group: undefined,

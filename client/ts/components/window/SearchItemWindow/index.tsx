@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react';
-import { isNumber } from 'lodash';
 
 import { Window } from 'Component/';
 import Report from '../../../PnApp/model/Report';
@@ -21,7 +20,7 @@ export default class SearchItemWindow extends PureComponent<Props> {
   };
 
   get title(): string {
-    if (isNumber(this.props.searchItem)) {
+    if (typeof this.props.searchItem === 'number') {
       return `${this.props.model.graph.getNode(this.props.searchItem)
         .name as string}(直接)`;
     }

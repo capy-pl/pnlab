@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react';
-import { isNumber } from 'lodash';
 
 import { Window } from 'Component/';
 import Report, { SimpleNode } from '../../../PnApp/model/Report';
@@ -34,7 +33,7 @@ export default class ProductRankWindow extends PureComponent<Props> {
   };
 
   get title(): string {
-    if (!isNumber(this.props.selectedProduct)) {
+    if (!(typeof this.props.selectedProduct === 'number')) {
       return '產品排名';
     } else if (this.props.selectedProductMode === 'direct') {
       return `${this.props.model.graph.getNode(this.props.selectedProduct)
@@ -50,7 +49,7 @@ export default class ProductRankWindow extends PureComponent<Props> {
       return <React.Fragment />;
     }
     let content: JSX.Element;
-    if (!isNumber(this.props.selectedProduct)) {
+    if (!(typeof this.props.selectedProduct === 'number')) {
       content = (
         <ProductRankTable
           productList={this.props.productList}
