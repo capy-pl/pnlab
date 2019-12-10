@@ -11,12 +11,11 @@ class App extends PureComponent {
     return (
       <Router>
         <div className='page-container'>
-          <React.Suspense fallback={<div>Loading...</div>}>
-            <Switch>
-              <Route path='/account/login' component={SignIn} />
-              <Route path='/' component={Home} />
-            </Switch>
-          </React.Suspense>
+          <Switch>
+            <Route path='/account/login' component={SignIn} />
+            <Route path='/' component={Home} />
+            <Route component={NotFound} />
+          </Switch>
         </div>
       </Router>
     );

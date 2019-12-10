@@ -6,6 +6,7 @@ import Navbar from 'Component/menu/Navbar';
 import { Switch } from 'Component/route';
 import { Auth } from '../../PnApp';
 import { updateCurrentUser } from '../../PnApp/Helper';
+import NotFound from '../NotFound';
 
 const Analysis = React.lazy(() =>
   import(
@@ -89,6 +90,7 @@ class Home extends PureComponent<RouteComponentProps, HomeState> {
             <Route path='/upload' component={Upload} />
             <Route exact path='/' component={ReportList} />
           </React.Suspense>
+          <Route component={NotFound} />
         </Switch>
       </div>
     );
