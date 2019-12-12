@@ -10,6 +10,7 @@ import serveGzip from './core/middleware/serveGzip';
 
 // import routes
 import API from './api';
+import webpack from 'webpack';
 
 const app = express();
 
@@ -25,49 +26,38 @@ command.parse(process.argv);
 
 // Use webpack-dev-middleware to watch on client files.
 if (command.watch) {
-  (async function() {
-    const webpack = await import('webpack');
-    const devMiddleware = await import('webpack-dev-middleware');
-    const { clientConfig } = await import('../config/webpack.dev');
-    const hotModuleMiddleware = await import('webpack-hot-middleware');
+  const webpack = require('webpack');
+  const devMiddleware = require('webpack-dev-middleware');
+  const hotModuleMiddleware = require('webpack-hot-middleware');
+  const { clientConfig } = require('../config/webpack.dev');
 
-    if (typeof BUNDLED !== 'undefined') {
-      clientConfig.entry.client[0] = CLIENT_PATH;
-      clientConfig.resolve.alias.Component = COMPNENT_PATH;
-    }
-    const compiler = webpack.default(clientConfig);
-    app.use(
-      devMiddleware.default(compiler, {
-        logLevel: 'error',
-        publicPath: clientConfig.output.publicPath,
-        stats: {
-          colors: true,
-        },
-      }),
-    );
+  if (typeof BUNDLED !== 'undefined') {
+    clientConfig.entry.client[0] = CLIENT_PATH;
+    clientConfig.resolve.alias.Component = COMPNENT_PATH;
+  }
 
-    app.use(
-      hotModuleMiddleware.default(compiler, {
-        publicPath: clientConfig.output.publicPath,
-      }),
-    );
-  })();
+  const compiler = webpack(clientConfig as webpack.Configuration);
+  app.use(
+    devMiddleware(compiler, {
+      logLevel: 'error',
+      noInfo: true,
+      publicPath: clientConfig.output.publicPath,
+      writeToDisk: true,
+    }),
+  );
+
+  app.use(
+    hotModuleMiddleware(compiler, {
+      noInfo: true,
+      quiet: true,
+    }),
+  );
 }
-
-// Serve static files.
-const staticPath =
-  typeof BUNDLED === 'undefined'
-    ? path.resolve(__dirname, '..', 'dist', 'client')
-    : path.resolve(__dirname, '..', 'client');
 
 const templatePath =
   typeof BUNDLED === 'undefined'
     ? path.resolve(__dirname, '..', 'dist', 'server', 'templates')
     : path.resolve(__dirname, 'templates');
-
-app.get('*.js', serveGzip('text/javascript', staticPath)); // !
-app.get('*.css', serveGzip('text/css', staticPath)); // !
-app.use('/static/', express.static(staticPath));
 
 app.set('views', templatePath);
 
@@ -76,6 +66,16 @@ nunjucks.configure(templatePath, {
   autoescape: true,
   express: app,
 });
+
+// Serve static files.
+const staticPath =
+  typeof BUNDLED === 'undefined'
+    ? path.resolve(__dirname, '..', 'dist', 'client')
+    : path.resolve(__dirname, '..', 'client');
+
+app.get('*.js', serveGzip('text/javascript', staticPath));
+app.get('*.css', serveGzip('text/css', staticPath));
+app.use('/static/', express.static(staticPath));
 
 // // Serve media files.
 app.use(

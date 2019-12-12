@@ -82,16 +82,16 @@ class Home extends PureComponent<RouteComponentProps, HomeState> {
     return (
       <div>
         <Navbar />
-        <Switch>
-          <React.Suspense fallback={<Loader />}>
+        <React.Suspense fallback={<Loader />}>
+          <Switch>
             <Route path='/report' component={Report} />
             <Route path='/settings' component={Setting} />
             <Route path='/analysis' component={Analysis} />
             <Route path='/upload' component={Upload} />
             <Route exact path='/' component={ReportList} />
-          </React.Suspense>
-          <Route component={NotFound} />
-        </Switch>
+            <Route component={NotFound} />
+          </Switch>
+        </React.Suspense>
       </div>
     );
   }

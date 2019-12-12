@@ -21,7 +21,7 @@ const clientConfig = {
   entry: {
     client: [
       path.resolve(__dirname, '..', 'client', 'ts', 'index.tsx'),
-      'webpack-hot-middleware/client?reload=true&&noInfo=true',
+      'webpack-hot-middleware/client',
     ],
   },
   resolve: {
@@ -32,7 +32,7 @@ const clientConfig = {
   },
   output: {
     path: path.resolve(__dirname, '..', 'dist', 'client'),
-    filename: '[name].[hash].js',
+    filename: '[name].js',
     publicPath: '/static/',
   },
   module: {
@@ -74,9 +74,7 @@ const clientConfig = {
     jquery: 'jQuery',
   },
   plugins: [
-    new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoEmitOnErrorsPlugin(),
     new webpack.DefinePlugin({
       ENV: JSON.stringify('development'),
     }),
