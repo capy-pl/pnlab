@@ -14,18 +14,28 @@ interface SearchItemQuery {
 export interface SearchItemResponseBody {
   items: string[];
 }
-
 /**
  * Search item by name.
- * @api /report/searchItem
+ * @api /api/report/searchItem
  * @method GET
- * @query {string} items
+ * @query {string} query
  * @apiName SearchItem
  * @apiGroup Report
+ * @response 200 Item found.
+ * @response 400 Query is not provided.
  */
-export async function SearchItem(req: e.Request, res: e.Response): Promise<void> {
+export async function SearchItem(
+  req: e.Request,
+  res: e.Response,
+  next: e.NextFunction,
+): Promise<void> {
   const { query } = req.query as SearchItemQuery;
   try {
+    const trimmedQuery = query.trim();
+    if (trimmedQuery.length <= 0) {
+      res.status(400).send({ message: 'Query cannt be empty.' });
+      return;
+    }
     const items = await connection.db
       .collection('items')
       .find({
@@ -41,8 +51,7 @@ export async function SearchItem(req: e.Request, res: e.Response): Promise<void>
       items: items.map((item) => item.單品名稱),
     });
   } catch (error) {
-    res.status(400).end();
-    Logger.error(error);
+    return next(error);
   }
 }
 
@@ -52,12 +61,17 @@ export interface GetConditionsResponseBody {
 
 /**
  * Get report's conditions.
- * @api /report/conditions
+ * @api /api/report/conditions
  * @method GET
  * @apiName GetConditions
  * @apiGroup Report
+ * @response 200
  */
-export async function GetConditions(req: e.Request, res: e.Response): Promise<void> {
+export async function GetConditions(
+  req: e.Request,
+  res: e.Response,
+  next: e.NextFunction,
+): Promise<void> {
   try {
     const { user } = req;
     const { org } = user as UserSchemaInterface;
@@ -86,8 +100,7 @@ export async function GetConditions(req: e.Request, res: e.Response): Promise<vo
       conditions,
     });
   } catch (error) {
-    Logger.error(error);
-    res.status(500).end();
+    return next(error);
   }
 }
 
@@ -99,7 +112,20 @@ export interface AddReportResponseBody {
   id: string;
 }
 
-export async function AddReport(req: e.Request, res: e.Response): Promise<void> {
+/**
+ * Add a new report.
+ * @api /api/report
+ * @method POST
+ * @apiName AddReport
+ * @apiGroup Report
+ * @response 200
+ * @response 400 Provided conditions are not valid.
+ */
+export async function AddReport(
+  req: e.Request,
+  res: e.Response,
+  next: e.NextFunction,
+): Promise<void> {
   const { user } = req;
   const { org } = user as UserSchemaInterface;
   try {
@@ -144,8 +170,16 @@ export async function AddReport(req: e.Request, res: e.Response): Promise<void> 
     for (const condition of conditions) {
       if (condition.name in mapping && condition.type === mapping[condition.name].type) {
         report.conditions.push(condition);
+      } else {
+        const errMessage = `${condition.name} not in schema or inproper condition type provided.`;
+        Logger.error(new Error(errMessage));
+        res.status(400).send({
+          message: errMessage,
+        });
+        return;
       }
     }
+
     await report.save();
     res.status(201).send({ id: report.id });
 
@@ -155,22 +189,36 @@ export async function AddReport(req: e.Request, res: e.Response): Promise<void> 
     const channel = getChannel();
     channel.sendToQueue('pn', Buffer.from(action.id));
   } catch (error) {
-    Logger.error(error);
-    res.status(400).send({ message: error.message });
+    return next(error);
   }
 }
 
-export async function GetReport(req: e.Request, res: e.Response): Promise<void> {
+/**
+ * Add a new report.
+ * @api /api/report/<id>
+ * @method GET
+ * @apiName AddReport
+ * @apiGroup Report
+ * @pathParam {string} id
+ * @response 200
+ * @response 400 Provided conditions are not valid.
+ */
+export async function GetReport(
+  req: e.Request,
+  res: e.Response,
+  next: e.NextFunction,
+): Promise<void> {
   const id = req.params.id as string;
   try {
     const report = await Report.findOne({ _id: id });
     if (!report) {
-      throw Error('Not found');
+      const errMessage = 'Report not found.';
+      Logger.error(new Error(errMessage));
+      res.status(404).send({ message: errMessage });
     }
     res.json(report);
   } catch (error) {
-    Logger.error(error);
-    res.status(404).send({ message: error.message });
+    return next(error);
   }
 }
 
@@ -187,7 +235,23 @@ export interface GetReportsResponseBody {
   reports: ReportPreview[];
 }
 
-export async function GetReports(req: e.Request, res: e.Response): Promise<void> {
+/**
+ * Preview a list of reports. User can provide a page number and a page limit.
+ * If page number and limit are not provided, it will default return newest 50
+ * reports' preview.
+ * @api /api/report
+ * @method GET
+ * @apiName GetReports
+ * @apiGroup Report
+ * @query {int} limit
+ * @query {int} page
+ * @response 200
+ */
+export async function GetReports(
+  req: e.Request,
+  res: e.Response,
+  next: e.NextFunction,
+): Promise<void> {
   const { limit, page } = req.query as GetReportsRequestQuery;
   const projection = {
     conditions: 1,
@@ -204,16 +268,32 @@ export async function GetReports(req: e.Request, res: e.Response): Promise<void>
         .skip(parseInt(limit) * (parseInt(page) - 1))
         .limit(parseInt(limit));
     } else {
-      reports = await Report.find({}, projection).sort({ created: -1 });
+      reports = await Report.find({}, projection)
+        .sort({ created: -1 })
+        .limit(50);
     }
     res.send({ reports });
   } catch (error) {
-    Logger.error(error);
-    res.status(500).end();
+    return next(error);
   }
 }
 
-export async function DeleteReport(req: e.Request, res: e.Response): Promise<void> {
+/**
+ * Delete an unused report.
+ * @api /api/report/<id>
+ * @method DELETE
+ * @apiName DeleteReport
+ * @apiGroup Report
+ * @pathParam {string} id
+ * @response 200
+ * @response 403 Cannot delete the report because it is referenced by other analysis.
+ * @response 404 Not found
+ */
+export async function DeleteReport(
+  req: e.Request,
+  res: e.Response,
+  next: e.NextFunction,
+): Promise<void> {
   const id = req.params.id as string;
   const isUsed = await Analysis.findOne({ report: id }).count();
   if (isUsed) {
@@ -222,13 +302,15 @@ export async function DeleteReport(req: e.Request, res: e.Response): Promise<voi
   try {
     const report = await Report.findOne({ _id: id });
     if (!report) {
-      throw Error('Document Not found');
+      res.status(404).json({
+        message: 'Document not found.',
+      });
+      return;
     }
     await report.remove();
     res.status(200).end();
   } catch (err) {
-    Logger.error(err);
-    res.status(500).end();
+    return next(err);
   }
 }
 
@@ -237,38 +319,58 @@ interface CommunityInfo extends Community {
   tags: string[];
 }
 
-export async function GetCommunityInfo(req: e.Request, res: e.Response): Promise<void> {
-  const object = req.object as ReportInterface;
-  const { communityId } = req.params;
-  const filterCommunities = object.communities.filter(
-    (community) => community.id === parseInt(communityId),
-  );
-  if (!filterCommunities.length) {
-    res.status(404).end();
-    return;
+/**
+ * Get specific community info from report.
+ * @api /api/report/<report-id>/community/<community-id>
+ * @method DELETE
+ * @apiName DeleteReport
+ * @apiGroup Report
+ * @pathParam {string} report-id The target report's id.
+ * @pathParam {string} community-id Target community's id.
+ * @response 200
+ * @response 403 Cannot delete the report because it is referenced by other analysis.
+ * @response 404 Not found
+ */
+export async function GetCommunityInfo(
+  req: e.Request,
+  res: e.Response,
+  next: e.NextFunction,
+): Promise<void> {
+  try {
+    const object = req.object as ReportInterface;
+    const { communityId } = req.params;
+    const filterCommunities = object.communities.filter(
+      (community) => community.id === parseInt(communityId),
+    );
+    if (!filterCommunities.length) {
+      res.status(404).end();
+      return;
+    }
+    const [community] = filterCommunities;
+    const items = await connection.db
+      .collection('items')
+      .find({
+        單品名稱: {
+          $in: Array.from(community.items.map((item) => item['name'])),
+        },
+      })
+      .toArray();
+    const averagePrice =
+      items.reduce<number>((current, prev) => {
+        return current + prev['銷售單價'];
+      }, 0) / items.length;
+    const tagsArr = items.map((item) => item['群號-群名稱']);
+    const tagsSet = new Set<string>(tagsArr);
+    const tags = Array.from(tagsSet);
+    res.send({
+      id: community.id,
+      items: community.items,
+      core: community.core,
+      weight: community.weight,
+      averagePrice,
+      tags,
+    });
+  } catch (err) {
+    return next(err);
   }
-  const [community] = filterCommunities;
-  const items = await connection.db
-    .collection('items')
-    .find({
-      單品名稱: {
-        $in: Array.from(community.items.map((item) => item['name'])),
-      },
-    })
-    .toArray();
-  const averagePrice =
-    items.reduce<number>((current, prev) => {
-      return current + prev['銷售單價'];
-    }, 0) / items.length;
-  const tagsArr = items.map((item) => item['群號-群名稱']);
-  const tagsSet = new Set<string>(tagsArr);
-  const tags = Array.from(tagsSet);
-  res.send({
-    id: community.id,
-    items: community.items,
-    core: community.core,
-    weight: community.weight,
-    averagePrice,
-    tags,
-  });
 }

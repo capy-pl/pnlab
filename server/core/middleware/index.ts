@@ -1,5 +1,6 @@
 import e from 'express';
 import { Document, Model } from 'mongoose';
+import { ObjectID } from 'mongodb';
 
 /**
  * Remember to use :id in router params. The middleware will also attach the corresponding
@@ -12,11 +13,22 @@ export function checkExist<T extends Document>(
   return async (req: e.Request, res: e.Response, next: e.NextFunction): Promise<void> => {
     const id = req.params.id as string;
     try {
+      if (!ObjectID.isValid(id)) {
+        res.status(400).send({ message: 'Not a valid id.' });
+        return;
+      }
+
       const obj = await model.findById(id, projection);
+
+      if (!obj) {
+        res.status(404).end();
+        return;
+      }
+
       req.object = obj;
       next();
     } catch (err) {
-      res.status(404).end();
+      return next(err);
     }
   };
 }
