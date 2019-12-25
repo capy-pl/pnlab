@@ -75,8 +75,14 @@ dist
 # mac temp file
 .DS_Store
 
+# csv directory
+csv
+
 # test file
 *.csv
 
 # https test file
 certificates
+
+# vscode
+*.code-workspace
