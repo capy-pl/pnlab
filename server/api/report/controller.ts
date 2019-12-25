@@ -16,13 +16,12 @@ export interface SearchItemResponseBody {
 }
 /**
  * Search item by name.
- * @api /api/report/searchItem
- * @method GET
+ * @api GET /api/report/searchItem
  * @query {string} query
  * @apiName SearchItem
  * @apiGroup Report
- * @response 200 Item found.
- * @response 400 Query is not provided.
+ * @apiSuccess (200) Item found.
+ * @apiError (400) Query is not provided.
  */
 export async function SearchItem(
   req: e.Request,
@@ -61,11 +60,10 @@ export interface GetConditionsResponseBody {
 
 /**
  * Get report's conditions.
- * @api /api/report/conditions
- * @method GET
+ * @api GET /api/report/conditions
  * @apiName GetConditions
  * @apiGroup Report
- * @response 200
+ * @apiSuccess 200
  */
 export async function GetConditions(
   req: e.Request,
@@ -114,12 +112,11 @@ export interface AddReportResponseBody {
 
 /**
  * Add a new report.
- * @api /api/report
- * @method POST
+ * @api POST /api/report
  * @apiName AddReport
  * @apiGroup Report
- * @response 200
- * @response 400 Provided conditions are not valid.
+ * @apiSuccess (200)
+ * @apiError (400) Provided conditions are not valid.
  */
 export async function AddReport(
   req: e.Request,
@@ -171,7 +168,8 @@ export async function AddReport(
       if (condition.name in mapping && condition.type === mapping[condition.name].type) {
         report.conditions.push(condition);
       } else {
-        const errMessage = `${condition.name} not in schema or inproper condition type provided.`;
+        const errMessage = `${condition.name} not in schema or \
+        inproper condition type provided.`;
         Logger.error(new Error(errMessage));
         res.status(400).send({
           message: errMessage,
@@ -195,13 +193,12 @@ export async function AddReport(
 
 /**
  * Add a new report.
- * @api /api/report/<id>
- * @method GET
+ * @api GET /api/report/<id>
  * @apiName AddReport
  * @apiGroup Report
- * @pathParam {string} id
- * @response 200
- * @response 400 Provided conditions are not valid.
+ * @apiParam {string} id
+ * @apiSuccess (200)
+ * @apiError (400) Provided conditions are not valid.
  */
 export async function GetReport(
   req: e.Request,
@@ -239,13 +236,12 @@ export interface GetReportsResponseBody {
  * Preview a list of reports. User can provide a page number and a page limit.
  * If page number and limit are not provided, it will default return newest 50
  * reports' preview.
- * @api /api/report
- * @method GET
+ * @api GET /api/report
  * @apiName GetReports
  * @apiGroup Report
- * @query {int} limit
- * @query {int} page
- * @response 200
+ * @apiParam {int} limit
+ * @apiParam {int} page
+ * @response (200)
  */
 export async function GetReports(
   req: e.Request,
@@ -284,10 +280,10 @@ export async function GetReports(
  * @method DELETE
  * @apiName DeleteReport
  * @apiGroup Report
- * @pathParam {string} id
- * @response 200
- * @response 403 Cannot delete the report because it is referenced by other analysis.
- * @response 404 Not found
+ * @apiParam {string} id
+ * @apiSuccess (200)
+ * @response (403) Cannot delete the report because it is referenced by other analysis.
+ * @response (404) Not found
  */
 export async function DeleteReport(
   req: e.Request,
@@ -325,11 +321,11 @@ interface CommunityInfo extends Community {
  * @method DELETE
  * @apiName DeleteReport
  * @apiGroup Report
- * @pathParam {string} report-id The target report's id.
- * @pathParam {string} community-id Target community's id.
- * @response 200
- * @response 403 Cannot delete the report because it is referenced by other analysis.
- * @response 404 Not found
+ * @apiParam {string} report-id The target report's id.
+ * @apiParam {string} community-id Target community's id.
+ * @apiSuccess (200)
+ * @apiError (403) Cannot delete the report because it is referenced by other analysis.
+ * @apiError (404) Not found
  */
 export async function GetCommunityInfo(
   req: e.Request,
