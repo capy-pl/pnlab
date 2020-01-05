@@ -4,13 +4,12 @@ import morgan from 'morgan';
 import nunjucks from 'nunjucks';
 import path from 'path';
 import compression from 'compression';
-
+import webpack from 'webpack';
 import { command, Logger } from './core/util';
 import serveGzip from './core/middleware/serveGzip';
 
 // import routes
 import API from './api';
-import webpack from 'webpack';
 
 const app = express();
 

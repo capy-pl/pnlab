@@ -1,4 +1,5 @@
-/// <reference path="./index.d.ts" /> #
+/// <reference path="./index.d.ts" />
+
 import dotenv from 'dotenv';
 import fs from 'fs';
 import http from 'http';

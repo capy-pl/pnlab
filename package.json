@@ -7,7 +7,7 @@
     "test": "jest",
     "dev": "nodemon",
     "ndev": "node dist/server/server.bundle.js -p -w",
-    "start": "NODE_ENV=production node dist/server/server.bundle.js",
+    "start": "node dist/server/server.bundle.js",
     "storybook": "start-storybook",
     "build": "grunt build"
   },
