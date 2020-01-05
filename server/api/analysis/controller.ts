@@ -1,20 +1,37 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
+import { Types } from 'mongoose';
 
 import { Logger } from '../../core/util';
 import { Analysis, Report } from '../../models';
 import { AnalysisInterface, Comment } from '../../models/Analysis';
 import { UserSchemaInterface } from '../../models/User';
 
-export async function AddAnalysis(req: Request, res: Response): Promise<void> {
+/**
+ * Add an analysis.
+ * @api POST /api/analysis Add an Analysis
+ * @apiName AddAnalysis
+ * @apiGroup Analysis
+ * @apiSuccess (201) The analysis has been created.
+ * @apiError (400) Required request body param is missing or invalid.
+ * @apiError (404) The report is not found.
+ */
+export async function AddAnalysis(req: Request, res: Response, next): Promise<void> {
   const { body } = req;
-  try {
-    await Report.findById(body.report);
-  } catch (err) {
-    Logger.error(err);
-    res.status(404).send({ message: `Report ${body.report} not found.` });
+  if (!(body.report && Types.ObjectId.isValid(body.report))) {
+    Logger.error(new Error(`${body.report} is empty or not a valid ObjectID.`));
+    res.status(400).send({ message: 'Id is empty or invalid.' });
+    return;
   }
 
   try {
+    const report = await Report.findById(body.report);
+    if (!report) {
+      const errMessage = `Report ${body.report} not found.`;
+      Logger.error(new Error(errMessage));
+      res.status(404).send({ message: errMessage });
+      return;
+    }
+
     const analysis = new Analysis(body);
     if (!analysis.title) {
       analysis.title = '未命名的分析';
@@ -24,8 +41,7 @@ export async function AddAnalysis(req: Request, res: Response): Promise<void> {
     await analysis.save();
     res.status(201).send({ id: analysis._id });
   } catch (err) {
-    Logger.error(err);
-    res.send({ error: err.message });
+    return next(err);
   }
 }
 
@@ -34,7 +50,24 @@ interface GetCollectionQuery {
   limit?: string;
 }
 
-export async function GetAnalyses(req: Request, res: Response): Promise<void> {
+/**
+ * Get analyses list.
+ * @api GET /api/analysis Get analyses preview.
+ * @apiName GetAnalyses
+ * @apiGroup Analysis
+ * @apiDescription
+ * Get an review of analyses. The return order is
+ * descending based on created date. Page and limit
+ * rule is the same as report. If page and limit is not
+ * provided, only latest 50 records will be returned.
+ *
+ * @apiSuccess (200) The analysis has been created.
+ */
+export async function GetAnalyses(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> {
   const query = req.query as GetCollectionQuery;
   const { page, limit } = query;
   try {
@@ -60,44 +93,93 @@ export async function GetAnalyses(req: Request, res: Response): Promise<void> {
           created: 1,
           description: 1,
         },
-      ).sort({ created: -1 });
+      )
+        .sort({ created: -1 })
+        .limit(50);
       res.send(collection);
     }
   } catch (err) {
-    Logger.error(err);
-    res.status(400).end();
+    next(err);
   }
 }
 
+/**
+ * Get single analysis.
+ * @api GET /api/analysis/:id
+ * @apiName GetAnalysis
+ * @apiGroup Analysis
+ * @apiParam id {String} The analysis's id.
+ * @apiSuccess (200)
+ * @apiFail (404) The analysis is not found(handle by middleware).
+ */
 export async function GetAnalysis(req: Request, res: Response): Promise<void> {
   res.send(req.object);
 }
 
-export async function ModifyAnalysis(req: Request, res: Response): Promise<void> {
+/**
+ * Modify analysis.
+ * @api PUT /api/analysis/:id
+ * @apiName ModifyAnalysis
+ * @apiGroup Analysis
+ * @apiParam id {String} The analysis's id.
+ * @apiSuccess (200)
+ * @apiFail (404) The analysis is not found(handle by middleware).
+ */
+export async function ModifyAnalysis(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> {
   const body = req.body;
   const analysis = req.object as AnalysisInterface;
-  analysis.set(body);
+
   try {
+    analysis.set(body);
     await analysis.save();
     res.status(200).end();
   } catch (err) {
-    Logger.error(err);
-    res.status(422).send({ message: err.message });
+    return next(err);
   }
 }
 
-export async function DeleteAnalysis(req: Request, res: Response): Promise<void> {
+/**
+ * Delete an analysis.
+ * Do notice that this will not delete the associate report.
+ * @api DELETE /api/analysis/:id
+ * @apiName DeleteAnalysis
+ * @apiGroup Analysis
+ * @apiParam id {String} The analysis's id.
+ * @apiSuccess (200)
+ * @apiFail (404) The analysis is not found(handle by middleware).
+ */
+export async function DeleteAnalysis(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> {
   const analysis = req.object as AnalysisInterface;
   try {
     await analysis.remove();
     res.status(200).end();
   } catch (err) {
-    Logger.error(err);
-    res.status(400).end();
+    return next(err);
   }
 }
 
-export async function AddAnalysisComment(req: Request, res: Response): Promise<void> {
+/**
+ * Add a comment to an analysis.
+ * @api POST /api/analysis/:id/comment
+ * @apiName AddComment
+ * @apiGroup Analysis
+ * @apiParam id {String} The analysis's id.
+ * @apiSuccess (201)
+ * @apiFail (404) The analysis is not found(handle by middleware).
+ */
+export async function AddAnalysisComment(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> {
   const analysis = req.object as AnalysisInterface;
   const user = req.user as UserSchemaInterface;
   const body = req.body as Comment;
@@ -108,28 +190,64 @@ export async function AddAnalysisComment(req: Request, res: Response): Promise<v
   try {
     analysis.comments.push(body);
     await analysis.save();
-    res.status(200).end();
+    res.status(201).end();
   } catch (err) {
-    Logger.error(err);
-    res.status(422).end();
+    return next(err);
   }
 }
 
-export async function GetAnalysisComment(req: Request, res: Response): Promise<void> {
+/**
+ * Get a comment from an analysis.
+ * It is a rare case that user need to see a single comment.
+ * @api GET /api/analysis/:id/comment/:comment_id
+ * @apiName GetComment
+ * @apiGroup Analysis
+ * @apiParam id {String} The analysis's id.
+ * @apiParam comment_id {String} The comment's id.
+ * @apiSuccess (200)
+ * @apiFail (404) The analysis is not found or the comment is not
+ * found(handle by middleware).
+ */
+export async function GetAnalysisComment(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> {
   const analysis = req.object as AnalysisInterface;
   const commentId = req.params.comment_id as string;
   const comment = analysis.comments.id(commentId);
-  if (comment) {
-    res.send(comment);
-  } else {
-    Logger.error(
-      new Error(`Comment ${commentId} not found in Analysis ${analysis._id}.`),
-    );
-    res.status(404).end();
+  try {
+    if (comment) {
+      res.send(comment);
+    } else {
+      Logger.error(
+        new Error(`Comment ${commentId} not found in Analysis ${analysis._id}.`),
+      );
+      res.status(404).end();
+    }
+  } catch (err) {
+    return next(err);
   }
 }
 
-export async function ModifyAnalysisComment(req: Request, res: Response): Promise<void> {
+/**
+ * Edit a comment in an analysis.
+ * @api PUT /api/analysis/:id/comment/:comment_id
+ * @apiName ModifyComment
+ * @apiGroup Analysis
+ * @apiParam id {String} The analysis's id.
+ * @apiParam comment_id {String} The comment's id.
+ * @apiSuccess (200)
+ * @apiFail (403) The user is not allowed to modifiy the comment.
+ * Only the origin author are allowed to modify the comment.
+ * @apiFail (404) The analysis is not found or the comment is not
+ * found(handle by middleware).
+ */
+export async function ModifyAnalysisComment(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> {
   const analysis = req.object as AnalysisInterface;
   const commentId = req.params.comment_id as string;
   const comment = analysis.comments.id(commentId);
@@ -150,12 +268,28 @@ export async function ModifyAnalysisComment(req: Request, res: Response): Promis
     await analysis.save();
     res.status(200).end();
   } catch (err) {
-    Logger.error(err);
-    res.status(422).end();
+    return next(err);
   }
 }
 
-export async function DeleteAnalysisComment(req: Request, res: Response): Promise<void> {
+/**
+ * Delete a comment from an analysis.
+ * @api DELETE /api/analysis/:id/comment/:comment_id
+ * @apiName DeleteComment
+ * @apiGroup Analysis
+ * @apiParam id {String} The analysis's id.
+ * @apiParam comment_id {String} The comment's id.
+ * @apiSuccess (200)
+ * @apiFail (403) The user is not allowed to modifiy the comment.
+ * Only the origin author are allowed to modify the comment.
+ * @apiFail (404) The analysis is not found or the comment is not
+ * found(handle by middleware).
+ */
+export async function DeleteAnalysisComment(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> {
   const analysis = req.object as AnalysisInterface;
   const commentId = req.params.comment_id as string;
   const comment = analysis.comments.id(commentId);
@@ -175,7 +309,6 @@ export async function DeleteAnalysisComment(req: Request, res: Response): Promis
     await analysis.save();
     res.status(200).end();
   } catch (err) {
-    Logger.error(err);
-    res.status(422).end();
+    return next(err);
   }
 }

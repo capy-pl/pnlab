@@ -51,19 +51,19 @@ class TransactionCSVReader:
         options = self.to_options()
         dtype = self.to_dtype()
         return read_csv(file_path,
-                           dtype=dtype,
-                           index_col=options['INDEX_COLUMN'],
-                           usecols=options['USE_COLUMNS'],
-                           parse_dates=options['PARSE_DATES'],
-                           )
+                        dtype=dtype,
+                        index_col=options['INDEX_COLUMN'],
+                        usecols=options['USE_COLUMNS'],
+                        parse_dates=options['PARSE_DATES'],
+                        )
 
     def read_csv_by_chunk(self, file_path, size=200000):
         options = self.to_options()
         dtype = self.to_dtype()
         return read_csv(file_path,
-                           dtype=dtype,
-                           index_col=options['INDEX_COLUMN'],
-                           usecols=options['USE_COLUMNS'],
-                           parse_dates=options['PARSE_DATES'],
-                           chunksize=size
-                           )
+                        dtype=dtype,
+                        index_col=options['INDEX_COLUMN'],
+                        usecols=options['USE_COLUMNS'],
+                        parse_dates=options['PARSE_DATES'],
+                        chunksize=size
+                        )

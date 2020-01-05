@@ -5,12 +5,12 @@
   "scripts": {
     "lint": "tslint",
     "test": "jest",
-    "build": "grunt build:client && grunt build:server",
-    "build:production": "grunt build:prodClient && grunt build:prodServer",
     "dev": "nodemon",
     "dev:node": "node dist/server/server.bundle.js -p -w",
     "start": "NODE_ENV=production node dist/server/server.bundle.js",
-    "storybook": "start-storybook"
+    "storybook": "start-storybook",
+    "build": "grunt build:client && grunt build:server",
+    "build:production": "grunt build:client --production && grunt build:server --production"
   },
   "nodemonConfig": {
     "watch": [

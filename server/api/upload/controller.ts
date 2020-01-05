@@ -1,4 +1,4 @@
-import e from 'express';
+import e, { NextFunction } from 'express';
 import fileUpload from 'express-fileupload';
 import path from 'path';
 import fs from 'fs';
@@ -8,7 +8,20 @@ import ImportHistory, { ImportHistoryInterface } from '../../models/ImportHistor
 import Action from '../../models/Action';
 import { Logger } from '../../core/util';
 
-export async function UploadFile(req: e.Request, res: e.Response): Promise<void> {
+/**
+ * Upload a file.
+ * @api POST /api/upload Upload a file.
+ * @apiName UploadFile
+ * @apiGroup Upload
+ * @apiSuccess (200)
+ * @response (403) Cannot delete the report because it is referenced by other analysis.
+ * @response (404) Not found
+ */
+export async function UploadFile(
+  req: e.Request,
+  res: e.Response,
+  next: NextFunction,
+): Promise<void> {
   const files = req.files;
   if (files) {
     const file = files.file as fileUpload.UploadedFile;
@@ -21,9 +34,7 @@ export async function UploadFile(req: e.Request, res: e.Response): Promise<void>
       // If it is a duplicate file, remove the temporary file.
       fs.unlink(file.tempFilePath, (err) => {
         if (err) {
-          Logger.error(err);
-          res.status(500).end();
-          return;
+          return next(err);
         }
         res.status(400).send('Duplicate files.');
       });
@@ -63,6 +74,17 @@ export async function UploadFile(req: e.Request, res: e.Response): Promise<void>
   res.status(200).end();
 }
 
+/**
+ * Delete an unused report.
+ * @api /api/report/<id>
+ * @method DELETE
+ * @apiName DeleteReport
+ * @apiGroup Report
+ * @apiParam {string} id
+ * @apiSuccess (200)
+ * @response (403) Cannot delete the report because it is referenced by other analysis.
+ * @response (404) Not found
+ */
 export async function GetUploadHistories(req: e.Request, res: e.Response): Promise<void> {
   const { page, limit } = req.query;
   if (page && limit) {
@@ -72,11 +94,16 @@ export async function GetUploadHistories(req: e.Request, res: e.Response): Promi
       .limit(parseInt(limit));
     res.send(histories);
   } else {
-    const histories = await ImportHistory.find({});
+    const histories = await ImportHistory.find({})
+      .sort({ created: -1 })
+      .limit(50);
     res.send(histories);
   }
 }
 
+/**
+ * @deprecated
+ */
 export async function DeleteUploadFile(req: e.Request, res: e.Response): Promise<void> {
   const obj = req.object as ImportHistoryInterface;
   if (obj.status === 'pending') {

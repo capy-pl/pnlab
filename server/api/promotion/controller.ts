@@ -1,10 +1,24 @@
-import e from 'express';
+import e, { NextFunction } from 'express';
 import { connection } from 'mongoose';
 
 import { Logger } from '../../core/util';
 import Promotion, { PromotionInterface, PromotionType } from '../../models/Promotions';
+import { MongoError } from 'mongodb';
 
-export async function AddPromotion(req: e.Request, res: e.Response): Promise<void> {
+/**
+ * Add a promotion.
+ * @api POST /api/promotion
+ * @apiName AddPromotion
+ * @apiGroup Promotion
+ * @apiSuccess (201)
+ * @apiFail (400) Missing or invalid fields are given or duplicate error.
+ * @apiFail (404) The item provided is not found in database.
+ */
+export async function AddPromotion(
+  req: e.Request,
+  res: e.Response,
+  next: NextFunction,
+): Promise<void> {
   const body = req.body as PromotionInterface;
   if (!(body.name && body.groupOne && body.startTime && body.endTime)) {
     return res
@@ -41,14 +55,14 @@ export async function AddPromotion(req: e.Request, res: e.Response): Promise<voi
           .collection('items')
           .findOne({ 單品名稱: item });
         if (!hasFound) {
-          return res
+          res
             .status(404)
             .send({ message: `Cannot not found item "${item}".` })
             .end();
         }
       }
     } else {
-      return res
+      res
         .status(400)
         .send({ message: 'groupTwo is required when type equals to combinations.' })
         .end();
@@ -58,37 +72,86 @@ export async function AddPromotion(req: e.Request, res: e.Response): Promise<voi
   try {
     const promotion = new Promotion(body);
     await promotion.save();
-    res.status(201).end();
+    res.status(201).send({ id: promotion._id });
   } catch (error) {
-    Logger.error(error);
-    res.status(422).send({ message: error.message });
+    if (error instanceof MongoError) {
+      res.status(400).send({ message: 'Duplicate name.' });
+      return;
+    }
+    return next(error);
   }
 }
 
 interface GetPromotionsQuery {
   type?: PromotionType;
-  limit?: number;
+  limit?: string;
+  page?: string;
 }
 
+/**
+ * Get promotion list.
+ * Get latest promotion list. If the page and limit is not set,
+ * The api will return the newest 50 records.
+ * @api GET /api/promotion
+ * @apiName GetPromotions
+ * @apiGroup Promotion
+ * @apiQuery type
+ * @apiQuery limit
+ * @api page
+ * @apiSuccess (200)
+ * @apiFail (404) The analysis is not found(handle by middleware).
+ */
 export async function GetPromotions(req: e.Request, res: e.Response): Promise<void> {
-  const query = req.query as GetPromotionsQuery;
-  if (query.type) {
-    const promotions = await Promotion.find({
-      type: query.type,
-    });
-    return res.send(promotions).end();
+  const { type, limit, page } = req.query as GetPromotionsQuery;
+  const query: any = {};
+  if (type) {
+    query.type = type;
+  }
+  if (limit && page) {
+    const promotions = await Promotion.find(query)
+      .sort({ created: -1 })
+      .skip(parseInt(limit) * (parseInt(page) - 1))
+      .limit(parseInt(limit));
+    res.send(promotions).end();
+    return;
   } else {
-    const promotions = await Promotion.find({});
-    res.send(promotions);
+    const promotions = await Promotion.find(query)
+      .sort({ created: -1 })
+      .limit(50);
+    res.send(promotions).end();
+    return;
   }
 }
 
+/**
+ * Get a promotion.
+ * @api GET /api/promotion/:id
+ * @apiName GetPromotion
+ * @apiGroup Promotion
+ * @apiParam id {String} The promotion's id.
+ * @apiSuccess (200)
+ * @apiFail (404) The analysis is not found(handle by middleware).
+ */
 export async function GetPromotion(req: e.Request, res: e.Response): Promise<void> {
   const { object } = req;
   res.send(object);
 }
 
-export async function UpdatePromotion(req: e.Request, res: e.Response): Promise<void> {
+/**
+ * Modify a promotion.
+ * @api PUT /api/promotion/:id
+ * @apiName ModifyPromotion
+ * @apiGroup Promotion
+ * @apiParam id {String} The analysis's id.
+ * @apiSuccess (200)
+ * @apiFail (400) Missing field or duplicate name.
+ * @apiFail (404) The analysis is not found(handle by middleware).
+ */
+export async function UpdatePromotion(
+  req: e.Request,
+  res: e.Response,
+  next: NextFunction,
+): Promise<void> {
   const object = req.object as PromotionInterface;
   const body = req.body as PromotionInterface;
   if (!(body.name && body.groupOne && body.startTime && body.endTime)) {
@@ -123,13 +186,29 @@ export async function UpdatePromotion(req: e.Request, res: e.Response): Promise<
       await object.save();
       res.status(200).end();
     } catch (error) {
-      Logger.error(error);
-      res.status(400).send({ message: error.message });
+      if (error instanceof MongoError) {
+        res.status(400).send({ message: 'Duplicate name.' });
+        return;
+      }
+      return next(error);
     }
   }
 }
 
-export async function DeletePromotion(req: e.Request, res: e.Response): Promise<void> {
+/**
+ * Delete a promotion.
+ * @api DELETE /api/promotion/:id
+ * @apiName DeletePromotion
+ * @apiGroup Promotion
+ * @apiParam id {String} The analysis's id.
+ * @apiSuccess (200)
+ * @apiFail (404) The promotion is not found(handle by middleware).
+ */
+export async function DeletePromotion(
+  req: e.Request,
+  res: e.Response,
+  next: NextFunction,
+): Promise<void> {
   const { object } = req;
   try {
     if (object) {
@@ -137,7 +216,6 @@ export async function DeletePromotion(req: e.Request, res: e.Response): Promise<
       res.status(200).end();
     }
   } catch (error) {
-    Logger.error(error);
-    res.status(400).end();
+    return next(error);
   }
 }

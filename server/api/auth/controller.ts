@@ -22,28 +22,42 @@ interface SignUpRequestBody {
  * @apiGroup Auth
  * @apiParam email {String} User's email.
  * @apiParam password {String} User's password.
- * @response 409 Conflict.
- * @response 422 Missing params.
  * @response 201 Created.
+ * @response 400 Missing params.
+ * @response 409 Conflict.
  */
 export async function SignUp(
   req: e.Request,
   res: e.Response,
+  next: e.NextFunction,
 ): Promise<void | e.Response> {
   const { email, password } = req.body as SignUpRequestBody;
   if (!(email && password)) {
-    res.status(422).send({ message: 'Lack of email or password.' });
-  } else {
-    const duplicate = await User.findOne({ email });
-    if (duplicate) {
-      return res.status(409).send({ message: 'Email already exists.' });
-    }
-    const user = new User({ email });
-    await user.setPassword(password);
+    res.status(400).send({ message: 'Lack of email or password.' });
+    return;
+  }
+
+  const trimmedEmail = email.trim();
+  const trimmedPassword = password.trim();
+  if (!(trimmedEmail && trimmedPassword)) {
+    res.status(400).send({ message: 'Lack of email or password.' });
+    return;
+  }
+
+  const duplicate = await User.findOne({ email: trimmedEmail });
+  if (duplicate) {
+    return res.status(409).send({ message: 'Email already exists.' });
+  }
+
+  try {
+    const user = new User({ email: trimmedEmail });
+    await user.setPassword(trimmedPassword);
     await user.save();
     res.status(201).send({
-      message: 'created.',
+      message: 'Created.',
     });
+  } catch (err) {
+    next(err);
   }
 }
 
@@ -60,29 +74,50 @@ interface LogInRequestBody {
  * @apiGroup Auth
  * @apiParam email {String} User's email.
  * @apiParam password {String} User's password.
+ * @response 200 Login success.
+ * @response 400 Missing params.
+ * @response 401 Login fail.
  */
-export async function LogIn(req: e.Request, res: e.Response): Promise<void> {
+export async function LogIn(
+  req: e.Request,
+  res: e.Response,
+  next: e.NextFunction,
+): Promise<void> {
   const { email, password } = req.body as LogInRequestBody;
   if (!(email && password)) {
-    res.status(422).json({ message: 'email or password not provided.' });
-  } else {
-    try {
-      const userInstance = await User.findOne({ email });
-      if (!userInstance) {
-        throw new Error('user not exist');
-      }
-      const { user, error } = await userInstance.authenticate(password);
-      if (error) {
-        throw error;
-      }
-      const token = jwt.sign({ sub: user.id }, SECRET_KEY as string, {
-        expiresIn: process.env.EXPIRED_IN,
-      });
-      res.json({ token });
-    } catch (error) {
+    res.status(400).json({ message: 'Email or password not provided.' });
+    return;
+  }
+  const trimmedEmail = email.trim();
+  const trimmedPassword = password.trim();
+
+  if (!(trimmedEmail && trimmedPassword)) {
+    res.status(400).json({ message: 'Email or password not provided.' });
+    return;
+  }
+
+  try {
+    const userInstance = await User.findOne({ email: trimmedEmail });
+    if (!userInstance) {
+      Logger.error(new Error('Email or password error.'));
+      res.status(401).json({ message: 'Email or password error.' });
+      return;
+    }
+
+    const { user, error } = await userInstance.authenticate(trimmedPassword);
+
+    if (error) {
       Logger.error(error);
       res.status(401).json({ message: 'Email or password error.' });
+      return;
     }
+
+    const token = jwt.sign({ sub: user.id }, SECRET_KEY as string, {
+      expiresIn: process.env.EXPIRED_IN,
+    });
+    res.json({ token });
+  } catch (error) {
+    return next(error);
   }
 }
 
@@ -94,7 +129,8 @@ export async function LogIn(req: e.Request, res: e.Response): Promise<void> {
  * @method GET
  * @apiName Validate
  * @apiGroup Auth
+ * @response 201 No content.
  */
 export function Validation(req: e.Request, res: e.Response): void {
-  res.status(204).send();
+  res.status(204).end();
 }

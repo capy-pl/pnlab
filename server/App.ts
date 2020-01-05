@@ -4,13 +4,12 @@ import morgan from 'morgan';
 import nunjucks from 'nunjucks';
 import path from 'path';
 import compression from 'compression';
-
+import webpack from 'webpack';
 import { command, Logger } from './core/util';
 import serveGzip from './core/middleware/serveGzip';
 
 // import routes
 import API from './api';
-import webpack from 'webpack';
 
 const app = express();
 
@@ -96,13 +95,14 @@ app.use('/api/promotion', API.Promotion);
 app.use('/api/analysis', API.Analysis);
 app.use('/api/upload', API.Upload);
 
-app.get('/*', (req, res) => {
-  res.render('index.html');
+app.use((err: Error, req: express.Request, res: express.Response, next) => {
+  Logger.error(err);
+  res.status(500).send({ message: 'Internal Server Error.' });
+  return;
 });
 
-app.use((err: Error, req: express.Request, res: express.Response) => {
-  Logger.error(err);
-  res.status(500);
+app.get('/*', (req, res) => {
+  res.render('index.html');
 });
 
 export default app;

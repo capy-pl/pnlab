@@ -14,7 +14,7 @@ import {
 
 const router = Router();
 
-router.get('/searchItem', SearchItem);
+router.get('/searchItem', loginRequired, SearchItem);
 router.get('/conditions', loginRequired, GetConditions);
 
 router
