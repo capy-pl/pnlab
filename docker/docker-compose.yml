@@ -15,6 +15,9 @@ services:
       - 'temp:/var/pnlab/temp'
     networks:
       - pn-net
+    environment:
+      - MONGO_DB_ADDRESS=pn-db
+      - RABBIT_MQ_ADDRESS=pn-mq
   pn-python:
     image: pnlab-service:1.0.1
     build:
@@ -27,6 +30,9 @@ services:
       - 'temp:/var/pnlab/temp'
     networks:
       - pn-net
+    environment:
+      - MONGO_DB_ADDRESS=pn-db
+      - RABBIT_MQ_ADDRESS=pn-mq
   db:
     image: mongo:pnlab
     container_name: pn-db

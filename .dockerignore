@@ -73,7 +73,14 @@ __pycache__
 .DS_Store
 
 # test file
+csv
 *.csv
 
 # python cache and lib
 pyscript/lib
+
+*.ts
+*.tsx
+
+# test directory
+spec
