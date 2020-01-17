@@ -1,4 +1,4 @@
-module.exports = function(grunt) {
+module.exports = function (grunt) {
   const devConfig = require('./config/webpack.dev');
   const prodConfig = require('./config/webpack.prod');
 
@@ -21,22 +21,20 @@ module.exports = function(grunt) {
   };
 
   const webpackConfig = {
-    serverWatch: Object.assign(
-      {
+    serverWatch: Object.assign({
         watch: true,
       },
       devConfig.serverConfig,
     ),
-    clientWatch: Object.assign(
-      {
+    clientWatch: Object.assign({
         watch: true,
       },
       devConfig.clientConfig,
     ),
     server: devConfig.serverConfig,
     client: devConfig.clientConfig,
-    'server:prod': prodConfig.serverConfig,
-    'client:prod': prodConfig.clientConfig,
+    serverProduction: prodConfig.serverConfig,
+    clientProduction: prodConfig.clientConfig,
   };
 
   const execConfig = {
@@ -100,14 +98,14 @@ module.exports = function(grunt) {
   grunt.task.registerTask('watch:client', ['webpack:clientWatch']);
   grunt.task.registerTask('build:server', () => {
     if (production) {
-      grunt.task.run(['eslint:server', 'webpack:server:prod']);
+      grunt.task.run(['eslint:server', 'webpack:serverProduction']);
     } else {
       grunt.task.run(['eslint:server', 'webpack:server']);
     }
   });
   grunt.task.registerTask('build:client', () => {
     if (production) {
-      grunt.task.run(['eslint:client', 'webpack:client:prod']);
+      grunt.task.run(['eslint:client', 'webpack:clientProduction']);
     } else {
       grunt.task.run(['eslint:client', 'webpack:client']);
     }
@@ -115,7 +113,7 @@ module.exports = function(grunt) {
   grunt.task.registerTask('build', () => {
     grunt.task.run(['eslint']);
     if (production) {
-      grunt.task.run(['webpack:client:prod', 'webpack:server:prod']);
+      grunt.task.run(['webpack:clientProduction', 'webpack:serverProduction']);
     } else {
       grunt.task.run(['webpack:client', 'webpack:server']);
     }

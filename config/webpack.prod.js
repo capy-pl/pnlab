@@ -18,9 +18,7 @@ const baseConfig = {
     errors: true,
   },
   optimization: {
-    minimizer: [new TerserPlugin({
-
-    })],
+    minimizer: [new TerserPlugin({})],
     minimize: true,
     splitChunks: {
       chunks: 'all',
@@ -105,7 +103,7 @@ const clientConfig = {
       minify: true,
     }),
     new BundleAnalyzerPlugin({
-      analyzerMode: 'static',
+      analyzerMode: 'disabled',
       reportFilename: 'client-report.html',
     }),
   ],
@@ -128,7 +126,7 @@ const serverConfig = {
       test: /\.[jt]s/,
       loader: 'babel-loader',
       exclude: /node_modules/,
-    }, ],
+    }],
   },
   output: {
     path: path.resolve(__dirname, '..', 'dist', 'server'),
