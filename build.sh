@@ -7,7 +7,7 @@ if [ -n "$1" ]; then
             case "$2" in
             build)
                 docker-compose \
-                    -f docker-compose.yml \
+                    -f ./docker/docker-compose.yml \
                     build
                 ;;
 
@@ -35,8 +35,7 @@ if [ -n "$1" ]; then
                     -d \
                     --mount source=pnlab,target=/var/pnlab/temp \
                     -p 3000:3000 \
-                    --name pn-server \
-                    pnlab:1.0.1
+                    pnlab-server:1.0.1 \
                 ;;
 
             run-py)
@@ -45,7 +44,7 @@ if [ -n "$1" ]; then
                     -d \
                     --mount source=pnlab,target=/var/pnlab/temp \
                     --name pn-python \
-                    pnlab-py:1.0.1
+                    pnlab-service:1.0.1
                 ;;
 
             run-db)
