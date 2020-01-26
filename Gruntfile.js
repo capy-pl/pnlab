@@ -1,4 +1,4 @@
-module.exports = function (grunt) {
+module.exports = function(grunt) {
   const devConfig = require('./config/webpack.dev');
   const prodConfig = require('./config/webpack.prod');
 
@@ -21,12 +21,14 @@ module.exports = function (grunt) {
   };
 
   const webpackConfig = {
-    serverWatch: Object.assign({
+    serverWatch: Object.assign(
+      {
         watch: true,
       },
       devConfig.serverConfig,
     ),
-    clientWatch: Object.assign({
+    clientWatch: Object.assign(
+      {
         watch: true,
       },
       devConfig.clientConfig,
@@ -93,8 +95,6 @@ module.exports = function (grunt) {
 
   const production = grunt.option('production');
 
-  grunt.task.registerTask('clean:client', ['exec:clean:client']);
-  grunt.task.registerTask('clean:server', ['exec:clean:server']);
   grunt.task.registerTask('watch:client', ['webpack:clientWatch']);
   grunt.task.registerTask('build:server', () => {
     if (production) {
@@ -123,6 +123,8 @@ module.exports = function (grunt) {
   grunt.task.registerTask('test:server', ['eslint:server', 'exec:testServer']);
   grunt.task.registerTask('cleandb', ['exec:cleandb']);
   grunt.task.registerTask('clean', ['exec:clean']);
+  grunt.task.registerTask('clean:client', ['exec:clean:client']);
+  grunt.task.registerTask('clean:server', ['exec:clean:server']);
   grunt.task.registerTask('initdb', ['exec:initdb']);
   grunt.task.registerTask('populate', ['exec:populate']);
   grunt.task.registerTask('upgrade', ['exec:initdb', 'exec:populate']);
