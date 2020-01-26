@@ -18,7 +18,7 @@ services:
     environment:
       - MONGO_DB_ADDRESS=pn-db
       - RABBIT_MQ_ADDRESS=pn-mq
-  pn-python:
+  pn-service:
     image: pnlab-service:1.0.1
     build:
       context: ..

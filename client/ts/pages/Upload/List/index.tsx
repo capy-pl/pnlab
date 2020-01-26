@@ -77,7 +77,7 @@ export default class List extends React.PureComponent<RouteComponentProps, State
     });
     for (const history of histories) {
       if (history.status === 'pending') {
-        const ws = new WebSocket('ws://localhost:3000/upload');
+        const ws = new WebSocket(`ws://${location.host}/upload`);
         ws.onmessage = this.onFinish(history.id);
         ws.onopen = () => {
           ws.send(history.id);
