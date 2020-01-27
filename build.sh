@@ -6,24 +6,31 @@ if [ -n "$1" ]; then
         if [ -n "$2" ]; then
             case "$2" in
             build)
-                docker-compose \
-                    -f docker-compose.yml \
+                if [ -n "$3" ]; then
+                    case "$3" in
+                        pn-server)
+                            docker-compose \
+                            -f ./docker/docker-compose.yml \
+                            build pn-server
+                        ;;
+
+                        pn-service)
+                            docker-compose \
+                            -f ./docker/docker-compose.yml \
+                            build pn-service
+                        ;;
+
+                        *)
+                            echo "Not valid service name."
+                        ;;
+                    esac
+                else 
+                    echo "Haven't specify a certain service. Build all services."
+                    docker-compose \
+                    -f ./docker/docker-compose.yml \
                     build
-                ;;
-
-            build-server)
-                docker build \
-                    -t pnlab-server:1.0.1 \
-                    -f ./docker/server.Dockerfile \
-                    .
-                ;;
-
-            build-py)
-                docker build \
-                    -t pnlab-service:1.0.1 \
-                    -f ./docker/python.Dockerfile \
-                    .
-                ;;
+                fi
+            ;;
 
             build-db)
                 docker build -t mongo:pnlab -f ./docker/mongo.Dockerfile .
@@ -35,8 +42,7 @@ if [ -n "$1" ]; then
                     -d \
                     --mount source=pnlab,target=/var/pnlab/temp \
                     -p 3000:3000 \
-                    --name pn-server \
-                    pnlab:1.0.1
+                    pnlab-server:1.0.2 \
                 ;;
 
             run-py)
@@ -45,7 +51,7 @@ if [ -n "$1" ]; then
                     -d \
                     --mount source=pnlab,target=/var/pnlab/temp \
                     --name pn-python \
-                    pnlab-py:1.0.1
+                    pnlab-service:1.0.2
                 ;;
 
             run-db)
@@ -66,14 +72,39 @@ if [ -n "$1" ]; then
                 ;;
 
             create-network)
-                docker network create --driver bridge pnlab
+                    docker network create --driver bridge pnlab
                 ;;
 
             up)
+                echo "UP"
                 docker-compose \
                     -f ./docker/docker-compose.yml \
-                    up
+                    up \
+                    -d
                 ;;
+
+            down)
+                docker-compose \
+                    -f ./docker/docker-compose.yml \
+                    down \
+                ;;
+
+            deploy)
+                if [ -n "$3" ]; then
+                    # case
+                    #     pn-server)
+                    #     ;;
+                    #     pn-service)
+                    #     ;;
+                    #     *)
+                    #         echo "Not a valid service name."
+                    #     ;;
+                    # esac
+                    echo "Test."
+                else
+                    echo "Haven't specify a certain service. Redeploy two servcices."
+                fi
+            ;;
             *)
                 echo "Not a valid docker command."
                 ;;

@@ -2,12 +2,12 @@ version: '3.7'
 
 services:
   pn-server:
-    image: pnlab-server:1.0.1
+    image: pnlab-server:1.0.2
     build:
       context: ..
-      dockerfile: docker/server.Dockerfile
+      dockerfile: ./docker/server.Dockerfile
     ports:
-      - '3000:3000'
+      - '3005:3000'
     depends_on:
       - db
       - mq
@@ -18,7 +18,7 @@ services:
     environment:
       - MONGO_DB_ADDRESS=pn-db
       - RABBIT_MQ_ADDRESS=pn-mq
-  pn-python:
+  pn-service:
     image: pnlab-service:1.0.1
     build:
       context: ..

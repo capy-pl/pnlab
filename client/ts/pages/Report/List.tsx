@@ -99,7 +99,7 @@ class ReportList extends PureComponent<RouteComponentProps, State> {
     });
     for (const report of reports) {
       if (report.status === 'pending') {
-        const ws = new WebSocket('ws://localhost:3000/report');
+        const ws = new WebSocket(`ws://${location.host}/report`);
         ws.onmessage = this.onFinish(report._id);
         ws.onopen = () => {
           ws.send(report._id);
