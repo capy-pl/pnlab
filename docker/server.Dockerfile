@@ -7,7 +7,9 @@ ENV RABBIT_MQ_ADDRESS pn-mq
 
 ADD dist/ /var/pnlab/
 ADD .env /var/pnlab/
+ADD yarn.lock /var/pnlab/
 ADD package.json /var/pnlab/
+
 ADD ecosystem.config.js /var/pnlab/
 ADD docker/scripts/docker-entrypoint-node.sh /bin/
 ADD docker/scripts/wait-for-it.sh /bin/
