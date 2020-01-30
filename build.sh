@@ -11,7 +11,9 @@ if [ -n "$1" ]; then
                         pn-server)
                             docker-compose \
                             -f ./docker/docker-compose.yml \
-                            build pn-server
+                            build \
+                            --no-cache \
+                            pn-server
                         ;;
 
                         pn-service)
@@ -30,6 +32,12 @@ if [ -n "$1" ]; then
                     -f ./docker/docker-compose.yml \
                     build
                 fi
+            ;;
+
+            build-server)
+                docker build \
+                -t pnlab-server:1.0.3 \
+                -f ./docker/server.Dockerfile .
             ;;
 
             build-db)
