@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   pn-server:
-    image: pnlab-server:1.0.3
+    image: pnlab-server:1.0.4
     build:
       context: ..
       dockerfile: ./docker/server.Dockerfile

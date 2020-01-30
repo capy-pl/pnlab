@@ -36,7 +36,7 @@ if [ -n "$1" ]; then
 
             build-server)
                 docker build \
-                -t pnlab-server:1.0.3 \
+                -t pnlab-server:1.0.4 \
                 -f ./docker/server.Dockerfile .
             ;;
 
