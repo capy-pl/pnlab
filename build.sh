@@ -97,9 +97,14 @@ if [ -n "$1" ]; then
                     down \
                 ;;
 
+            stop)
+                docker-compose \
+                -f ./docker/docker-compose.yml \
+                stop
+                ;;
             deploy)
                 if [ -n "$3" ]; then
-                    case
+                    case $3 in
                         pn-server)
                         docker-compose \
                             -f ./docker/docker-compose.yml \
