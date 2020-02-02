@@ -11,7 +11,9 @@ if [ -n "$1" ]; then
                         pn-server)
                             docker-compose \
                             -f ./docker/docker-compose.yml \
-                            build pn-server
+                            build \
+                            --no-cache \
+                            pn-server
                         ;;
 
                         pn-service)
@@ -30,6 +32,12 @@ if [ -n "$1" ]; then
                     -f ./docker/docker-compose.yml \
                     build
                 fi
+            ;;
+
+            build-server)
+                docker build \
+                -t pnlab-server:1.0.4 \
+                -f ./docker/server.Dockerfile .
             ;;
 
             build-db)
@@ -91,16 +99,27 @@ if [ -n "$1" ]; then
 
             deploy)
                 if [ -n "$3" ]; then
-                    # case
-                    #     pn-server)
-                    #     ;;
-                    #     pn-service)
-                    #     ;;
-                    #     *)
-                    #         echo "Not a valid service name."
-                    #     ;;
-                    # esac
-                    echo "Test."
+                    case
+                        pn-server)
+                        docker-compose \
+                            -f ./docker/docker-compose.yml \
+                            up \
+                            --no-deps \
+                            -d \
+                            pn-server
+                        ;;
+                        pn-service)
+                        docker-compose \
+                            -f ./docker/docker-compose.yml \
+                            up \
+                            --no-deps \
+                            -d \
+                            pn-service
+                        ;;
+                        *)
+                            echo "Not a valid service name."
+                        ;;
+                    esac
                 else
                     echo "Haven't specify a certain service. Redeploy two servcices."
                 fi

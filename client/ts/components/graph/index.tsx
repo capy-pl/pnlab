@@ -1,9 +1,11 @@
-import { isEqual, isUndefined } from 'lodash';
+import { isEqual } from 'lodash';
 import React, { PureComponent } from 'react';
 import { DataSet, EdgeOptions, Network, NodeOptions, Options } from 'vis-network';
 
 import Jgraph from '../../PnApp/Jgraph';
 import { Edge, Node } from '../../PnApp/model/Report';
+
+import 'vis-network/dist/vis-network.min.css';
 
 interface GraphNode extends Node, NodeOptions {}
 

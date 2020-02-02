@@ -972,12 +972,6 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@egjs/hammerjs@2.0.15":
-  version "2.0.15"
-  resolved "https://registry.yarnpkg.com/@egjs/hammerjs/-/hammerjs-2.0.15.tgz#b6ef675540d275f7445647a64413af425b97bb9a"
-  dependencies:
-    "@types/hammerjs" "^2.0.36"
-
 "@emotion/cache@^10.0.17":
   version "10.0.19"
   resolved "https://registry.yarnpkg.com/@emotion/cache/-/cache-10.0.19.tgz#d258d94d9c707dcadaf1558def968b86bb87ad71"
@@ -1533,10 +1527,6 @@
     "@types/body-parser" "*"
     "@types/express-serve-static-core" "*"
     "@types/serve-static" "*"
-
-"@types/hammerjs@^2.0.36":
-  version "2.0.36"
-  resolved "https://registry.yarnpkg.com/@types/hammerjs/-/hammerjs-2.0.36.tgz#17ce0a235e9ffbcdcdf5095646b374c2bf615a4c"
 
 "@types/helmet@0.0.42":
   version "0.0.42"
@@ -3724,7 +3714,7 @@ commondir@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/commondir/-/commondir-1.0.1.tgz#ddd800da0c66127393cca5950ea968a3aaf1253b"
 
-component-emitter@1.3.0, component-emitter@^1.2.0, component-emitter@^1.2.1:
+component-emitter@^1.2.0, component-emitter@^1.2.1:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/component-emitter/-/component-emitter-1.3.0.tgz#16e4070fba8ae29b679f2215853ee181ab2eabc0"
 
@@ -7691,10 +7681,6 @@ keyboard-key@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/keyboard-key/-/keyboard-key-1.0.4.tgz#52d8fa07b7e17757072aa22a67fb4ae85e4c46b0"
 
-keycharm@0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/keycharm/-/keycharm-0.2.0.tgz#fa6ea2e43b90a68028843d27f2075d35a8c3e6f9"
-
 keycode@^2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/keycode/-/keycode-2.2.0.tgz#3d0af56dc7b8b8e5cba8d0a97f107204eec22b04"
@@ -8372,7 +8358,7 @@ mkdirp@0.x, "mkdirp@>=0.5 0", mkdirp@^0.5.0, mkdirp@^0.5.1, mkdirp@~0.5.0, mkdir
   dependencies:
     minimist "0.0.8"
 
-moment@2.24.0, moment@^2.24.0:
+moment@2.24.0:
   version "2.24.0"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.24.0.tgz#0d055d53f5052aa653c9f6eb68bb5d12bf5c2b5b"
 
@@ -11747,7 +11733,7 @@ timers-browserify@^2.0.4:
   dependencies:
     setimmediate "^1.0.4"
 
-timsort@0.3.0, timsort@^0.3.0:
+timsort@^0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/timsort/-/timsort-0.3.0.tgz#405411a8e7e6339fe64db9a234de11dc31e02bd4"
 
@@ -12205,41 +12191,10 @@ verror@1.10.0:
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
 
-vis-data@6.1.1:
-  version "6.1.1"
-  resolved "https://registry.yarnpkg.com/vis-data/-/vis-data-6.1.1.tgz#f036eabd5089cf02753e2e5797fa58dfecbba244"
-  dependencies:
-    vis-util "^1.1.0"
-
-vis-network@6.1.1:
-  version "6.1.1"
-  resolved "https://registry.yarnpkg.com/vis-network/-/vis-network-6.1.1.tgz#f4458efed744a6edab803a0da2b10b5709ba5e1c"
-  dependencies:
-    "@egjs/hammerjs" "2.0.15"
-    component-emitter "1.3.0"
-    keycharm "0.2.0"
-    moment "2.24.0"
-    timsort "0.3.0"
-    vis-data "6.1.1"
-    vis-util "1.1.6"
-
-vis-util@1.1.6:
-  version "1.1.6"
-  resolved "https://registry.yarnpkg.com/vis-util/-/vis-util-1.1.6.tgz#aaa6351ecc41cda3bcbcc768606cdafa634b25eb"
-  dependencies:
-    moment "^2.24.0"
-    vis-uuid "^1.1.3"
-
-vis-util@^1.1.0:
-  version "1.1.10"
-  resolved "https://registry.yarnpkg.com/vis-util/-/vis-util-1.1.10.tgz#1c0ebb17ad5139959122dcd12aae54a4e173846a"
-  dependencies:
-    moment "2.24.0"
-    vis-uuid "1.1.3"
-
-vis-uuid@1.1.3, vis-uuid@^1.1.3:
-  version "1.1.3"
-  resolved "https://registry.yarnpkg.com/vis-uuid/-/vis-uuid-1.1.3.tgz#2f53ff35e9e026b0ec93bc433ce685c40c2f784c"
+vis-network@7.3.1:
+  version "7.3.1"
+  resolved "https://registry.yarnpkg.com/vis-network/-/vis-network-7.3.1.tgz#b2f8f23e365edc6492505abb178fa046ce1d21ea"
+  integrity sha512-zuNSXcwMGCdlRqNDwq1npT6vHeTD66W/M37Sv66UhKm/ccffOLCbd4udg7Ec8n/qVAgTN4obg3sfQVumSF5mcA==
 
 vm-browserify@^1.0.1:
   version "1.1.2"
