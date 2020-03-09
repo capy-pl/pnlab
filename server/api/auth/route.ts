@@ -1,6 +1,6 @@
-import {Router} from 'express';
-import {loginRequired} from '../../core/auth';
-import {LogIn, SignUp, Validation} from './controller';
+import { Router } from 'express';
+import { loginRequired } from '../../core/auth';
+import { LogIn, SignUp, Validation } from './controller';
 
 const router = Router();
 
