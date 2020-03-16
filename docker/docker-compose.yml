@@ -16,10 +16,10 @@ services:
     networks:
       - pn-net
     environment:
-      - MONGO_DB_ADDRESS=pn-db
-      - RABBIT_MQ_ADDRESS=pn-mq
+      - MONGO_DB_ADDRESS=db
+      - RABBIT_MQ_ADDRESS=mq
   pn-service:
-    image: pnlab-service:1.0.1
+    image: pnlab-service:1.0.2
     build:
       context: ..
       dockerfile: docker/python.Dockerfile
@@ -31,11 +31,10 @@ services:
     networks:
       - pn-net
     environment:
-      - MONGO_DB_ADDRESS=pn-db
-      - RABBIT_MQ_ADDRESS=pn-mq
+      - MONGO_DB_ADDRESS=db
+      - RABBIT_MQ_ADDRESS=mq
   db:
     image: mongo:pnlab
-    container_name: pn-db
     build:
       context: ..
       dockerfile: docker/mongo.Dockerfile
@@ -46,9 +45,9 @@ services:
     environment:
       - MONGO_INITDB_ROOT_USERNAME=admin
       - MONGO_INITDB_ROOT_PASSWORD=admin
+      - NEW_ENV=test
   mq:
     image: rabbitmq:latest
-    container_name: pn-mq
     networks:
       - pn-net
 networks:

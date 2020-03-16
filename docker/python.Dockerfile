@@ -1,8 +1,6 @@
 FROM python:3.7-slim-buster
 
 ENV HOME /var
-ENV MONGO_DB_ADDRESS pn-db
-ENV RABBIT_MQ_ADDRESS pn-mq
 
 ADD index.py /var/pnlab/
 ADD requirements.txt /var/pnlab/

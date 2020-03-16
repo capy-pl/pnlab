@@ -2,8 +2,6 @@ FROM node:12-alpine
 
 ENV NODE_ENV production
 ENV HOME /var
-ENV MONGO_DB_ADDRESS pn-db
-ENV RABBIT_MQ_ADDRESS pn-mq
 
 ADD dist/ /var/pnlab/
 ADD .env /var/pnlab/

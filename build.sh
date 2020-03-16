@@ -34,57 +34,11 @@ if [ -n "$1" ]; then
                 fi
             ;;
 
-            build-server)
-                docker build \
-                -t pnlab-server:1.0.4 \
-                -f ./docker/server.Dockerfile .
-            ;;
-
-            build-db)
-                docker build -t mongo:pnlab -f ./docker/mongo.Dockerfile .
-                ;;
-
-            run-server)
-                docker run \
-                    --network pnlab \
-                    -d \
-                    --mount source=pnlab,target=/var/pnlab/temp \
-                    -p 3000:3000 \
-                    pnlab-server:1.0.2 \
-                ;;
-
-            run-py)
-                docker run \
-                    --network pnlab \
-                    -d \
-                    --mount source=pnlab,target=/var/pnlab/temp \
-                    --name pn-python \
-                    pnlab-service:1.0.2
-                ;;
-
-            run-db)
-                docker run \
-                    -d \
-                    --network pnlab \
-                    -p 27018:27017 \
-                    --name pn-db \
-                    mongo:pnlab
-                ;;
-
-            run-mq)
-                docker run \
-                    --network pnlab \
-                    -d \
-                    --name pn-mq \
-                    rabbitmq:latest
-                ;;
-
             create-network)
                     docker network create --driver bridge pnlab
                 ;;
 
             up)
-                echo "UP"
                 docker-compose \
                     -f ./docker/docker-compose.yml \
                     up \
@@ -102,6 +56,7 @@ if [ -n "$1" ]; then
                 -f ./docker/docker-compose.yml \
                 stop
                 ;;
+
             deploy)
                 if [ -n "$3" ]; then
                     case $3 in
@@ -113,6 +68,7 @@ if [ -n "$1" ]; then
                             -d \
                             pn-server
                         ;;
+
                         pn-service)
                         docker-compose \
                             -f ./docker/docker-compose.yml \
@@ -121,6 +77,24 @@ if [ -n "$1" ]; then
                             -d \
                             pn-service
                         ;;
+
+                        db)
+                            docker-compose \
+                            -f ./docker/docker-compose.yml \
+                            up \
+                            --no-recreate \
+                            -d \
+                            db
+                            ;;
+
+                        mq)
+                            docker-compose \
+                            -f ./docker/docker-compose.yml \
+                            up \
+                            --no-recreate \
+                            -d \
+                            mq
+                            ;;
                         *)
                             echo "Not a valid service name."
                         ;;
