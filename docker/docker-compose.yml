@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   pn-server:
-    image: pnlab-server:1.0.4
+    image: pnlab-server:1.0.5
     build:
       context: ..
       dockerfile: ./docker/server.Dockerfile
@@ -19,7 +19,7 @@ services:
       - MONGO_DB_ADDRESS=db
       - RABBIT_MQ_ADDRESS=mq
   pn-service:
-    image: pnlab-service:1.0.2
+    image: pnlab-service:1.0.3
     build:
       context: ..
       dockerfile: docker/python.Dockerfile
