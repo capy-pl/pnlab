@@ -1,10 +1,12 @@
 import e from 'express';
 import { connection } from 'mongoose';
+
 import { getChannel } from '../../core/mq';
 import { Logger } from '../../core/util';
 import { Action, Analysis, Promotion, Report } from '../../models';
-import { ReportInterface, Community } from '../../models/Report';
 import { FieldSchemaInterface } from '../../models/ImportSchema';
+import Organization from '../../models/Organization';
+import { Community, ReportInterface } from '../../models/Report';
 import { UserSchemaInterface } from '../../models/User';
 
 interface SearchItemQuery {
@@ -71,32 +73,35 @@ export async function GetConditions(
   next: e.NextFunction,
 ): Promise<void> {
   try {
-    const { user } = req;
-    const { org } = user as UserSchemaInterface;
-    const { transactionFields, itemFields } = org.importSchema;
-    const promotions = await Promotion.find({}, { name: 1 });
-    const conditions: FieldSchemaInterface[] = transactionFields.concat(itemFields);
-    const promotionField: FieldSchemaInterface = {
-      name: '促銷',
-      type: 'promotion',
-      belong: 'promotion',
-      actions: ['delete'],
-      values: promotions.map((promotion) => promotion.name),
-    };
+    const org = await Organization.findOne();
+    if (org) {
+      const { transactionFields, itemFields } = org.importSchema;
+      const promotions = await Promotion.find({}, { name: 1 });
+      const conditions: FieldSchemaInterface[] = transactionFields.concat(itemFields);
+      const promotionField: FieldSchemaInterface = {
+        name: '促銷',
+        type: 'promotion',
+        belong: 'promotion',
+        actions: ['delete'],
+        values: promotions.map((promotion) => promotion.name),
+      };
 
-    const methodField: FieldSchemaInterface = {
-      name: '權重方法',
-      type: 'method',
-      belong: 'method',
-      actions: [],
-      values: ['frequency', 'adjust-frequency', 'adjust-price'],
-    };
+      const methodField: FieldSchemaInterface = {
+        name: '權重方法',
+        type: 'method',
+        belong: 'method',
+        actions: [],
+        values: ['frequency', 'adjust-frequency', 'adjust-price'],
+      };
 
-    conditions.push(promotionField);
-    conditions.push(methodField);
-    res.send({
-      conditions,
-    });
+      conditions.push(promotionField);
+      conditions.push(methodField);
+      res.send({
+        conditions,
+      });
+    } else {
+      throw new Error('Organization is not found.');
+    }
   } catch (error) {
     return next(error);
   }
@@ -282,7 +287,8 @@ export async function GetReports(
  * @apiGroup Report
  * @apiParam {string} id
  * @apiSuccess (200)
- * @response (403) Cannot delete the report because it is referenced by other analysis.
+ * @response (403) Cannot delete the report because it is referenced by other
+ * analysis.
  * @response (404) Not found
  */
 export async function DeleteReport(
@@ -324,7 +330,8 @@ interface CommunityInfo extends Community {
  * @apiParam {string} report-id The target report's id.
  * @apiParam {string} community-id Target community's id.
  * @apiSuccess (200)
- * @apiError (403) Cannot delete the report because it is referenced by other analysis.
+ * @apiError (403) Cannot delete the report because it is referenced by other
+ * analysis.
  * @apiError (404) Not found
  */
 export async function GetCommunityInfo(

@@ -81,6 +81,18 @@
       "plugin:react/recommended",
       "plugin:import/typescript",
       "prettier"
+    ],
+    "overrides": [
+      {
+        "files": [
+          "*.js",
+          "*.jsx"
+        ],
+        "rules": {
+          "@typescript-eslint/recommended": "off",
+          "@typescript-eslint/eslint-recommended": "off"
+        }
+      }
     ]
   },
   "license": "ISC",
